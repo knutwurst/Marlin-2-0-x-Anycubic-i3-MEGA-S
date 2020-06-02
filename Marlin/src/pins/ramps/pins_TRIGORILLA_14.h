@@ -54,7 +54,12 @@
 #define TG_FAN0_PIN                            9  // Anycubic Kossel: Usually the part cooling fan
 #define TG_FAN1_PIN                            7  // Anycubic Kossel: Unused
 #define TG_FAN2_PIN                           44  // Anycubic Kossel: Hotend fan
-
+#define CONTROLLER_FAN_PIN  		              TG_FAN1_PIN
+#define FIL_RUNOUT_PIN                        19
+#define BEEPER_PIN                            31
+#define SDSS                                  53
+#define LED_PIN                               13
+#define SD_DETECT_PIN                         49
 // Remap MOSFET pins to common usages:
 
 #define RAMPS_D10_PIN            TG_HEATER_0_PIN  // HEATER_0_PIN is always RAMPS_D10_PIN in pins_RAMPS.h
