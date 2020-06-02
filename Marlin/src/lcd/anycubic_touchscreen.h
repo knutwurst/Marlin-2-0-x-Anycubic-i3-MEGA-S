@@ -1,7 +1,7 @@
 /*
  AnycubicTouchscreen.h  --- Support for Anycubic i3 Mega TFT
   Created by Christian Hopp on 2017-12-09
-  Modiefied by Oliver Köster on 2020-06-02
+  Modified by Oliver Köster on 2020-06-02
 
  This library is free software; you can redistribute it and/or
  modify it under the terms of the GNU Lesser General Public

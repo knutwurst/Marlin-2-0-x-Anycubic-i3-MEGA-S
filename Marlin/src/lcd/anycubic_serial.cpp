@@ -1,7 +1,7 @@
 /*
   AnycubicSerial.cpp  --- Support for Anycubic i3 Mega TFT serial connection
   Created by Christian Hopp on 2017-12-09
-  Modiefied by Oliver Köster on 2020-06-02
+  Modified by Oliver Köster on 2020-06-02
 
   Original file:
   HardwareSerial.cpp - Hardware serial library for Wiring
