@@ -28,19 +28,18 @@
   #define SHORT_BUILD_VERSION "2.0.5.3"
 #endif
 
-/**
- * Verbose version identifier containing a unique identifier, such as the
- * vendor name, download location, GitHub account, etc.
- */
-#ifndef DETAILED_BUILD_VERSION
-  #define DETAILED_BUILD_VERSION SHORT_BUILD_VERSION " (GitHub)"
-#endif
+  /**
+   * Verbose version identifier which should contain a reference to the location
+   * from where the binary was downloaded or the source code was compiled.
+   */
+  #define DETAILED_BUILD_VERSION SHORT_BUILD_VERSION " (knutwurst, Github)"
 
 /**
- * The STRING_DISTRIBUTION_DATE represents when the binary file was built,
- * here we define this default string as the date where the latest release
- * version was tagged.
+ * Defines the version of the Marlin build. Not to be confused with
+ * Marlin's own build number, e.g. 2.0.x.
  */
+ #define CUSTOM_BUILD_VERSION "1.0.0"
+
 #ifndef STRING_DISTRIBUTION_DATE
   #define STRING_DISTRIBUTION_DATE "2020-03-31"
 #endif
@@ -69,27 +68,24 @@
   #define PROTOCOL_VERSION "1.0"
 #endif
 
-/**
- * Define a generic printer name to be output to the LCD after booting Marlin.
- */
-#ifndef MACHINE_NAME
-  #define MACHINE_NAME "3D Printer"
-#endif
+  /**
+   * Defines a generic printer name to be output to the LCD after booting Marlin.
+   */
+  #define MACHINE_NAME "Anycubic i3 MEGA S"
 
-/**
- * Website where users can find Marlin source code for the binary installed on the
- * device. Override this if you provide public source code download. (GPLv3 requires
- * providing the source code to your customers.)
- */
-#ifndef SOURCE_CODE_URL
-  #define SOURCE_CODE_URL "https://github.com/MarlinFirmware/Marlin"
-#endif
+  /**
+   * The SOURCE_CODE_URL is the location where users will find the Marlin Source
+   * Code which is installed on the device. In most cases —unless the manufacturer
+   * has a distinct Github fork— the Source Code URL should just be the main
+   * Marlin repository.
+   */
+  #define SOURCE_CODE_URL "https://github.com/knutwurst/Marlin-2-0-x-Anycubic-i3-MEGA-S"
 
 /**
  * Default generic printer UUID.
  */
 #ifndef DEFAULT_MACHINE_UUID
-  #define DEFAULT_MACHINE_UUID "cede2a2f-41a2-4748-9b12-c55c62f367ff"
+  #define DEFAULT_MACHINE_UUID "b6153152-86fb-4cd8-bda7-91c6a04c467d"
 #endif
 
   /**

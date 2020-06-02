@@ -509,44 +509,49 @@ void AnycubicTouchscreenClass::Ls()
     switch (filenumber)
     {
     case 0: // First Page
-      ANYCUBIC_SERIAL_PROTOCOLLNPGM("<Z Up 0.1>");
-      ANYCUBIC_SERIAL_PROTOCOLLNPGM("<Z Up 0.1>");
-      ANYCUBIC_SERIAL_PROTOCOLLNPGM("<Z Up 0.02>");
-      ANYCUBIC_SERIAL_PROTOCOLLNPGM("<Z Up 0.02>");
-      ANYCUBIC_SERIAL_PROTOCOLLNPGM("<Z Down 0.02>");
-      ANYCUBIC_SERIAL_PROTOCOLLNPGM("<Z Down 0.02>");
-      ANYCUBIC_SERIAL_PROTOCOLLNPGM("<Z Down 0.1>");
-      ANYCUBIC_SERIAL_PROTOCOLLNPGM("<Z Down 0.1>");
+      ANYCUBIC_SERIAL_PROTOCOLLNPGM("<Exit>");
+      ANYCUBIC_SERIAL_PROTOCOLLNPGM("<Exit>");
+      ANYCUBIC_SERIAL_PROTOCOLLNPGM("<Preheat Ultrabase>");
+      ANYCUBIC_SERIAL_PROTOCOLLNPGM("<Preheat Ultrabase>");
+      ANYCUBIC_SERIAL_PROTOCOLLNPGM("<FilamentChange Pause>");
+      ANYCUBIC_SERIAL_PROTOCOLLNPGM("<FilamentChange Pause>");
+      ANYCUBIC_SERIAL_PROTOCOLLNPGM("<FilamentChange Resume>");
+      ANYCUBIC_SERIAL_PROTOCOLLNPGM("<FilamentChange Resume>");
       break;
 
     case 4: // Second Page
-      ANYCUBIC_SERIAL_PROTOCOLLNPGM("<Preheat bed>");
-      ANYCUBIC_SERIAL_PROTOCOLLNPGM("<Preheat bed>");
       ANYCUBIC_SERIAL_PROTOCOLLNPGM("<Start Mesh Leveling>");
       ANYCUBIC_SERIAL_PROTOCOLLNPGM("<Start Mesh Leveling>");
       ANYCUBIC_SERIAL_PROTOCOLLNPGM("<Next Mesh Point>");
       ANYCUBIC_SERIAL_PROTOCOLLNPGM("<Next Mesh Point>");
-      ANYCUBIC_SERIAL_PROTOCOLLNPGM("<Save EEPROM>");
-      ANYCUBIC_SERIAL_PROTOCOLLNPGM("<Save EEPROM>");
+      ANYCUBIC_SERIAL_PROTOCOLLNPGM("<Z Up 0.1>");
+      ANYCUBIC_SERIAL_PROTOCOLLNPGM("<Z Up 0.1>");
+      ANYCUBIC_SERIAL_PROTOCOLLNPGM("<Z Down 0.1>");
+      ANYCUBIC_SERIAL_PROTOCOLLNPGM("<Z Down 0.1>");
       break;
 
     case 8: // Third Page
-      ANYCUBIC_SERIAL_PROTOCOLLNPGM("<Exit>");
-      ANYCUBIC_SERIAL_PROTOCOLLNPGM("<Exit>");
-      ANYCUBIC_SERIAL_PROTOCOLLNPGM("<Auto Tune Hotend PID>");
-      ANYCUBIC_SERIAL_PROTOCOLLNPGM("<Auto Tune Hotend PID>");
-      ANYCUBIC_SERIAL_PROTOCOLLNPGM("<Auto Tune Hotbed PID>");
-      ANYCUBIC_SERIAL_PROTOCOLLNPGM("<Auto Tune Hotbed PID>");
+      ANYCUBIC_SERIAL_PROTOCOLLNPGM("<PID Tune Hotend>");
+      ANYCUBIC_SERIAL_PROTOCOLLNPGM("<PID Tune Hotend>");
+      ANYCUBIC_SERIAL_PROTOCOLLNPGM("<PID Tune Ultrabase>");
+      ANYCUBIC_SERIAL_PROTOCOLLNPGM("<PID Tune Ultrabase>");
+      ANYCUBIC_SERIAL_PROTOCOLLNPGM("<Save EEPROM>");
+      ANYCUBIC_SERIAL_PROTOCOLLNPGM("<Save EEPROM>");
       ANYCUBIC_SERIAL_PROTOCOLLNPGM("<Load FW Defaults>");
       ANYCUBIC_SERIAL_PROTOCOLLNPGM("<Load FW Defaults>");
       break;
-
+/*
     case 12: // Fourth Page
-      ANYCUBIC_SERIAL_PROTOCOLLNPGM("<FilamentChange Pause>");
-      ANYCUBIC_SERIAL_PROTOCOLLNPGM("<FilamentChange Pause>");
-      ANYCUBIC_SERIAL_PROTOCOLLNPGM("<FilamentChange Resume>");
-      ANYCUBIC_SERIAL_PROTOCOLLNPGM("<FilamentChange Resume>");
+      ANYCUBIC_SERIAL_PROTOCOLLNPGM("<Z Up 0.1>");
+      ANYCUBIC_SERIAL_PROTOCOLLNPGM("<Z Up 0.1>");
+      ANYCUBIC_SERIAL_PROTOCOLLNPGM("<Z Down 0.1>");
+      ANYCUBIC_SERIAL_PROTOCOLLNPGM("<Z Down 0.1>");
+      ANYCUBIC_SERIAL_PROTOCOLLNPGM("<Z Up 0.02>");
+      ANYCUBIC_SERIAL_PROTOCOLLNPGM("<Z Up 0.02>");
+      ANYCUBIC_SERIAL_PROTOCOLLNPGM("<Z Down 0.02>");
+      ANYCUBIC_SERIAL_PROTOCOLLNPGM("<Z Down 0.02>");
       break;
+*/
 
     default:
       break;
@@ -590,24 +595,54 @@ void AnycubicTouchscreenClass::Ls()
       else
       {
         card.selectFileByIndex(cnt - 1);
-        //      card.selectFileByIndex(cnt);
+
+        bool hasInvalidCharacter = false;
+        for (unsigned char currentChar = 0; currentChar < strlen(card.longFilename); currentChar++)
+        if (!isAscii(card.longFilename[currentChar])) 
+        {
+          hasInvalidCharacter = true;
+          break;
+        }
 
         if (card.flag.filenameIsDir)
         {
-          ANYCUBIC_SERIAL_PROTOCOLPGM("/");
-          ANYCUBIC_SERIAL_PROTOCOLLN(card.filename);
-          ANYCUBIC_SERIAL_PROTOCOLPGM("/");
-          ANYCUBIC_SERIAL_PROTOCOLLN(card.longFilename);
-          SERIAL_ECHO(cnt);
-          SERIAL_ECHOPGM("/");
-          SERIAL_ECHOLN(card.longFilename);
+          if(hasInvalidCharacter)
+          {
+            ANYCUBIC_SERIAL_PROTOCOLPGM("/");
+            ANYCUBIC_SERIAL_PROTOCOLLN(card.filename);
+            ANYCUBIC_SERIAL_PROTOCOLPGM("/");
+            ANYCUBIC_SERIAL_PROTOCOLLN(card.filename);
+            SERIAL_ECHO(cnt);
+            SERIAL_ECHOPGM("/");
+            SERIAL_ECHOLN(card.filename);
+          }
+          else
+          {
+            ANYCUBIC_SERIAL_PROTOCOLPGM("/");
+            ANYCUBIC_SERIAL_PROTOCOLLN(card.longFilename);
+            ANYCUBIC_SERIAL_PROTOCOLPGM("/");
+            ANYCUBIC_SERIAL_PROTOCOLLN(card.longFilename);
+            SERIAL_ECHO(cnt);
+            SERIAL_ECHOPGM("/");
+            SERIAL_ECHOLN(card.longFilename);
+          }
         }
         else
         {
-          ANYCUBIC_SERIAL_PROTOCOLLN(card.filename);
-          ANYCUBIC_SERIAL_PROTOCOLLN(card.longFilename);
-          SERIAL_ECHO(cnt);
-          SERIAL_ECHOLN(card.longFilename);
+          if(hasInvalidCharacter)
+          {
+            ANYCUBIC_SERIAL_PROTOCOLLN(card.filename);
+            ANYCUBIC_SERIAL_PROTOCOLLN(card.filename);
+            SERIAL_ECHO(cnt);
+            SERIAL_ECHOLN(card.filename);
+          }
+          else
+          {
+            ANYCUBIC_SERIAL_PROTOCOLLN(card.longFilename);
+            ANYCUBIC_SERIAL_PROTOCOLLN(card.longFilename);
+            SERIAL_ECHO(cnt);
+            SERIAL_ECHOLN(card.longFilename);
+          }
         }
       }
     }
@@ -1152,7 +1187,7 @@ void AnycubicTouchscreenClass::GetCommandFromTFT()
             thermalManager.setTargetHotend(tempvalue, 0);
           }
         }
-        //  ANYCUBIC_SERIAL_ENTER();
+        //   ANYCUBIC_SERIAL_ENTER();
         break;
         case 17: // A17 set heated bed temp
         {

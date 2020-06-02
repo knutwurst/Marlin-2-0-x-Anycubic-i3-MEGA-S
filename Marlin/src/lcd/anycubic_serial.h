@@ -131,7 +131,6 @@ const char newSucc[] PROGMEM = "OK";
 #define ANYCUBIC_SERIAL_ERRORLN(x) ANYCUBIC_SERIAL_PROTOCOLLN(x)
 #define ANYCUBIC_SERIAL_ERRORLNPGM(x) ANYCUBIC_SERIAL_PROTOCOLLNPGM(x)
 
-//##define ANYCUBIC_SERIAL_ECHO_START (AnycubicSerialprintPGM(newSucc))
 #define ANYCUBIC_SERIAL_ECHOLN(x) ANYCUBIC_SERIAL_PROTOCOLLN(x)
 #define ANYCUBIC_SERIAL_SUCC_START (AnycubicSerialprintPGM(newSucc))
 #define ANYCUBIC_SERIAL_ECHOPAIR(name, value) (serial_echopair_P(PSTR(name), (value)))
