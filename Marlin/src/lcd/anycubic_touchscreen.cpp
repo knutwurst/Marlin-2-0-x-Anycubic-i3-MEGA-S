@@ -598,6 +598,9 @@ void AnycubicTouchscreenClass::Ls()
       {
         card.selectFileByIndex(cnt - 1);
 
+
+        // Bugfix for non-printable special characters
+        // which are now replaced by underscores.
         int fileNameLen = strlen(card.longFilename);
         char buffer[fileNameLen];
 
