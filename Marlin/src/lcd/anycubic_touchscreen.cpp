@@ -427,14 +427,14 @@ void AnycubicTouchscreenClass::HandleSpecialMenu()
   {
     SpecialMenu = true;
   }
-  else if (strcmp(SelectedDirectory, "<auto tune hotend pid>") == 0)
+  else if (strcmp(SelectedDirectory, "<pid tune hotend>") == 0)
   {
-    SERIAL_ECHOLNPGM("Special Menu: Auto Tune Hotend PID");
+    SERIAL_ECHOLNPGM("Special Menu: PID Tune Hotend");
     queue.enqueue_now_P(PSTR("M106 S204\nM303 E0 S210 C15 U1"));
   }
-  else if (strcmp(SelectedDirectory, "<auto tune hotbed pid>") == 0)
+  else if (strcmp(SelectedDirectory, "<pid tune ultrabase>") == 0)
   {
-    SERIAL_ECHOLNPGM("Special Menu: Auto Tune Hotbed Pid");
+    SERIAL_ECHOLNPGM("Special Menu: PID Tune Ultrabase");
     queue.enqueue_now_P(PSTR("M303 E-1 S60 C6 U1"));
   }
   else if (strcmp(SelectedDirectory, "<save eeprom>") == 0)
@@ -451,9 +451,9 @@ void AnycubicTouchscreenClass::HandleSpecialMenu()
     buzzer.tone(105, 1661);
     buzzer.tone(210, 1108);
   }
-  else if (strcmp(SelectedDirectory, "<preheat bed>") == 0)
+  else if (strcmp(SelectedDirectory, "<preheat ultrabase>") == 0)
   {
-    SERIAL_ECHOLNPGM("Special Menu: Preheat Bed");
+    SERIAL_ECHOLNPGM("Special Menu: Preheat Ultrabase");
     queue.enqueue_now_P(PSTR("M140 S60"));
   }
   else if (strcmp(SelectedDirectory, "<start mesh leveling>") == 0)
@@ -508,7 +508,7 @@ void AnycubicTouchscreenClass::Ls()
   {
     switch (filenumber)
     {
-    case 0: // First Page
+    case 0: // Page 1
       ANYCUBIC_SERIAL_PROTOCOLLNPGM("<Exit>");
       ANYCUBIC_SERIAL_PROTOCOLLNPGM("<Exit>");
       ANYCUBIC_SERIAL_PROTOCOLLNPGM("<Preheat Ultrabase>");
@@ -519,7 +519,7 @@ void AnycubicTouchscreenClass::Ls()
       ANYCUBIC_SERIAL_PROTOCOLLNPGM("<FilamentChange Resume>");
       break;
 
-    case 4: // Second Page
+    case 4: // Page 2
       ANYCUBIC_SERIAL_PROTOCOLLNPGM("<Start Mesh Leveling>");
       ANYCUBIC_SERIAL_PROTOCOLLNPGM("<Start Mesh Leveling>");
       ANYCUBIC_SERIAL_PROTOCOLLNPGM("<Next Mesh Point>");
@@ -530,7 +530,7 @@ void AnycubicTouchscreenClass::Ls()
       ANYCUBIC_SERIAL_PROTOCOLLNPGM("<Z Down 0.1>");
       break;
 
-    case 8: // Third Page
+    case 8: // Page 3
       ANYCUBIC_SERIAL_PROTOCOLLNPGM("<PID Tune Hotend>");
       ANYCUBIC_SERIAL_PROTOCOLLNPGM("<PID Tune Hotend>");
       ANYCUBIC_SERIAL_PROTOCOLLNPGM("<PID Tune Ultrabase>");
@@ -554,6 +554,8 @@ void AnycubicTouchscreenClass::Ls()
 */
 
     default:
+      ANYCUBIC_SERIAL_PROTOCOLLNPGM("<Exit>");
+      ANYCUBIC_SERIAL_PROTOCOLLNPGM("<Exit>");
       break;
     }
   }
