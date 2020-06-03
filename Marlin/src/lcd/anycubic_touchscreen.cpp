@@ -599,12 +599,14 @@ void AnycubicTouchscreenClass::Ls()
         card.selectFileByIndex(cnt - 1);
 
         bool hasInvalidCharacter = false;
+
         for (unsigned char currentChar = 0; currentChar < strlen(card.longFilename); currentChar++)
         if (!isPrintable(card.longFilename[currentChar])) 
         {
           hasInvalidCharacter = true;
           break;
         }
+
 
         if (card.flag.filenameIsDir)
         {
@@ -621,7 +623,7 @@ void AnycubicTouchscreenClass::Ls()
           else
           {
             ANYCUBIC_SERIAL_PROTOCOLPGM("/");
-            ANYCUBIC_SERIAL_PROTOCOLLN(card.longFilename);
+            ANYCUBIC_SERIAL_PROTOCOLLN(card.filename);
             ANYCUBIC_SERIAL_PROTOCOLPGM("/");
             ANYCUBIC_SERIAL_PROTOCOLLN(card.longFilename);
             SERIAL_ECHO(cnt);
@@ -640,7 +642,7 @@ void AnycubicTouchscreenClass::Ls()
           }
           else
           {
-            ANYCUBIC_SERIAL_PROTOCOLLN(card.longFilename);
+            ANYCUBIC_SERIAL_PROTOCOLLN(card.filename);
             ANYCUBIC_SERIAL_PROTOCOLLN(card.longFilename);
             SERIAL_ECHO(cnt);
             SERIAL_ECHOLN(card.longFilename);
