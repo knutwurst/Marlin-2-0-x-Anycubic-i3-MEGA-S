@@ -598,7 +598,7 @@ void AnycubicTouchscreenClass::Ls()
 
         bool hasInvalidCharacter = false;
         for (unsigned char currentChar = 0; currentChar < strlen(card.longFilename); currentChar++)
-        if (!isAscii(card.longFilename[currentChar])) 
+        if (!isPrintable(card.longFilename[currentChar])) 
         {
           hasInvalidCharacter = true;
           break;
