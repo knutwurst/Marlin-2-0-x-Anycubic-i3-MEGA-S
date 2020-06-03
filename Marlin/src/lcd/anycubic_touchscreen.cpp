@@ -598,55 +598,35 @@ void AnycubicTouchscreenClass::Ls()
       {
         card.selectFileByIndex(cnt - 1);
 
-        bool hasInvalidCharacter = false;
+        int fileNameLen = strlen(card.longFilename);
+        char buffer[fileNameLen];
 
-        for (unsigned char currentChar = 0; currentChar < strlen(card.longFilename); currentChar++)
-        if (!isPrintable(card.longFilename[currentChar])) 
-        {
-          hasInvalidCharacter = true;
-          break;
+        for (unsigned char i = 0; i < fileNameLen; i++){
+          buffer[i] = card.longFilename[i];
+          if (!isPrintable(buffer[i])) 
+          {
+            buffer[i] = '_';
+          }
         }
-
+        buffer[fileNameLen] = '\0';
+        
 
         if (card.flag.filenameIsDir)
         {
-          if(hasInvalidCharacter)
-          {
-            ANYCUBIC_SERIAL_PROTOCOLPGM("/");
-            ANYCUBIC_SERIAL_PROTOCOLLN(card.filename);
-            ANYCUBIC_SERIAL_PROTOCOLPGM("/");
-            ANYCUBIC_SERIAL_PROTOCOLLN(card.filename);
-            SERIAL_ECHO(cnt);
-            SERIAL_ECHOPGM("/");
-            SERIAL_ECHOLN(card.filename);
-          }
-          else
-          {
-            ANYCUBIC_SERIAL_PROTOCOLPGM("/");
-            ANYCUBIC_SERIAL_PROTOCOLLN(card.filename);
-            ANYCUBIC_SERIAL_PROTOCOLPGM("/");
-            ANYCUBIC_SERIAL_PROTOCOLLN(card.longFilename);
-            SERIAL_ECHO(cnt);
-            SERIAL_ECHOPGM("/");
-            SERIAL_ECHOLN(card.longFilename);
-          }
+          ANYCUBIC_SERIAL_PROTOCOLPGM("/");
+          ANYCUBIC_SERIAL_PROTOCOLLN(card.filename);
+          ANYCUBIC_SERIAL_PROTOCOLPGM("/");
+          ANYCUBIC_SERIAL_PROTOCOLLN(buffer);
+          SERIAL_ECHO(cnt);
+          SERIAL_ECHOPGM("/");
+          SERIAL_ECHOLN(buffer);
         }
         else
         {
-          if(hasInvalidCharacter)
-          {
-            ANYCUBIC_SERIAL_PROTOCOLLN(card.filename);
-            ANYCUBIC_SERIAL_PROTOCOLLN(card.filename);
-            SERIAL_ECHO(cnt);
-            SERIAL_ECHOLN(card.filename);
-          }
-          else
-          {
-            ANYCUBIC_SERIAL_PROTOCOLLN(card.filename);
-            ANYCUBIC_SERIAL_PROTOCOLLN(card.longFilename);
-            SERIAL_ECHO(cnt);
-            SERIAL_ECHOLN(card.longFilename);
-          }
+          ANYCUBIC_SERIAL_PROTOCOLLN(card.filename);
+          ANYCUBIC_SERIAL_PROTOCOLLN(buffer);
+          SERIAL_ECHO(cnt);
+          SERIAL_ECHOLN(buffer);
         }
       }
     }
