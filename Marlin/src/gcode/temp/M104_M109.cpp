@@ -38,6 +38,10 @@
 
 #include "../../MarlinCore.h" // for startOrResumeJob, etc.
 
+#ifdef ANYCUBIC_TOUCHSCREEN
+  #include "../../lcd/anycubic_touchscreen.h"
+#endif
+
 #if ENABLED(PRINTJOB_TIMER_AUTOSTART)
   #include "../../module/printcounter.h"
   #if ENABLED(CANCEL_OBJECTS)
@@ -87,9 +91,12 @@ void GcodeSuite::M104() {
     #endif
   }
 
+
+
   #if ENABLED(AUTOTEMP)
     planner.autotemp_M104_M109();
   #endif
+
 }
 
 /**
@@ -139,12 +146,25 @@ void GcodeSuite::M109() {
     #endif
   }
 
+  #ifdef ANYCUBIC_TOUCHSCREEN
+    AnycubicTouchscreen.HeatingStart();
+  #endif
+
   #if ENABLED(AUTOTEMP)
     planner.autotemp_M104_M109();
   #endif
 
   if (set_temp)
     (void)thermalManager.wait_for_hotend(target_extruder, no_wait_for_cooling);
+
+  // flush the serial buffer after heating to prevent lockup by m105
+  //SERIAL_FLUSH();
+
+  #ifdef ANYCUBIC_TOUCHSCREEN
+    AnycubicTouchscreen.CommandScan();
+    AnycubicTouchscreen.BedHeatingDone();
+  #endif
+
 }
 
 #endif // EXTRUDERS
