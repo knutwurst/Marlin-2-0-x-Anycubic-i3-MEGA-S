@@ -78,6 +78,10 @@ fil_change_settings_t fc_settings[EXTRUDERS];
   #include "../sd/cardreader.h"
 #endif
 
+#ifdef ANYCUBIC_TOUCHSCREEN
+  #include "../lcd/anycubic_touchscreen.h"
+#endif
+
 #if ENABLED(EMERGENCY_PARSER)
   #define _PMSG(L) L##_M108
 #else
@@ -517,6 +521,17 @@ void wait_for_confirmation(const bool is_reload/*=false*/, const int8_t max_beep
     // Wait for the user to press the button to re-heat the nozzle, then
     // re-heat the nozzle, re-show the continue prompt, restart idle timers, start over
     if (nozzle_timed_out) {
+
+      #ifdef ANYCUBIC_TOUCHSCREEN
+        if (AnycubicTouchscreen.ai3m_pause_state < 3) {
+          AnycubicTouchscreen.ai3m_pause_state += 2;
+          #ifdef ANYCUBIC_TFT_DEBUG
+            SERIAL_ECHOPAIR(" DEBUG: NTO - AI3M Pause State set to: ", AnycubicTouchscreen.ai3m_pause_state);
+            SERIAL_EOL();
+          #endif
+          }
+      #endif
+
       #if HAS_LCD_MENU
         lcd_pause_show_message(PAUSE_MESSAGE_HEAT);
       #endif
@@ -560,6 +575,15 @@ void wait_for_confirmation(const bool is_reload/*=false*/, const int8_t max_beep
       #endif
       wait_for_user = true;
       nozzle_timed_out = false;
+      #ifdef ANYCUBIC_TOUCHSCREEN
+        if (AnycubicTouchscreen.ai3m_pause_state > 3) {
+          AnycubicTouchscreen.ai3m_pause_state -= 2;
+          #ifdef ANYCUBIC_TFT_DEBUG
+            SERIAL_ECHOPAIR(" DEBUG: NTO - AI3M Pause State set to: ", AnycubicTouchscreen.ai3m_pause_state);
+            SERIAL_EOL();
+          #endif
+        }
+      #endif
 
       #if HAS_BUZZER
         filament_change_beep(max_beep_count, true);
@@ -606,6 +630,15 @@ void resume_print(const float &slow_load_length/*=0*/, const float &fast_load_le
 
   // Re-enable the heaters if they timed out
   bool nozzle_timed_out = false;
+  #ifdef ANYCUBIC_TOUCHSCREEN
+    if (AnycubicTouchscreen.ai3m_pause_state > 3) {
+      AnycubicTouchscreen.ai3m_pause_state -= 2;
+      #ifdef ANYCUBIC_TFT_DEBUG
+        SERIAL_ECHOPAIR(" DEBUG: NTO - AI3M Pause State set to: ", AnycubicTouchscreen.ai3m_pause_state);
+        SERIAL_EOL();
+      #endif
+      }
+  #endif
   HOTEND_LOOP() {
     nozzle_timed_out |= thermalManager.hotend_idle[e].timed_out;
     thermalManager.reset_hotend_idle_timer(e);
