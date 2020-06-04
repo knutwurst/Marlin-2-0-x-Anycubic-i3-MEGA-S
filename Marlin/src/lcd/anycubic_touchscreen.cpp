@@ -41,7 +41,7 @@
 
 #ifdef ANYCUBIC_TOUCHSCREEN
 #include "anycubic_touchscreen.h"
-#include "anycubic_serial.h"
+#include "HardwareSerial.h"
 
 char _conv[8];
 
@@ -92,7 +92,7 @@ AnycubicTouchscreenClass::AnycubicTouchscreenClass()
 
 void AnycubicTouchscreenClass::Setup()
 {
-  AnycubicSerial.begin(115200);
+  HardwareSerial.begin(115200);
   //ANYCUBIC_SERIAL_START();
   ANYCUBIC_SERIAL_PROTOCOLPGM("J17"); // J17 Main board reset
   ANYCUBIC_SERIAL_ENTER();
@@ -566,6 +566,7 @@ void AnycubicTouchscreenClass::Ls()
     uint16_t max_files;
     uint16_t dir_files = card.countFilesInWorkDir();
 
+    // What is this shit? What if there are exactely 3 files+folders?
     if ((dir_files - filenumber) < 4)
     {
       max_files = dir_files;
@@ -888,9 +889,9 @@ void AnycubicTouchscreenClass::FilamentRunout()
 void AnycubicTouchscreenClass::GetCommandFromTFT()
 {
   char *starpos = NULL;
-  while (AnycubicSerial.available() > 0 && TFTbuflen < TFTBUFSIZE)
+  while (HardwareSerial.available() > 0 && TFTbuflen < TFTBUFSIZE)
   {
-    serial3_char = AnycubicSerial.read();
+    serial3_char = HardwareSerial.read();
     if (serial3_char == '\n' ||
         serial3_char == '\r' ||
         serial3_char == ':' ||

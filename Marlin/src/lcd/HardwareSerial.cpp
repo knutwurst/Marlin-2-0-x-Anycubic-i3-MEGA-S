@@ -1,9 +1,4 @@
 /*
-  AnycubicSerial.cpp  --- Support for Anycubic i3 Mega TFT serial connection
-  Created by Christian Hopp on 2017-12-09
-  Modified by Oliver Köster on 2020-06-02
-
-  Original file:
   HardwareSerial.cpp - Hardware serial library for Wiring
   Copyright (c) 2006 Nicholas Zambetti.  All right reserved.
 
@@ -40,7 +35,7 @@
 // this is so I can support Attiny series and any other chip without a uart
 #if defined(UBRR3H)
 
-#include "anycubic_serial.h"
+#include "HardwareSerial.h"
 
 // Define constants and variables for buffering incoming serial data.  We're
 // using a ring buffer (I think), in which head is the index of the location
@@ -116,7 +111,7 @@ ISR(USART3_UDRE_vect)
 #endif
 
 
-AnycubicSerialClass::AnycubicSerialClass(ring_buffer *rx_buffer, ring_buffer *tx_buffer,
+HardwareSerialClass::HardwareSerialClass(ring_buffer *rx_buffer, ring_buffer *tx_buffer,
                                          volatile uint8_t *ubrrh, volatile uint8_t *ubrrl,
                                          volatile uint8_t *ucsra, volatile uint8_t *ucsrb,
                                          volatile uint8_t *ucsrc, volatile uint8_t *udr,
@@ -139,7 +134,7 @@ AnycubicSerialClass::AnycubicSerialClass(ring_buffer *rx_buffer, ring_buffer *tx
 
 // Public Methods //////////////////////////////////////////////////////////////
 
-void AnycubicSerialClass::begin(unsigned long baud)
+void HardwareSerialClass::begin(unsigned long baud)
 {
   uint16_t baud_setting;
   bool use_u2x = true;
@@ -182,7 +177,7 @@ try_again:
   cbi(*_ucsrb, _udrie);
 }
 
-void AnycubicSerialClass::begin(unsigned long baud, byte config)
+void HardwareSerialClass::begin(unsigned long baud, byte config)
 {
   uint16_t baud_setting;
   uint8_t current_config;
@@ -230,7 +225,7 @@ try_again:
   cbi(*_ucsrb, _udrie);
 }
 
-void AnycubicSerialClass::end()
+void HardwareSerialClass::end()
 {
   // wait for transmission of outgoing data
   while (_tx_buffer->head != _tx_buffer->tail)
@@ -245,12 +240,12 @@ void AnycubicSerialClass::end()
   _rx_buffer->head = _rx_buffer->tail;
 }
 
-int AnycubicSerialClass::available(void)
+int HardwareSerialClass::available(void)
 {
   return (int)(SERIAL_BUFFER_SIZE + _rx_buffer->head - _rx_buffer->tail) % SERIAL_BUFFER_SIZE;
 }
 
-int AnycubicSerialClass::peek(void)
+int HardwareSerialClass::peek(void)
 {
   if (_rx_buffer->head == _rx_buffer->tail)
   {
@@ -262,7 +257,7 @@ int AnycubicSerialClass::peek(void)
   }
 }
 
-int AnycubicSerialClass::read(void)
+int HardwareSerialClass::read(void)
 {
   // if the head isn't ahead of the tail, we don't have any characters
   if (_rx_buffer->head == _rx_buffer->tail)
@@ -277,7 +272,7 @@ int AnycubicSerialClass::read(void)
   }
 }
 
-void AnycubicSerialClass::flush()
+void HardwareSerialClass::flush()
 {
   // UDR is kept full while the buffer is not empty, so TXC triggers when EMPTY && SENT
   while (transmitting && !(*_ucsra & _BV(TXC0)))
@@ -285,7 +280,7 @@ void AnycubicSerialClass::flush()
   transmitting = false;
 }
 
-size_t AnycubicSerialClass::write(uint8_t c)
+size_t HardwareSerialClass::write(uint8_t c)
 {
   int i = (_tx_buffer->head + 1) % SERIAL_BUFFER_SIZE;
 
@@ -306,13 +301,13 @@ size_t AnycubicSerialClass::write(uint8_t c)
   return 1;
 }
 
-AnycubicSerialClass::operator bool()
+HardwareSerialClass::operator bool()
 {
   return true;
 }
 
 #if defined(UBRR3H)
-AnycubicSerialClass AnycubicSerial(&rx_buffer_ajg, &tx_buffer_ajg, &UBRR3H, &UBRR3L, &UCSR3A, &UCSR3B, &UCSR3C, &UDR3, RXEN3, TXEN3, RXCIE3, UDRIE3, U2X3);
+HardwareSerialClass HardwareSerial(&rx_buffer_ajg, &tx_buffer_ajg, &UBRR3H, &UBRR3L, &UCSR3A, &UCSR3B, &UCSR3C, &UDR3, RXEN3, TXEN3, RXCIE3, UDRIE3, U2X3);
 #endif
 
 #endif

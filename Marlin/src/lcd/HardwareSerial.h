@@ -1,10 +1,4 @@
 /*
-  AnycubicSerial.h  --- Support for Anycubic i3 Mega TFT serial connection
-  Created by Christian Hopp on 2017-12-09
-  Modified by Oliver Köster on 2020-06-02
- 
-  Original file:
-
   HardwareSerial.h - Hardware serial library for Wiring
   Copyright (c) 2006 Nicholas Zambetti.  All right reserved.
 
@@ -26,8 +20,8 @@
   Modified 14 August 2012 by Alarus
 */
 
-#ifndef anycubic_serial_h
-#define anycubic_serial_h
+#ifndef hardwareserial_h
+#define hardwareserial_h
 
 #include <inttypes.h>
 #include <avr/pgmspace.h>
@@ -38,7 +32,7 @@
 
 struct ring_buffer;
 
-class AnycubicSerialClass : public Stream
+class HardwareSerialClass : public Stream
 {
 private:
   ring_buffer *_rx_buffer;
@@ -57,7 +51,7 @@ private:
   bool transmitting;
 
 public:
-  AnycubicSerialClass(ring_buffer *rx_buffer, ring_buffer *tx_buffer,
+  HardwareSerialClass(ring_buffer *rx_buffer, ring_buffer *tx_buffer,
                       volatile uint8_t *ubrrh, volatile uint8_t *ubrrl,
                       volatile uint8_t *ucsra, volatile uint8_t *ucsrb,
                       volatile uint8_t *ucsrc, volatile uint8_t *udr,
@@ -105,44 +99,44 @@ public:
 #define SERIAL_8O2 0x3E
 
 #if defined(UBRR3H)
-extern AnycubicSerialClass AnycubicSerial;
+extern HardwareSerialClass HardwareSerial;
 #endif
 
 extern void serialEventRun(void) __attribute__((weak));
 
-#define ANYCUBIC_SERIAL_PROTOCOL(x) (AnycubicSerial.print(x))
-#define ANYCUBIC_SERIAL_PROTOCOL_F(x, y) (AnycubicSerial.print(x, y))
-#define ANYCUBIC_SERIAL_PROTOCOLPGM(x) (AnycubicSerialprintPGM(PSTR(x)))
-#define ANYCUBIC_SERIAL_(x) (AnycubicSerial.print(x), AnycubicSerial.write('\n'))
-#define ANYCUBIC_SERIAL_PROTOCOLLN(x) (AnycubicSerial.print(x), AnycubicSerial.write('\r'), AnycubicSerial.write('\n'))
-#define ANYCUBIC_SERIAL_PROTOCOLLNPGM(x) (AnycubicSerialprintPGM(PSTR(x)), AnycubicSerial.write('\r'), AnycubicSerial.write('\n'))
+#define ANYCUBIC_SERIAL_PROTOCOL(x) (HardwareSerial.print(x))
+#define ANYCUBIC_SERIAL_PROTOCOL_F(x, y) (HardwareSerial.print(x, y))
+#define ANYCUBIC_SERIAL_PROTOCOLPGM(x) (HardwareSerialprintPGM(PSTR(x)))
+#define ANYCUBIC_SERIAL_(x) (HardwareSerial.print(x), HardwareSerial.write('\n'))
+#define ANYCUBIC_SERIAL_PROTOCOLLN(x) (HardwareSerial.print(x), HardwareSerial.write('\r'), HardwareSerial.write('\n'))
+#define ANYCUBIC_SERIAL_PROTOCOLLNPGM(x) (HardwareSerialprintPGM(PSTR(x)), HardwareSerial.write('\r'), HardwareSerial.write('\n'))
 
-#define ANYCUBIC_SERIAL_START() (AnycubicSerial.write('\r'), AnycubicSerial.write('\n'))
-#define ANYCUBIC_SERIAL_CMD_SEND(x) (AnycubicSerialprintPGM(PSTR(x)), AnycubicSerial.write('\r'), AnycubicSerial.write('\n'))
-#define ANYCUBIC_SERIAL_ENTER() (AnycubicSerial.write('\r'), AnycubicSerial.write('\n'))
-#define ANYCUBIC_SERIAL_SPACE() (AnycubicSerial.write(' '))
+#define ANYCUBIC_SERIAL_START() (HardwareSerial.write('\r'), HardwareSerial.write('\n'))
+#define ANYCUBIC_SERIAL_CMD_SEND(x) (HardwareSerialprintPGM(PSTR(x)), HardwareSerial.write('\r'), HardwareSerial.write('\n'))
+#define ANYCUBIC_SERIAL_ENTER() (HardwareSerial.write('\r'), HardwareSerial.write('\n'))
+#define ANYCUBIC_SERIAL_SPACE() (HardwareSerial.write(' '))
 
 const char newErr[] PROGMEM = "ERR ";
 const char newSucc[] PROGMEM = "OK";
 
-#define ANYCUBIC_SERIAL_ERROR_START (AnycubicSerialprintPGM(newErr))
+#define ANYCUBIC_SERIAL_ERROR_START (HardwareSerialprintPGM(newErr))
 #define ANYCUBIC_SERIAL_ERROR(x) ANYCUBIC_SERIAL_PROTOCOL(x)
 #define ANYCUBIC_SERIAL_ERRORPGM(x) ANYCUBIC_SERIAL_PROTOCOLPGM(x)
 #define ANYCUBIC_SERIAL_ERRORLN(x) ANYCUBIC_SERIAL_PROTOCOLLN(x)
 #define ANYCUBIC_SERIAL_ERRORLNPGM(x) ANYCUBIC_SERIAL_PROTOCOLLNPGM(x)
 
 #define ANYCUBIC_SERIAL_ECHOLN(x) ANYCUBIC_SERIAL_PROTOCOLLN(x)
-#define ANYCUBIC_SERIAL_SUCC_START (AnycubicSerialprintPGM(newSucc))
+#define ANYCUBIC_SERIAL_SUCC_START (HardwareSerialprintPGM(newSucc))
 #define ANYCUBIC_SERIAL_ECHOPAIR(name, value) (serial_echopair_P(PSTR(name), (value)))
 #define ANYCUBIC_SERIAL_ECHOPGM(x) ANYCUBIC_SERIAL_PROTOCOLPGM(x)
 #define ANYCUBIC_SERIAL_ECHO(x) ANYCUBIC_SERIAL_PROTOCOL(x)
 
-FORCE_INLINE void AnycubicSerialprintPGM(const char *str)
+FORCE_INLINE void HardwareSerialprintPGM(const char *str)
 {
   char ch = pgm_read_byte(str);
   while (ch)
   {
-    AnycubicSerial.write(ch);
+    HardwareSerial.write(ch);
     ch = pgm_read_byte(++str);
   }
 }
