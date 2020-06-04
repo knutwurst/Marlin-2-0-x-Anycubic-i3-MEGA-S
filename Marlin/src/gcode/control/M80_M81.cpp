@@ -31,6 +31,9 @@
   #include "../../lcd/ultralcd.h"
 #endif
 
+#if ENABLED(ANYCUBIC_TOUCHSCREEN)
+  #include "../../lcd/anycubic_touchscreen.h"
+#endif
 #if HAS_SUICIDE
   #include "../../MarlinCore.h"
 #endif
@@ -79,6 +82,11 @@
     #if HAS_LCD_MENU
       ui.reset_status();
     #endif
+
+    #ifdef ANYCUBIC_TOUCHSCREEN
+      AnycubicTouchscreen.CommandScan();
+    #endif
+
   }
 
 #endif // ENABLED(PSU_CONTROL)
