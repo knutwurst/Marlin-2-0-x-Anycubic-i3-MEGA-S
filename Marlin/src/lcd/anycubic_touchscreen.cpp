@@ -93,12 +93,12 @@ AnycubicTouchscreenClass::AnycubicTouchscreenClass()
 void AnycubicTouchscreenClass::Setup()
 {
   HardwareSerial.begin(115200);
-  //ANYCUBIC_SERIAL_START();
-  ANYCUBIC_SERIAL_PROTOCOLPGM("J17"); // J17 Main board reset
-  ANYCUBIC_SERIAL_ENTER();
+  //HARDWARE_SERIAL_START();
+  HARDWARE_SERIAL_PROTOCOLPGM("J17"); // J17 Main board reset
+  HARDWARE_SERIAL_ENTER();
   delay(10);
-  ANYCUBIC_SERIAL_PROTOCOLPGM("J12"); // J12 Ready
-  ANYCUBIC_SERIAL_ENTER();
+  HARDWARE_SERIAL_PROTOCOLPGM("J12"); // J12 Ready
+  HARDWARE_SERIAL_ENTER();
 
 #if ENABLED(SDSUPPORT) && PIN_EXISTS(SD_DETECT)
   pinMode(SD_DETECT_PIN, INPUT);
@@ -110,8 +110,8 @@ void AnycubicTouchscreenClass::Setup()
   WRITE(19, HIGH);
   if (READ(19) == true)
   {
-    ANYCUBIC_SERIAL_PROTOCOLPGM("J15"); //J15 FILAMENT LACK
-    ANYCUBIC_SERIAL_ENTER();
+    HARDWARE_SERIAL_PROTOCOLPGM("J15"); //J15 FILAMENT LACK
+    HARDWARE_SERIAL_ENTER();
 #ifdef ANYCUBIC_TFT_DEBUG
     SERIAL_ECHOLNPGM("TFT Serial Debug: Filament runout... J15");
 #endif
@@ -141,8 +141,8 @@ void AnycubicTouchscreenClass::ReadOutageEEPromData()
 
 void AnycubicTouchscreenClass::KillTFT()
 {
-  ANYCUBIC_SERIAL_PROTOCOLPGM("J11"); // J11 Kill
-  ANYCUBIC_SERIAL_ENTER();
+  HARDWARE_SERIAL_PROTOCOLPGM("J11"); // J11 Kill
+  HARDWARE_SERIAL_ENTER();
 #ifdef ANYCUBIC_TFT_DEBUG
   SERIAL_ECHOLNPGM("TFT Serial Debug: Kill command... J11");
 #endif
@@ -278,8 +278,8 @@ void AnycubicTouchscreenClass::PausePrint()
 #endif
     IsParked = true;
     // show filament runout prompt on screen
-    ANYCUBIC_SERIAL_PROTOCOLPGM("J23");
-    ANYCUBIC_SERIAL_ENTER();
+    HARDWARE_SERIAL_PROTOCOLPGM("J23");
+    HARDWARE_SERIAL_ENTER();
 #ifdef ANYCUBIC_TFT_DEBUG
     SERIAL_ECHOLNPGM("DEBUG: J23 Show filament prompt");
 #endif
@@ -509,53 +509,53 @@ void AnycubicTouchscreenClass::Ls()
     switch (filenumber)
     {
     case 0: // Page 1
-      ANYCUBIC_SERIAL_PROTOCOLLNPGM("<Exit>");
-      ANYCUBIC_SERIAL_PROTOCOLLNPGM("<Exit>");
-      ANYCUBIC_SERIAL_PROTOCOLLNPGM("<Preheat Ultrabase>");
-      ANYCUBIC_SERIAL_PROTOCOLLNPGM("<Preheat Ultrabase>");
-      ANYCUBIC_SERIAL_PROTOCOLLNPGM("<FilamentChange Pause>");
-      ANYCUBIC_SERIAL_PROTOCOLLNPGM("<FilamentChange Pause>");
-      ANYCUBIC_SERIAL_PROTOCOLLNPGM("<FilamentChange Resume>");
-      ANYCUBIC_SERIAL_PROTOCOLLNPGM("<FilamentChange Resume>");
+      HARDWARE_SERIAL_PROTOCOLLNPGM("<Exit>");
+      HARDWARE_SERIAL_PROTOCOLLNPGM("<Exit>");
+      HARDWARE_SERIAL_PROTOCOLLNPGM("<Preheat Ultrabase>");
+      HARDWARE_SERIAL_PROTOCOLLNPGM("<Preheat Ultrabase>");
+      HARDWARE_SERIAL_PROTOCOLLNPGM("<FilamentChange Pause>");
+      HARDWARE_SERIAL_PROTOCOLLNPGM("<FilamentChange Pause>");
+      HARDWARE_SERIAL_PROTOCOLLNPGM("<FilamentChange Resume>");
+      HARDWARE_SERIAL_PROTOCOLLNPGM("<FilamentChange Resume>");
       break;
 
     case 4: // Page 2
-      ANYCUBIC_SERIAL_PROTOCOLLNPGM("<Start Mesh Leveling>");
-      ANYCUBIC_SERIAL_PROTOCOLLNPGM("<Start Mesh Leveling>");
-      ANYCUBIC_SERIAL_PROTOCOLLNPGM("<Next Mesh Point>");
-      ANYCUBIC_SERIAL_PROTOCOLLNPGM("<Next Mesh Point>");
-      ANYCUBIC_SERIAL_PROTOCOLLNPGM("<Z Up 0.1>");
-      ANYCUBIC_SERIAL_PROTOCOLLNPGM("<Z Up 0.1>");
-      ANYCUBIC_SERIAL_PROTOCOLLNPGM("<Z Down 0.1>");
-      ANYCUBIC_SERIAL_PROTOCOLLNPGM("<Z Down 0.1>");
+      HARDWARE_SERIAL_PROTOCOLLNPGM("<Start Mesh Leveling>");
+      HARDWARE_SERIAL_PROTOCOLLNPGM("<Start Mesh Leveling>");
+      HARDWARE_SERIAL_PROTOCOLLNPGM("<Next Mesh Point>");
+      HARDWARE_SERIAL_PROTOCOLLNPGM("<Next Mesh Point>");
+      HARDWARE_SERIAL_PROTOCOLLNPGM("<Z Up 0.1>");
+      HARDWARE_SERIAL_PROTOCOLLNPGM("<Z Up 0.1>");
+      HARDWARE_SERIAL_PROTOCOLLNPGM("<Z Down 0.1>");
+      HARDWARE_SERIAL_PROTOCOLLNPGM("<Z Down 0.1>");
       break;
 
     case 8: // Page 3
-      ANYCUBIC_SERIAL_PROTOCOLLNPGM("<PID Tune Hotend>");
-      ANYCUBIC_SERIAL_PROTOCOLLNPGM("<PID Tune Hotend>");
-      ANYCUBIC_SERIAL_PROTOCOLLNPGM("<PID Tune Ultrabase>");
-      ANYCUBIC_SERIAL_PROTOCOLLNPGM("<PID Tune Ultrabase>");
-      ANYCUBIC_SERIAL_PROTOCOLLNPGM("<Save EEPROM>");
-      ANYCUBIC_SERIAL_PROTOCOLLNPGM("<Save EEPROM>");
-      ANYCUBIC_SERIAL_PROTOCOLLNPGM("<Load FW Defaults>");
-      ANYCUBIC_SERIAL_PROTOCOLLNPGM("<Load FW Defaults>");
+      HARDWARE_SERIAL_PROTOCOLLNPGM("<PID Tune Hotend>");
+      HARDWARE_SERIAL_PROTOCOLLNPGM("<PID Tune Hotend>");
+      HARDWARE_SERIAL_PROTOCOLLNPGM("<PID Tune Ultrabase>");
+      HARDWARE_SERIAL_PROTOCOLLNPGM("<PID Tune Ultrabase>");
+      HARDWARE_SERIAL_PROTOCOLLNPGM("<Save EEPROM>");
+      HARDWARE_SERIAL_PROTOCOLLNPGM("<Save EEPROM>");
+      HARDWARE_SERIAL_PROTOCOLLNPGM("<Load FW Defaults>");
+      HARDWARE_SERIAL_PROTOCOLLNPGM("<Load FW Defaults>");
       break;
 /*
     case 12: // Fourth Page
-      ANYCUBIC_SERIAL_PROTOCOLLNPGM("<Z Up 0.1>");
-      ANYCUBIC_SERIAL_PROTOCOLLNPGM("<Z Up 0.1>");
-      ANYCUBIC_SERIAL_PROTOCOLLNPGM("<Z Down 0.1>");
-      ANYCUBIC_SERIAL_PROTOCOLLNPGM("<Z Down 0.1>");
-      ANYCUBIC_SERIAL_PROTOCOLLNPGM("<Z Up 0.02>");
-      ANYCUBIC_SERIAL_PROTOCOLLNPGM("<Z Up 0.02>");
-      ANYCUBIC_SERIAL_PROTOCOLLNPGM("<Z Down 0.02>");
-      ANYCUBIC_SERIAL_PROTOCOLLNPGM("<Z Down 0.02>");
+      HARDWARE_SERIAL_PROTOCOLLNPGM("<Z Up 0.1>");
+      HARDWARE_SERIAL_PROTOCOLLNPGM("<Z Up 0.1>");
+      HARDWARE_SERIAL_PROTOCOLLNPGM("<Z Down 0.1>");
+      HARDWARE_SERIAL_PROTOCOLLNPGM("<Z Down 0.1>");
+      HARDWARE_SERIAL_PROTOCOLLNPGM("<Z Up 0.02>");
+      HARDWARE_SERIAL_PROTOCOLLNPGM("<Z Up 0.02>");
+      HARDWARE_SERIAL_PROTOCOLLNPGM("<Z Down 0.02>");
+      HARDWARE_SERIAL_PROTOCOLLNPGM("<Z Down 0.02>");
       break;
 */
 
     default:
-      ANYCUBIC_SERIAL_PROTOCOLLNPGM("<Exit>");
-      ANYCUBIC_SERIAL_PROTOCOLLNPGM("<Exit>");
+      HARDWARE_SERIAL_PROTOCOLLNPGM("<Exit>");
+      HARDWARE_SERIAL_PROTOCOLLNPGM("<Exit>");
       break;
     }
   }
@@ -582,15 +582,15 @@ void AnycubicTouchscreenClass::Ls()
       {
         if (strcmp(card.getWorkDirName(), "/") == 0)
         {
-          ANYCUBIC_SERIAL_PROTOCOLLNPGM("<Special Menu>");
-          ANYCUBIC_SERIAL_PROTOCOLLNPGM("<Special Menu>");
+          HARDWARE_SERIAL_PROTOCOLLNPGM("<Special Menu>");
+          HARDWARE_SERIAL_PROTOCOLLNPGM("<Special Menu>");
           SERIAL_ECHO(cnt);
           SERIAL_ECHOLNPGM("<Special_Menu>");
         }
         else
         {
-          ANYCUBIC_SERIAL_PROTOCOLLNPGM("/..");
-          ANYCUBIC_SERIAL_PROTOCOLLNPGM("/..");
+          HARDWARE_SERIAL_PROTOCOLLNPGM("/..");
+          HARDWARE_SERIAL_PROTOCOLLNPGM("/..");
           SERIAL_ECHO(cnt);
           SERIAL_ECHOLNPGM("/..");
         }
@@ -617,18 +617,18 @@ void AnycubicTouchscreenClass::Ls()
 
         if (card.flag.filenameIsDir)
         {
-          ANYCUBIC_SERIAL_PROTOCOLPGM("/");
-          ANYCUBIC_SERIAL_PROTOCOLLN(card.filename);
-          ANYCUBIC_SERIAL_PROTOCOLPGM("/");
-          ANYCUBIC_SERIAL_PROTOCOLLN(buffer);
+          HARDWARE_SERIAL_PROTOCOLPGM("/");
+          HARDWARE_SERIAL_PROTOCOLLN(card.filename);
+          HARDWARE_SERIAL_PROTOCOLPGM("/");
+          HARDWARE_SERIAL_PROTOCOLLN(buffer);
           SERIAL_ECHO(cnt);
           SERIAL_ECHOPGM("/");
           SERIAL_ECHOLN(buffer);
         }
         else
         {
-          ANYCUBIC_SERIAL_PROTOCOLLN(card.filename);
-          ANYCUBIC_SERIAL_PROTOCOLLN(buffer);
+          HARDWARE_SERIAL_PROTOCOLLN(card.filename);
+          HARDWARE_SERIAL_PROTOCOLLN(buffer);
           SERIAL_ECHO(cnt);
           SERIAL_ECHOLN(buffer);
         }
@@ -638,8 +638,8 @@ void AnycubicTouchscreenClass::Ls()
 #endif
   else
   {
-    ANYCUBIC_SERIAL_PROTOCOLLNPGM("<Special_Menu>");
-    ANYCUBIC_SERIAL_PROTOCOLLNPGM("<Special_Menu>");
+    HARDWARE_SERIAL_PROTOCOLLNPGM("<Special_Menu>");
+    HARDWARE_SERIAL_PROTOCOLLNPGM("<Special_Menu>");
   }
 }
 
@@ -653,16 +653,16 @@ void AnycubicTouchscreenClass::CheckSDCardChange()
     if (LastSDstatus)
     {
       card.mount();
-      ANYCUBIC_SERIAL_PROTOCOLPGM("J00"); // J00 SD Card inserted
-      ANYCUBIC_SERIAL_ENTER();
+      HARDWARE_SERIAL_PROTOCOLPGM("J00"); // J00 SD Card inserted
+      HARDWARE_SERIAL_ENTER();
 #ifdef ANYCUBIC_TFT_DEBUG
       SERIAL_ECHOLNPGM("TFT Serial Debug: SD card inserted... J00");
 #endif
     }
     else
     {
-      ANYCUBIC_SERIAL_PROTOCOLPGM("J01"); // J01 SD Card removed
-      ANYCUBIC_SERIAL_ENTER();
+      HARDWARE_SERIAL_PROTOCOLPGM("J01"); // J01 SD Card removed
+      HARDWARE_SERIAL_ENTER();
 #ifdef ANYCUBIC_TFT_DEBUG
       SERIAL_ECHOLNPGM("TFT Serial Debug: SD card removed... J01");
 #endif
@@ -678,8 +678,8 @@ void AnycubicTouchscreenClass::CheckHeaterError()
     if (HeaterCheckCount > 60000)
     {
       HeaterCheckCount = 0;
-      ANYCUBIC_SERIAL_PROTOCOLPGM("J10"); // J10 Hotend temperature abnormal
-      ANYCUBIC_SERIAL_ENTER();
+      HARDWARE_SERIAL_PROTOCOLPGM("J10"); // J10 Hotend temperature abnormal
+      HARDWARE_SERIAL_ENTER();
 #ifdef ANYCUBIC_TFT_DEBUG
       SERIAL_ECHOLNPGM("TFT Serial Debug: Hotend temperature abnormal... J20");
 #endif
@@ -724,8 +724,8 @@ void AnycubicTouchscreenClass::StateHandler()
       {
         // File is closed --> stopped
         TFTstate = ANYCUBIC_TFT_STATE_IDLE;
-        ANYCUBIC_SERIAL_PROTOCOLPGM("J14"); // J14 print done
-        ANYCUBIC_SERIAL_ENTER();
+        HARDWARE_SERIAL_PROTOCOLPGM("J14"); // J14 print done
+        HARDWARE_SERIAL_ENTER();
 #ifdef ANYCUBIC_TFT_DEBUG
         SERIAL_ECHOLNPGM("TFT Serial Debug: SD print done... J14");
 #endif
@@ -750,8 +750,8 @@ void AnycubicTouchscreenClass::StateHandler()
 #endif
     break;
   case ANYCUBIC_TFT_STATE_SDPAUSE_REQ:
-    ANYCUBIC_SERIAL_PROTOCOLPGM("J18");
-    ANYCUBIC_SERIAL_ENTER();
+    HARDWARE_SERIAL_PROTOCOLPGM("J18");
+    HARDWARE_SERIAL_ENTER();
 #ifdef SDSUPPORT
     if ((!card.isPrinting()) && (!planner.movesplanned()))
     {
@@ -791,8 +791,8 @@ void AnycubicTouchscreenClass::StateHandler()
     break;
   case ANYCUBIC_TFT_STATE_SDSTOP_REQ:
 #ifdef SDSUPPORT
-    ANYCUBIC_SERIAL_PROTOCOLPGM("J16"); // J16 stop print
-    ANYCUBIC_SERIAL_ENTER();
+    HARDWARE_SERIAL_PROTOCOLPGM("J16"); // J16 stop print
+    HARDWARE_SERIAL_ENTER();
     if ((!card.isPrinting()) && (!planner.movesplanned()))
     {
       // enter idle display state
@@ -864,8 +864,8 @@ void AnycubicTouchscreenClass::FilamentRunout()
         }
         else if (!card.isPrinting())
         {
-          ANYCUBIC_SERIAL_PROTOCOLPGM("J15"); //J15 FILAMENT LACK
-          ANYCUBIC_SERIAL_ENTER();
+          HARDWARE_SERIAL_PROTOCOLPGM("J15"); //J15 FILAMENT LACK
+          HARDWARE_SERIAL_ENTER();
 #ifdef ANYCUBIC_TFT_DEBUG
           SERIAL_ECHOLNPGM("TFT Serial Debug: Filament runout... J15");
 #endif
@@ -919,27 +919,27 @@ void AnycubicTouchscreenClass::GetCommandFromTFT()
         {
 
         case 0: //A0 GET HOTEND TEMP
-          ANYCUBIC_SERIAL_PROTOCOLPGM("A0V ");
-          ANYCUBIC_SERIAL_PROTOCOL(itostr3(int(thermalManager.degHotend(0) + 0.5)));
-          ANYCUBIC_SERIAL_ENTER();
+          HARDWARE_SERIAL_PROTOCOLPGM("A0V ");
+          HARDWARE_SERIAL_PROTOCOL(itostr3(int(thermalManager.degHotend(0) + 0.5)));
+          HARDWARE_SERIAL_ENTER();
           break;
 
         case 1: //A1  GET HOTEND TARGET TEMP
-          ANYCUBIC_SERIAL_PROTOCOLPGM("A1V ");
-          ANYCUBIC_SERIAL_PROTOCOL(itostr3(int(thermalManager.degTargetHotend(0) + 0.5)));
-          ANYCUBIC_SERIAL_ENTER();
+          HARDWARE_SERIAL_PROTOCOLPGM("A1V ");
+          HARDWARE_SERIAL_PROTOCOL(itostr3(int(thermalManager.degTargetHotend(0) + 0.5)));
+          HARDWARE_SERIAL_ENTER();
           break;
 
         case 2: //A2 GET HOTBED TEMP
-          ANYCUBIC_SERIAL_PROTOCOLPGM("A2V ");
-          ANYCUBIC_SERIAL_PROTOCOL(itostr3(int(thermalManager.degBed() + 0.5)));
-          ANYCUBIC_SERIAL_ENTER();
+          HARDWARE_SERIAL_PROTOCOLPGM("A2V ");
+          HARDWARE_SERIAL_PROTOCOL(itostr3(int(thermalManager.degBed() + 0.5)));
+          HARDWARE_SERIAL_ENTER();
           break;
 
         case 3: //A3 GET HOTBED TARGET TEMP
-          ANYCUBIC_SERIAL_PROTOCOLPGM("A3V ");
-          ANYCUBIC_SERIAL_PROTOCOL(itostr3(int(thermalManager.degTargetBed() + 0.5)));
-          ANYCUBIC_SERIAL_ENTER();
+          HARDWARE_SERIAL_PROTOCOLPGM("A3V ");
+          HARDWARE_SERIAL_PROTOCOL(itostr3(int(thermalManager.degTargetBed() + 0.5)));
+          HARDWARE_SERIAL_ENTER();
           break;
 
         case 4: //A4 GET FAN SPEED
@@ -949,64 +949,64 @@ void AnycubicTouchscreenClass::GetCommandFromTFT()
           temp = ((thermalManager.fan_speed[0] * 100) / 255);
           temp = constrain(temp, 0, 100);
 
-          ANYCUBIC_SERIAL_PROTOCOLPGM("A4V ");
-          ANYCUBIC_SERIAL_PROTOCOL(temp);
-          ANYCUBIC_SERIAL_ENTER();
+          HARDWARE_SERIAL_PROTOCOLPGM("A4V ");
+          HARDWARE_SERIAL_PROTOCOL(temp);
+          HARDWARE_SERIAL_ENTER();
         }
         break;
         case 5: // A5 GET CURRENT COORDINATE
-          ANYCUBIC_SERIAL_PROTOCOLPGM("A5V");
-          ANYCUBIC_SERIAL_SPACE();
-          ANYCUBIC_SERIAL_PROTOCOLPGM("X: ");
-          ANYCUBIC_SERIAL_PROTOCOL(current_position[X_AXIS]);
-          ANYCUBIC_SERIAL_SPACE();
-          ANYCUBIC_SERIAL_PROTOCOLPGM("Y: ");
-          ANYCUBIC_SERIAL_PROTOCOL(current_position[Y_AXIS]);
-          ANYCUBIC_SERIAL_SPACE();
-          ANYCUBIC_SERIAL_PROTOCOLPGM("Z: ");
-          ANYCUBIC_SERIAL_PROTOCOL(current_position[Z_AXIS]);
-          ANYCUBIC_SERIAL_SPACE();
-          ANYCUBIC_SERIAL_ENTER();
+          HARDWARE_SERIAL_PROTOCOLPGM("A5V");
+          HARDWARE_SERIAL_SPACE();
+          HARDWARE_SERIAL_PROTOCOLPGM("X: ");
+          HARDWARE_SERIAL_PROTOCOL(current_position[X_AXIS]);
+          HARDWARE_SERIAL_SPACE();
+          HARDWARE_SERIAL_PROTOCOLPGM("Y: ");
+          HARDWARE_SERIAL_PROTOCOL(current_position[Y_AXIS]);
+          HARDWARE_SERIAL_SPACE();
+          HARDWARE_SERIAL_PROTOCOLPGM("Z: ");
+          HARDWARE_SERIAL_PROTOCOL(current_position[Z_AXIS]);
+          HARDWARE_SERIAL_SPACE();
+          HARDWARE_SERIAL_ENTER();
           break;
         case 6: //A6 GET SD CARD PRINTING STATUS
 #ifdef SDSUPPORT
           if (card.isPrinting())
           {
-            ANYCUBIC_SERIAL_PROTOCOLPGM("A6V ");
+            HARDWARE_SERIAL_PROTOCOLPGM("A6V ");
             if (card.isMounted())
             {
-              ANYCUBIC_SERIAL_PROTOCOL(itostr3(card.percentDone()));
+              HARDWARE_SERIAL_PROTOCOL(itostr3(card.percentDone()));
             }
             else
             {
-              ANYCUBIC_SERIAL_PROTOCOLPGM("J02");
+              HARDWARE_SERIAL_PROTOCOLPGM("J02");
             }
           }
           else
-            ANYCUBIC_SERIAL_PROTOCOLPGM("A6V ---");
-          ANYCUBIC_SERIAL_ENTER();
+            HARDWARE_SERIAL_PROTOCOLPGM("A6V ---");
+          HARDWARE_SERIAL_ENTER();
 #endif
           break;
         case 7: //A7 GET PRINTING TIME
         {
-          ANYCUBIC_SERIAL_PROTOCOLPGM("A7V ");
+          HARDWARE_SERIAL_PROTOCOLPGM("A7V ");
           if (starttime != 0) // print time
           {
             uint16_t time = millis() / 60000 - starttime / 60000;
-            ANYCUBIC_SERIAL_PROTOCOL(itostr2(time / 60));
-            ANYCUBIC_SERIAL_SPACE();
-            ANYCUBIC_SERIAL_PROTOCOLPGM("H");
-            ANYCUBIC_SERIAL_SPACE();
-            ANYCUBIC_SERIAL_PROTOCOL(itostr2(time % 60));
-            ANYCUBIC_SERIAL_SPACE();
-            ANYCUBIC_SERIAL_PROTOCOLPGM("M");
+            HARDWARE_SERIAL_PROTOCOL(itostr2(time / 60));
+            HARDWARE_SERIAL_SPACE();
+            HARDWARE_SERIAL_PROTOCOLPGM("H");
+            HARDWARE_SERIAL_SPACE();
+            HARDWARE_SERIAL_PROTOCOL(itostr2(time % 60));
+            HARDWARE_SERIAL_SPACE();
+            HARDWARE_SERIAL_PROTOCOLPGM("M");
           }
           else
           {
-            ANYCUBIC_SERIAL_SPACE();
-            ANYCUBIC_SERIAL_PROTOCOLPGM("999:999");
+            HARDWARE_SERIAL_SPACE();
+            HARDWARE_SERIAL_PROTOCOLPGM("999:999");
           }
-          ANYCUBIC_SERIAL_ENTER();
+          HARDWARE_SERIAL_ENTER();
 
           break;
         }
@@ -1015,19 +1015,19 @@ void AnycubicTouchscreenClass::GetCommandFromTFT()
           SelectedDirectory[0] = 0;
           if (!IS_SD_INSERTED())
           {
-            ANYCUBIC_SERIAL_PROTOCOLPGM("J02");
-            ANYCUBIC_SERIAL_ENTER();
+            HARDWARE_SERIAL_PROTOCOLPGM("J02");
+            HARDWARE_SERIAL_ENTER();
           }
           else
           {
             if (CodeSeen('S'))
               filenumber = CodeValue();
 
-            ANYCUBIC_SERIAL_PROTOCOLPGM("FN "); // Filelist start
-            ANYCUBIC_SERIAL_ENTER();
+            HARDWARE_SERIAL_PROTOCOLPGM("FN "); // Filelist start
+            HARDWARE_SERIAL_ENTER();
             Ls();
-            ANYCUBIC_SERIAL_PROTOCOLPGM("END"); // Filelist stop
-            ANYCUBIC_SERIAL_ENTER();
+            HARDWARE_SERIAL_PROTOCOLPGM("END"); // Filelist stop
+            HARDWARE_SERIAL_ENTER();
           }
 #endif
           break;
@@ -1053,8 +1053,8 @@ void AnycubicTouchscreenClass::GetCommandFromTFT()
           if ((TFTstate == ANYCUBIC_TFT_STATE_SDPAUSE) || (TFTstate == ANYCUBIC_TFT_STATE_SDOUTAGE))
           {
             StartPrint();
-            ANYCUBIC_SERIAL_PROTOCOLPGM("J04"); // J04 printing form sd card now
-            ANYCUBIC_SERIAL_ENTER();
+            HARDWARE_SERIAL_PROTOCOLPGM("J04"); // J04 printing form sd card now
+            HARDWARE_SERIAL_ENTER();
 #ifdef ANYCUBIC_TFT_DEBUG
             SERIAL_ECHOLNPGM("TFT Serial Debug: SD print started... J04");
 #endif
@@ -1073,8 +1073,8 @@ void AnycubicTouchscreenClass::GetCommandFromTFT()
           }
           else
           {
-            ANYCUBIC_SERIAL_PROTOCOLPGM("J16");
-            ANYCUBIC_SERIAL_ENTER();
+            HARDWARE_SERIAL_PROTOCOLPGM("J16");
+            HARDWARE_SERIAL_ENTER();
             TFTstate = ANYCUBIC_TFT_STATE_IDLE;
             ai3m_pause_state = 0;
 #ifdef ANYCUBIC_TFT_DEBUG
@@ -1109,22 +1109,22 @@ void AnycubicTouchscreenClass::GetCommandFromTFT()
               card.openFileRead(TFTstrchr_pointer + 4);
               if (card.isFileOpen())
               {
-                ANYCUBIC_SERIAL_PROTOCOLPGM("J20"); // J20 Open successful
-                ANYCUBIC_SERIAL_ENTER();
+                HARDWARE_SERIAL_PROTOCOLPGM("J20"); // J20 Open successful
+                HARDWARE_SERIAL_ENTER();
 #ifdef ANYCUBIC_TFT_DEBUG
                 SERIAL_ECHOLNPGM("TFT Serial Debug: File open successful... J20");
 #endif
               }
               else
               {
-                ANYCUBIC_SERIAL_PROTOCOLPGM("J21"); // J21 Open failed
-                ANYCUBIC_SERIAL_ENTER();
+                HARDWARE_SERIAL_PROTOCOLPGM("J21"); // J21 Open failed
+                HARDWARE_SERIAL_ENTER();
 #ifdef ANYCUBIC_TFT_DEBUG
                 SERIAL_ECHOLNPGM("TFT Serial Debug: File open failed... J21");
 #endif
               }
             }
-            ANYCUBIC_SERIAL_ENTER();
+            HARDWARE_SERIAL_ENTER();
           }
 #endif
           break;
@@ -1139,8 +1139,8 @@ void AnycubicTouchscreenClass::GetCommandFromTFT()
 #endif
             StartPrint();
             IsParked = false;
-            ANYCUBIC_SERIAL_PROTOCOLPGM("J04"); // J04 Starting Print
-            ANYCUBIC_SERIAL_ENTER();
+            HARDWARE_SERIAL_PROTOCOLPGM("J04"); // J04 Starting Print
+            HARDWARE_SERIAL_ENTER();
 #ifdef ANYCUBIC_TFT_DEBUG
             SERIAL_ECHOLNPGM("TFT Serial Debug: Starting SD Print... J04");
 #endif
@@ -1155,9 +1155,9 @@ void AnycubicTouchscreenClass::GetCommandFromTFT()
           //      ResumingFlag=1;
           //      card.startFileprint();
           //      starttime=millis();
-          //      ANYCUBIC_SERIAL_SUCC_START;
+          //      HARDWARE_SERIAL_SUCC_START;
           //  }
-          //ANYCUBIC_SERIAL_ENTER();
+          //HARDWARE_SERIAL_ENTER();
           break;
         case 16: // A16 set hotend temp
         {
@@ -1175,7 +1175,7 @@ void AnycubicTouchscreenClass::GetCommandFromTFT()
             thermalManager.setTargetHotend(tempvalue, 0);
           }
         }
-        //   ANYCUBIC_SERIAL_ENTER();
+        //   HARDWARE_SERIAL_ENTER();
         break;
         case 17: // A17 set heated bed temp
         {
@@ -1186,7 +1186,7 @@ void AnycubicTouchscreenClass::GetCommandFromTFT()
             thermalManager.setTargetBed(tempbed);
           }
         }
-        //  ANYCUBIC_SERIAL_ENTER();
+        //  HARDWARE_SERIAL_ENTER();
         break;
         case 18: // A18 set fan speed
           unsigned int temp;
@@ -1198,7 +1198,7 @@ void AnycubicTouchscreenClass::GetCommandFromTFT()
           }
           else
             thermalManager.set_fan_speed(0, 255);
-          ANYCUBIC_SERIAL_ENTER();
+          HARDWARE_SERIAL_ENTER();
           break;
         case 19: // A19 stop stepper drivers
           if ((!planner.movesplanned())
@@ -1210,7 +1210,7 @@ void AnycubicTouchscreenClass::GetCommandFromTFT()
             quickstop_stepper();
             disable_all_steppers();
           }
-          ANYCUBIC_SERIAL_ENTER();
+          HARDWARE_SERIAL_ENTER();
           break;
         case 20: // A20 read printing speed
         {
@@ -1220,9 +1220,9 @@ void AnycubicTouchscreenClass::GetCommandFromTFT()
           }
           else
           {
-            ANYCUBIC_SERIAL_PROTOCOLPGM("A20V ");
-            ANYCUBIC_SERIAL_PROTOCOL(feedrate_percentage);
-            ANYCUBIC_SERIAL_ENTER();
+            HARDWARE_SERIAL_PROTOCOLPGM("A20V ");
+            HARDWARE_SERIAL_PROTOCOL(feedrate_percentage);
+            HARDWARE_SERIAL_ENTER();
           }
         }
         break;
@@ -1323,7 +1323,7 @@ void AnycubicTouchscreenClass::GetCommandFromTFT()
             }
             queue.enqueue_now_P(PSTR("G90")); // absolute coordinates
           }
-          ANYCUBIC_SERIAL_ENTER();
+          HARDWARE_SERIAL_ENTER();
           break;
         case 23: // A23 preheat pla
           if ((!planner.movesplanned()) && (TFTstate != ANYCUBIC_TFT_STATE_SDPAUSE) && (TFTstate != ANYCUBIC_TFT_STATE_SDOUTAGE))
@@ -1332,8 +1332,8 @@ void AnycubicTouchscreenClass::GetCommandFromTFT()
               queue.enqueue_now_P(PSTR("G1 Z10")); // RAISE Z AXIS
             thermalManager.setTargetBed(50);
             thermalManager.setTargetHotend(200, 0);
-            ANYCUBIC_SERIAL_SUCC_START;
-            ANYCUBIC_SERIAL_ENTER();
+            HARDWARE_SERIAL_SUCC_START;
+            HARDWARE_SERIAL_ENTER();
           }
           break;
         case 24: // A24 preheat abs
@@ -1344,8 +1344,8 @@ void AnycubicTouchscreenClass::GetCommandFromTFT()
             thermalManager.setTargetBed(80);
             thermalManager.setTargetHotend(240, 0);
 
-            ANYCUBIC_SERIAL_SUCC_START;
-            ANYCUBIC_SERIAL_ENTER();
+            HARDWARE_SERIAL_SUCC_START;
+            HARDWARE_SERIAL_ENTER();
           }
           break;
         case 25: // A25 cool down
@@ -1353,8 +1353,8 @@ void AnycubicTouchscreenClass::GetCommandFromTFT()
           {
             thermalManager.setTargetHotend(0, 0);
             thermalManager.setTargetBed(0);
-            ANYCUBIC_SERIAL_PROTOCOLPGM("J12"); // J12 cool down
-            ANYCUBIC_SERIAL_ENTER();
+            HARDWARE_SERIAL_PROTOCOLPGM("J12"); // J12 cool down
+            HARDWARE_SERIAL_ENTER();
 #ifdef ANYCUBIC_TFT_DEBUG
             SERIAL_ECHOLNPGM("TFT Serial Debug: Cooling down... J12");
 #endif
@@ -1389,8 +1389,8 @@ void AnycubicTouchscreenClass::GetCommandFromTFT()
 
           if (!IS_SD_INSERTED())
           {
-            ANYCUBIC_SERIAL_PROTOCOLPGM("J02"); // J02 SD Card initilized
-            ANYCUBIC_SERIAL_ENTER();
+            HARDWARE_SERIAL_PROTOCOLPGM("J02"); // J02 SD Card initilized
+            HARDWARE_SERIAL_ENTER();
 #ifdef ANYCUBIC_TFT_DEBUG
             SERIAL_ECHOLNPGM("TFT Serial Debug: SD card initialized... J02");
 #endif
@@ -1408,13 +1408,13 @@ void AnycubicTouchscreenClass::GetCommandFromTFT()
           else if (CodeSeen('C'))
             ;
         }
-          ANYCUBIC_SERIAL_ENTER();
+          HARDWARE_SERIAL_ENTER();
           break;
         case 33: // A33 get version info
         {
-          ANYCUBIC_SERIAL_PROTOCOLPGM("J33 ");
-          ANYCUBIC_SERIAL_PROTOCOLPGM(MSG_MY_VERSION);
-          ANYCUBIC_SERIAL_ENTER();
+          HARDWARE_SERIAL_PROTOCOLPGM("J33 ");
+          HARDWARE_SERIAL_PROTOCOLPGM(MSG_MY_VERSION);
+          HARDWARE_SERIAL_ENTER();
         }
         break;
         default:
@@ -1449,8 +1449,8 @@ void AnycubicTouchscreenClass::CommandScan()
 
 void AnycubicTouchscreenClass::HeatingStart()
 {
-  ANYCUBIC_SERIAL_PROTOCOLPGM("J06"); // J07 hotend heating start
-  ANYCUBIC_SERIAL_ENTER();
+  HARDWARE_SERIAL_PROTOCOLPGM("J06"); // J07 hotend heating start
+  HARDWARE_SERIAL_ENTER();
 #ifdef ANYCUBIC_TFT_DEBUG
   SERIAL_ECHOLNPGM("TFT Serial Debug: Nozzle is heating... J06");
 #endif
@@ -1458,16 +1458,16 @@ void AnycubicTouchscreenClass::HeatingStart()
 
 void AnycubicTouchscreenClass::HeatingDone()
 {
-  ANYCUBIC_SERIAL_PROTOCOLPGM("J07"); // J07 hotend heating done
-  ANYCUBIC_SERIAL_ENTER();
+  HARDWARE_SERIAL_PROTOCOLPGM("J07"); // J07 hotend heating done
+  HARDWARE_SERIAL_ENTER();
 #ifdef ANYCUBIC_TFT_DEBUG
   SERIAL_ECHOLNPGM("TFT Serial Debug: Nozzle heating is done... J07");
 #endif
 
   if (TFTstate == ANYCUBIC_TFT_STATE_SDPRINT)
   {
-    ANYCUBIC_SERIAL_PROTOCOLPGM("J04"); // J04 printing from sd card
-    ANYCUBIC_SERIAL_ENTER();
+    HARDWARE_SERIAL_PROTOCOLPGM("J04"); // J04 printing from sd card
+    HARDWARE_SERIAL_ENTER();
 #ifdef ANYCUBIC_TFT_DEBUG
     SERIAL_ECHOLNPGM("TFT Serial Debug: Continuing SD print after heating... J04");
 #endif
@@ -1476,8 +1476,8 @@ void AnycubicTouchscreenClass::HeatingDone()
 
 void AnycubicTouchscreenClass::BedHeatingStart()
 {
-  ANYCUBIC_SERIAL_PROTOCOLPGM("J08"); // J08 hotbed heating start
-  ANYCUBIC_SERIAL_ENTER();
+  HARDWARE_SERIAL_PROTOCOLPGM("J08"); // J08 hotbed heating start
+  HARDWARE_SERIAL_ENTER();
 #ifdef ANYCUBIC_TFT_DEBUG
   SERIAL_ECHOLNPGM("TFT Serial Debug: Bed is heating... J08");
 #endif
@@ -1485,8 +1485,8 @@ void AnycubicTouchscreenClass::BedHeatingStart()
 
 void AnycubicTouchscreenClass::BedHeatingDone()
 {
-  ANYCUBIC_SERIAL_PROTOCOLPGM("J09"); // J09 hotbed heating done
-  ANYCUBIC_SERIAL_ENTER();
+  HARDWARE_SERIAL_PROTOCOLPGM("J09"); // J09 hotbed heating done
+  HARDWARE_SERIAL_ENTER();
 #ifdef ANYCUBIC_TFT_DEBUG
   SERIAL_ECHOLNPGM("TFT Serial Debug: Bed heating is done... J09");
 #endif

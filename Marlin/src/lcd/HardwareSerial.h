@@ -104,32 +104,32 @@ extern HardwareSerialClass HardwareSerial;
 
 extern void serialEventRun(void) __attribute__((weak));
 
-#define ANYCUBIC_SERIAL_PROTOCOL(x) (HardwareSerial.print(x))
-#define ANYCUBIC_SERIAL_PROTOCOL_F(x, y) (HardwareSerial.print(x, y))
-#define ANYCUBIC_SERIAL_PROTOCOLPGM(x) (HardwareSerialprintPGM(PSTR(x)))
-#define ANYCUBIC_SERIAL_(x) (HardwareSerial.print(x), HardwareSerial.write('\n'))
-#define ANYCUBIC_SERIAL_PROTOCOLLN(x) (HardwareSerial.print(x), HardwareSerial.write('\r'), HardwareSerial.write('\n'))
-#define ANYCUBIC_SERIAL_PROTOCOLLNPGM(x) (HardwareSerialprintPGM(PSTR(x)), HardwareSerial.write('\r'), HardwareSerial.write('\n'))
+#define HARDWARE_SERIAL_PROTOCOL(x) (HardwareSerial.print(x))
+#define HARDWARE_SERIAL_PROTOCOL_F(x, y) (HardwareSerial.print(x, y))
+#define HARDWARE_SERIAL_PROTOCOLPGM(x) (HardwareSerialprintPGM(PSTR(x)))
+#define HARDWARE_SERIAL_(x) (HardwareSerial.print(x), HardwareSerial.write('\n'))
+#define HARDWARE_SERIAL_PROTOCOLLN(x) (HardwareSerial.print(x), HardwareSerial.write('\r'), HardwareSerial.write('\n'))
+#define HARDWARE_SERIAL_PROTOCOLLNPGM(x) (HardwareSerialprintPGM(PSTR(x)), HardwareSerial.write('\r'), HardwareSerial.write('\n'))
 
-#define ANYCUBIC_SERIAL_START() (HardwareSerial.write('\r'), HardwareSerial.write('\n'))
-#define ANYCUBIC_SERIAL_CMD_SEND(x) (HardwareSerialprintPGM(PSTR(x)), HardwareSerial.write('\r'), HardwareSerial.write('\n'))
-#define ANYCUBIC_SERIAL_ENTER() (HardwareSerial.write('\r'), HardwareSerial.write('\n'))
-#define ANYCUBIC_SERIAL_SPACE() (HardwareSerial.write(' '))
+#define HARDWARE_SERIAL_START() (HardwareSerial.write('\r'), HardwareSerial.write('\n'))
+#define HARDWARE_SERIAL_CMD_SEND(x) (HardwareSerialprintPGM(PSTR(x)), HardwareSerial.write('\r'), HardwareSerial.write('\n'))
+#define HARDWARE_SERIAL_ENTER() (HardwareSerial.write('\r'), HardwareSerial.write('\n'))
+#define HARDWARE_SERIAL_SPACE() (HardwareSerial.write(' '))
 
 const char newErr[] PROGMEM = "ERR ";
 const char newSucc[] PROGMEM = "OK";
 
-#define ANYCUBIC_SERIAL_ERROR_START (HardwareSerialprintPGM(newErr))
-#define ANYCUBIC_SERIAL_ERROR(x) ANYCUBIC_SERIAL_PROTOCOL(x)
-#define ANYCUBIC_SERIAL_ERRORPGM(x) ANYCUBIC_SERIAL_PROTOCOLPGM(x)
-#define ANYCUBIC_SERIAL_ERRORLN(x) ANYCUBIC_SERIAL_PROTOCOLLN(x)
-#define ANYCUBIC_SERIAL_ERRORLNPGM(x) ANYCUBIC_SERIAL_PROTOCOLLNPGM(x)
+#define HARDWARE_SERIAL_ERROR_START (HardwareSerialprintPGM(newErr))
+#define HARDWARE_SERIAL_ERROR(x) HARDWARE_SERIAL_PROTOCOL(x)
+#define HARDWARE_SERIAL_ERRORPGM(x) HARDWARE_SERIAL_PROTOCOLPGM(x)
+#define HARDWARE_SERIAL_ERRORLN(x) HARDWARE_SERIAL_PROTOCOLLN(x)
+#define HARDWARE_SERIAL_ERRORLNPGM(x) HARDWARE_SERIAL_PROTOCOLLNPGM(x)
 
-#define ANYCUBIC_SERIAL_ECHOLN(x) ANYCUBIC_SERIAL_PROTOCOLLN(x)
-#define ANYCUBIC_SERIAL_SUCC_START (HardwareSerialprintPGM(newSucc))
-#define ANYCUBIC_SERIAL_ECHOPAIR(name, value) (serial_echopair_P(PSTR(name), (value)))
-#define ANYCUBIC_SERIAL_ECHOPGM(x) ANYCUBIC_SERIAL_PROTOCOLPGM(x)
-#define ANYCUBIC_SERIAL_ECHO(x) ANYCUBIC_SERIAL_PROTOCOL(x)
+#define HARDWARE_SERIAL_ECHOLN(x) HARDWARE_SERIAL_PROTOCOLLN(x)
+#define HARDWARE_SERIAL_SUCC_START (HardwareSerialprintPGM(newSucc))
+#define HARDWARE_SERIAL_ECHOPAIR(name, value) (serial_echopair_P(PSTR(name), (value)))
+#define HARDWARE_SERIAL_ECHOPGM(x) HARDWARE_SERIAL_PROTOCOLPGM(x)
+#define HARDWARE_SERIAL_ECHO(x) HARDWARE_SERIAL_PROTOCOL(x)
 
 FORCE_INLINE void HardwareSerialprintPGM(const char *str)
 {
