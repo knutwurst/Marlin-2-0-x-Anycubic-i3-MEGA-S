@@ -32,6 +32,8 @@
 #include "planner.h"
 #include "../core/language.h"
 #include "../HAL/shared/Delay.h"
+#include "../libs/buzzer.h"
+
 #if ENABLED(EXTENSIBLE_UI)
   #include "../lcd/extui/ui_api.h"
 #endif
@@ -579,6 +581,8 @@ volatile bool Temperature::raw_temps_ready = false;
       }
 
       if (cycles > ncycles && cycles > 2) {
+        BUZZ(105, 1108);
+        BUZZ(210, 1661);
         SERIAL_ECHOLNPGM(STR_PID_AUTOTUNE_FINISHED);
 
         #if HAS_PID_FOR_BOTH
