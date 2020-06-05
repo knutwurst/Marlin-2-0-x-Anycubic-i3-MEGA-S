@@ -294,14 +294,15 @@ void AnycubicTouchscreenClass::StopPrint()
   wait_for_user = false;
   wait_for_heatup = false;
   card.endFilePrint();
-  queue.clear();
-#ifdef ANYCUBIC_TFT_DEBUG
+  card.closefile();
+  //queue.clear();
+#ifdef ANYCUBIC_TFT_DEBUGANYCUBIC_TFT_STATE_SDSTOP_REQ
   SERIAL_ECHOLNPGM("DEBUG: Stopped and cleared");
 #endif
-  print_job_timer.stop();
+  //print_job_timer.stop();
   thermalManager.disable_all_heaters();
   // we are not parked yet, do it in the display state routine
-  IsParked = false;
+  //IsParked = false;
   // turn off fan, cancel any heatups and set display state
   ai3m_pause_state = 0;
 #ifdef ANYCUBIC_TFT_DEBUG
