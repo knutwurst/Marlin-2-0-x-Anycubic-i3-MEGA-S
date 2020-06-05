@@ -15,6 +15,15 @@ Diese Firmwarekonfiguration aktiviert viele neue erweitere Funktionen der Marlin
  * Volle Anycubic Touchscreen Unterstützung
  * Pause & Filamentwechselfunktion
 
+Besser im Vergleich zu anderen Firmwares:
+ * Aufgeräumtes Special-Menü
+ * Drucker hängt sich nicht auf, wenn man Dateien mit Sonderzeichen (oder Chinesisch) auf der SD Karte hat
+ * Kein dummes "wackeln" der Düse nach Stoppen eines Druckvorgangs
+ * Kein Abstürzen bei zu vielen Dateien auf der SD Karte
+ * Kein Abstürzen bei SD-Karten über 16 GB
+ * Fehler "Melodie" bei Thermal Runaway Protection
+ * Kein Aufhängen, wenn SD Karte + USB gleichzeitig genutzt wird
+
 Bevor du irgendwas machst, nachdem du die Firmware geupdated hast, gehe zu `Special Menu > Load FW Defaults` um alte Einstellungen zu löschen!
 
 ---
