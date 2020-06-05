@@ -1,7 +1,8 @@
 # Knutwurst's i3 MEGA S Firmware (based on Marlin 2.0.5.3)
-# This is still WIP and not intended for regular use!
 
-# Readme - German (english below)
+## Readme - German (english below)
+
+---
 
 Diese Firmwarekonfiguration aktiviert viele neue erweitere Funktionen der Marlin Firmware:
 
@@ -15,7 +16,48 @@ Diese Firmwarekonfiguration aktiviert viele neue erweitere Funktionen der Marlin
 
 Bevor du irgendwas machst, nachdem du die Firmware geupdated hast, gehe zu `Special Menu > Load FW Defaults` um alte Einstellungen zu löschen!
 
-# Download
+---
+
+### FAQ:
+
+>Knutwurst, wieso machst du auch noch so eine Firmware? Es gibt doch schon so viele?
+
+Weil ich bisher keine gesehen habe, die nicht die blöden Bugs enthält, wie z.B. dass sie abszürzt, wenn man Dateien mit Sonderzeichen auf der SD Karte hat.
+
+
+>Ist deine Firmware besser als andere?
+
+Nein. Aber sicher auch nicht schlechter.
+
+
+>Wo sind die Downloads?
+
+Weiter unten.
+
+
+>Muss ich bei TMC Treibern die Stecker drehen?
+
+Nö. Lade dir einfach die korrekte Version herunter.
+
+
+>Welche TMC Motortreiber sollte ich kaufen? Lieber die V2 oder die Bigtreetech V3?
+
+Weder noch! Es gibt keine "V2" oder "V3". Die offizielle letzte Version von Trinamic ist v1.2 und die beiden großen priämären Hersteller für die echten SilentStepSticks sind FYSTEC und WATTERROTT. Lass bloß die Finger von Bigtreetech.
+
+
+>Als ich die Treiber eingebaut habe, qualmte mein Mainboard in der Mitte rechts. Ist das normal?
+
+Nein. Du hast die Treiber falsch herum eingebaut. Jetzt ist die Z-Diode (733A) verbrannt. Tausche sie aus und alles funktioniert wieder.
+
+
+>Muss ich wie bei anderen Firmwares noch die E-Steps einstellen, wenn ich einen Mega S besitze?
+
+Nein, lade dir einfach die korrekte Version herunter. Trotzdem solltest du die Steps noch kalibrieren.
+
+
+---
+
+### Download
 
 Du kannst die fertigen Binärdateien hier herunterladen: https://github.com/knutwurst/Marlin-2-0-x-Anycubic-i3-MEGA-S/releases. Natürlich kannst du die Firmware auch selbst mit PlatformIO oder der Arduino IDE selbst kompilieren.
 
@@ -30,6 +72,6 @@ Du kannst die fertigen Binärdateien hier herunterladen: https://github.com/knut
 
 
 
-# Readme - English
+## Readme - English
 
 - coming soon -
