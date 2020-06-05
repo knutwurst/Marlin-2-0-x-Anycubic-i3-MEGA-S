@@ -60,7 +60,7 @@ Nein, lade dir einfach die korrekte Version herunter. Trotzdem solltest du die S
 
 ### Download
 
-Du kannst die fertigen Binärdateien hier herunterladen: https://github.com/knutwurst/Marlin-2-0-x-Anycubic-i3-MEGA-S/releases. Natürlich kannst du die Firmware auch selbst mit PlatformIO oder der Arduino IDE selbst kompilieren.
+Du kannst die fertigen Binärdateien hier herunterladen: https://github.com/knutwurst/Marlin-2-0-x-Anycubic-i3-MEGA-S/releases. Natürlich kannst du die Firmware mit PlatformIO oder der Arduino IDE auch selbst kompilieren.
 
 -> `i3_Mega.hex` ist für den unmodifizierten originalen Anycubic i3 MEGA (ohne S).
 
