@@ -8,7 +8,8 @@ Diese Firmwarekonfiguration aktiviert viele neue erweitere Funktionen der Marlin
 
  * Mesh-Bed Kalibrierung
  * S-Kurven Beschleunigung
- * Babystepping während des Druckvorgangs (nur über USB)
+ * "Juction Deviation" statt des klassischen "Jerk" 
+ * Babystepping während des Druckvorgangs
  * Biliniar Bed Leveling (BBL)
  * Manuelles Editieren der Messpunkte
  * Volle Anycubic Touchscreen Unterstützung
@@ -47,7 +48,7 @@ Weder noch! Es gibt keine "V2" oder "V3". Die offizielle letzte Version von Trin
 
 >Als ich die Treiber eingebaut habe, qualmte mein Mainboard in der Mitte rechts. Ist das normal?
 
-Nein. Du hast die Treiber falsch herum eingebaut. Jetzt ist die Z-Diode (733A) verbrannt. Tausche sie aus und alles funktioniert wieder.
+Nein. Du hast die Treiber falsch herum eingebaut. Jetzt ist die Z-Diode (733A) verbrannt. Tausche sie aus und alles funktioniert wieder. Deine falsch gesteckten Treiber kannst du aber vermutlich wegschmeißen.
 
 
 >Muss ich wie bei anderen Firmwares noch die E-Steps einstellen, wenn ich einen Mega S besitze?
