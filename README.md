@@ -14,6 +14,7 @@ Diese Firmwarekonfiguration aktiviert viele neue erweitere Funktionen der Marlin
  * Manuelles Editieren der Messpunkte
  * Volle Anycubic Touchscreen Unterstützung
  * Pause & Filamentwechselfunktion
+ * Automatische EEPROM Initialisierung
 
 Besser im Vergleich zu anderen Firmwares (Bugfixes):
  * Aufgeräumtes Special-Menü
@@ -25,8 +26,6 @@ Besser im Vergleich zu anderen Firmwares (Bugfixes):
  * Kein Aufhängen, wenn SD Karte + USB gleichzeitig genutzt wird
  * Kein Aufhängen wenn man Pause drückt
  * Kein Aufhängen, wenn das Filament leer ist.
-
-Bevor du irgendwas machst, nachdem du die Firmware geupdated hast, gehe zu `Special Menu > Load FW Defaults` um alte Einstellungen zu löschen!
 
 ---
 
