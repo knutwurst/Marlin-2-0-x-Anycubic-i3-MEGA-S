@@ -166,7 +166,7 @@ void AnycubicTouchscreenClass::StartPrint()
     break;
   case 1:
     // regular sd pause
-    queue.enqueue_now_P(PSTR("M24")); // unpark nozzle
+    queue.inject_P(PSTR("M24")); // unpark nozzle
 #ifdef ANYCUBIC_TFT_DEBUG
     SERIAL_ECHOPAIR(" DEBUG: AI3M Pause State: ", ai3m_pause_state);
     SERIAL_EOL();
@@ -197,7 +197,7 @@ void AnycubicTouchscreenClass::StartPrint()
     break;
   case 3:
     // paused by filament runout
-    queue.enqueue_now_P(PSTR("M24")); // unpark nozzle and resume
+    queue.inject_P(PSTR("M24")); // unpark nozzle and resume
 #ifdef ANYCUBIC_TFT_DEBUG
     SERIAL_ECHOLNPGM("DEBUG: M24 Resume from Filament Runout");
 #endif
@@ -258,9 +258,9 @@ void AnycubicTouchscreenClass::PausePrint()
     SERIAL_ECHOLNPGM("DEBUG: Filament Runout Pause");
 #endif
     // filament runout, retract and beep
-    queue.enqueue_now_P(PSTR("G91"));          // relative mode
-    queue.enqueue_now_P(PSTR("G1 E-3 F1800")); // retract 3mm
-    queue.enqueue_now_P(PSTR("G90"));          // absolute mode
+    queue.inject_P(PSTR("G91"));          // relative mode
+    queue.inject_P(PSTR("G1 E-3 F1800")); // retract 3mm
+    queue.inject_P(PSTR("G90"));          // absolute mode
     buzzer.tone(200, 1567);
     buzzer.tone(200, 1174);
     buzzer.tone(200, 1567);
@@ -269,7 +269,7 @@ void AnycubicTouchscreenClass::PausePrint()
 #ifdef ANYCUBIC_TFT_DEBUG
     SERIAL_ECHOLNPGM("DEBUG: Filament runout - Retract, beep and park.");
 #endif
-    queue.enqueue_now_P(PSTR("M25")); // pause print and park nozzle
+    queue.inject_P(PSTR("M25")); // pause print and park nozzle
     ai3m_pause_state = 3;
 #ifdef ANYCUBIC_TFT_DEBUG
     SERIAL_ECHOLNPGM("DEBUG: M25 sent, parking nozzle");
@@ -318,7 +318,7 @@ void AnycubicTouchscreenClass::StopPrint()
 void AnycubicTouchscreenClass::FilamentChangeResume()
 {
   // call M108 to break out of M600 pause
-  queue.enqueue_now_P(PSTR("M108"));
+  queue.inject_P(PSTR("M108"));
 #ifdef ANYCUBIC_TFT_DEBUG
   SERIAL_ECHOLNPGM("DEBUG: M108 Resume called");
 #endif
@@ -345,7 +345,7 @@ void AnycubicTouchscreenClass::FilamentChangePause()
 #endif
 
   // call M600 and set display state to paused
-  queue.enqueue_now_P(PSTR("M600"));
+  queue.inject_P(PSTR("M600"));
   TFTstate = ANYCUBIC_TFT_STATE_SDPAUSE_REQ;
 #ifdef ANYCUBIC_TFT_DEBUG
   SERIAL_ECHOLNPGM("DEBUG: M600 Pause called");
@@ -357,7 +357,7 @@ void AnycubicTouchscreenClass::ReheatNozzle()
 #ifdef ANYCUBIC_TFT_DEBUG
   SERIAL_ECHOLNPGM("DEBUG: Send reheat M108");
 #endif
-  queue.enqueue_now_P(PSTR("M108"));
+  queue.inject_P(PSTR("M108"));
 #ifdef ANYCUBIC_TFT_DEBUG
   SERIAL_ECHOLNPGM("DEBUG: Resume heating");
 #endif
@@ -402,8 +402,8 @@ void AnycubicTouchscreenClass::ParkAfterStop()
     SERIAL_ECHOLNPGM("DEBUG: SDSTOP: Park XY");
 #endif
   }
-  queue.enqueue_now_P(PSTR("M84")); // disable stepper motors
-  queue.enqueue_now_P(PSTR("M27")); // force report of SD status
+  queue.inject_P(PSTR("M84")); // disable stepper motors
+  queue.inject_P(PSTR("M27")); // force report of SD status
   ai3m_pause_state = 0;
 #ifdef ANYCUBIC_TFT_DEBUG
   SERIAL_ECHOPAIR(" DEBUG: AI3M Pause State: ", ai3m_pause_state);
@@ -431,61 +431,61 @@ void AnycubicTouchscreenClass::HandleSpecialMenu()
   else if (strcmp(SelectedDirectory, "<pid tune hotend>") == 0)
   {
     SERIAL_ECHOLNPGM("Special Menu: PID Tune Hotend");
-    queue.enqueue_now_P(PSTR("M106 S204\nM303 E0 S210 C15 U1"));
+    queue.inject_P(PSTR("M106 S204\nM303 E0 S210 C15 U1"));
   }
   else if (strcmp(SelectedDirectory, "<pid tune ultrabase>") == 0)
   {
     SERIAL_ECHOLNPGM("Special Menu: PID Tune Ultrabase");
-    queue.enqueue_now_P(PSTR("M303 E-1 S60 C6 U1"));
+    queue.inject_P(PSTR("M303 E-1 S60 C6 U1"));
   }
   else if (strcmp(SelectedDirectory, "<save eeprom>") == 0)
   {
     SERIAL_ECHOLNPGM("Special Menu: Save EEPROM");
-    queue.enqueue_now_P(PSTR("M500"));
+    queue.inject_P(PSTR("M500"));
     buzzer.tone(105, 1108);
     buzzer.tone(210, 1661);
   }
   else if (strcmp(SelectedDirectory, "<load fw defaults>") == 0)
   {
     SERIAL_ECHOLNPGM("Special Menu: Load FW Defaults");
-    queue.enqueue_now_P(PSTR("M502"));
+    queue.inject_P(PSTR("M502"));
     buzzer.tone(105, 1661);
     buzzer.tone(210, 1108);
   }
   else if (strcmp(SelectedDirectory, "<preheat ultrabase>") == 0)
   {
     SERIAL_ECHOLNPGM("Special Menu: Preheat Ultrabase");
-    queue.enqueue_now_P(PSTR("M140 S60"));
+    queue.inject_P(PSTR("M140 S60"));
   }
   else if (strcmp(SelectedDirectory, "<start mesh leveling>") == 0)
   {
     SERIAL_ECHOLNPGM("Special Menu: Start Mesh Leveling");
-    queue.enqueue_now_P(PSTR("G29 S1"));
+    queue.inject_P(PSTR("G29 S1"));
   }
   else if (strcmp(SelectedDirectory, "<next mesh point>") == 0)
   {
     SERIAL_ECHOLNPGM("Special Menu: Next Mesh Point");
-    queue.enqueue_now_P(PSTR("G29 S2"));
+    queue.inject_P(PSTR("G29 S2"));
   }
   else if (strcmp(SelectedDirectory, "<z up 0.1>") == 0)
   {
     SERIAL_ECHOLNPGM("Special Menu: Z Up 0.1");
-    queue.enqueue_now_P(PSTR("G91\nG1 Z+0.1\nG90"));
+    queue.inject_P(PSTR("G91\nG1 Z+0.1\nG90"));
   }
   else if (strcmp(SelectedDirectory, "<z up 0.02>") == 0)
   {
     SERIAL_ECHOLNPGM("Special Menu: Z Up 0.02");
-    queue.enqueue_now_P(PSTR("G91\nG1 Z+0.02\nG90"));
+    queue.inject_P(PSTR("G91\nG1 Z+0.02\nG90"));
   }
   else if (strcmp(SelectedDirectory, "<z down 0.02>") == 0)
   {
     SERIAL_ECHOLNPGM("Special Menu: Z Down 0.02");
-    queue.enqueue_now_P(PSTR("G91\nG1 Z-0.02\nG90"));
+    queue.inject_P(PSTR("G91\nG1 Z-0.02\nG90"));
   }
   else if (strcmp(SelectedDirectory, "<z down 0.1>") == 0)
   {
     SERIAL_ECHOLNPGM("Special Menu: Z Down 0.1");
-    queue.enqueue_now_P(PSTR("G91\nG1 Z-0.1\nG90"));
+    queue.inject_P(PSTR("G91\nG1 Z-0.1\nG90"));
   }
   else if (strcmp(SelectedDirectory, "<filamentchange pause>") == 0)
   {
@@ -769,7 +769,7 @@ void AnycubicTouchscreenClass::StateHandler()
         if (!IsParked)
         {
           // park head and retract 2mm
-          queue.enqueue_now_P(PSTR("M125 L2"));
+          queue.inject_P(PSTR("M125 L2"));
           IsParked = true;
         }
       }
@@ -810,7 +810,7 @@ void AnycubicTouchscreenClass::StateHandler()
     // did we park the hotend already?
     if ((!IsParked) && (!card.isPrinting()) && (!planner.movesplanned()))
     {
-      queue.enqueue_now_P(PSTR("G91\nG1 E-1 F1800\nG90")); //retract
+      queue.inject_P(PSTR("G91\nG1 E-1 F1800\nG90")); //retract
       ParkAfterStop();
       IsParked = true;
     }
@@ -1171,7 +1171,7 @@ void AnycubicTouchscreenClass::GetCommandFromTFT()
           else if ((CodeSeen('C')) && (!planner.movesplanned()))
           {
             if ((current_position[Z_AXIS] < 10))
-              queue.enqueue_now_P(PSTR("G1 Z10")); //RASE Z AXIS
+              queue.inject_P(PSTR("G1 Z10")); //RASE Z AXIS
             tempvalue = constrain(CodeValue(), 0, 275);
             thermalManager.setTargetHotend(tempvalue, 0);
           }
@@ -1233,14 +1233,14 @@ void AnycubicTouchscreenClass::GetCommandFromTFT()
             if (CodeSeen('X') || CodeSeen('Y') || CodeSeen('Z'))
             {
               if (CodeSeen('X'))
-                queue.enqueue_now_P(PSTR("G28 X"));
+                queue.inject_P(PSTR("G28 X"));
               if (CodeSeen('Y'))
-                queue.enqueue_now_P(PSTR("G28 Y"));
+                queue.inject_P(PSTR("G28 Y"));
               if (CodeSeen('Z'))
-                queue.enqueue_now_P(PSTR("G28 Z"));
+                queue.inject_P(PSTR("G28 Z"));
             }
             else if (CodeSeen('C'))
-              queue.enqueue_now_P(PSTR("G28"));
+              queue.inject_P(PSTR("G28"));
           }
           break;
         case 22: // A22 move X/Y/Z or extrude
@@ -1252,7 +1252,7 @@ void AnycubicTouchscreenClass::GetCommandFromTFT()
             if (CodeSeen('F')) // Set feedrate
               movespeed = CodeValue();
 
-            queue.enqueue_now_P(PSTR("G91")); // relative coordinates
+            queue.inject_P(PSTR("G91")); // relative coordinates
 
             if (CodeSeen('X')) // Move in X direction
             {
@@ -1322,7 +1322,7 @@ void AnycubicTouchscreenClass::GetCommandFromTFT()
               }
               queue.enqueue_one_now(value);
             }
-            queue.enqueue_now_P(PSTR("G90")); // absolute coordinates
+            queue.inject_P(PSTR("G90")); // absolute coordinates
           }
           HARDWARE_SERIAL_ENTER();
           break;
@@ -1330,7 +1330,7 @@ void AnycubicTouchscreenClass::GetCommandFromTFT()
           if ((!planner.movesplanned()) && (TFTstate != ANYCUBIC_TFT_STATE_SDPAUSE) && (TFTstate != ANYCUBIC_TFT_STATE_SDOUTAGE))
           {
             if ((current_position[Z_AXIS] < 10))
-              queue.enqueue_now_P(PSTR("G1 Z10")); // RAISE Z AXIS
+              queue.inject_P(PSTR("G1 Z10")); // RAISE Z AXIS
             thermalManager.setTargetBed(50);
             thermalManager.setTargetHotend(200, 0);
             HARDWARE_SERIAL_SUCC_START;
@@ -1341,7 +1341,7 @@ void AnycubicTouchscreenClass::GetCommandFromTFT()
           if ((!planner.movesplanned()) && (TFTstate != ANYCUBIC_TFT_STATE_SDPAUSE) && (TFTstate != ANYCUBIC_TFT_STATE_SDOUTAGE))
           {
             if ((current_position[Z_AXIS] < 10))
-              queue.enqueue_now_P(PSTR("G1 Z10")); //RAISE Z AXIS
+              queue.inject_P(PSTR("G1 Z10")); //RAISE Z AXIS
             thermalManager.setTargetBed(80);
             thermalManager.setTargetHotend(240, 0);
 
