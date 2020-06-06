@@ -131,12 +131,12 @@ void AnycubicTouchscreenClass::Setup()
 
 void AnycubicTouchscreenClass::WriteOutageEEPromData()
 {
-  int pos = E2END - 256;
+  //int pos = E2END - 256;
 }
 
 void AnycubicTouchscreenClass::ReadOutageEEPromData()
 {
-  int pos = E2END - 256;
+  //int pos = E2END - 256;
 }
 
 void AnycubicTouchscreenClass::KillTFT()
@@ -364,7 +364,7 @@ void AnycubicTouchscreenClass::ReheatNozzle()
 
   // enable heaters again
   HOTEND_LOOP()
-  thermalManager.reset_hotend_idle_timer(e);
+  //thermalManager.reset_hotend_idle_timer(e);
 #ifdef ANYCUBIC_TFT_DEBUG
   SERIAL_ECHOLNPGM("DEBUG: Clear flags");
 #endif
@@ -715,7 +715,7 @@ void AnycubicTouchscreenClass::StateHandler()
 #ifdef SDSUPPORT
     if (!card.isPrinting())
     {
-      // It seems that we are to printing anymore... pause or stopped?
+      // It seems that we are not printing anymore... pause or stopped?
       if (card.isFileOpen())
       {
         // File is still open --> paused
