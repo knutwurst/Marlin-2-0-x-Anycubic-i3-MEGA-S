@@ -38,6 +38,9 @@
  */
 #define CONFIGURATION_H_VERSION 020005
 
+#define KNUTWURST_MEGAS
+#define KNUTWURST_TMC
+
 //===========================================================================
 //============================= Getting Started =============================
 //===========================================================================
@@ -2354,5 +2357,3 @@
 #define ANYCUBIC_FILAMENT_RUNOUT_SENSOR
 //#define ANYCUBIC_TFT_DEBUG
 
-#define KNUTWURST_MEGAS
-#define KNUTWURST_TMC

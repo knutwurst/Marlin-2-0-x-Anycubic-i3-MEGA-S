@@ -1283,7 +1283,7 @@ void AnycubicTouchscreenClass::GetCommandFromTFT()
             if (CodeSeen('F')) // Set feedrate
               movespeed = CodeValue();
 
-            queue.inject_P(PSTR("G91")); // relative coordinates
+            queue.enqueue_now_P(PSTR("G91")); // relative coordinates
 
             if (CodeSeen('X')) // Move in X direction
             {
@@ -1353,7 +1353,7 @@ void AnycubicTouchscreenClass::GetCommandFromTFT()
               }
               queue.enqueue_one_now(value);
             }
-            queue.inject_P(PSTR("G90")); // absolute coordinates
+            queue.enqueue_now_P(PSTR("G90")); // absolute coordinates
           }
           HARDWARE_SERIAL_ENTER();
           break;
