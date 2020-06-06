@@ -38,9 +38,6 @@
  */
 #define CONFIGURATION_H_VERSION 020005
 
-#define KNUTWURST_MEGAS
-#define KNUTWURST_TMC
-
 //===========================================================================
 //============================= Getting Started =============================
 //===========================================================================
@@ -2350,9 +2347,12 @@
  * The new version is to be identified by a "TRIGORILLA1.1" lettering
  * on the upper left of the PCB silkscreen.
  */
-#define TRIGORILLA_VERSION 1
+#define TRIGORILLA_VERSION 0
 
 // Enable Anycubic TFT
 #define ANYCUBIC_TOUCHSCREEN
 #define ANYCUBIC_FILAMENT_RUNOUT_SENSOR
 //#define ANYCUBIC_TFT_DEBUG
+
+#define KNUTWURST_MEGAS
+#define KNUTWURST_TMC
