@@ -771,7 +771,15 @@
  * Override with M203
  *                                      X, Y, Z, E0 [, E1[, E2...]]
  */
+#if ENABLED(KNUTWURST_MEGAS)
+#define DEFAULT_MAX_FEEDRATE          { 500, 500, 6, 30 }
+#endif
+
+#if DISABLED(KNUTWURST_MEGAS)
 #define DEFAULT_MAX_FEEDRATE          { 500, 500, 6, 60 }
+#endif
+
+
 
 //#define LIMITED_MAX_FR_EDITING        // Limit edit via M203 or LCD to DEFAULT_MAX_FEEDRATE * 2
 #if ENABLED(LIMITED_MAX_FR_EDITING)
@@ -799,10 +807,18 @@
  *   M204 R    Retract Acceleration
  *   M204 T    Travel Acceleration
  */
+
+#if ENABLED(KNUTWURST_MEGAS)
+#define DEFAULT_ACCELERATION          1600    // X, Y, Z and E acceleration for printing moves
+#define DEFAULT_RETRACT_ACCELERATION  1500    // E acceleration for retracts
+#define DEFAULT_TRAVEL_ACCELERATION   3000    // X, Y, Z acceleration for travel (non printing) moves
+#endif
+
+#if DISABLED(KNUTWURST_MEGAS)
 #define DEFAULT_ACCELERATION          1600    // X, Y, Z and E acceleration for printing moves
 #define DEFAULT_RETRACT_ACCELERATION  3000    // E acceleration for retracts
 #define DEFAULT_TRAVEL_ACCELERATION   3000    // X, Y, Z acceleration for travel (non printing) moves
-
+#endif
 /**
  * Default Jerk limits (mm/s)
  * Override with M205 X Y Z E
@@ -2339,4 +2355,4 @@
 // Enable Anycubic TFT
 #define ANYCUBIC_TOUCHSCREEN
 #define ANYCUBIC_FILAMENT_RUNOUT_SENSOR
-#define ANYCUBIC_TFT_DEBUG
+//#define ANYCUBIC_TFT_DEBUG
