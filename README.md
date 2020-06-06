@@ -24,9 +24,6 @@ Besser im Vergleich zu anderen Firmwares:
  * Fehler "Melodie" bei Thermal Runaway Protection
  * Kein Aufhängen, wenn SD Karte + USB gleichzeitig genutzt wird
 
-Bekannte Bugs:
- * Pause über den Touchscreen funktioniert nicht.
-
 Bevor du irgendwas machst, nachdem du die Firmware geupdated hast, gehe zu `Special Menu > Load FW Defaults` um alte Einstellungen zu löschen!
 
 ---
