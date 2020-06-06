@@ -117,6 +117,7 @@ private:
 
   char SelectedDirectory[30];
   uint8_t SpecialMenu = false;
+  uint8_t FilamentSensorEnabled = true;
 
 #if ENABLED(ANYCUBIC_FILAMENT_RUNOUT_SENSOR)
   char FilamentTestStatus = false;

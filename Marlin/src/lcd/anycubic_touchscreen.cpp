@@ -108,7 +108,7 @@ void AnycubicTouchscreenClass::Setup()
 #if ENABLED(ANYCUBIC_FILAMENT_RUNOUT_SENSOR)
   pinMode(19, INPUT);
   WRITE(19, HIGH);
-  if (READ(19) == true)
+  if ((READ(19) == true) && FilamentSensorEnabled)
   {
     HARDWARE_SERIAL_PROTOCOLPGM("J15"); //J15 FILAMENT LACK
     HARDWARE_SERIAL_ENTER();
@@ -120,6 +120,7 @@ void AnycubicTouchscreenClass::Setup()
 
   SelectedDirectory[0] = 0;
   SpecialMenu = false;
+  FilamentSensorEnabled = true;
 
 #ifdef STARTUP_CHIME
   buzzer.tone(250, 554); // C#5
@@ -497,6 +498,21 @@ void AnycubicTouchscreenClass::HandleSpecialMenu()
     SERIAL_ECHOLNPGM("Special Menu: FilamentChange Resume");
     FilamentChangeResume();
   }
+  else if (strcmp(SelectedDirectory, "<disable fil. sensor>") == 0)
+  {
+    SERIAL_ECHOLNPGM("Special Menu: Disable Filament Sensor");
+    FilamentSensorEnabled = false;
+    buzzer.tone(105, 1108);
+    buzzer.tone(105, 1108);
+    buzzer.tone(105, 1108);
+  }
+  else if (strcmp(SelectedDirectory, "<enable fil. sensor>") == 0)
+  {
+    SERIAL_ECHOLNPGM("Special Menu: Enable Filament Sensor");
+    FilamentSensorEnabled = true;
+    buzzer.tone(105, 1108);
+    buzzer.tone(105, 1108);
+  }
   else if (strcmp(SelectedDirectory, "<exit>") == 0)
   {
     SpecialMenu = false;
@@ -541,6 +557,18 @@ void AnycubicTouchscreenClass::Ls()
       HARDWARE_SERIAL_PROTOCOLLNPGM("<Load FW Defaults>");
       HARDWARE_SERIAL_PROTOCOLLNPGM("<Load FW Defaults>");
       break;
+
+
+    case 12: // Page 4
+      HARDWARE_SERIAL_PROTOCOLLNPGM("<Disable Fil. Sensor>");
+      HARDWARE_SERIAL_PROTOCOLLNPGM("<Disable Fil. Sensor>");
+      HARDWARE_SERIAL_PROTOCOLLNPGM("<Enable Fil. Sensor>");
+      HARDWARE_SERIAL_PROTOCOLLNPGM("<Enable Fil. Sensor>");
+      HARDWARE_SERIAL_PROTOCOLLNPGM("<Exit>");
+      HARDWARE_SERIAL_PROTOCOLLNPGM("<Exit>");
+      break;
+
+
 /*
     case 12: // Fourth Page
       HARDWARE_SERIAL_PROTOCOLLNPGM("<Z Up 0.1>");
@@ -555,8 +583,8 @@ void AnycubicTouchscreenClass::Ls()
 */
 
     default:
-      HARDWARE_SERIAL_PROTOCOLLNPGM("<Exit>");
-      HARDWARE_SERIAL_PROTOCOLLNPGM("<Exit>");
+      //HARDWARE_SERIAL_PROTOCOLLNPGM("<Exit>");
+      //HARDWARE_SERIAL_PROTOCOLLNPGM("<Exit>");
       break;
     }
   }
@@ -796,7 +824,7 @@ void AnycubicTouchscreenClass::StateHandler()
     HARDWARE_SERIAL_ENTER();
     if ((!card.isPrinting()) && (!planner.movesplanned()))
     {
-      // enter idle display state
+      queue.clear();
       TFTstate = ANYCUBIC_TFT_STATE_IDLE;
 #ifdef ANYCUBIC_TFT_DEBUG
       SERIAL_ECHOLNPGM("TFT Serial Debug: SD print stopped... J16");
@@ -823,68 +851,71 @@ void AnycubicTouchscreenClass::StateHandler()
 
 void AnycubicTouchscreenClass::FilamentRunout()
 {
-#if ENABLED(ANYCUBIC_FILAMENT_RUNOUT_SENSOR)
-  FilamentTestStatus = READ(19) & 0xff;
-
-  if (FilamentTestStatus > FilamentTestLastStatus)
+  if(FilamentSensorEnabled == true)
   {
-    // filament sensor pin changed, save current timestamp.
-    const millis_t fil_ms = millis();
-    static millis_t fil_delay;
+  #if ENABLED(ANYCUBIC_FILAMENT_RUNOUT_SENSOR)
+    FilamentTestStatus = READ(19) & 0xff;
 
-    // since this is inside a loop, only set delay time once
-    if (FilamentSetMillis)
+    if (FilamentTestStatus > FilamentTestLastStatus)
     {
-#ifdef ANYCUBIC_TFT_DEBUG
-      SERIAL_ECHOLNPGM("DEBUG: Set filament trigger time");
-#endif
-      // set the delayed timestamp to 3000ms later
-      fil_delay = fil_ms + 3000UL;
-      // this doesn't need to run until the filament is recovered again
-      FilamentSetMillis = false;
-    }
+      // filament sensor pin changed, save current timestamp.
+      const millis_t fil_ms = millis();
+      static millis_t fil_delay;
 
-    // if three seconds passed and the sensor is still triggered,
-    // we trigger the filament runout status
-    if ((FilamentTestStatus > FilamentTestLastStatus) && (ELAPSED(fil_ms, fil_delay)))
-    {
-      if (!IsParked)
+      // since this is inside a loop, only set delay time once
+      if (FilamentSetMillis)
       {
-#ifdef ANYCUBIC_TFT_DEBUG
-        SERIAL_ECHOLNPGM("DEBUG: 3000ms delay done");
-#endif
-        if (card.isPrinting())
-        {
-          ai3m_pause_state = 3;
-          ; // set runout pause flag
-#ifdef ANYCUBIC_TFT_DEBUG
-          SERIAL_ECHOPAIR(" DEBUG: AI3M Pause State: ", ai3m_pause_state);
-          SERIAL_EOL();
-#endif
-          PausePrint();
-        }
-        else if (!card.isPrinting())
-        {
-          HARDWARE_SERIAL_PROTOCOLPGM("J15"); //J15 FILAMENT LACK
-          HARDWARE_SERIAL_ENTER();
-#ifdef ANYCUBIC_TFT_DEBUG
-          SERIAL_ECHOLNPGM("TFT Serial Debug: Filament runout... J15");
-#endif
-          FilamentTestLastStatus = FilamentTestStatus;
-        }
+  #ifdef ANYCUBIC_TFT_DEBUG
+        SERIAL_ECHOLNPGM("DEBUG: Set filament trigger time");
+  #endif
+        // set the delayed timestamp to 3000ms later
+        fil_delay = fil_ms + 3000UL;
+        // this doesn't need to run until the filament is recovered again
+        FilamentSetMillis = false;
       }
-      FilamentTestLastStatus = FilamentTestStatus;
+
+      // if three seconds passed and the sensor is still triggered,
+      // we trigger the filament runout status
+      if ((FilamentTestStatus > FilamentTestLastStatus) && (ELAPSED(fil_ms, fil_delay)))
+      {
+        if (!IsParked)
+        {
+  #ifdef ANYCUBIC_TFT_DEBUG
+          SERIAL_ECHOLNPGM("DEBUG: 3000ms delay done");
+  #endif
+          if (card.isPrinting())
+          {
+            ai3m_pause_state = 3;
+            ; // set runout pause flag
+  #ifdef ANYCUBIC_TFT_DEBUG
+            SERIAL_ECHOPAIR(" DEBUG: AI3M Pause State: ", ai3m_pause_state);
+            SERIAL_EOL();
+  #endif
+            PausePrint();
+          }
+          else if (!card.isPrinting())
+          {
+            HARDWARE_SERIAL_PROTOCOLPGM("J15"); //J15 FILAMENT LACK
+            HARDWARE_SERIAL_ENTER();
+  #ifdef ANYCUBIC_TFT_DEBUG
+            SERIAL_ECHOLNPGM("TFT Serial Debug: Filament runout... J15");
+  #endif
+            FilamentTestLastStatus = FilamentTestStatus;
+          }
+        }
+        FilamentTestLastStatus = FilamentTestStatus;
+      }
     }
+    else if (FilamentTestStatus != FilamentTestLastStatus)
+    {
+      FilamentSetMillis = true; // set the timestamps on the next loop again
+      FilamentTestLastStatus = FilamentTestStatus;
+  #ifdef ANYCUBIC_TFT_DEBUG
+      SERIAL_ECHOLNPGM("TFT Serial Debug: Filament runout recovered");
+  #endif
+    }
+  #endif
   }
-  else if (FilamentTestStatus != FilamentTestLastStatus)
-  {
-    FilamentSetMillis = true; // set the timestamps on the next loop again
-    FilamentTestLastStatus = FilamentTestStatus;
-#ifdef ANYCUBIC_TFT_DEBUG
-    SERIAL_ECHOLNPGM("TFT Serial Debug: Filament runout recovered");
-#endif
-  }
-#endif
 }
 
 void AnycubicTouchscreenClass::GetCommandFromTFT()
