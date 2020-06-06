@@ -43,10 +43,7 @@
   #include "../../feature/leds/leds.h"
 #endif
 
-#if ENABLED(ANYCUBIC_TOUCHSCREEN)
-  #include "../../lcd/anycubic_touchscreen.h"
-#endif
-#include "../../MarlinCore.h" // for wait_for_heatup and idle()
+#include "../../MarlinCore.h" // for wait_for_heatup, idle, startOrResumeJob
 
 /**
  * M140: Set bed temperature
@@ -83,15 +80,9 @@ void GcodeSuite::M190() {
   }
   else return;
 
-  #ifdef ANYCUBIC_TOUCHSCREEN
-    AnycubicTouchscreen.BedHeatingStart();
-  #endif
-
   ui.set_status_P(thermalManager.isHeatingBed() ? GET_TEXT(MSG_BED_HEATING) : GET_TEXT(MSG_BED_COOLING));
 
   thermalManager.wait_for_bed(no_wait_for_cooling);
-
-  //SERIAL_FLUSH();
 }
 
 #endif // HAS_HEATED_BED
