@@ -10,7 +10,7 @@ Diese Firmwarekonfiguration aktiviert viele neue erweitere Funktionen der Marlin
  * S-Kurven Beschleunigung
  * "Juction Deviation" statt des klassischen "Jerk" 
  * Babystepping während des Druckvorgangs
- * Biliniar Bed Leveling (BBL)
+ * Bilinear Bed Leveling (BBL)
  * Manuelles Editieren der Messpunkte
  * Volle Anycubic Touchscreen Unterstützung
  * Pause & Filamentwechselfunktion
