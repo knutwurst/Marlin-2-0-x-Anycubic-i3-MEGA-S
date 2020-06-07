@@ -606,8 +606,8 @@ void AnycubicTouchscreenClass::Ls()
 */
 
     default:
-      //HARDWARE_SERIAL_PROTOCOLLNPGM("<Exit>");
-      //HARDWARE_SERIAL_PROTOCOLLNPGM("<Exit>");
+      HARDWARE_SERIAL_PROTOCOLLNPGM("<Exit>");
+      HARDWARE_SERIAL_PROTOCOLLNPGM("<Exit>");
       break;
     }
   }
