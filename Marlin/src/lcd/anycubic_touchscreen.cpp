@@ -473,6 +473,11 @@ void AnycubicTouchscreenClass::HandleSpecialMenu()
     SERIAL_ECHOLNPGM("Special Menu: Z Up 0.1");
     queue.inject_P(PSTR("G91\nG1 Z+0.1\nG90"));
   }
+  else if (strcmp(SelectedDirectory, "<z down 0.1>") == 0)
+  {
+    SERIAL_ECHOLNPGM("Special Menu: Z Down 0.1");
+    queue.inject_P(PSTR("G91\nG1 Z-0.1\nG90"));
+  }
   else if (strcmp(SelectedDirectory, "<z up 0.02>") == 0)
   {
     SERIAL_ECHOLNPGM("Special Menu: Z Up 0.02");
@@ -483,10 +488,15 @@ void AnycubicTouchscreenClass::HandleSpecialMenu()
     SERIAL_ECHOLNPGM("Special Menu: Z Down 0.02");
     queue.inject_P(PSTR("G91\nG1 Z-0.02\nG90"));
   }
-  else if (strcmp(SelectedDirectory, "<z down 0.1>") == 0)
+  else if (strcmp(SelectedDirectory, "<z up 0.01>") == 0)
   {
-    SERIAL_ECHOLNPGM("Special Menu: Z Down 0.1");
-    queue.inject_P(PSTR("G91\nG1 Z-0.1\nG90"));
+    SERIAL_ECHOLNPGM("Special Menu: Z Up 0.01");
+    queue.inject_P(PSTR("G91\nG1 Z+0.01\nG90"));
+  }
+  else if (strcmp(SelectedDirectory, "<z down 0.01>") == 0)
+  {
+    SERIAL_ECHOLNPGM("Special Menu: Z Down 0.01");
+    queue.inject_P(PSTR("G91\nG1 Z-0.01\nG90"));
   }
   else if (strcmp(SelectedDirectory, "<filamentchange pause>") == 0)
   {
@@ -547,7 +557,20 @@ void AnycubicTouchscreenClass::Ls()
       HARDWARE_SERIAL_PROTOCOLLNPGM("<Z Down 0.1>");
       break;
 
+    
     case 8: // Page 3
+      HARDWARE_SERIAL_PROTOCOLLNPGM("<Z Up 0.02>");
+      HARDWARE_SERIAL_PROTOCOLLNPGM("<Z Up 0.02>");
+      HARDWARE_SERIAL_PROTOCOLLNPGM("<Z Down 0.02>");
+      HARDWARE_SERIAL_PROTOCOLLNPGM("<Z Down 0.02>");
+      HARDWARE_SERIAL_PROTOCOLLNPGM("<Z Up 0.01>");
+      HARDWARE_SERIAL_PROTOCOLLNPGM("<Z Up 0.01>");
+      HARDWARE_SERIAL_PROTOCOLLNPGM("<Z Down 0.01>");
+      HARDWARE_SERIAL_PROTOCOLLNPGM("<Z Down 0.01>");
+      break;
+
+
+    case 12: // Page 4
       HARDWARE_SERIAL_PROTOCOLLNPGM("<PID Tune Hotend>");
       HARDWARE_SERIAL_PROTOCOLLNPGM("<PID Tune Hotend>");
       HARDWARE_SERIAL_PROTOCOLLNPGM("<PID Tune Ultrabase>");
@@ -559,7 +582,7 @@ void AnycubicTouchscreenClass::Ls()
       break;
 
 
-    case 12: // Page 4
+    case 16: // Page 5
       HARDWARE_SERIAL_PROTOCOLLNPGM("<Disable Fil. Sensor>");
       HARDWARE_SERIAL_PROTOCOLLNPGM("<Disable Fil. Sensor>");
       HARDWARE_SERIAL_PROTOCOLLNPGM("<Enable Fil. Sensor>");
