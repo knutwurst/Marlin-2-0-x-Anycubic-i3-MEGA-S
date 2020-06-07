@@ -33,6 +33,16 @@ Bekannte Bugs:
 
 ---
 
+### Bilder
+
+![Manual Mesh Bed Leveling](images/Mesh_Level.jpg)
+
+![Ultra Fine mesh tuning](images/Fine_Tuning.jpg)
+
+![Enable or Disable Filament Runout Sensor](images/Filament_Sensor_on_off.jpg)
+
+---
+
 ### FAQ:
 
 >Knutwurst, wieso machst du auch noch so eine Firmware? Es gibt doch schon so viele?
