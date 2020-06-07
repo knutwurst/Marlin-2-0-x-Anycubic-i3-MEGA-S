@@ -15,11 +15,11 @@ Diese Firmwarekonfiguration aktiviert viele neue erweitere Funktionen der Marlin
  * Volle Anycubic Touchscreen Unterstützung
  * Pause & Filamentwechselfunktion
  * Automatische EEPROM Initialisierung
- * Filament Runout Sensor kann im Menü deaktiviert werden)
+ * Filament Runout Sensor kann im Menü deaktiviert werden
 
 Besser im Vergleich zu anderen Firmwares (Bugfixes):
  * Aufgeräumtes Special-Menü
- * Drucker hängt sich nicht auf, wenn man Dateien mit Sonderzeichen (oder Chinesisch) auf der SD Karte hat
+ * Drucker hängt sich nicht auf, wenn man Dateien mit Sonderzeichen (Umlaute, Chinesisch etc.) auf der SD Karte hat
  * Kein dummes "wackeln" der Düse nach Stoppen eines Druckvorgangs
  * Kein Abstürzen bei zu vielen Dateien auf der SD Karte
  * Kein Abstürzen bei SD-Karten über 16 GB
@@ -47,7 +47,7 @@ Bekannte Bugs:
 
 >Knutwurst, wieso machst du auch noch so eine Firmware? Es gibt doch schon so viele?
 
-Weil ich bisher keine gesehen habe, die nicht die blöden Bugs enthält, wie z.B. dass sie abszürzt, wenn man Dateien mit Sonderzeichen auf der SD Karte hat.
+Weil ich bisher keine gesehen habe, die nicht die blöden Bugs enthält, wie z.B. dass sie abstürzt, wenn man Dateien mit Sonderzeichen auf der SD Karte hat.
 
 
 >Ist deine Firmware besser als andere?
@@ -99,4 +99,96 @@ Du kannst die fertigen Binärdateien hier herunterladen: https://github.com/knut
 
 ## Readme - English
 
-- coming soon -
+---
+
+This firmware configuration activates many new features of the Marlin firmware:
+
+ * Mesh bed calibration
+ * S-curve acceleration
+ * "Juction Deviation" instead of the classic "Jerk"
+ * Baby stepping during printing
+ * Bilinear Bed Leveling (BBL)
+ * Manual editing of the measuring points
+ * Full Anycubic touchscreen support
+ * Pause & filament change function
+ * Automatic EEPROM initialization
+ * Filament Runout Sensor can be deactivated in the menu
+
+What's better in coparison to other firmwares (bug fixes):
+ * Tidy special menu
+ * Printer does not freeze if you have files with special characters (umlauts, Chinese..) on your SD card
+ * No stupid "wobble" of the nozzle after stopping printing
+ * No firmware crash when there are too many files on the SD card
+ * No crash with SD cards over 16 GB
+ * Arcustic alam in case of a thermal runaway
+ * No freezing when SD card + USB is used at the same time
+ * No freezing when you press pause and try to resume
+ * No freezing when the filament is empty.
+
+Known bugs:
+ * Filament Runout Sensor is reactivated with every reboot
+
+---
+
+### Pictures
+
+![Manual Mesh Bed Leveling](images/Mesh_Level.jpg)
+
+![Ultra Fine mesh tuning](images/Fine_Tuning.jpg)
+
+![Enable or Disable Filament Runout Sensor](images/Filament_Sensor_on_off.jpg)
+
+---
+
+### FAQ:
+
+> Knutwurst, why are you still doing such a firmware? Aren't there already so many?
+
+Because I've never seen one that doesn't contain the stupid bugs like the crashes when you have files with special characters on the SD card.
+
+
+> Is your firmware better than others?
+
+No. But certainly not worse either.
+
+
+> Where are the downloads?
+
+Further down.
+
+
+> Do I have to turn the plugs for TMC drivers?
+
+Nope, just download the correct version.
+
+
+> Which TMC motor drivers should I buy? The V2 or the Bigtreetech V3?
+
+Neither! There is no "V2" or "V3". The official last version of Trinamic is v1.2 and the two major primary manufacturers for the real SilentStepSticks are FYSTEC and WATTERROTT. Just stay away from Bigtreetech.
+
+
+> When I installed the drivers, my mainboard gave me the "magic smoke". Is that normal?
+
+No. You installed the drivers the wrong way round. Now the Zener diode (733A) is burned. Exchange it and everything works again. You can probably throw away your wrongly inserted drivers.
+
+
+> As with other firmwares, do I still have to set the E-Steps if I have a Mega S?
+
+No, just download the correct version. Nevertheless, you should still calibrate the e-steps.
+
+
+---
+
+### Download
+
+You can download the precompiled binary files from here: https://github.com/knutwurst/Marlin-2-0-x-Anycubic-i3-MEGA-S/releases. Of course you can also compile the firmware yourself with PlatformIO or the Arduino IDE.
+
+-> `i3_Mega.hex` is for the unmodified original Anycubic i3 MEGA (without S).
+
+-> `i3_Mega_TMC.hex` has optimizations and inverted outputs for TMC2100 and TMC2208 motor drivers.
+
+-> `i3_Mega_S.hex` is used if you use the newer "S" version with titan extruder.
+
+-> `i3_Mega_S_TMC.hex` you use if you use both the "S" version with titan extruder and TMC motor driver.
+
+
