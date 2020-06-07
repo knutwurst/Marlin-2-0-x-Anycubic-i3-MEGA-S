@@ -2,8 +2,6 @@
 
 ## Readme - German (english below)
 
----
-
 Diese Firmwarekonfiguration aktiviert viele neue erweitere Funktionen der Marlin Firmware:
 
  * Mesh-Bed Kalibrierung
@@ -95,11 +93,11 @@ Du kannst die fertigen Binärdateien hier herunterladen: https://github.com/knut
 -> `i3_Mega_S_TMC.hex` benutzt du, wenn du sowohl die "S" Version mit Titan-Extruder und TMC Motortreiber verwendest.
 
 
-
+---
 
 ## Readme - English
 
----
+
 
 This firmware configuration activates many new features of the Marlin firmware:
 
