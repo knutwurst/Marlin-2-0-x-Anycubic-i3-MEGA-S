@@ -50,26 +50,25 @@ Dein Bauteillüfter läuft jetzt mit voller Drehzahl, was er vorher nicht tat. S
 
 Nein. Aber sicher auch nicht schlechter.
 
-
 >Wo sind die Downloads?
 
 Weiter unten.
-
 
 >Muss ich bei TMC Treibern die Stecker drehen?
 
 Nö. Lade dir einfach die korrekte Version herunter.
 
-
 >Welche TMC Motortreiber sollte ich kaufen? Lieber die V2 oder die Bigtreetech V3?
 
 Weder noch! Es gibt keine "V2" oder "V3". Die offizielle letzte Version von Trinamic ist v1.2 und die beiden großen priämären Hersteller für die echten SilentStepSticks sind FYSTEC und WATTERROTT. Lass bloß die Finger von Bigtreetech.
 
+>Ich habe die Stecker bei meinen Motoren schon gedreht, als ich die TMC Treiber eingebaut habe. Muss ich jetzt trotzdem die TMC Version flashen?
+
+Nein. Benutze einfach die Nicht-TMC Version, da sonst die Motoren wieder in die falsche Richtung laufen.
 
 >Als ich die Treiber eingebaut habe, qualmte mein Mainboard in der Mitte rechts. Ist das normal?
 
 Nein. Du hast die Treiber falsch herum eingebaut. Jetzt ist die Z-Diode (733A) verbrannt. Tausche sie aus und alles funktioniert wieder. Deine falsch gesteckten Treiber kannst du aber vermutlich wegschmeißen.
-
 
 >Muss ich wie bei anderen Firmwares noch die E-Steps einstellen, wenn ich einen Mega S besitze?
 
@@ -151,26 +150,25 @@ Your component fan is now running at full speed, which it did no before. Simply 
 
 No. But certainly not worse either.
 
-
 > Where are the downloads?
 
 Further down.
-
 
 > Do I have to turn the plugs for TMC drivers?
 
 Nope, just download the correct version.
 
-
 > Which TMC motor drivers should I buy? The V2 or the Bigtreetech V3?
 
 Neither! There is no "V2" or "V3". The official last version of Trinamic is v1.2 and the two major primary manufacturers for the real SilentStepSticks are FYSTEC and WATTERROTT. Just stay away from Bigtreetech.
 
+> I already turned the plugs on my motors when I installed the TMC drivers. Do I still have to flash the TMC version?
+
+No. Just use the non-TMC version, otherwise the motors will turn in the wrong direction again.
 
 > When I installed the drivers, my mainboard gave me the "magic smoke". Is that normal?
 
 No. You installed the drivers the wrong way round. Now the Zener diode (733A) is burned. Exchange it and everything works again. You can probably throw away your wrongly inserted drivers.
-
 
 > As with other firmwares, do I still have to set the E-Steps if I have a Mega S?
 
