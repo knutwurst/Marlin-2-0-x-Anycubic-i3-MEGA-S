@@ -11,9 +11,11 @@ Diese Firmwarekonfiguration aktiviert viele neue erweitere Funktionen der Marlin
  * Bilinear Bed Leveling (BBL)
  * Manuelles Editieren der Messpunkte
  * Volle Anycubic Touchscreen Unterstützung
+ * Spannung vom Bauteillüfter von 8V auf 12V
  * Pause & Filamentwechselfunktion
  * Automatische EEPROM Initialisierung
  * Filament Runout Sensor kann im Menü deaktiviert werden
+ * Wiederaufnahme des Drucks nach Stromausfall (WiP)
 
 Besser im Vergleich zu anderen Firmwares (Bugfixes):
  * Aufgeräumtes Special-Menü
@@ -28,16 +30,7 @@ Besser im Vergleich zu anderen Firmwares (Bugfixes):
 
 Bekannte Bugs:
  * Filament Runout Sensor wird bei jedem Neustart wieder aktiviert
-
----
-
-### Bilder
-
-![Manual Mesh Bed Leveling](images/Mesh_Level.jpg)
-
-![Ultra Fine mesh tuning](images/Fine_Tuning.jpg)
-
-![Enable or Disable Filament Runout Sensor](images/Filament_Sensor_on_off.jpg)
+ * Wiederaufnahme nach Stromausfall funktioniert nur sehr unzuverlässig
 
 ---
 
@@ -47,6 +40,9 @@ Bekannte Bugs:
 
 Weil ich bisher keine gesehen habe, die nicht die blöden Bugs enthält, wie z.B. dass sie abstürzt, wenn man Dateien mit Sonderzeichen auf der SD Karte hat.
 
+>Wieso ist mein Drucker plötzlich lauter als vorher?
+
+Dein Bauteillüfter läuft jetzt mit voller Drehzahl, was er vorher nicht tat. Stelle im Slicer (z.B. Cura) die Geschwindigkeit einfach auf 70% und schon hast du die alte Lautstärke wieder. Diese Modifikation ist notwendig, falls man den Lüfter tauschen möchte und viele Lüfter mit den originalen 8V nicht oder nur unzureichend laufen.
 
 >Ist deine Firmware besser als andere?
 
@@ -77,6 +73,15 @@ Nein. Du hast die Treiber falsch herum eingebaut. Jetzt ist die Z-Diode (733A) v
 
 Nein, lade dir einfach die korrekte Version herunter. Trotzdem solltest du die Steps noch kalibrieren.
 
+---
+
+### Bilder
+
+![Manual Mesh Bed Leveling](images/Mesh_Level.jpg)
+
+![Ultra Fine mesh tuning](images/Fine_Tuning.jpg)
+
+![Enable or Disable Filament Runout Sensor](images/Filament_Sensor_on_off.jpg)
 
 ---
 
@@ -111,6 +116,7 @@ This firmware configuration activates many new features of the Marlin firmware:
  * Pause & filament change function
  * Automatic EEPROM initialization
  * Filament Runout Sensor can be deactivated in the menu
+ * Power outage support
 
 What's better in coparison to other firmwares (bug fixes):
  * Tidy special menu
@@ -121,20 +127,11 @@ What's better in coparison to other firmwares (bug fixes):
  * Arcustic alam in case of a thermal runaway
  * No freezing when SD card + USB is used at the same time
  * No freezing when you press pause and try to resume
- * No freezing when the filament is empty.
+ * No freezing when the filament is empty
 
 Known bugs:
  * Filament Runout Sensor is reactivated with every reboot
-
----
-
-### Pictures
-
-![Manual Mesh Bed Leveling](images/Mesh_Level.jpg)
-
-![Ultra Fine mesh tuning](images/Fine_Tuning.jpg)
-
-![Enable or Disable Filament Runout Sensor](images/Filament_Sensor_on_off.jpg)
+ * Power outage support does not work reliably
 
 ---
 
@@ -144,6 +141,9 @@ Known bugs:
 
 Because I've never seen one that doesn't contain the stupid bugs like the crashes when you have files with special characters on the SD card.
 
+>Why is my printer so much louder than before?
+
+Your component fan is now running at full speed, which it did no before. Simply set the speed to 70% in the slicer (e.g. Cura) and you will have the old speed again. This modification is necessary if you want to replace the fan. Many aftermarket fans do not run properly or at all with the original 8V.
 
 > Is your firmware better than others?
 
@@ -174,6 +174,15 @@ No. You installed the drivers the wrong way round. Now the Zener diode (733A) is
 
 No, just download the correct version. Nevertheless, you should still calibrate the e-steps.
 
+---
+
+### Pictures
+
+![Manual Mesh Bed Leveling](images/Mesh_Level.jpg)
+
+![Ultra Fine mesh tuning](images/Fine_Tuning.jpg)
+
+![Enable or Disable Filament Runout Sensor](images/Filament_Sensor_on_off.jpg)
 
 ---
 
