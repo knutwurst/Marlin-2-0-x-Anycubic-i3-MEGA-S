@@ -1,5 +1,7 @@
 # Knutwurst's i3 MEGA S Firmware (based on Marlin 2.0.5.3)
 
+<span style="color: red;">(BITTE GENAU DURCHLESEN! / PLEASE READ CAREFULLY!)</span>
+
 ## Readme - German (english below)
 
 Diese Firmwarekonfiguration aktiviert viele neue erweitere Funktionen der Marlin Firmware:
