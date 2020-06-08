@@ -126,7 +126,7 @@ What's better in coparison to other firmwares (bug fixes):
  * No stupid "wobble" of the nozzle after stopping printing
  * No firmware crash when there are too many files on the SD card
  * No crash with SD cards over 16 GB
- * Arcustic alam in case of a thermal runaway
+ * Acoustic alarm in case of a thermal runaway
  * No freezing when SD card + USB is used at the same time
  * No freezing when you press pause and try to resume
  * No freezing when the filament is empty
