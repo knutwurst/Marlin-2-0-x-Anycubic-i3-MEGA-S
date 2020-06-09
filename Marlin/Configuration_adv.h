@@ -33,6 +33,9 @@
  */
 #define CONFIGURATION_ADV_H_VERSION 020005
 
+#define KNUTWURST_MEGAS_ADV
+#define KNUTWURST_TMC_ADV
+
 // @section temperature
 
 //===========================================================================
@@ -3142,3 +3145,6 @@
 
 // Enable Marlin dev mode which adds some special commands
 //#define MARLIN_DEV_MODE
+
+//#define KNUTWURST_MEGAS_ADV
+//#define KNUTWURST_TMC_ADV
