@@ -8,7 +8,6 @@ Diese Firmwarekonfiguration aktiviert viele neue erweitere Funktionen der Marlin
 
  * Mesh-Bed Kalibrierung
  * S-Kurven Beschleunigung
- * Linar Advance
  * "Juction Deviation" statt des klassischen "Jerk" 
  * Babystepping während des Druckvorgangs
  * Bilinear Bed Leveling (BBL)
@@ -110,7 +109,6 @@ This firmware configuration activates many new features of the Marlin firmware:
 
  * Mesh bed calibration
  * S-curve acceleration
- * Linear advance
  * "Juction Deviation" instead of the classic "Jerk"
  * Baby stepping during printing
  * Bilinear Bed Leveling (BBL)
