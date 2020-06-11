@@ -40,6 +40,7 @@
 
 #define KNUTWURST_MEGAS
 #define KNUTWURST_TMC
+//#define POWER_OUTAGE_TEST
 
 //===========================================================================
 //============================= Getting Started =============================

@@ -56,6 +56,8 @@
 #include "../gcode/gcode.h"
 #include "../MarlinCore.h"
 
+#include "../sd/cardreader.h"
+
 #if EITHER(EEPROM_SETTINGS, SD_FIRMWARE_UPDATE)
   #include "../HAL/shared/eeprom_api.h"
 #endif
@@ -521,6 +523,9 @@ void MarlinSettings::postprocess() {
   #define EEPROM_READ(VAR)        do{ persistentStore.read_data(eeprom_index, (uint8_t*)&VAR, sizeof(VAR), &working_crc, !validating);  }while(0)
   #define EEPROM_READ_ALWAYS(VAR) do{ persistentStore.read_data(eeprom_index, (uint8_t*)&VAR, sizeof(VAR), &working_crc);               }while(0)
   #define EEPROM_ASSERT(TST,ERR)  do{ if (!(TST)) { SERIAL_ERROR_MSG(ERR); eeprom_error = true; } }while(0)
+
+  #define EEPROM_WRITE_VAR(pos, value) persistentStore.write_data(pos, (uint8_t*)&value, sizeof(value))
+  #define EEPROM_READ_VAR(pos, value) persistentStore.read_data(pos, (uint8_t*)&value, sizeof(value))
 
   #if ENABLED(DEBUG_EEPROM_READWRITE)
     #define _FIELD_TEST(FIELD) \
@@ -3681,6 +3686,45 @@ void MarlinSettings::reset() {
       );
     #endif
   }
+
+
+#ifdef POWER_OUTAGE_TEST
+float last_position[4] = { 0.0,0.0,0.0,0.0 };
+long last_sd_position[1] = { 0 };
+
+void OutageSave()
+{
+  char ver[4] = "000";
+  int j = 20;
+  EEPROM_WRITE_VAR(j,ver);
+  last_sd_position[0] = card.GetLastSDpos();
+  last_position[0] = current_position[E_AXIS];
+  last_position[1] = current_position[Z_AXIS];
+  last_position[2] = current_position[Y_AXIS];
+  last_position[3] = current_position[X_AXIS]; 
+  
+  EEPROM_WRITE_VAR(j,last_sd_position[0]);
+  EEPROM_WRITE_VAR(j,last_position[0]); //E 
+  EEPROM_WRITE_VAR(j,last_position[1]); //Z
+  EEPROM_WRITE_VAR(j,last_position[2]); //Y
+  EEPROM_WRITE_VAR(j,last_position[3]);  //X  
+}
+
+
+void OutageRead()
+{
+    int i = 20;
+    char stored_ver[4];
+    char ver[4] = EEPROM_VERSION; 
+    EEPROM_READ_VAR(i,stored_ver);  
+    EEPROM_READ_VAR(i,last_sd_position[0]);  
+    EEPROM_READ_VAR(i,last_position[0]); //E
+    EEPROM_READ_VAR(i,last_position[1]); //Z
+    EEPROM_READ_VAR(i,last_position[2]); //Y
+    EEPROM_READ_VAR(i,last_position[3]); //X
+}
+
+#endif
 
 #endif // !DISABLE_M503
 

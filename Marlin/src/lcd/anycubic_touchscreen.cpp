@@ -38,12 +38,33 @@
 #include "../module/stepper.h"
 #include "../module/temperature.h"
 #include "../sd/cardreader.h"
+#include "../module/configuration_store.h"
 
 #ifdef ANYCUBIC_TOUCHSCREEN
 #include "anycubic_touchscreen.h"
 #include "HardwareSerial.h"
 
+int Temp_Buf_Extuder_Temperature = 0;
+int Temp_Buf_Bed_Temperature = 0;
+
 char _conv[8];
+
+
+unsigned char ResumingFlag = 0;
+
+#if defined(POWER_OUTAGE_TEST)
+int PowerInt = 6;
+unsigned char PowerTestFlag = false;
+#endif
+
+void setup_OutageTestPin()
+{
+#if defined(POWER_OUTAGE_TEST)
+  pinMode(OUTAGETEST_PIN, INPUT);
+  pinMode(OUTAGECON_PIN, OUTPUT);
+  WRITE(OUTAGECON_PIN, LOW);
+#endif
+}
 
 char *itostr2(const uint8_t &x)
 {
@@ -128,6 +149,9 @@ void AnycubicTouchscreenClass::Setup()
   buzzer.tone(250, 554); // C#5
   buzzer.tone(500, 831); // G#5
 #endif
+
+
+setup_OutageTestPin();
 }
 
 void AnycubicTouchscreenClass::WriteOutageEEPromData()
@@ -557,7 +581,6 @@ void AnycubicTouchscreenClass::Ls()
       HARDWARE_SERIAL_PROTOCOLLNPGM("<Z Down 0.1>");
       break;
 
-    
     case 8: // Page 3
       HARDWARE_SERIAL_PROTOCOLLNPGM("<Z Up 0.02>");
       HARDWARE_SERIAL_PROTOCOLLNPGM("<Z Up 0.02>");
@@ -568,7 +591,6 @@ void AnycubicTouchscreenClass::Ls()
       HARDWARE_SERIAL_PROTOCOLLNPGM("<Z Down 0.01>");
       HARDWARE_SERIAL_PROTOCOLLNPGM("<Z Down 0.01>");
       break;
-
 
     case 12: // Page 4
       HARDWARE_SERIAL_PROTOCOLLNPGM("<PID Tune Hotend>");
@@ -581,7 +603,6 @@ void AnycubicTouchscreenClass::Ls()
       HARDWARE_SERIAL_PROTOCOLLNPGM("<Load FW Defaults>");
       break;
 
-
     case 16: // Page 5
       HARDWARE_SERIAL_PROTOCOLLNPGM("<Disable Fil. Sensor>");
       HARDWARE_SERIAL_PROTOCOLLNPGM("<Disable Fil. Sensor>");
@@ -591,8 +612,7 @@ void AnycubicTouchscreenClass::Ls()
       HARDWARE_SERIAL_PROTOCOLLNPGM("<Exit>");
       break;
 
-
-/*
+      /*
     case 12: // Fourth Page
       HARDWARE_SERIAL_PROTOCOLLNPGM("<Z Up 0.1>");
       HARDWARE_SERIAL_PROTOCOLLNPGM("<Z Up 0.1>");
@@ -651,21 +671,20 @@ void AnycubicTouchscreenClass::Ls()
       {
         card.selectFileByIndex(cnt - 1);
 
-
         // Bugfix for non-printable special characters
         // which are now replaced by underscores.
         int fileNameLen = strlen(card.longFilename);
         char buffer[fileNameLen];
 
-        for (unsigned char i = 0; i < fileNameLen; i++){
+        for (unsigned char i = 0; i < fileNameLen; i++)
+        {
           buffer[i] = card.longFilename[i];
-          if (!isPrintable(buffer[i])) 
+          if (!isPrintable(buffer[i]))
           {
             buffer[i] = '_';
           }
         }
         buffer[fileNameLen] = '\0';
-        
 
         if (card.flag.filenameIsDir)
         {
@@ -874,9 +893,9 @@ void AnycubicTouchscreenClass::StateHandler()
 
 void AnycubicTouchscreenClass::FilamentRunout()
 {
-  if(FilamentSensorEnabled == true)
+  if (FilamentSensorEnabled == true)
   {
-  #if ENABLED(ANYCUBIC_FILAMENT_RUNOUT_SENSOR)
+#if ENABLED(ANYCUBIC_FILAMENT_RUNOUT_SENSOR)
     FilamentTestStatus = READ(19) & 0xff;
 
     if (FilamentTestStatus > FilamentTestLastStatus)
@@ -888,9 +907,9 @@ void AnycubicTouchscreenClass::FilamentRunout()
       // since this is inside a loop, only set delay time once
       if (FilamentSetMillis)
       {
-  #ifdef ANYCUBIC_TFT_DEBUG
+#ifdef ANYCUBIC_TFT_DEBUG
         SERIAL_ECHOLNPGM("DEBUG: Set filament trigger time");
-  #endif
+#endif
         // set the delayed timestamp to 3000ms later
         fil_delay = fil_ms + 3000UL;
         // this doesn't need to run until the filament is recovered again
@@ -903,26 +922,26 @@ void AnycubicTouchscreenClass::FilamentRunout()
       {
         if (!IsParked)
         {
-  #ifdef ANYCUBIC_TFT_DEBUG
+#ifdef ANYCUBIC_TFT_DEBUG
           SERIAL_ECHOLNPGM("DEBUG: 3000ms delay done");
-  #endif
+#endif
           if (card.isPrinting())
           {
             ai3m_pause_state = 3;
             ; // set runout pause flag
-  #ifdef ANYCUBIC_TFT_DEBUG
+#ifdef ANYCUBIC_TFT_DEBUG
             SERIAL_ECHOPAIR(" DEBUG: AI3M Pause State: ", ai3m_pause_state);
             SERIAL_EOL();
-  #endif
+#endif
             PausePrint();
           }
           else if (!card.isPrinting())
           {
             HARDWARE_SERIAL_PROTOCOLPGM("J15"); //J15 FILAMENT LACK
             HARDWARE_SERIAL_ENTER();
-  #ifdef ANYCUBIC_TFT_DEBUG
+#ifdef ANYCUBIC_TFT_DEBUG
             SERIAL_ECHOLNPGM("TFT Serial Debug: Filament runout... J15");
-  #endif
+#endif
             FilamentTestLastStatus = FilamentTestStatus;
           }
         }
@@ -933,11 +952,11 @@ void AnycubicTouchscreenClass::FilamentRunout()
     {
       FilamentSetMillis = true; // set the timestamps on the next loop again
       FilamentTestLastStatus = FilamentTestStatus;
-  #ifdef ANYCUBIC_TFT_DEBUG
+#ifdef ANYCUBIC_TFT_DEBUG
       SERIAL_ECHOLNPGM("TFT Serial Debug: Filament runout recovered");
-  #endif
+#endif
     }
-  #endif
+#endif
   }
 }
 
@@ -1203,16 +1222,18 @@ void AnycubicTouchscreenClass::GetCommandFromTFT()
 #endif
           break;
         case 15: // A15 RESUMING FROM OUTAGE
-          //if((!planner.movesplanned())&&(!TFTresumingflag))
-          //  {
-          //    if(card.isMounted())
-          //      FlagResumFromOutage=true;
-          //      ResumingFlag=1;
-          //      card.startFileprint();
-          //      starttime=millis();
-          //      HARDWARE_SERIAL_SUCC_START;
-          //  }
-          //HARDWARE_SERIAL_ENTER();
+          if ((!planner.movesplanned()) && (TFTstate != ANYCUBIC_TFT_STATE_SDPAUSE))
+          {
+            if (card.isFileOpen())
+              FlagResumFromOutage = true;
+            
+            ResumingFlag = 1;
+            card.startFileprint();
+            starttime = millis();
+            HARDWARE_SERIAL_SUCC_START;
+          }
+          HARDWARE_SERIAL_ENTER();
+
           break;
         case 16: // A16 set hotend temp
         {
@@ -1544,6 +1565,22 @@ void AnycubicTouchscreenClass::BedHeatingDone()
   HARDWARE_SERIAL_ENTER();
 #ifdef ANYCUBIC_TFT_DEBUG
   SERIAL_ECHOLNPGM("TFT Serial Debug: Bed heating is done... J09");
+#endif
+}
+
+void PowerKill()
+{
+#ifdef POWER_OUTAGE_TEST
+  Temp_Buf_Extuder_Temperature = thermalManager.degTargetHotend(0);
+  Temp_Buf_Bed_Temperature = thermalManager.degTargetBed();
+  if (PowerTestFlag == true)
+  {
+    thermalManager.disable_all_heaters();
+    OutageSave();
+    PowerTestFlag = false;
+    thermalManager.setTargetHotend(Temp_Buf_Extuder_Temperature, 0);
+    thermalManager.setTargetBed(Temp_Buf_Bed_Temperature);
+  }
 #endif
 }
 

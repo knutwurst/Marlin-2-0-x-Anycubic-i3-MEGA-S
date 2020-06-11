@@ -34,6 +34,11 @@
 #include "../gcode/queue.h"
 #include "../module/configuration_store.h"
 
+#if defined(POWER_OUTAGE_TEST)
+extern unsigned char PowerTestFlag;
+extern char seekdataflag;
+#endif
+
 #if ENABLED(EMERGENCY_PARSER)
   #include "../feature/e_parser.h"
 #endif

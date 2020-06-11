@@ -153,6 +153,7 @@ public:
   static inline int16_t get() { sdpos = file.curPosition(); return (int16_t)file.read(); }
   static inline int16_t read(void* buf, uint16_t nbyte) { return file.isOpen() ? file.read(buf, nbyte) : -1; }
   static inline int16_t write(void* buf, uint16_t nbyte) { return file.isOpen() ? file.write(buf, nbyte) : -1; }
+  static inline long GetLastSDpos() { return sdpos; };
 
   static Sd2Card& getSd2Card() { return sd2card; }
 

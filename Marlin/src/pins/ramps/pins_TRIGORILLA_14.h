@@ -90,6 +90,11 @@
 #define FAN2_PIN                     TG_FAN2_PIN
 #define ORIG_E0_AUTO_FAN_PIN         TG_FAN2_PIN  // Used in Anycubic Kossel example config
 
+#ifdef POWER_OUTAGE_TEST
+  #define OUTAGETEST_PIN       79
+  #define OUTAGECON_PIN        58
+#endif
+
 #include "pins_RAMPS.h"
 
 //
