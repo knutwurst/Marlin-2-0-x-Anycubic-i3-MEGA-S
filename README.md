@@ -59,9 +59,9 @@ Weiter unten.
 
 Nö. Lade dir einfach die korrekte Version herunter.
 
->Welche TMC Motortreiber sollte ich kaufen? Lieber die V2 oder die Bigtreetech V3?
+>Welche TMC2208 Motortreiber sollte ich kaufen? Lieber die V2 oder die Bigtreetech V3?
 
-Weder noch! Es gibt keine "V2" oder "V3". Die offizielle letzte Version von Trinamic ist v1.2 und die beiden großen priämären Hersteller für die echten SilentStepSticks sind FYSTEC und WATTERROTT. Lass bloß die Finger von Bigtreetech.
+Weder noch! Es gibt keine "V2" oder "V3". Die offizielle letzte Version von Trinamic ist v1.2 und die beiden großen primären Hersteller für die echten SilentStepSticks sind FYSTEC und WATTERROTT. Lass bloß die Finger von Bigtreetech.
 
 >Ich habe die Stecker bei meinen Motoren schon gedreht, als ich die TMC Treiber eingebaut habe. Muss ich jetzt trotzdem die TMC Version flashen?
 
@@ -160,7 +160,7 @@ Further down.
 
 Nope, just download the correct version.
 
-> Which TMC motor drivers should I buy? The V2 or the Bigtreetech V3?
+> Which TMC2208 motor drivers should I buy? The V2 or the Bigtreetech V3?
 
 Neither! There is no "V2" or "V3". The official last version of Trinamic is v1.2 and the two major primary manufacturers for the real SilentStepSticks are FYSTEC and WATTERROTT. Just stay away from Bigtreetech.
 
