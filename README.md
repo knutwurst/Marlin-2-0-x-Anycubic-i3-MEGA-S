@@ -9,7 +9,7 @@ Diese Firmwarekonfiguration aktiviert viele neue erweitere Funktionen der Marlin
  * Mesh-Bed Kalibrierung
  * S-Kurven Beschleunigung
  * "Juction Deviation" statt des klassischen "Jerk" 
- * "Linear Advance" aktiviert (kann mit M900 konfiguriert werden)
+ * "Linear Pressure Control v1.5" aktiviert (kann mit M900 konfiguriert werden)
  * Babystepping während des Druckvorgangs
  * Bilinear Bed Leveling (BBL)
  * Manuelles Editieren der Messpunkte
@@ -111,7 +111,7 @@ This firmware configuration activates many new features of the Marlin firmware:
  * Mesh bed calibration
  * S-curve acceleration
  * "Juction Deviation" instead of the classic "Jerk"
- * "Linear Advance" enabled (can be configured with M900)
+ * "Linear Pressure Control v1.5" enabled (can be configured with M900)
  * Baby stepping during printing
  * Bilinear Bed Leveling (BBL)
  * Manual editing of the measuring points
