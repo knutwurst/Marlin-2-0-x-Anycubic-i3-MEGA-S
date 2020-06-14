@@ -44,17 +44,14 @@
 #include "anycubic_touchscreen.h"
 #include "HardwareSerial.h"
 
-int Temp_Buf_Extuder_Temperature = 0;
-int Temp_Buf_Bed_Temperature = 0;
-
 char _conv[8];
-
-
-unsigned char ResumingFlag = 0;
 
 #if defined(POWER_OUTAGE_TEST)
 int PowerInt = 6;
 unsigned char PowerTestFlag = false;
+int Temp_Buf_Extuder_Temperature = 0;
+int Temp_Buf_Bed_Temperature = 0;
+unsigned char ResumingFlag = 0;
 #endif
 
 #define MAX_PRINTABLE_FILENAME_LEN 21
@@ -70,7 +67,6 @@ void setup_OutageTestPin()
 
 char *itostr2(const uint8_t &x)
 {
-  //sprintf(conv,"%5.1f",x);
   int xx = x;
   _conv[0] = (xx / 10) % 10 + '0';
   _conv[1] = (xx) % 10 + '0';
@@ -116,7 +112,6 @@ AnycubicTouchscreenClass::AnycubicTouchscreenClass()
 void AnycubicTouchscreenClass::Setup()
 {
   HardwareSerial.begin(115200);
-  //HARDWARE_SERIAL_START();
   HARDWARE_SERIAL_PROTOCOLPGM("J17"); // J17 Main board reset
   HARDWARE_SERIAL_ENTER();
   delay(10);
@@ -154,16 +149,6 @@ void AnycubicTouchscreenClass::Setup()
 
 
 setup_OutageTestPin();
-}
-
-void AnycubicTouchscreenClass::WriteOutageEEPromData()
-{
-  //int pos = E2END - 256;
-}
-
-void AnycubicTouchscreenClass::ReadOutageEEPromData()
-{
-  //int pos = E2END - 256;
 }
 
 void AnycubicTouchscreenClass::KillTFT()
@@ -322,15 +307,12 @@ void AnycubicTouchscreenClass::StopPrint()
   wait_for_heatup = false;
   card.endFilePrint();
   card.closefile();
-  //queue.clear();
 #ifdef ANYCUBIC_TFT_DEBUGANYCUBIC_TFT_STATE_SDSTOP_REQ
   SERIAL_ECHOLNPGM("DEBUG: Stopped and cleared");
 #endif
   print_job_timer.stop();
   thermalManager.disable_all_heaters();
-  // we are not parked yet, do it in the display state routine
   IsParked = false;
-  // turn off fan, cancel any heatups and set display state
   ai3m_pause_state = 0;
 #ifdef ANYCUBIC_TFT_DEBUG
   SERIAL_ECHOPAIR(" DEBUG: AI3M Pause State: ", ai3m_pause_state);
@@ -350,7 +332,6 @@ void AnycubicTouchscreenClass::FilamentChangeResume()
   SERIAL_ECHOLNPGM("DEBUG: M108 Resume called");
 #endif
 
-  // remove waiting flags
   wait_for_heatup = false;
   wait_for_user = false;
 
@@ -391,11 +372,9 @@ void AnycubicTouchscreenClass::ReheatNozzle()
 
   // enable heaters again
   HOTEND_LOOP()
-  //thermalManager.reset_hotend_idle_timer(e);
 #ifdef ANYCUBIC_TFT_DEBUG
   SERIAL_ECHOLNPGM("DEBUG: Clear flags");
 #endif
-  // lower the pause flag by two to restore initial pause condition
   if (ai3m_pause_state > 3)
   {
     ai3m_pause_state -= 2;
@@ -405,7 +384,6 @@ void AnycubicTouchscreenClass::ReheatNozzle()
 #endif
   }
 
-  // clear waiting flags
   wait_for_user = false;
   wait_for_heatup = false;
 
@@ -555,7 +533,7 @@ void AnycubicTouchscreenClass::HandleSpecialMenu()
   }
 }
 
-void AnycubicTouchscreenClass::Ls()
+void AnycubicTouchscreenClass::AnycubicTouchscreen()
 {
   if (SpecialMenu)
   {
@@ -614,33 +592,19 @@ void AnycubicTouchscreenClass::Ls()
       HARDWARE_SERIAL_PROTOCOLLNPGM("<Exit>");
       break;
 
-      /*
-    case 12: // Fourth Page
-      HARDWARE_SERIAL_PROTOCOLLNPGM("<Z Up 0.1>");
-      HARDWARE_SERIAL_PROTOCOLLNPGM("<Z Up 0.1>");
-      HARDWARE_SERIAL_PROTOCOLLNPGM("<Z Down 0.1>");
-      HARDWARE_SERIAL_PROTOCOLLNPGM("<Z Down 0.1>");
-      HARDWARE_SERIAL_PROTOCOLLNPGM("<Z Up 0.02>");
-      HARDWARE_SERIAL_PROTOCOLLNPGM("<Z Up 0.02>");
-      HARDWARE_SERIAL_PROTOCOLLNPGM("<Z Down 0.02>");
-      HARDWARE_SERIAL_PROTOCOLLNPGM("<Z Down 0.02>");
-      break;
-*/
-
     default:
-      //HARDWARE_SERIAL_PROTOCOLLNPGM("<Exit>");
-      //HARDWARE_SERIAL_PROTOCOLLNPGM("<Exit>");
       break;
     }
   }
 #ifdef SDSUPPORT
   else if (card.isMounted())
   {
-    uint16_t cnt = filenumber;
+    uint16_t count = filenumber;
     uint16_t max_files;
     uint16_t dir_files = card.countFilesInWorkDir();
 
     // What is this shit? What if there are exactely 3 files+folders?
+    // TODO: find something better than this crap.
     if ((dir_files - filenumber) < 4)
     {
       max_files = dir_files;
@@ -650,28 +614,28 @@ void AnycubicTouchscreenClass::Ls()
       max_files = filenumber + 3;
     }
 
-    for (cnt = filenumber; cnt <= max_files; cnt++)
+    for (count = filenumber; count <= max_files; count++)
     {
-      if (cnt == 0) // Special Entry
+      if (count == 0) // Special Entry
       {
         if (strcmp(card.getWorkDirName(), "/") == 0)
         {
           HARDWARE_SERIAL_PROTOCOLLNPGM("<Special Menu>");
           HARDWARE_SERIAL_PROTOCOLLNPGM("<Special Menu>");
-          SERIAL_ECHO(cnt);
+          SERIAL_ECHO(count);
           SERIAL_ECHOLNPGM("<Special_Menu>");
         }
         else
         {
           HARDWARE_SERIAL_PROTOCOLLNPGM("/..");
           HARDWARE_SERIAL_PROTOCOLLNPGM("/..");
-          SERIAL_ECHO(cnt);
+          SERIAL_ECHO(count);
           SERIAL_ECHOLNPGM("/..");
         }
       }
       else
       {
-        card.selectFileByIndex(cnt - 1);
+        card.selectFileByIndex(count - 1);
 
         // Bugfix for non-printable special characters
         // which are now replaced by underscores.
@@ -700,7 +664,7 @@ void AnycubicTouchscreenClass::Ls()
           HARDWARE_SERIAL_PROTOCOLLN(card.filename);
           HARDWARE_SERIAL_PROTOCOLPGM("/");
           HARDWARE_SERIAL_PROTOCOLLN(buffer);
-          SERIAL_ECHO(cnt);
+          SERIAL_ECHO(count);
           SERIAL_ECHOPGM("/");
           SERIAL_ECHOLN(buffer);
         }
@@ -708,7 +672,7 @@ void AnycubicTouchscreenClass::Ls()
         {
           HARDWARE_SERIAL_PROTOCOLLN(card.filename);
           HARDWARE_SERIAL_PROTOCOLLN(buffer);
-          SERIAL_ECHO(cnt);
+          SERIAL_ECHO(count);
           SERIAL_ECHOLN(buffer);
         }
       }
@@ -784,8 +748,6 @@ void AnycubicTouchscreenClass::StateHandler()
     {
       TFTstate = ANYCUBIC_TFT_STATE_SDPRINT;
       starttime = millis();
-
-      // --> Send print info to display... most probably print started via gcode
     }
 #endif
     break;
@@ -793,7 +755,6 @@ void AnycubicTouchscreenClass::StateHandler()
 #ifdef SDSUPPORT
     if (!card.isPrinting())
     {
-      // It seems that we are not printing anymore... pause or stopped?
       if (card.isFileOpen())
       {
         // File is still open --> paused
@@ -834,7 +795,6 @@ void AnycubicTouchscreenClass::StateHandler()
 #ifdef SDSUPPORT
     if ((!card.isPrinting()) && (!planner.movesplanned()))
     {
-      // We have to wait until the sd card printing has been settled
       if (ai3m_pause_state < 2)
       {
         // no flags, this is a regular pause.
@@ -1092,7 +1052,7 @@ void AnycubicTouchscreenClass::GetCommandFromTFT()
 
           break;
         }
-        case 8: // A8 GET  SD LIST
+        case 8: // A8 GET SD LIST
 #ifdef SDSUPPORT
           SelectedDirectory[0] = 0;
           if (!IS_SD_INSERTED())
@@ -1107,7 +1067,7 @@ void AnycubicTouchscreenClass::GetCommandFromTFT()
 
             HARDWARE_SERIAL_PROTOCOLPGM("FN "); // Filelist start
             HARDWARE_SERIAL_ENTER();
-            Ls();
+            AnycubicTouchscreen();
             HARDWARE_SERIAL_PROTOCOLPGM("END"); // Filelist stop
             HARDWARE_SERIAL_ENTER();
           }
@@ -1230,6 +1190,7 @@ void AnycubicTouchscreenClass::GetCommandFromTFT()
 #endif
           break;
         case 15: // A15 RESUMING FROM OUTAGE
+#if defined(POWER_OUTAGE_TEST)
           if ((!planner.movesplanned()) && (TFTstate != ANYCUBIC_TFT_STATE_SDPAUSE))
           {
             if (card.isFileOpen())
@@ -1241,9 +1202,9 @@ void AnycubicTouchscreenClass::GetCommandFromTFT()
             HARDWARE_SERIAL_SUCC_START;
           }
           HARDWARE_SERIAL_ENTER();
-
+#endif
           break;
-        case 16: // A16 set hotend temp
+        case 16: // A16 set hotend temp 
         {
           unsigned int tempvalue;
           if (CodeSeen('S'))
@@ -1259,7 +1220,6 @@ void AnycubicTouchscreenClass::GetCommandFromTFT()
             thermalManager.setTargetHotend(tempvalue, 0);
           }
         }
-        //   HARDWARE_SERIAL_ENTER();
         break;
         case 17: // A17 set heated bed temp
         {
@@ -1270,7 +1230,6 @@ void AnycubicTouchscreenClass::GetCommandFromTFT()
             thermalManager.setTargetBed(tempbed);
           }
         }
-        //  HARDWARE_SERIAL_ENTER();
         break;
         case 18: // A18 set fan speed
           unsigned int temp;
@@ -1507,7 +1466,7 @@ void AnycubicTouchscreenClass::GetCommandFromTFT()
       }
       TFTbufindw = (TFTbufindw + 1) % TFTBUFSIZE;
       TFTbuflen += 1;
-      serial3_count = 0; //clear buffer
+      serial3_count = 0;
     }
     else
     {

@@ -86,6 +86,7 @@ private:
   uint16_t HeaterCheckCount = 0;
   bool IsParked = false;
 
+#if defined(POWER_OUTAGE_TEST)
   struct OutageDataStruct
   {
     char OutageDataVersion;
@@ -95,13 +96,12 @@ private:
     float last_hotend_temp;
     long lastSDposition;
   } OutageData;
+#endif
 
-  void WriteOutageEEPromData();
-  void ReadOutageEEPromData();
 
   float CodeValue();
   bool CodeSeen(char);
-  void Ls();
+  void AnycubicTouchscreen();
   void StartPrint();
   void PausePrint();
   void StopPrint();

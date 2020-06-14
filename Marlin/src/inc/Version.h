@@ -38,7 +38,7 @@
  * Defines the version of the Marlin build. Not to be confused with
  * Marlin's own build number, e.g. 2.0.x.
  */
- #define CUSTOM_BUILD_VERSION "1.0.4"
+ #define CUSTOM_BUILD_VERSION "1.0.5-prerelease"
 
 #ifndef STRING_DISTRIBUTION_DATE
   #define STRING_DISTRIBUTION_DATE "2020-03-31"
