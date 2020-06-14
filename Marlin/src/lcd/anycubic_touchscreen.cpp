@@ -57,6 +57,8 @@ int PowerInt = 6;
 unsigned char PowerTestFlag = false;
 #endif
 
+#define MAX_PRINTABLE_FILENAME_LEN 21
+
 void setup_OutageTestPin()
 {
 #if defined(POWER_OUTAGE_TEST)
@@ -522,14 +524,14 @@ void AnycubicTouchscreenClass::HandleSpecialMenu()
     SERIAL_ECHOLNPGM("Special Menu: Z Down 0.01");
     queue.inject_P(PSTR("G91\nG1 Z-0.01\nG90"));
   }
-  else if (strcmp(SelectedDirectory, "<filamentchange pause>") == 0)
+  else if (strcmp(SelectedDirectory, "<fil. change pause>") == 0)
   {
-    SERIAL_ECHOLNPGM("Special Menu: FilamentChange Pause");
+    SERIAL_ECHOLNPGM("Special Menu: Fil. Change Pause");
     FilamentChangePause();
   }
-  else if (strcmp(SelectedDirectory, "<filamentchange resume>") == 0)
+  else if (strcmp(SelectedDirectory, "<fil. change resume>") == 0)
   {
-    SERIAL_ECHOLNPGM("Special Menu: FilamentChange Resume");
+    SERIAL_ECHOLNPGM("Special Menu: Fil. Change Resume");
     FilamentChangeResume();
   }
   else if (strcmp(SelectedDirectory, "<disable fil. sensor>") == 0)
@@ -564,10 +566,10 @@ void AnycubicTouchscreenClass::Ls()
       HARDWARE_SERIAL_PROTOCOLLNPGM("<Exit>");
       HARDWARE_SERIAL_PROTOCOLLNPGM("<Preheat Ultrabase>");
       HARDWARE_SERIAL_PROTOCOLLNPGM("<Preheat Ultrabase>");
-      HARDWARE_SERIAL_PROTOCOLLNPGM("<FilamentChange Pause>");
-      HARDWARE_SERIAL_PROTOCOLLNPGM("<FilamentChange Pause>");
-      HARDWARE_SERIAL_PROTOCOLLNPGM("<FilamentChange Resume>");
-      HARDWARE_SERIAL_PROTOCOLLNPGM("<FilamentChange Resume>");
+      HARDWARE_SERIAL_PROTOCOLLNPGM("<Fil. Change Pause>");
+      HARDWARE_SERIAL_PROTOCOLLNPGM("<Fil. Change Pause>");
+      HARDWARE_SERIAL_PROTOCOLLNPGM("<Fil. Change Resume>");
+      HARDWARE_SERIAL_PROTOCOLLNPGM("<Fil. Change Resume>");
       break;
 
     case 4: // Page 2
@@ -626,8 +628,8 @@ void AnycubicTouchscreenClass::Ls()
 */
 
     default:
-      HARDWARE_SERIAL_PROTOCOLLNPGM("<Exit>");
-      HARDWARE_SERIAL_PROTOCOLLNPGM("<Exit>");
+      //HARDWARE_SERIAL_PROTOCOLLNPGM("<Exit>");
+      //HARDWARE_SERIAL_PROTOCOLLNPGM("<Exit>");
       break;
     }
   }
@@ -674,6 +676,12 @@ void AnycubicTouchscreenClass::Ls()
         // Bugfix for non-printable special characters
         // which are now replaced by underscores.
         int fileNameLen = strlen(card.longFilename);
+        
+        // Cut off too long filenames.
+        // They don't fit on the screen anyways.
+        if(fileNameLen > MAX_PRINTABLE_FILENAME_LEN)
+          fileNameLen = MAX_PRINTABLE_FILENAME_LEN;
+        
         char buffer[fileNameLen];
 
         for (unsigned char i = 0; i < fileNameLen; i++)
