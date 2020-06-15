@@ -2071,22 +2071,11 @@ void Temperature::init() {
 
       case TRRunaway:
         _temp_error(heater_id, str_t_thermal_runaway, GET_TEXT(MSG_THERMAL_RUNAWAY));
-        BUZZ(2000, 1108);
-        BUZZ(2000, 1661);
-        BUZZ(2000, 1108);
-        BUZZ(2000, 1661);
-        BUZZ(2000, 1108);
-        BUZZ(2000, 1661);
-        BUZZ(2000, 1108);
-        BUZZ(2000, 1661);
-        BUZZ(2000, 1108);
-        BUZZ(2000, 1661);
-        BUZZ(2000, 1108);
-        BUZZ(2000, 1661);
-        BUZZ(2000, 1108);
-        BUZZ(2000, 1661);
-        BUZZ(2000, 1108);
-        BUZZ(2000, 1661);
+        for(uint8_t i = 0; i < 30; i++)
+        {
+          BUZZ(2000, 1108);
+          BUZZ(2000, 1661);
+        }
     }
   }
 
