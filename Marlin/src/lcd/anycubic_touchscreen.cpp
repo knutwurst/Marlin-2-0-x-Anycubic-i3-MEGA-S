@@ -184,6 +184,8 @@ void AnycubicTouchscreenClass::StartPrint()
     SERIAL_ECHOLNPGM("DEBUG: M24 Resume from regular pause");
 #endif
     IsParked = false; // remove parked flag
+    wait_for_heatup = false;
+    wait_for_user = false;
     starttime = millis();
     card.startFileprint(); // resume regularly
     TFTstate = ANYCUBIC_TFT_STATE_SDPRINT;
@@ -213,6 +215,7 @@ void AnycubicTouchscreenClass::StartPrint()
     SERIAL_ECHOLNPGM("DEBUG: M24 Resume from Filament Runout");
 #endif
     IsParked = false; // clear flags
+    wait_for_user = false;
     ai3m_pause_state = 0;
 #ifdef ANYCUBIC_TFT_DEBUG
     SERIAL_ECHOLNPGM("DEBUG: Filament Pause Flag cleared");
@@ -325,15 +328,15 @@ void AnycubicTouchscreenClass::StopPrint()
 
 void AnycubicTouchscreenClass::FilamentChangeResume()
 {
+  wait_for_user = false;  //must be done twice, since we have a bug in marlin
+  wait_for_heatup = false;
   // call M108 to break out of M600 pause
   queue.inject_P(PSTR("M108"));
 #ifdef ANYCUBIC_TFT_DEBUG
   SERIAL_ECHOLNPGM("DEBUG: M108 Resume called");
 #endif
-
-  wait_for_heatup = false;
   wait_for_user = false;
-
+  wait_for_heatup = false;
   // resume with proper progress state
   card.startFileprint();
 #ifdef ANYCUBIC_TFT_DEBUG
