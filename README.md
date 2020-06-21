@@ -75,7 +75,7 @@ Nein. Du hast die Treiber falsch herum eingebaut. Jetzt ist die Z-Diode (733A) v
 
 Nein, lade dir einfach die korrekte Version herunter. Trotzdem solltest du die Steps noch kalibrieren.
 
->Wieso Zeigt das Display keine Fehlermeldungen an und wieso sieht es noch genau so aus wie vorher?
+>Wieso zeigt das Display keine Fehlermeldungen an und wieso sieht es noch genau so aus wie vorher?
 
 Dein Mainboard (Trigorilla) kann nur Grafikdisplays wie das 2004 oder 12864 ansteuern. Auf denen würdest du auch exakt das sehen, was in der Firmware wirklich passiert - eben weil diese das anzeigen, was die Firmware sagt. Texte, Fehlermeldungen etc...
 
@@ -186,7 +186,7 @@ No. You installed the drivers the wrong way round. Now the Zener diode (733A) is
 
 No, just download the correct version. Nevertheless, you should still calibrate the e-steps.
 
-> Why doesn't the display any error messages and why does it still look exactly as before?
+> Why doesn't the display show any error messages and why does it still look exactly as before?
 
 Your mainboard (Trigorilla) can only control graphic displays like the 2004 or 12864. On them you would also see exactly what really happens in the firmware - to be precise, they show what the firmware says. Texts, error messages etc.
 
