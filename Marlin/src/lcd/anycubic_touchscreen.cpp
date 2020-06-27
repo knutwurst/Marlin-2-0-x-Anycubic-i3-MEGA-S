@@ -374,6 +374,7 @@ void AnycubicTouchscreenClass::ReheatNozzle()
 
   // enable heaters again
   HOTEND_LOOP()
+  thermalManager.reset_hotend_idle_timer(e);
 #ifdef ANYCUBIC_TFT_DEBUG
   SERIAL_ECHOLNPGM("DEBUG: Clear flags");
 #endif
