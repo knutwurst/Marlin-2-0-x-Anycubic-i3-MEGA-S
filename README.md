@@ -19,6 +19,7 @@ Diese Firmwarekonfiguration aktiviert viele neue erweitere Funktionen der Marlin
  * Automatische EEPROM Initialisierung
  * Filament Runout Sensor kann im Menü deaktiviert werden
  * Wiederaufnahme des Drucks nach Stromausfall (WiP)
+ * Druckbettgröße erweitert auf 220 x 225 x 210 mm
 
 Besser im Vergleich zu anderen Firmwares (Bugfixes):
  * Aufgeräumtes Special-Menü
@@ -130,6 +131,7 @@ This firmware configuration activates many new features of the Marlin firmware:
  * Automatic EEPROM initialization
  * Filament Runout Sensor can be deactivated in the menu
  * Power outage support
+ * Print bed size enlarged to 220 x 225 x 210 mm
 
 What's better in coparison to other firmwares (bug fixes):
  * Tidy special menu
