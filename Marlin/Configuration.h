@@ -39,7 +39,7 @@
 #define CONFIGURATION_H_VERSION 020005
 
 #define KNUTWURST_MEGAS
-#define KNUTWURST_TMC
+//#define KNUTWURST_TMC
 //#define POWER_OUTAGE_TEST
 
 //===========================================================================
@@ -2353,6 +2353,6 @@
 
 #define ANYCUBIC_TOUCHSCREEN
 #define ANYCUBIC_FILAMENT_RUNOUT_SENSOR
-//#define ANYCUBIC_TFT_DEBUG
+#define ANYCUBIC_TFT_DEBUG
 //#define KNUTWURST_MEGAS_DEBUG
 //#define KNUTWURST_TMC_DEBUG
