@@ -55,7 +55,7 @@ unsigned char ResumingFlag = 0;
 #endif
 
 //#define MAX_PRINTABLE_FILENAME_LEN 21
-#define MAX_PRINTABLE_FILENAME_LEN 30
+#define MAX_PRINTABLE_FILENAME_LEN 22
 
 void setup_OutageTestPin()
 {
@@ -137,7 +137,8 @@ void AnycubicTouchscreenClass::Setup()
   }
 #endif
 
-  SelectedDirectory[0] = 0;
+  currentTouchscreenSelection[0] = '\0';
+  currentFileOrDirectory[0] = '\0';
   SpecialMenu = false;
   FilamentSensorEnabled = true;
 
@@ -433,90 +434,94 @@ bool AnycubicTouchscreenClass::CodeSeen(char code)
 
 void AnycubicTouchscreenClass::HandleSpecialMenu()
 {
-  if (strcmp(SelectedDirectory, "<Special Menu>.gcode") == 0)
+#ifdef ANYCUBIC_TFT_DEBUG
+    SERIAL_ECHOPAIR(" DEBUG: Special Menu Selection: ", currentTouchscreenSelection);
+    SERIAL_EOL();
+#endif
+  if (strcasestr(currentTouchscreenSelection, "<Special Menu>") != NULL)
   {
     SpecialMenu = true;
   }
-  else if (strcmp(SelectedDirectory, "<PID Tune Hotend>.gcode") == 0)
+  else if (strcasestr(currentTouchscreenSelection, "<PID Tune Hotend>") != NULL)
   {
     SERIAL_ECHOLNPGM("Special Menu: PID Tune Hotend");
     queue.inject_P(PSTR("M106 S204\nM303 E0 S210 C15 U1"));
   }
-  else if (strcmp(SelectedDirectory, "<PID Tune Ultrabase>.gcode") == 0)
+  else if (strcasestr(currentTouchscreenSelection, "<PID Tune Ultrabase>") != NULL)
   {
     SERIAL_ECHOLNPGM("Special Menu: PID Tune Ultrabase");
     queue.inject_P(PSTR("M303 E-1 S60 C6 U1"));
   }
-  else if (strcmp(SelectedDirectory, "<Save EEPROM>.gcode") == 0)
+  else if (strcasestr(currentTouchscreenSelection, "<Save EEPROM>") != NULL)
   {
     SERIAL_ECHOLNPGM("Special Menu: Save EEPROM");
     queue.inject_P(PSTR("M500"));
     buzzer.tone(105, 1108);
     buzzer.tone(210, 1661);
   }
-  else if (strcmp(SelectedDirectory, "<Load FW Defaults>.gcode") == 0)
+  else if (strcasestr(currentTouchscreenSelection, "<Load FW Defaults>") != NULL)
   {
     SERIAL_ECHOLNPGM("Special Menu: Load FW Defaults");
     queue.inject_P(PSTR("M502"));
     buzzer.tone(105, 1661);
     buzzer.tone(210, 1108);
   }
-  else if (strcmp(SelectedDirectory, "<Preheat Ultrabase>.gcode") == 0)
+  else if (strcasestr(currentTouchscreenSelection, "<Preheat Ultrabase>") != NULL)
   {
     SERIAL_ECHOLNPGM("Special Menu: Preheat Ultrabase");
     queue.inject_P(PSTR("M140 S60"));
   }
-  else if (strcmp(SelectedDirectory, "<Start Mesh Leveling>.gcode") == 0)
+  else if (strcasestr(currentTouchscreenSelection, "<Start Mesh Leveling>") != NULL)
   {
     SERIAL_ECHOLNPGM("Special Menu: Start Mesh Leveling");
     queue.inject_P(PSTR("G29 S1"));
   }
-  else if (strcmp(SelectedDirectory, "<Next Mesh Point>.gcode") == 0)
+  else if (strcasestr(currentTouchscreenSelection, "<Next Mesh Point>") != NULL)
   {
     SERIAL_ECHOLNPGM("Special Menu: Next Mesh Point");
     queue.inject_P(PSTR("G29 S2"));
   }
-  else if (strcmp(SelectedDirectory, "<Z Up 0.1>.gcode") == 0)
+  else if (strcasestr(currentTouchscreenSelection, "<Z Up 0.1>") != NULL)
   {
     SERIAL_ECHOLNPGM("Special Menu: Z Up 0.1");
     queue.inject_P(PSTR("G91\nG1 Z+0.1\nG90"));
   }
-  else if (strcmp(SelectedDirectory, "<Z Down 0.1>.gcode") == 0)
+  else if (strcasestr(currentTouchscreenSelection, "<Z Down 0.1>") != NULL)
   {
     SERIAL_ECHOLNPGM("Special Menu: Z Down 0.1");
     queue.inject_P(PSTR("G91\nG1 Z-0.1\nG90"));
   }
-  else if (strcmp(SelectedDirectory, "<Z Up 0.02>.gcode") == 0)
+  else if (strcasestr(currentTouchscreenSelection, "<Z Up 0.02>") != NULL)
   {
     SERIAL_ECHOLNPGM("Special Menu: Z Up 0.02");
     queue.inject_P(PSTR("G91\nG1 Z+0.02\nG90"));
   }
-  else if (strcmp(SelectedDirectory, "<Z Down 0.02>.gcode") == 0)
+  else if (strcasestr(currentTouchscreenSelection, "<Z Down 0.02>") != NULL)
   {
     SERIAL_ECHOLNPGM("Special Menu: Z Down 0.02");
     queue.inject_P(PSTR("G91\nG1 Z-0.02\nG90"));
   }
-  else if (strcmp(SelectedDirectory, "<Z Up 0.01>.gcode") == 0)
+  else if (strcasestr(currentTouchscreenSelection, "<Z Up 0.01>") != NULL)
   {
     SERIAL_ECHOLNPGM("Special Menu: Z Up 0.01");
     queue.inject_P(PSTR("G91\nG1 Z+0.01\nG90"));
   }
-  else if (strcmp(SelectedDirectory, "<Z Down 0.01>.gcode") == 0)
+  else if (strcasestr(currentTouchscreenSelection, "<Z Down 0.01>") != NULL)
   {
     SERIAL_ECHOLNPGM("Special Menu: Z Down 0.01");
     queue.inject_P(PSTR("G91\nG1 Z-0.01\nG90"));
   }
-  else if (strcmp(SelectedDirectory, "<Fil. Change Pause>.gcode") == 0)
+  else if (strcasestr(currentTouchscreenSelection, "<Fil. Change Pause>") != NULL)
   {
     SERIAL_ECHOLNPGM("Special Menu: Fil. Change Pause");
     FilamentChangePause();
   }
-  else if (strcmp(SelectedDirectory, "<Fil. Change Resume>.gcode") == 0)
+  else if (strcasestr(currentTouchscreenSelection, "<Fil. Change Resume>") != NULL)
   {
     SERIAL_ECHOLNPGM("Special Menu: Fil. Change Resume");
     FilamentChangeResume();
   }
-  else if (strcmp(SelectedDirectory, "<Disable Fil. Sensor>.gcode") == 0)
+  else if (strcasestr(currentTouchscreenSelection, "<Disable Fil. Sensor>") != NULL)
   {
     SERIAL_ECHOLNPGM("Special Menu: Disable Filament Sensor");
     FilamentSensorEnabled = false;
@@ -524,20 +529,20 @@ void AnycubicTouchscreenClass::HandleSpecialMenu()
     buzzer.tone(105, 1108);
     buzzer.tone(105, 1108);
   }
-  else if (strcmp(SelectedDirectory, "<Enable Fil. Sensor>.gcode") == 0)
+  else if (strcasestr(currentTouchscreenSelection, "<Enable Fil. Sensor>") != NULL)
   {
     SERIAL_ECHOLNPGM("Special Menu: Enable Filament Sensor");
     FilamentSensorEnabled = true;
     buzzer.tone(105, 1108);
     buzzer.tone(105, 1108);
   }
-  else if (strcmp(SelectedDirectory, "<Exit>.gcode") == 0)
+  else if (strcasestr(currentTouchscreenSelection, "<Exit>") != NULL)
   {
     SpecialMenu = false;
   }
 }
 
-void AnycubicTouchscreenClass::AnycubicTouchscreen()
+void AnycubicTouchscreenClass::PrintList()
 {
   if (SpecialMenu)
   {
@@ -631,10 +636,10 @@ void AnycubicTouchscreenClass::AnycubicTouchscreen()
         }
         else
         {
-          HARDWARE_SERIAL_PROTOCOLLNPGM("/..gcode");
-          HARDWARE_SERIAL_PROTOCOLLNPGM("/..gcode");
+          HARDWARE_SERIAL_PROTOCOLLNPGM("DIR_UP.gcode");
+          HARDWARE_SERIAL_PROTOCOLLNPGM("DIR_UP.gcode");
           SERIAL_ECHO(count);
-          SERIAL_ECHOLNPGM(": /..gcode");
+          SERIAL_ECHOLNPGM(": DIR_UP.gcode");
         }
       }
       else
@@ -654,7 +659,7 @@ void AnycubicTouchscreenClass::AnycubicTouchscreen()
 
         for (unsigned char i = 0; i < MAX_PRINTABLE_FILENAME_LEN; i++)
         {
-          if(i > fileNameLen)
+          if(i >= fileNameLen)
           {
             outputString[i] = ' ';
           }
@@ -1074,7 +1079,7 @@ void AnycubicTouchscreenClass::GetCommandFromTFT()
         }
         case 8: // A8 GET SD LIST
 #ifdef SDSUPPORT
-          SelectedDirectory[0] = 0;
+          currentTouchscreenSelection[0] = 0;
           if (!IS_SD_INSERTED())
           {
             HARDWARE_SERIAL_PROTOCOLPGM("J02");
@@ -1087,7 +1092,7 @@ void AnycubicTouchscreenClass::GetCommandFromTFT()
 
             HARDWARE_SERIAL_PROTOCOLPGM("FN "); // Filelist start
             HARDWARE_SERIAL_ENTER();
-            AnycubicTouchscreen();
+            PrintList();
             HARDWARE_SERIAL_PROTOCOLPGM("END"); // Filelist stop
             HARDWARE_SERIAL_ENTER();
           }
@@ -1156,15 +1161,15 @@ void AnycubicTouchscreenClass::GetCommandFromTFT()
             starpos = (strchr(TFTstrchr_pointer + 4, '*'));
             if (TFTstrchr_pointer[4] == '/')
             {
-              strcpy(SelectedDirectory, TFTstrchr_pointer + 5);
+              strcpy(currentTouchscreenSelection, TFTstrchr_pointer + 5);
             }
             else if (TFTstrchr_pointer[4] == '<')
             {
-              strcpy(SelectedDirectory, TFTstrchr_pointer + 4);
+              strcpy(currentTouchscreenSelection, TFTstrchr_pointer + 4);
             }
             else
             {
-              SelectedDirectory[0] = 0;
+              currentTouchscreenSelection[0] = 0;
 
               if (starpos != NULL)
                 *(starpos - 1) = '\0';
@@ -1426,22 +1431,29 @@ void AnycubicTouchscreenClass::GetCommandFromTFT()
         case 26: // A26 refresh SD
 #ifdef SDSUPPORT
 #ifdef ANYCUBIC_TFT_DEBUG
-            SERIAL_ECHOPAIR(" TFT Serial Debug: SelectedDirectory: ",SelectedDirectory);
+            SERIAL_ECHOPAIR(" TFT Serial Debug: SelectedDirectory: ",currentTouchscreenSelection);
             SERIAL_EOL();
 #endif
-          if (SelectedDirectory[0] == 0)
+          if (currentTouchscreenSelection[0] == 0)
           {
             card.mount();
           }
           else
           {
-            if ((SelectedDirectory[0] == '.') && (SelectedDirectory[1] == '.'))
+            //if ((SelectedDirectory[0] == '.') && (SelectedDirectory[1] == '.'))
+            if ((currentTouchscreenSelection[0] == 'D') 
+            && (currentTouchscreenSelection[1] == 'I')
+            && (currentTouchscreenSelection[2] == 'R')
+            && (currentTouchscreenSelection[3] == '_'))
             {
+#ifdef ANYCUBIC_TFT_DEBUG
+            SERIAL_ECHOLNPGM("TFT Serial Debug: Directory UP (cd ..)");
+#endif
               card.cdup();
             }
             else
             {
-              if (SelectedDirectory[0] == '<')
+              if (currentTouchscreenSelection[0] == '<')
               {
 #ifdef ANYCUBIC_TFT_DEBUG
             SERIAL_ECHOLNPGM("TFT Serial Debug: Enter Special Menu");
@@ -1450,12 +1462,15 @@ void AnycubicTouchscreenClass::GetCommandFromTFT()
               }
               else
               {
-                card.cd(SelectedDirectory);
+                strcpy(currentFileOrDirectory, currentTouchscreenSelection);
+                int currentFileLen = strlen(currentFileOrDirectory);
+                currentFileOrDirectory[currentFileLen - 6] = '\0';
+                card.cd(currentFileOrDirectory);
               }
             }
           }
 
-          SelectedDirectory[0] = 0;
+          currentTouchscreenSelection[0] = 0;
 
           if (!IS_SD_INSERTED())
           {

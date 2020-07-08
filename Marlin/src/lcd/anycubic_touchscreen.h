@@ -101,7 +101,7 @@ private:
 
   float CodeValue();
   bool CodeSeen(char);
-  void AnycubicTouchscreen();
+  void PrintList();
   void StartPrint();
   void PausePrint();
   void StopPrint();
@@ -115,7 +115,8 @@ private:
   void ReheatNozzle();
   void ParkAfterStop();
 
-  char SelectedDirectory[30];
+  char currentTouchscreenSelection[64];
+  char currentFileOrDirectory[30];
   uint8_t SpecialMenu = false;
   uint8_t FilamentSensorEnabled = true;
 
