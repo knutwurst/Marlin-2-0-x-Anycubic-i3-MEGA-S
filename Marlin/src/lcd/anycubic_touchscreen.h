@@ -115,7 +115,7 @@ private:
   void ReheatNozzle();
   void ParkAfterStop();
 
-  char currentTouchscreenSelection[64];
+  char currentTouchscreenSelection[30];
   char currentFileOrDirectory[30];
   uint8_t SpecialMenu = false;
   uint8_t FilamentSensorEnabled = true;
