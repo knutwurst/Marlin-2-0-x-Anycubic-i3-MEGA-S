@@ -136,7 +136,7 @@ void AnycubicTouchscreenClass::Setup()
   }
 #endif
 
-  SelectedDirectory[0] = 0;
+  currentTouchscreenSelection[0] = 0;
   SpecialMenu = false;
   FilamentSensorEnabled = true;
 
@@ -302,19 +302,21 @@ void AnycubicTouchscreenClass::PausePrint()
   TFTstate = ANYCUBIC_TFT_STATE_SDPAUSE_REQ;
 }
 
-void AnycubicTouchscreenClass::StopPrint()
+inline void AnycubicTouchscreenClass::StopPrint()
 {
   // stop print, disable heaters
   wait_for_user = false;
   wait_for_heatup = false;
-  card.endFilePrint();
-  card.closefile();
-#ifdef ANYCUBIC_TFT_DEBUGANYCUBIC_TFT_STATE_SDSTOP_REQ
+  IsParked = false;
+  if(card.isFileOpen) {
+    card.endFilePrint();
+    card.closefile();
+  }
+#ifdef ANYCUBIC_TFT_DEBUG
   SERIAL_ECHOLNPGM("DEBUG: Stopped and cleared");
 #endif
   print_job_timer.stop();
   thermalManager.disable_all_heaters();
-  IsParked = false;
   ai3m_pause_state = 0;
 #ifdef ANYCUBIC_TFT_DEBUG
   SERIAL_ECHOPAIR(" DEBUG: AI3M Pause State: ", ai3m_pause_state);
@@ -410,8 +412,8 @@ void AnycubicTouchscreenClass::ParkAfterStop()
     SERIAL_ECHOLNPGM("DEBUG: SDSTOP: Park XY");
 #endif
   }
-  queue.inject_P(PSTR("M84")); // disable stepper motors
-  queue.inject_P(PSTR("M27")); // force report of SD status
+  queue.enqueue_now_P(PSTR("M84")); // disable stepper motors
+  queue.enqueue_now_P(PSTR("M27")); // force report of SD status
   ai3m_pause_state = 0;
 #ifdef ANYCUBIC_TFT_DEBUG
   SERIAL_ECHOPAIR(" DEBUG: AI3M Pause State: ", ai3m_pause_state);
@@ -432,90 +434,94 @@ bool AnycubicTouchscreenClass::CodeSeen(char code)
 
 void AnycubicTouchscreenClass::HandleSpecialMenu()
 {
-  if (strcmp(SelectedDirectory, "<special menu>") == 0)
+#ifdef ANYCUBIC_TFT_DEBUG
+    SERIAL_ECHOPAIR(" DEBUG: Special Menu Selection: ", currentTouchscreenSelection);
+    SERIAL_EOL();
+#endif
+  if (strcasestr(currentTouchscreenSelection, "<Special Menu>") != NULL)
   {
     SpecialMenu = true;
   }
-  else if (strcmp(SelectedDirectory, "<pid tune hotend>") == 0)
+  else if (strcasestr(currentTouchscreenSelection, "<PID Tune Hotend>") != NULL)
   {
     SERIAL_ECHOLNPGM("Special Menu: PID Tune Hotend");
     queue.inject_P(PSTR("M106 S204\nM303 E0 S210 C15 U1"));
   }
-  else if (strcmp(SelectedDirectory, "<pid tune ultrabase>") == 0)
+  else if (strcasestr(currentTouchscreenSelection, "<PID Tune Ultrabase>") != NULL)
   {
     SERIAL_ECHOLNPGM("Special Menu: PID Tune Ultrabase");
     queue.inject_P(PSTR("M303 E-1 S60 C6 U1"));
   }
-  else if (strcmp(SelectedDirectory, "<save eeprom>") == 0)
+  else if (strcasestr(currentTouchscreenSelection, "<Save EEPROM>") != NULL)
   {
     SERIAL_ECHOLNPGM("Special Menu: Save EEPROM");
     queue.inject_P(PSTR("M500"));
     buzzer.tone(105, 1108);
     buzzer.tone(210, 1661);
   }
-  else if (strcmp(SelectedDirectory, "<load fw defaults>") == 0)
+  else if (strcasestr(currentTouchscreenSelection, "<Load FW Defaults>") != NULL)
   {
     SERIAL_ECHOLNPGM("Special Menu: Load FW Defaults");
     queue.inject_P(PSTR("M502"));
     buzzer.tone(105, 1661);
     buzzer.tone(210, 1108);
   }
-  else if (strcmp(SelectedDirectory, "<preheat ultrabase>") == 0)
+  else if (strcasestr(currentTouchscreenSelection, "<Preheat Ultrabase>") != NULL)
   {
     SERIAL_ECHOLNPGM("Special Menu: Preheat Ultrabase");
     queue.inject_P(PSTR("M140 S60"));
   }
-  else if (strcmp(SelectedDirectory, "<start mesh leveling>") == 0)
+  else if (strcasestr(currentTouchscreenSelection, "<Start Mesh Leveling>") != NULL)
   {
     SERIAL_ECHOLNPGM("Special Menu: Start Mesh Leveling");
     queue.inject_P(PSTR("G29 S1"));
   }
-  else if (strcmp(SelectedDirectory, "<next mesh point>") == 0)
+  else if (strcasestr(currentTouchscreenSelection, "<Next Mesh Point>") != NULL)
   {
     SERIAL_ECHOLNPGM("Special Menu: Next Mesh Point");
     queue.inject_P(PSTR("G29 S2"));
   }
-  else if (strcmp(SelectedDirectory, "<z up 0.1>") == 0)
+  else if (strcasestr(currentTouchscreenSelection, "<Z Up 0.1>") != NULL)
   {
     SERIAL_ECHOLNPGM("Special Menu: Z Up 0.1");
     queue.inject_P(PSTR("G91\nG1 Z+0.1\nG90"));
   }
-  else if (strcmp(SelectedDirectory, "<z down 0.1>") == 0)
+  else if (strcasestr(currentTouchscreenSelection, "<Z Down 0.1>") != NULL)
   {
     SERIAL_ECHOLNPGM("Special Menu: Z Down 0.1");
     queue.inject_P(PSTR("G91\nG1 Z-0.1\nG90"));
   }
-  else if (strcmp(SelectedDirectory, "<z up 0.02>") == 0)
+  else if (strcasestr(currentTouchscreenSelection, "<Z Up 0.02>") != NULL)
   {
     SERIAL_ECHOLNPGM("Special Menu: Z Up 0.02");
     queue.inject_P(PSTR("G91\nG1 Z+0.02\nG90"));
   }
-  else if (strcmp(SelectedDirectory, "<z down 0.02>") == 0)
+  else if (strcasestr(currentTouchscreenSelection, "<Z Down 0.02>") != NULL)
   {
     SERIAL_ECHOLNPGM("Special Menu: Z Down 0.02");
     queue.inject_P(PSTR("G91\nG1 Z-0.02\nG90"));
   }
-  else if (strcmp(SelectedDirectory, "<z up 0.01>") == 0)
+  else if (strcasestr(currentTouchscreenSelection, "<Z Up 0.01>") != NULL)
   {
     SERIAL_ECHOLNPGM("Special Menu: Z Up 0.01");
     queue.inject_P(PSTR("G91\nG1 Z+0.01\nG90"));
   }
-  else if (strcmp(SelectedDirectory, "<z down 0.01>") == 0)
+  else if (strcasestr(currentTouchscreenSelection, "<Z Down 0.01>") != NULL)
   {
     SERIAL_ECHOLNPGM("Special Menu: Z Down 0.01");
     queue.inject_P(PSTR("G91\nG1 Z-0.01\nG90"));
   }
-  else if (strcmp(SelectedDirectory, "<fil. change pause>") == 0)
+  else if (strcasestr(currentTouchscreenSelection, "<Fil. Change Pause>") != NULL)
   {
     SERIAL_ECHOLNPGM("Special Menu: Fil. Change Pause");
     FilamentChangePause();
   }
-  else if (strcmp(SelectedDirectory, "<fil. change resume>") == 0)
+  else if (strcasestr(currentTouchscreenSelection, "<Fil. Change Resume>") != NULL)
   {
     SERIAL_ECHOLNPGM("Special Menu: Fil. Change Resume");
     FilamentChangeResume();
   }
-  else if (strcmp(SelectedDirectory, "<disable fil. sensor>") == 0)
+  else if (strcasestr(currentTouchscreenSelection, "<Disable Fil. Sensor>") != NULL)
   {
     SERIAL_ECHOLNPGM("Special Menu: Disable Filament Sensor");
     FilamentSensorEnabled = false;
@@ -523,14 +529,14 @@ void AnycubicTouchscreenClass::HandleSpecialMenu()
     buzzer.tone(105, 1108);
     buzzer.tone(105, 1108);
   }
-  else if (strcmp(SelectedDirectory, "<enable fil. sensor>") == 0)
+  else if (strcasestr(currentTouchscreenSelection, "<Enable Fil. Sensor>") != NULL)
   {
     SERIAL_ECHOLNPGM("Special Menu: Enable Filament Sensor");
     FilamentSensorEnabled = true;
     buzzer.tone(105, 1108);
     buzzer.tone(105, 1108);
   }
-  else if (strcmp(SelectedDirectory, "<exit>") == 0)
+  else if (strcasestr(currentTouchscreenSelection, "<Exit>") != NULL)
   {
     SpecialMenu = false;
   }
@@ -543,56 +549,56 @@ void AnycubicTouchscreenClass::AnycubicTouchscreen()
     switch (filenumber)
     {
     case 0: // Page 1
-      HARDWARE_SERIAL_PROTOCOLLNPGM("<Exit>");
-      HARDWARE_SERIAL_PROTOCOLLNPGM("<Exit>");
-      HARDWARE_SERIAL_PROTOCOLLNPGM("<Preheat Ultrabase>");
-      HARDWARE_SERIAL_PROTOCOLLNPGM("<Preheat Ultrabase>");
-      HARDWARE_SERIAL_PROTOCOLLNPGM("<Fil. Change Pause>");
-      HARDWARE_SERIAL_PROTOCOLLNPGM("<Fil. Change Pause>");
-      HARDWARE_SERIAL_PROTOCOLLNPGM("<Fil. Change Resume>");
-      HARDWARE_SERIAL_PROTOCOLLNPGM("<Fil. Change Resume>");
+      HARDWARE_SERIAL_PROTOCOLLN("<Exit>");
+      HARDWARE_SERIAL_PROTOCOLLN("<Exit>");
+      HARDWARE_SERIAL_PROTOCOLLN("<Preheat Ultrabase>");
+      HARDWARE_SERIAL_PROTOCOLLN("<Preheat Ultrabase>");
+      HARDWARE_SERIAL_PROTOCOLLN("<Fil. Change Pause>");
+      HARDWARE_SERIAL_PROTOCOLLN("<Fil. Change Pause>");
+      HARDWARE_SERIAL_PROTOCOLLN("<Fil. Change Resume>");
+      HARDWARE_SERIAL_PROTOCOLLN("<Fil. Change Resume>");
       break;
 
     case 4: // Page 2
-      HARDWARE_SERIAL_PROTOCOLLNPGM("<Start Mesh Leveling>");
-      HARDWARE_SERIAL_PROTOCOLLNPGM("<Start Mesh Leveling>");
-      HARDWARE_SERIAL_PROTOCOLLNPGM("<Next Mesh Point>");
-      HARDWARE_SERIAL_PROTOCOLLNPGM("<Next Mesh Point>");
-      HARDWARE_SERIAL_PROTOCOLLNPGM("<Z Up 0.1>");
-      HARDWARE_SERIAL_PROTOCOLLNPGM("<Z Up 0.1>");
-      HARDWARE_SERIAL_PROTOCOLLNPGM("<Z Down 0.1>");
-      HARDWARE_SERIAL_PROTOCOLLNPGM("<Z Down 0.1>");
+      HARDWARE_SERIAL_PROTOCOLLN("<Start Mesh Leveling>");
+      HARDWARE_SERIAL_PROTOCOLLN("<Start Mesh Leveling>");
+      HARDWARE_SERIAL_PROTOCOLLN("<Next Mesh Point>");
+      HARDWARE_SERIAL_PROTOCOLLN("<Next Mesh Point>");
+      HARDWARE_SERIAL_PROTOCOLLN("<Z Up 0.1>");
+      HARDWARE_SERIAL_PROTOCOLLN("<Z Up 0.1>");
+      HARDWARE_SERIAL_PROTOCOLLN("<Z Down 0.1>");
+      HARDWARE_SERIAL_PROTOCOLLN("<Z Down 0.1>");
       break;
 
     case 8: // Page 3
-      HARDWARE_SERIAL_PROTOCOLLNPGM("<Z Up 0.02>");
-      HARDWARE_SERIAL_PROTOCOLLNPGM("<Z Up 0.02>");
-      HARDWARE_SERIAL_PROTOCOLLNPGM("<Z Down 0.02>");
-      HARDWARE_SERIAL_PROTOCOLLNPGM("<Z Down 0.02>");
-      HARDWARE_SERIAL_PROTOCOLLNPGM("<Z Up 0.01>");
-      HARDWARE_SERIAL_PROTOCOLLNPGM("<Z Up 0.01>");
-      HARDWARE_SERIAL_PROTOCOLLNPGM("<Z Down 0.01>");
-      HARDWARE_SERIAL_PROTOCOLLNPGM("<Z Down 0.01>");
+      HARDWARE_SERIAL_PROTOCOLLN("<Z Up 0.02>");
+      HARDWARE_SERIAL_PROTOCOLLN("<Z Up 0.02>");
+      HARDWARE_SERIAL_PROTOCOLLN("<Z Down 0.02>");
+      HARDWARE_SERIAL_PROTOCOLLN("<Z Down 0.02>");
+      HARDWARE_SERIAL_PROTOCOLLN("<Z Up 0.01>");
+      HARDWARE_SERIAL_PROTOCOLLN("<Z Up 0.01>");
+      HARDWARE_SERIAL_PROTOCOLLN("<Z Down 0.01>");
+      HARDWARE_SERIAL_PROTOCOLLN("<Z Down 0.01>");
       break;
 
     case 12: // Page 4
-      HARDWARE_SERIAL_PROTOCOLLNPGM("<PID Tune Hotend>");
-      HARDWARE_SERIAL_PROTOCOLLNPGM("<PID Tune Hotend>");
-      HARDWARE_SERIAL_PROTOCOLLNPGM("<PID Tune Ultrabase>");
-      HARDWARE_SERIAL_PROTOCOLLNPGM("<PID Tune Ultrabase>");
-      HARDWARE_SERIAL_PROTOCOLLNPGM("<Save EEPROM>");
-      HARDWARE_SERIAL_PROTOCOLLNPGM("<Save EEPROM>");
-      HARDWARE_SERIAL_PROTOCOLLNPGM("<Load FW Defaults>");
-      HARDWARE_SERIAL_PROTOCOLLNPGM("<Load FW Defaults>");
+      HARDWARE_SERIAL_PROTOCOLLN("<PID Tune Hotend>");
+      HARDWARE_SERIAL_PROTOCOLLN("<PID Tune Hotend>");
+      HARDWARE_SERIAL_PROTOCOLLN("<PID Tune Ultrabase>");
+      HARDWARE_SERIAL_PROTOCOLLN("<PID Tune Ultrabase>");
+      HARDWARE_SERIAL_PROTOCOLLN("<Save EEPROM>");
+      HARDWARE_SERIAL_PROTOCOLLN("<Save EEPROM>");
+      HARDWARE_SERIAL_PROTOCOLLN("<Load FW Defaults>");
+      HARDWARE_SERIAL_PROTOCOLLN("<Load FW Defaults>");
       break;
 
     case 16: // Page 5
-      HARDWARE_SERIAL_PROTOCOLLNPGM("<Disable Fil. Sensor>");
-      HARDWARE_SERIAL_PROTOCOLLNPGM("<Disable Fil. Sensor>");
-      HARDWARE_SERIAL_PROTOCOLLNPGM("<Enable Fil. Sensor>");
-      HARDWARE_SERIAL_PROTOCOLLNPGM("<Enable Fil. Sensor>");
-      HARDWARE_SERIAL_PROTOCOLLNPGM("<Exit>");
-      HARDWARE_SERIAL_PROTOCOLLNPGM("<Exit>");
+      HARDWARE_SERIAL_PROTOCOLLN("<Disable Fil. Sensor>");
+      HARDWARE_SERIAL_PROTOCOLLN("<Disable Fil. Sensor>");
+      HARDWARE_SERIAL_PROTOCOLLN("<Enable Fil. Sensor>");
+      HARDWARE_SERIAL_PROTOCOLLN("<Enable Fil. Sensor>");
+      HARDWARE_SERIAL_PROTOCOLLN("<Exit>");
+      HARDWARE_SERIAL_PROTOCOLLN("<Exit>");
       break;
 
     default:
@@ -623,15 +629,15 @@ void AnycubicTouchscreenClass::AnycubicTouchscreen()
       {
         if (strcmp(card.getWorkDirName(), "/") == 0)
         {
-          HARDWARE_SERIAL_PROTOCOLLNPGM("<Special Menu>");
-          HARDWARE_SERIAL_PROTOCOLLNPGM("<Special Menu>");
+          HARDWARE_SERIAL_PROTOCOLLN("<Special Menu>");
+          HARDWARE_SERIAL_PROTOCOLLN("<Special Menu>");
           SERIAL_ECHO(count);
           SERIAL_ECHOLNPGM("<Special_Menu>");
         }
         else
         {
-          HARDWARE_SERIAL_PROTOCOLLNPGM("/..");
-          HARDWARE_SERIAL_PROTOCOLLNPGM("/..");
+          HARDWARE_SERIAL_PROTOCOLLN("/..");
+          HARDWARE_SERIAL_PROTOCOLLN("/..");
           SERIAL_ECHO(count);
           SERIAL_ECHOLNPGM("/..");
         }
@@ -684,8 +690,7 @@ void AnycubicTouchscreenClass::AnycubicTouchscreen()
 #endif
   else
   {
-    HARDWARE_SERIAL_PROTOCOLLNPGM("<Special_Menu>");
-    HARDWARE_SERIAL_PROTOCOLLNPGM("<Special_Menu>");
+    // Do nothing?
   }
 }
 
@@ -851,7 +856,7 @@ void AnycubicTouchscreenClass::StateHandler()
     // did we park the hotend already?
     if ((!IsParked) && (!card.isPrinting()) && (!planner.movesplanned()))
     {
-      queue.inject_P(PSTR("G91\nG1 E-1 F1800\nG90")); //retract
+      queue.enqueue_now_P(PSTR("G91\nG1 E-1 F1800\nG90")); //retract
       ParkAfterStop();
       IsParked = true;
     }
@@ -1057,7 +1062,7 @@ void AnycubicTouchscreenClass::GetCommandFromTFT()
         }
         case 8: // A8 GET SD LIST
 #ifdef SDSUPPORT
-          SelectedDirectory[0] = 0;
+          currentTouchscreenSelection[0] = 0;
           if (!IS_SD_INSERTED())
           {
             HARDWARE_SERIAL_PROTOCOLPGM("J02");
@@ -1139,15 +1144,15 @@ void AnycubicTouchscreenClass::GetCommandFromTFT()
             starpos = (strchr(TFTstrchr_pointer + 4, '*'));
             if (TFTstrchr_pointer[4] == '/')
             {
-              strcpy(SelectedDirectory, TFTstrchr_pointer + 5);
+              strcpy(currentTouchscreenSelection, TFTstrchr_pointer + 5);
             }
             else if (TFTstrchr_pointer[4] == '<')
             {
-              strcpy(SelectedDirectory, TFTstrchr_pointer + 4);
+              strcpy(currentTouchscreenSelection, TFTstrchr_pointer + 4);
             }
             else
             {
-              SelectedDirectory[0] = 0;
+              currentTouchscreenSelection[0] = 0;
 
               if (starpos != NULL)
                 *(starpos - 1) = '\0';
@@ -1408,30 +1413,30 @@ void AnycubicTouchscreenClass::GetCommandFromTFT()
           break;
         case 26: // A26 refresh SD
 #ifdef SDSUPPORT
-          if (SelectedDirectory[0] == 0)
+          if (currentTouchscreenSelection[0] == 0)
           {
             card.mount();
           }
           else
           {
-            if ((SelectedDirectory[0] == '.') && (SelectedDirectory[1] == '.'))
+            if ((currentTouchscreenSelection[0] == '.') && (currentTouchscreenSelection[1] == '.'))
             {
               card.cdup();
             }
             else
             {
-              if (SelectedDirectory[0] == '<')
+              if (currentTouchscreenSelection[0] == '<')
               {
                 HandleSpecialMenu();
               }
               else
               {
-                card.cd(SelectedDirectory);
+                card.cd(currentTouchscreenSelection);
               }
             }
           }
 
-          SelectedDirectory[0] = 0;
+          currentTouchscreenSelection[0] = 0;
 
           if (!IS_SD_INSERTED())
           {
