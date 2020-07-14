@@ -33,7 +33,7 @@ char *ftostr32(const float &);
 
 #define TFTBUFSIZE 4
 #define TFT_MAX_CMD_SIZE 96
-#define MSG_MY_VERSION "Knutwurst-1.0.5"
+#define MSG_MY_VERSION "Knutwurst-1.0.7"
 
 #define ANYCUBIC_TFT_STATE_IDLE 0
 #define ANYCUBIC_TFT_STATE_SDPRINT 1
