@@ -514,9 +514,9 @@ void AnycubicTouchscreenClass::HandleSpecialMenu()
   }
   #endif
   #if ENABLED(KNUTWURST_BLTOUCH)
-  else if (strcasestr(currentTouchscreenSelection, "<Start Mesh Leveling>") != NULL)
+  else if (strcasestr(currentTouchscreenSelection, "<BLTouch Leveling>") != NULL)
   {
-    SERIAL_ECHOLNPGM("Special Menu: BL Touch Leveling");
+    SERIAL_ECHOLNPGM("Special Menu: BLTouch Leveling");
     queue.inject_P(PSTR("G28\nG29"));
   }
   #endif
@@ -613,8 +613,8 @@ void AnycubicTouchscreenClass::AnycubicTouchscreen()
 #endif
 #if ENABLED(KNUTWURST_BLTOUCH)
     case 4: // Page 2
-      HARDWARE_SERIAL_PROTOCOLLN("<BL Touch Leveling>");
-      HARDWARE_SERIAL_PROTOCOLLN("<BL Touch Leveling>");
+      HARDWARE_SERIAL_PROTOCOLLN("<BLTouch Leveling>");
+      HARDWARE_SERIAL_PROTOCOLLN("<BLTouch Leveling>");
       HARDWARE_SERIAL_PROTOCOLLN("<Next Mesh Point>");
       HARDWARE_SERIAL_PROTOCOLLN("<Next Mesh Point>");
       HARDWARE_SERIAL_PROTOCOLLN("<PID Tune Hotend>");
