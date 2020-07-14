@@ -35,8 +35,6 @@
 
 #define KNUTWURST_MEGAS_ADV
 #define KNUTWURST_TMC_ADV
-//#define KNUTWURST_BLTOUCH
-//#define KNUTWURST_DEBUG
 
 // @section temperature
 

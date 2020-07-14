@@ -471,6 +471,7 @@ void AnycubicTouchscreenClass::HandleSpecialMenu()
     SERIAL_ECHOLNPGM("Special Menu: Preheat Ultrabase");
     queue.inject_P(PSTR("M140 S60"));
   }
+  #if DISABLED(KNUTWURST_BLTOUCH)
   else if (strcasestr(currentTouchscreenSelection, "<Start Mesh Leveling>") != NULL)
   {
     SERIAL_ECHOLNPGM("Special Menu: Start Mesh Leveling");
@@ -511,6 +512,14 @@ void AnycubicTouchscreenClass::HandleSpecialMenu()
     SERIAL_ECHOLNPGM("Special Menu: Z Down 0.01");
     queue.inject_P(PSTR("G91\nG1 Z-0.01\nG90"));
   }
+  #endif
+  #if ENABLED(KNUTWURST_BLTOUCH)
+  else if (strcasestr(currentTouchscreenSelection, "<Start Mesh Leveling>") != NULL)
+  {
+    SERIAL_ECHOLNPGM("Special Menu: BL Touch Leveling");
+    queue.inject_P(PSTR("G28\nG29"));
+  }
+  #endif
   else if (strcasestr(currentTouchscreenSelection, "<Fil. Change Pause>") != NULL)
   {
     SERIAL_ECHOLNPGM("Special Menu: Fil. Change Pause");
@@ -559,6 +568,7 @@ void AnycubicTouchscreenClass::AnycubicTouchscreen()
       HARDWARE_SERIAL_PROTOCOLLN("<Fil. Change Resume>");
       break;
 
+#if DISABLED(KNUTWURST_BLTOUCH)
     case 4: // Page 2
       HARDWARE_SERIAL_PROTOCOLLN("<Start Mesh Leveling>");
       HARDWARE_SERIAL_PROTOCOLLN("<Start Mesh Leveling>");
@@ -600,6 +610,35 @@ void AnycubicTouchscreenClass::AnycubicTouchscreen()
       HARDWARE_SERIAL_PROTOCOLLN("<Exit>");
       HARDWARE_SERIAL_PROTOCOLLN("<Exit>");
       break;
+#endif
+#if ENABLED(KNUTWURST_BLTOUCH)
+    case 4: // Page 2
+      HARDWARE_SERIAL_PROTOCOLLN("<BL Touch Leveling>");
+      HARDWARE_SERIAL_PROTOCOLLN("<BL Touch Leveling>");
+      HARDWARE_SERIAL_PROTOCOLLN("<Next Mesh Point>");
+      HARDWARE_SERIAL_PROTOCOLLN("<Next Mesh Point>");
+      HARDWARE_SERIAL_PROTOCOLLN("<PID Tune Hotend>");
+      HARDWARE_SERIAL_PROTOCOLLN("<PID Tune Hotend>");
+      HARDWARE_SERIAL_PROTOCOLLN("<PID Tune Ultrabase>");
+      HARDWARE_SERIAL_PROTOCOLLN("<PID Tune Ultrabase>");
+      break;
+
+    case 8: // Page 3
+      HARDWARE_SERIAL_PROTOCOLLN("<Disable Fil. Sensor>");
+      HARDWARE_SERIAL_PROTOCOLLN("<Disable Fil. Sensor>");
+      HARDWARE_SERIAL_PROTOCOLLN("<Enable Fil. Sensor>");
+      HARDWARE_SERIAL_PROTOCOLLN("<Enable Fil. Sensor>");
+      HARDWARE_SERIAL_PROTOCOLLN("<Save EEPROM>");
+      HARDWARE_SERIAL_PROTOCOLLN("<Save EEPROM>");
+      HARDWARE_SERIAL_PROTOCOLLN("<Load FW Defaults>");
+      HARDWARE_SERIAL_PROTOCOLLN("<Load FW Defaults>");
+      break;
+
+    case 12: // Page 4
+      HARDWARE_SERIAL_PROTOCOLLN("<Exit>");
+      HARDWARE_SERIAL_PROTOCOLLN("<Exit>");
+      break;
+    #endif
 
     default:
       break;
