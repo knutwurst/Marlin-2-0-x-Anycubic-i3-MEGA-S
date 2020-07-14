@@ -6,7 +6,7 @@
 
 Diese Firmwarekonfiguration aktiviert viele neue erweitere Funktionen der Marlin Firmware:
 
- * Mesh-Bed Kalibrierung
+ * Mesh-Bed Kalibrierung / Autokalibrierung mit BLTouch
  * S-Kurven Beschleunigung
  * "Juction Deviation" statt des klassischen "Jerk" 
  * "Linear Pressure Control v1.5" aktiviert (kann mit M900 konfiguriert werden)
@@ -119,7 +119,7 @@ Du kannst die fertigen Binärdateien hier herunterladen: https://github.com/knut
 
 This firmware configuration activates many new features of the Marlin firmware:
 
- * Mesh bed calibration
+ * Mesh bed calibration / Auto calibration with BLTouch
  * S-curve acceleration
  * "Juction Deviation" instead of the classic "Jerk"
  * "Linear Pressure Control v1.5" enabled (can be configured with M900)
