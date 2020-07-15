@@ -615,26 +615,21 @@ void AnycubicTouchscreenClass::AnycubicTouchscreen()
     case 4: // Page 2
       HARDWARE_SERIAL_PROTOCOLLN("<BLTouch Leveling>");
       HARDWARE_SERIAL_PROTOCOLLN("<BLTouch Leveling>");
-      HARDWARE_SERIAL_PROTOCOLLN("<Next Mesh Point>");
-      HARDWARE_SERIAL_PROTOCOLLN("<Next Mesh Point>");
       HARDWARE_SERIAL_PROTOCOLLN("<PID Tune Hotend>");
       HARDWARE_SERIAL_PROTOCOLLN("<PID Tune Hotend>");
       HARDWARE_SERIAL_PROTOCOLLN("<PID Tune Ultrabase>");
       HARDWARE_SERIAL_PROTOCOLLN("<PID Tune Ultrabase>");
+      HARDWARE_SERIAL_PROTOCOLLN("<Disable Fil. Sensor>");
+      HARDWARE_SERIAL_PROTOCOLLN("<Disable Fil. Sensor>");
       break;
 
     case 8: // Page 3
-      HARDWARE_SERIAL_PROTOCOLLN("<Disable Fil. Sensor>");
-      HARDWARE_SERIAL_PROTOCOLLN("<Disable Fil. Sensor>");
       HARDWARE_SERIAL_PROTOCOLLN("<Enable Fil. Sensor>");
       HARDWARE_SERIAL_PROTOCOLLN("<Enable Fil. Sensor>");
       HARDWARE_SERIAL_PROTOCOLLN("<Save EEPROM>");
       HARDWARE_SERIAL_PROTOCOLLN("<Save EEPROM>");
       HARDWARE_SERIAL_PROTOCOLLN("<Load FW Defaults>");
       HARDWARE_SERIAL_PROTOCOLLN("<Load FW Defaults>");
-      break;
-
-    case 12: // Page 4
       HARDWARE_SERIAL_PROTOCOLLN("<Exit>");
       HARDWARE_SERIAL_PROTOCOLLN("<Exit>");
       break;
