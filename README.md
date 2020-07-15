@@ -6,7 +6,7 @@
 
 Diese Firmwarekonfiguration aktiviert viele neue erweitere Funktionen der Marlin Firmware:
 
- * Mesh-Bed Kalibrierung / Autokalibrierung mit BLTouch
+ * Mesh-Bed Kalibrierung / Autokalibrierung mit BLTouch (WiP)
  * S-Kurven Beschleunigung
  * "Juction Deviation" statt des klassischen "Jerk" 
  * "Linear Pressure Control v1.5" aktiviert (kann mit M900 konfiguriert werden)
@@ -88,13 +88,25 @@ Bei diesem Mapping ist man eben darauf angewiesen, dass die Funktionen, die man 
 
 ---
 
-### Bilder
+### Bilder - Special Menu
 
-![Manual Mesh Bed Leveling](images/Mesh_Level.jpg)
+![SpecialMenu](images/SpecialMenu.jpg)
 
-![Ultra Fine mesh tuning](images/Fine_Tuning.jpg)
+### Bilder - Manual Mesh Beld Leveling
 
-![Enable or Disable Filament Runout Sensor](images/Filament_Sensor_on_off.jpg)
+![Seite 1](images/MN_Page1.jpg)
+
+![Seite 2](images/MN_Page2.jpg)
+
+![Seite 3](images/MN_Page3.jpg)
+
+![Seite 4](images/MN_Page4.jpg)
+
+### Bilder - BLTouch Beld Leveling
+
+![Seite 1](images/BL_Page1.jpg)
+
+![Seite 2](images/BL_Page2.jpg)
 
 ---
 
@@ -119,7 +131,7 @@ Du kannst die fertigen Binärdateien hier herunterladen: https://github.com/knut
 
 This firmware configuration activates many new features of the Marlin firmware:
 
- * Mesh bed calibration / Auto calibration with BLTouch
+ * Mesh bed calibration / Auto calibration with BLTouch (WiP)
  * S-curve acceleration
  * "Juction Deviation" instead of the classic "Jerk"
  * "Linear Pressure Control v1.5" enabled (can be configured with M900)
@@ -200,13 +212,26 @@ With this mapping, you have to rely on the fact that the functions you want to u
 
 ---
 
-### Pictures
+### Pictures - Special Menu
 
-![Manual Mesh Bed Leveling](images/Mesh_Level.jpg)
+![SpecialMenu](images/SpecialMenu.jpg)
 
-![Ultra Fine mesh tuning](images/Fine_Tuning.jpg)
+### Pictures - Manual Mesh Beld Leveling
 
-![Enable or Disable Filament Runout Sensor](images/Filament_Sensor_on_off.jpg)
+![Page 1](images/MN_Page1.jpg)
+
+![Page 2](images/MN_Page2.jpg)
+
+![Page 3](images/MN_Page3.jpg)
+
+![Page 4](images/MN_Page4.jpg)
+
+### Pictures - BLTouch Beld Leveling
+
+![Page 1](images/BL_Page1.jpg)
+
+![Page 2](images/BL_Page2.jpg)
+
 
 ---
 
