@@ -25,23 +25,26 @@
  * Release version. Leave the Marlin version or apply a custom scheme.
  */
 #ifndef SHORT_BUILD_VERSION
-  #define SHORT_BUILD_VERSION "2.0.5.3"
+  #define SHORT_BUILD_VERSION "2.0.5.4"
 #endif
 
-  /**
-   * Verbose version identifier which should contain a reference to the location
-   * from where the binary was downloaded or the source code was compiled.
-   */
+/**
+ * Verbose version identifier containing a unique identifier, such as the
+ * vendor name, download location, GitHub account, etc.
+ */
+#ifndef DETAILED_BUILD_VERSION
   #define DETAILED_BUILD_VERSION SHORT_BUILD_VERSION " (knutwurst, Github)"
+#endif
 
 /**
- * Defines the version of the Marlin build. Not to be confused with
- * Marlin's own build number, e.g. 2.0.x.
+ * The STRING_DISTRIBUTION_DATE represents when the binary file was built,
+ * here we define this default string as the date where the latest release
+ * version was tagged.
  */
  #define CUSTOM_BUILD_VERSION "1.0.7-prerelese"
 
 #ifndef STRING_DISTRIBUTION_DATE
-  #define STRING_DISTRIBUTION_DATE "2020-03-31"
+  #define STRING_DISTRIBUTION_DATE "2020-07-09"
 #endif
 
 /**
@@ -68,18 +71,21 @@
   #define PROTOCOL_VERSION "1.0"
 #endif
 
-  /**
-   * Defines a generic printer name to be output to the LCD after booting Marlin.
-   */
+/**
+ * Define a generic printer name to be output to the LCD after booting Marlin.
+ */
+#ifndef MACHINE_NAME
   #define MACHINE_NAME "Knutwurst's Anycubic i3 MEGA"
+#endif
 
-  /**
-   * The SOURCE_CODE_URL is the location where users will find the Marlin Source
-   * Code which is installed on the device. In most cases —unless the manufacturer
-   * has a distinct Github fork— the Source Code URL should just be the main
-   * Marlin repository.
-   */
+/**
+ * Website where users can find Marlin source code for the binary installed on the
+ * device. Override this if you provide public source code download. (GPLv3 requires
+ * providing the source code to your customers.)
+ */
+#ifndef SOURCE_CODE_URL
   #define SOURCE_CODE_URL "https://github.com/knutwurst/Marlin-2-0-x-Anycubic-i3-MEGA-S"
+#endif
 
 /**
  * Default generic printer UUID.
