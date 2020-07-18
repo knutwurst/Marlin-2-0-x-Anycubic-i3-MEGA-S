@@ -22,6 +22,7 @@ Diese Firmwarekonfiguration aktiviert viele neue erweitere Funktionen der Marlin
  * Filament Runout Sensor kann im Menü deaktiviert werden
  * Wiederaufnahme des Drucks nach Stromausfall (WiP)
  * Druckbettgröße erweitert auf 220 x 225 x 210 mm
+ * Automatischer 'Slowdown', falls Daten nicht schnell genug fließen
 
 Besser im Vergleich zu anderen Firmwares (Bugfixes):
  * Aufgeräumtes Special-Menü
@@ -45,6 +46,14 @@ Bekannte Bugs:
 >Knutwurst, wieso machst du auch noch so eine Firmware? Es gibt doch schon so viele?
 
 Weil ich bisher keine gesehen habe, die nicht die blöden Bugs enthält, wie z.B. dass sie abstürzt, wenn man Dateien mit Sonderzeichen auf der SD Karte hat.
+
+>Ist es richtig, dass du mehr Wert auf den Druck von SD-Karte legst und andere eher auf USB?
+
+ich lege nicht "mehr Wert auf SD", sondern habe einfach die zahlreichen Bugs dahingehend gefixed. Die kleinen Anpassungen mit dem USB Puffer etc sind sowieso drin. Die sind aber in meinen Augen so uninteressant, dass ich es nicht erwähne, denn das wirklich komplizierte ist es, das proprietäre Display und den Cardreader korrekt anzusteuern. Alles andere ist Pillepalle.
+
+>Was ist dieser "Slowdown"?
+
+Der automatische Slowdown wird aktiv, falls der Drucker nicht schnell genug Daten bekommt. Dann fährt er automatisch mit der Geschwindigkeit auf 50% runter, satt unbehelligt weiterzumachen und dann zu ruckeln und Blobs zu verursachen.
 
 >Wieso ist mein Drucker plötzlich lauter als vorher?
 
@@ -146,6 +155,7 @@ This firmware configuration activates many new features of the Marlin firmware:
  * Filament Runout Sensor can be deactivated in the menu
  * Power outage support
  * Print bed size enlarged to 220 x 225 x 210 mm
+ * Automatic slowdown in if the data is not received fast enough
 
 What's better in coparison to other firmwares (bug fixes):
  * Tidy special menu
@@ -169,6 +179,14 @@ Known bugs:
 > Knutwurst, why are you still doing such a firmware? Aren't there already so many?
 
 Because I've never seen one that doesn't contain the stupid bugs like the crashes when you have files with special characters on the SD card.
+
+> Is it correct that you put more emphasis on printing from SD card and others more on USB?
+
+I don't put "more emphasis on SD", but just fixed the numerous bugs. The small adjustments with the USB buffer etc are included anyway. But they are so uninteresting in my eyes that I don't mention it, because the really complicated thing is to control the proprietary display and the card reader correctly. Everything else is easy-peasy.
+
+> What is this "slowdown"?
+
+The automatic slowdown is activated if the printer does not receive data quickly enough (e.g. via USB). Then it automatically goes down to 50%. This prevents stuttering and eliminated blobs.
 
 >Why is my printer so much louder than before?
 
