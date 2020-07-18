@@ -703,9 +703,9 @@ void AnycubicTouchscreenClass::AnycubicTouchscreen()
 
         if (card.flag.filenameIsDir)
         {
-          HARDWARE_SERIAL_PROTOCOLPGM("/");
+          HARDWARE_SERIAL_PROTOCOL("/");
           HARDWARE_SERIAL_PROTOCOLLN(card.filename);
-          HARDWARE_SERIAL_PROTOCOLPGM("/");
+          HARDWARE_SERIAL_PROTOCOL("/");
           HARDWARE_SERIAL_PROTOCOLLN(buffer);
           SERIAL_ECHO(count);
           SERIAL_ECHOPGM("/");
