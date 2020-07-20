@@ -141,4 +141,7 @@ FORCE_INLINE void HardwareSerialprintPGM(const char *str)
   }
 }
 
+void NEWFlushSerialRequestResend();
+void NEWClearToSend();
+
 #endif

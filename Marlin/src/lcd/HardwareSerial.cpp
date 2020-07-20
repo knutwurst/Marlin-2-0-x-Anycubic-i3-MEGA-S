@@ -37,6 +37,8 @@
 
 #include "HardwareSerial.h"
 
+millis_t previous_cmd_ms = 0;
+
 // Define constants and variables for buffering incoming serial data.  We're
 // using a ring buffer (I think), in which head is the index of the location
 // to which to write the next incoming character and tail is the index of the
@@ -309,6 +311,33 @@ HardwareSerialClass::operator bool()
 #if defined(UBRR3H)
 HardwareSerialClass HardwareSerial(&rx_buffer_ajg, &tx_buffer_ajg, &UBRR3H, &UBRR3L, &UCSR3A, &UCSR3B, &UCSR3C, &UDR3, RXEN3, TXEN3, RXCIE3, UDRIE3, U2X3);
 #endif
+
+void Newok_to_send() {
+  previous_cmd_ms = millis();
+  /*
+  if (!send_ok[cmd_queue_index_r]) return;
+ // SERIAL_PROTOCOLPGM(MSG_OK);
+  #if ENABLED(ADVANCED_OK)
+    char* p = command_queue[cmd_queue_index_r];
+    if (*p == 'N') {
+      SERIAL_PROTOCOL(' ');
+      SERIAL_ECHO(*p++);
+      while (NUMERIC_SIGNED(*p))
+        SERIAL_ECHO(*p++);
+    }
+    SERIAL_PROTOCOLPGM(" P"); SERIAL_PROTOCOL(int(BLOCK_BUFFER_SIZE - planner.movesplanned() - 1));
+    SERIAL_PROTOCOLPGM(" B"); SERIAL_PROTOCOL(BUFSIZE - commands_in_queue);
+  #endif
+  SERIAL_EOL;
+  */
+}
+void NEWFlushSerialRequestResend() {
+  //char command_queue[cmd_queue_index_r][100]="Resend:";
+  HardwareSerial.flush();
+ // SERIAL_PROTOCOLPGM(MSG_RESEND);
+//  SERIAL_PROTOCOLLN(gcode_LastN + 1);
+  Newok_to_send();
+}
 
 #endif
 

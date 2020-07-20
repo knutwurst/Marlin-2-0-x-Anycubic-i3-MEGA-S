@@ -55,7 +55,7 @@ unsigned char ResumingFlag = 0;
 #endif
 
 //#define MAX_PRINTABLE_FILENAME_LEN 21
-#define MAX_PRINTABLE_FILENAME_LEN 22
+#define MAX_PRINTABLE_FILENAME_LEN 24
 
 void setup_OutageTestPin()
 {
@@ -437,6 +437,7 @@ void AnycubicTouchscreenClass::HandleSpecialMenu()
     SERIAL_ECHOPAIR(" DEBUG: Special Menu Selection: ", currentTouchscreenSelection);
     SERIAL_EOL();
 #endif
+    delay(10);
   if (strcasestr(currentTouchscreenSelection, "<Special Menu>") != NULL)
   {
     SpecialMenu = true;
@@ -608,9 +609,10 @@ void AnycubicTouchscreenClass::PrintList()
   else if (card.isMounted())
   {
     uint16_t count = filenumber;
-    uint16_t max_files = 0;
+    uint16_t max_files;
     uint16_t dir_files = card.countFilesInWorkDir();
 
+    delay(10);
     // What is this shit? What if there are exactely 3 files+folders?
     // TODO: find something better than this crap.
     if ((dir_files - filenumber) < 4)
@@ -671,32 +673,19 @@ void AnycubicTouchscreenClass::PrintList()
             }
           }
         }
+
         outputString[fileNameLen] = '\0';
-
-        if (strcasestr(outputString, ".gcode") == NULL) {
-            outputString[MAX_PRINTABLE_FILENAME_LEN - 7] = '.';
-            outputString[MAX_PRINTABLE_FILENAME_LEN - 6] = 'g';
-            outputString[MAX_PRINTABLE_FILENAME_LEN - 5] = 'c';
-            outputString[MAX_PRINTABLE_FILENAME_LEN - 4] = 'o';
-            outputString[MAX_PRINTABLE_FILENAME_LEN - 3] = 'd';
-            outputString[MAX_PRINTABLE_FILENAME_LEN - 2] = 'e';
-            outputString[MAX_PRINTABLE_FILENAME_LEN - 1] = '\0';
-        }
-
-        
-        
 
         if (card.flag.filenameIsDir)
         {
-          /*
-          HARDWARE_SERIAL_PROTOCOLPGM("/");
+          HARDWARE_SERIAL_PROTOCOL("/");
           HARDWARE_SERIAL_PROTOCOLLN(card.filename);
-          HARDWARE_SERIAL_PROTOCOLPGM("/");
-          HARDWARE_SERIAL_PROTOCOLLN(outputString);
+          HARDWARE_SERIAL_PROTOCOL("DIR_");
+          HARDWARE_SERIAL_PROTOCOL(outputString);
+          HARDWARE_SERIAL_PROTOCOLLN(".gcode");
           SERIAL_ECHO(count);
           SERIAL_ECHOPGM(": /");
           SERIAL_ECHOLN(outputString);
-          */
         }
         else
         {
@@ -710,11 +699,6 @@ void AnycubicTouchscreenClass::PrintList()
     }
   }
 #endif
-  else
-  {
-    //HARDWARE_SERIAL_PROTOCOLLN("<Special Menu>.gcode");
-    //HARDWARE_SERIAL_PROTOCOLLN("<Special Menu>.gcode");
-  }
 }
 
 void AnycubicTouchscreenClass::CheckSDCardChange()
@@ -959,36 +943,88 @@ void AnycubicTouchscreenClass::FilamentRunout()
   }
 }
 
+
+static boolean TFTcomment_mode = false;
+
 void AnycubicTouchscreenClass::GetCommandFromTFT()
 {
+  
   char *starpos = NULL;
-  while (HardwareSerial.available() > 0 && TFTbuflen < TFTBUFSIZE)
-  {
-    serial3_char = HardwareSerial.read();
-    if (serial3_char == '\n' ||
-        serial3_char == '\r' ||
-        serial3_char == ':' ||
-        serial3_count >= (TFT_MAX_CMD_SIZE - 1))
+  while( HardwareSerial.available() > 0  && TFTbuflen < TFTBUFSIZE)
+  {        
+    serial3_char = HardwareSerial.read();   
+    if(serial3_char == '\n' || serial3_char == '\r' || (serial3_char == ':' && TFTcomment_mode == false) || serial3_count >= (TFT_MAX_CMD_SIZE - 1) )
     {
-      if (!serial3_count)
-      { //if empty line
+        if(!serial3_count) { //if empty line
+        TFTcomment_mode = false; //for new command
         return;
-      }
+    }
+    
+    TFTcmdbuffer[TFTbufindw][serial3_count] = 0; //terminate string
+    if(!TFTcomment_mode)
+    {
+        TFTcomment_mode = false; //for new command
+        
+        //TFTfromsd[TFTbufindw] = false;
+        
+        if(strchr(TFTcmdbuffer[TFTbufindw], 'N') != NULL)
+        {
+        /*
+          TFTstrchr_pointer = strchr(TFTcmdbuffer[TFTbufindw], 'N');
+          gcode_N = (strtol(&TFTcmdbuffer[TFTbufindw][TFTstrchr_pointer - TFTcmdbuffer[TFTbufindw] + 1], NULL, 10));
+          if(gcode_N != gcode_LastN+1 && (strstr_P(TFTcmdbuffer[TFTbufindw], PSTR("M110")) == NULL) )
+          {
+              HARDWARE_SERIAL_ERROR_START;
+              NEWFlushSerialRequestResend();
+              serial3_count = 0;
+              return;
+          }
+        */
+  
+       if(strchr(TFTcmdbuffer[TFTbufindw], '*') != NULL)
+       {
+          byte checksum = 0;
+          byte count = 0;
+          while(TFTcmdbuffer[TFTbufindw][count] != '*') checksum = checksum^TFTcmdbuffer[TFTbufindw][count++];
+          TFTstrchr_pointer = strchr(TFTcmdbuffer[TFTbufindw], '*');
+    
+          if( (int)(strtod(&TFTcmdbuffer[TFTbufindw][TFTstrchr_pointer - TFTcmdbuffer[TFTbufindw] + 1], NULL)) != checksum)
+          {
+              HARDWARE_SERIAL_ERROR_START;
+              NEWFlushSerialRequestResend();
 
-      TFTcmdbuffer[TFTbufindw][serial3_count] = 0; //terminate string
-
-      if ((strchr(TFTcmdbuffer[TFTbufindw], 'A') != NULL))
+              HARDWARE_SERIAL_ERROR_START;
+              NEWFlushSerialRequestResend();
+              serial3_count = 0;
+              return;
+          }
+         //if no errors, continue parsing
+       }
+       else
+       {
+         HARDWARE_SERIAL_ERROR_START;
+         NEWFlushSerialRequestResend();
+         serial3_count = 0;
+         return;
+       }  
+       //gcode_LastN = gcode_N;
+       //if no errors, continue parsing
+       }
+       else  // if we don't receive 'N' but still see '*'
+       {
+          if((strchr(TFTcmdbuffer[TFTbufindw], '*') != NULL))
+          {
+              HARDWARE_SERIAL_ERROR_START;
+              serial3_count = 0;
+              return;
+          }
+       }
+      
+      
+      if((strchr(TFTcmdbuffer[TFTbufindw], 'A') != NULL))
       {
-        int16_t a_command;
         TFTstrchr_pointer = strchr(TFTcmdbuffer[TFTbufindw], 'A');
-        a_command = ((int)((strtod(&TFTcmdbuffer[TFTbufindw][TFTstrchr_pointer - TFTcmdbuffer[TFTbufindw] + 1], NULL))));
-
-#ifdef ANYCUBIC_TFT_DEBUG
-        if ((a_command > 7) && (a_command != 20)) // No debugging of status polls, please!
-          SERIAL_ECHOLNPAIR("TFT Serial Command: ", TFTcmdbuffer[TFTbufindw]);
-#endif
-
-        switch (a_command)
+        switch((int)((strtod(&TFTcmdbuffer[TFTbufindw][TFTstrchr_pointer - TFTcmdbuffer[TFTbufindw] + 1], NULL))))
         {
 
         case 0: //A0 GET HOTEND TEMP
@@ -1093,8 +1129,10 @@ void AnycubicTouchscreenClass::GetCommandFromTFT()
           }
           else
           {
-            if (CodeSeen('S'))
+            if (CodeSeen('S')) {
               filenumber = CodeValue();
+            }
+              
 
             HARDWARE_SERIAL_PROTOCOLPGM("FN "); // Filelist start
             HARDWARE_SERIAL_ENTER();
@@ -1510,18 +1548,21 @@ void AnycubicTouchscreenClass::GetCommandFromTFT()
         break;
         default:
           break;
-        }
-      }
-      TFTbufindw = (TFTbufindw + 1) % TFTBUFSIZE;
-      TFTbuflen += 1;
-      serial3_count = 0;
-    }
-    else
-    {
-      TFTcmdbuffer[TFTbufindw][serial3_count++] = serial3_char;
-    }
-  }
+      }   
+       }       
+       TFTbufindw = (TFTbufindw + 1)%TFTBUFSIZE;
+       TFTbuflen += 1;
+     }
+     serial3_count = 0; //clear buffer
+     }
+     else
+     {
+     if(serial3_char == ';') TFTcomment_mode = true;
+     if(!TFTcomment_mode) TFTcmdbuffer[TFTbufindw][serial3_count++] = serial3_char;
+     }     
+   }
 }
+
 
 void AnycubicTouchscreenClass::CommandScan()
 {
