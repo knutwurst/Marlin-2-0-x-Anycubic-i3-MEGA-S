@@ -17,7 +17,7 @@ Diese Firmwarekonfiguration aktiviert viele neue erweitere Funktionen der Marlin
  * Bilinear Bed Leveling (BBL)
  * Manuelles Editieren der Messpunkte
  * Volle Anycubic Touchscreen Unterstützung
- * Spannung vom Bauteillüfter von 8V auf 12V
+ * Bauteilkühler läuft nun auf 100% statt maximal 70%
  * Pause & Filamentwechselfunktion
  * Automatische EEPROM Initialisierung
  * Filament Runout Sensor kann im Menü deaktiviert werden
@@ -152,6 +152,7 @@ This firmware configuration activates many new features of the Marlin firmware:
  * Bilinear Bed Leveling (BBL)
  * Manual editing of the measuring points
  * Full Anycubic touchscreen support
+ * Part cooling fan now runs at 100% instead of 70%
  * Pause & filament change function
  * Automatic EEPROM initialization
  * Filament Runout Sensor can be deactivated in the menu
