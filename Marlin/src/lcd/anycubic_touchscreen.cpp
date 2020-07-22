@@ -55,7 +55,7 @@ unsigned char ResumingFlag = 0;
 #endif
 
 //#define MAX_PRINTABLE_FILENAME_LEN 21
-#define MAX_PRINTABLE_FILENAME_LEN 24
+#define MAX_PRINTABLE_FILENAME_LEN 26
 
 void setup_OutageTestPin()
 {
@@ -113,6 +113,7 @@ AnycubicTouchscreenClass::AnycubicTouchscreenClass()
 void AnycubicTouchscreenClass::Setup()
 {
   HardwareSerial.begin(115200);
+  HARDWARE_SERIAL_ENTER();
   HARDWARE_SERIAL_PROTOCOLPGM("J17"); // J17 Main board reset
   HARDWARE_SERIAL_ENTER();
   delay(10);
@@ -140,6 +141,7 @@ void AnycubicTouchscreenClass::Setup()
   currentFileOrDirectory[0] = '\0';
   SpecialMenu = false;
   FilamentSensorEnabled = true;
+  MyFileNrCnt = 0;
 
 #ifdef STARTUP_CHIME
   buzzer.tone(100, 554);
@@ -437,7 +439,6 @@ void AnycubicTouchscreenClass::HandleSpecialMenu()
     SERIAL_ECHOPAIR(" DEBUG: Special Menu Selection: ", currentTouchscreenSelection);
     SERIAL_EOL();
 #endif
-    delay(10);
   if (strcasestr(currentTouchscreenSelection, "<Special Menu>") != NULL)
   {
     SpecialMenu = true;
@@ -471,6 +472,7 @@ void AnycubicTouchscreenClass::HandleSpecialMenu()
     SERIAL_ECHOLNPGM("Special Menu: Preheat Ultrabase");
     queue.inject_P(PSTR("M140 S60"));
   }
+  #if DISABLED(KNUTWURST_BLTOUCH)
   else if (strcasestr(currentTouchscreenSelection, "<Start Mesh Leveling>") != NULL)
   {
     SERIAL_ECHOLNPGM("Special Menu: Start Mesh Leveling");
@@ -504,13 +506,23 @@ void AnycubicTouchscreenClass::HandleSpecialMenu()
   else if (strcasestr(currentTouchscreenSelection, "<Z Up 0.01>") != NULL)
   {
     SERIAL_ECHOLNPGM("Special Menu: Z Up 0.01");
-    queue.inject_P(PSTR("G91\nG1 Z+0.01\nG90"));
+    queue.enqueue_now_P(PSTR("G91\nG1 Z+0.03\nG90"));
+    queue.enqueue_now_P(PSTR("G91\nG1 Z-0.02\nG90"));
   }
   else if (strcasestr(currentTouchscreenSelection, "<Z Down 0.01>") != NULL)
   {
     SERIAL_ECHOLNPGM("Special Menu: Z Down 0.01");
-    queue.inject_P(PSTR("G91\nG1 Z-0.01\nG90"));
+    queue.enqueue_now_P(PSTR("G91\nG1 Z+0.02\nG90"));
+    queue.enqueue_now_P(PSTR("G91\nG1 Z-0.03\nG90"));
   }
+  #endif
+  #if ENABLED(KNUTWURST_BLTOUCH)
+  else if (strcasestr(currentTouchscreenSelection, "<BLTouch Leveling>") != NULL)
+  {
+    SERIAL_ECHOLNPGM("Special Menu: BLTouch Leveling");
+    queue.inject_P(PSTR("G28\nG29"));
+  }
+  #endif
   else if (strcasestr(currentTouchscreenSelection, "<Fil. Change Pause>") != NULL)
   {
     SERIAL_ECHOLNPGM("Special Menu: Fil. Change Pause");
@@ -542,6 +554,19 @@ void AnycubicTouchscreenClass::HandleSpecialMenu()
   }
 }
 
+uint16_t AnycubicTouchscreenClass::MyGetFileNr()
+{
+  if(card.isMounted)
+  {
+    MyFileNrCnt=0;  
+    //ReadMyfileNrFlag=true;
+    delay(10);
+    //card.Myls();
+    MyFileNrCnt = card.countFilesInWorkDir();
+  }
+  return MyFileNrCnt;
+}
+
 void AnycubicTouchscreenClass::PrintList()
 {
   if (SpecialMenu)
@@ -549,96 +574,102 @@ void AnycubicTouchscreenClass::PrintList()
     switch (filenumber)
     {
     case 0: // Page 1
-      HARDWARE_SERIAL_PROTOCOLLN("<Exit>.gcode");
-      HARDWARE_SERIAL_PROTOCOLLN("<Exit>.gcode");
-      HARDWARE_SERIAL_PROTOCOLLN("<Preheat Ultrabase>.gcode");
-      HARDWARE_SERIAL_PROTOCOLLN("<Preheat Ultrabase>.gcode");
-      HARDWARE_SERIAL_PROTOCOLLN("<Fil. Change Pause>.gcode");
-      HARDWARE_SERIAL_PROTOCOLLN("<Fil. Change Pause>.gcode");
-      HARDWARE_SERIAL_PROTOCOLLN("<Fil. Change Resume>.gcode");
-      HARDWARE_SERIAL_PROTOCOLLN("<Fil. Change Resume>.gcode");
+      HARDWARE_SERIAL_PROTOCOLLNPGM("<Exit>");
+      HARDWARE_SERIAL_PROTOCOLLNPGM("<Exit>");
+      HARDWARE_SERIAL_PROTOCOLLNPGM("<Preheat Ultrabase>");
+      HARDWARE_SERIAL_PROTOCOLLNPGM("<Preheat Ultrabase>");
+      HARDWARE_SERIAL_PROTOCOLLNPGM("<Fil. Change Pause>");
+      HARDWARE_SERIAL_PROTOCOLLNPGM("<Fil. Change Pause>");
+      HARDWARE_SERIAL_PROTOCOLLNPGM("<Fil. Change Resume>");
+      HARDWARE_SERIAL_PROTOCOLLNPGM("<Fil. Change Resume>");
       break;
 
     case 4: // Page 2
-      HARDWARE_SERIAL_PROTOCOLLN("<Start Mesh Leveling>.gcode");
-      HARDWARE_SERIAL_PROTOCOLLN("<Start Mesh Leveling>.gcode");
-      HARDWARE_SERIAL_PROTOCOLLN("<Next Mesh Point>.gcode");
-      HARDWARE_SERIAL_PROTOCOLLN("<Next Mesh Point>.gcode");
-      HARDWARE_SERIAL_PROTOCOLLN("<Z Up 0.1>.gcode");
-      HARDWARE_SERIAL_PROTOCOLLN("<Z Up 0.1>.gcode");
-      HARDWARE_SERIAL_PROTOCOLLN("<Z Down 0.1>.gcode");
-      HARDWARE_SERIAL_PROTOCOLLN("<Z Down 0.1>.gcode");
+      HARDWARE_SERIAL_PROTOCOLLNPGM("<Start Mesh Leveling>");
+      HARDWARE_SERIAL_PROTOCOLLNPGM("<Start Mesh Leveling>");
+      HARDWARE_SERIAL_PROTOCOLLNPGM("<Next Mesh Point>");
+      HARDWARE_SERIAL_PROTOCOLLNPGM("<Next Mesh Point>");
+      HARDWARE_SERIAL_PROTOCOLLNPGM("<Z Up 0.1>");
+      HARDWARE_SERIAL_PROTOCOLLNPGM("<Z Up 0.1>");
+      HARDWARE_SERIAL_PROTOCOLLNPGM("<Z Down 0.1>");
+      HARDWARE_SERIAL_PROTOCOLLNPGM("<Z Down 0.1>");
       break;
 
     case 8: // Page 3
-      HARDWARE_SERIAL_PROTOCOLLN("<Z Up 0.02>.gcode");
-      HARDWARE_SERIAL_PROTOCOLLN("<Z Up 0.02>.gcode");
-      HARDWARE_SERIAL_PROTOCOLLN("<Z Down 0.02>.gcode");
-      HARDWARE_SERIAL_PROTOCOLLN("<Z Down 0.02>.gcode");
-      HARDWARE_SERIAL_PROTOCOLLN("<Z Up 0.01>.gcode");
-      HARDWARE_SERIAL_PROTOCOLLN("<Z Up 0.01>.gcode");
-      HARDWARE_SERIAL_PROTOCOLLN("<Z Down 0.01>.gcode");
-      HARDWARE_SERIAL_PROTOCOLLN("<Z Down 0.01>.gcode");
+      HARDWARE_SERIAL_PROTOCOLLNPGM("<Z Up 0.02>");
+      HARDWARE_SERIAL_PROTOCOLLNPGM("<Z Up 0.02>");
+      HARDWARE_SERIAL_PROTOCOLLNPGM("<Z Down 0.02>");
+      HARDWARE_SERIAL_PROTOCOLLNPGM("<Z Down 0.02>");
+      HARDWARE_SERIAL_PROTOCOLLNPGM("<Z Up 0.01>");
+      HARDWARE_SERIAL_PROTOCOLLNPGM("<Z Up 0.01>");
+      HARDWARE_SERIAL_PROTOCOLLNPGM("<Z Down 0.01>");
+      HARDWARE_SERIAL_PROTOCOLLNPGM("<Z Down 0.01>");
       break;
 
     case 12: // Page 4
-      HARDWARE_SERIAL_PROTOCOLLN("<PID Tune Hotend>.gcode");
-      HARDWARE_SERIAL_PROTOCOLLN("<PID Tune Hotend>.gcode");
-      HARDWARE_SERIAL_PROTOCOLLN("<PID Tune Ultrabase>.gcode");
-      HARDWARE_SERIAL_PROTOCOLLN("<PID Tune Ultrabase>.gcode");
-      HARDWARE_SERIAL_PROTOCOLLN("<Save EEPROM>.gcode");
-      HARDWARE_SERIAL_PROTOCOLLN("<Save EEPROM>.gcode");
-      HARDWARE_SERIAL_PROTOCOLLN("<Load FW Defaults>.gcode");
-      HARDWARE_SERIAL_PROTOCOLLN("<Load FW Defaults>.gcode");
+      HARDWARE_SERIAL_PROTOCOLLNPGM("<PID Tune Hotend>");
+      HARDWARE_SERIAL_PROTOCOLLNPGM("<PID Tune Hotend>");
+      HARDWARE_SERIAL_PROTOCOLLNPGM("<PID Tune Ultrabase>");
+      HARDWARE_SERIAL_PROTOCOLLNPGM("<PID Tune Ultrabase>");
+      HARDWARE_SERIAL_PROTOCOLLNPGM("<Save EEPROM>");
+      HARDWARE_SERIAL_PROTOCOLLNPGM("<Save EEPROM>");
+      HARDWARE_SERIAL_PROTOCOLLNPGM("<Load FW Defaults>");
+      HARDWARE_SERIAL_PROTOCOLLNPGM("<Load FW Defaults>");
       break;
 
     case 16: // Page 5
-      HARDWARE_SERIAL_PROTOCOLLN("<Disable Fil. Sensor>.gcode");
-      HARDWARE_SERIAL_PROTOCOLLN("<Disable Fil. Sensor>.gcode");
-      HARDWARE_SERIAL_PROTOCOLLN("<Enable Fil. Sensor>.gcode");
-      HARDWARE_SERIAL_PROTOCOLLN("<Enable Fil. Sensor>.gcode");
-      HARDWARE_SERIAL_PROTOCOLLN("<Exit>.gcode");
-      HARDWARE_SERIAL_PROTOCOLLN("<Exit>.gcode");
+      HARDWARE_SERIAL_PROTOCOLLNPGM("<Disable Fil. Sensor>");
+      HARDWARE_SERIAL_PROTOCOLLNPGM("<Disable Fil. Sensor>");
+      HARDWARE_SERIAL_PROTOCOLLNPGM("<Enable Fil. Sensor>");
+      HARDWARE_SERIAL_PROTOCOLLNPGM("<Enable Fil. Sensor>");
+      HARDWARE_SERIAL_PROTOCOLLNPGM("<Exit>");
+      HARDWARE_SERIAL_PROTOCOLLNPGM("<Exit>");
       break;
 
     default:
       break;
     }
   }
-#ifdef SDSUPPORT
   else if (card.isMounted())
   {
     uint16_t count = filenumber;
     uint16_t max_files;
-    uint16_t dir_files = card.countFilesInWorkDir();
+    //uint16_t MyFileNrCnt = card.countFilesInWorkDir();
 
-    delay(10);
     // What is this shit? What if there are exactely 3 files+folders?
     // TODO: find something better than this crap.
-    if ((dir_files - filenumber) < 4)
+    if ((MyFileNrCnt - filenumber) < 4)
     {
-      max_files = dir_files;
+      max_files = MyFileNrCnt;
     }
     else
     {
+      //max_files = MyFileNrCnt;
       max_files = filenumber + 3;
     }
 
     for (count = filenumber; count <= max_files; count++)
     {
+      SERIAL_ECHOPGM("filenumber: ");
+      SERIAL_ECHOLN(filenumber);
+      SERIAL_ECHOPGM("max_files: ");
+      SERIAL_ECHOLN(max_files);
+      SERIAL_ECHOPGM("count: ");
+      SERIAL_ECHOLN(count);
+
       if (count == 0) // Special Entry
       {
         if (strcmp(card.getWorkDirName(), "/") == 0)
         {
-          HARDWARE_SERIAL_PROTOCOLLN("<Special Menu>.gcode");
-          HARDWARE_SERIAL_PROTOCOLLN("<Special Menu>.gcode");
+          HARDWARE_SERIAL_PROTOCOLLNPGM("<Special Menu>.gcode");
+          HARDWARE_SERIAL_PROTOCOLLNPGM("<Special Menu>.gcode");
           SERIAL_ECHO(count);
           SERIAL_ECHOLNPGM(": <Special Menu>.gcode");
         }
         else
         {
-          HARDWARE_SERIAL_PROTOCOLLN("DIR_UP.gcode");
-          HARDWARE_SERIAL_PROTOCOLLN("DIR_UP.gcode");
+          HARDWARE_SERIAL_PROTOCOLLNPGM("DIR_UP.gco");
+          HARDWARE_SERIAL_PROTOCOLLNPGM("DIR_UP.gcode");
           SERIAL_ECHO(count);
           SERIAL_ECHOLNPGM(": DIR_UP.gcode");
         }
@@ -646,6 +677,7 @@ void AnycubicTouchscreenClass::PrintList()
       else
       {
         card.selectFileByIndex(count - 1);
+
 
         // Bugfix for non-printable special characters
         // which are now replaced by underscores.
@@ -678,11 +710,12 @@ void AnycubicTouchscreenClass::PrintList()
 
         if (card.flag.filenameIsDir)
         {
-          HARDWARE_SERIAL_PROTOCOL("/");
-          HARDWARE_SERIAL_PROTOCOLLN(card.filename);
-          HARDWARE_SERIAL_PROTOCOL("DIR_");
+          HARDWARE_SERIAL_PROTOCOLPGM("/");
+          HARDWARE_SERIAL_PROTOCOL(card.filename);
+          HARDWARE_SERIAL_PROTOCOLLNPGM(".gco");
+          HARDWARE_SERIAL_PROTOCOLPGM("DIR_");
           HARDWARE_SERIAL_PROTOCOL(outputString);
-          HARDWARE_SERIAL_PROTOCOLLN(".gcode");
+          HARDWARE_SERIAL_PROTOCOLLNPGM(".gcode");
           SERIAL_ECHO(count);
           SERIAL_ECHOPGM(": /");
           SERIAL_ECHOLN(outputString);
@@ -693,12 +726,11 @@ void AnycubicTouchscreenClass::PrintList()
           HARDWARE_SERIAL_PROTOCOLLN(outputString);
           SERIAL_ECHO(count);
           SERIAL_ECHOPGM(": ");
-          SERIAL_ECHOLN(outputString);
+          SERIAL_ECHOLN(card.longFilename);
         }
       }
     }
   }
-#endif
 }
 
 void AnycubicTouchscreenClass::CheckSDCardChange()
@@ -1129,9 +1161,10 @@ void AnycubicTouchscreenClass::GetCommandFromTFT()
           }
           else
           {
-            if (CodeSeen('S')) {
+            MyGetFileNr();
+            
+            if (CodeSeen('S'))
               filenumber = CodeValue();
-            }
               
 
             HARDWARE_SERIAL_PROTOCOLPGM("FN "); // Filelist start
@@ -1508,7 +1541,7 @@ void AnycubicTouchscreenClass::GetCommandFromTFT()
               {
                 strcpy(currentFileOrDirectory, currentTouchscreenSelection);
                 int currentFileLen = strlen(currentFileOrDirectory);
-                currentFileOrDirectory[currentFileLen - 6] = '\0';
+                currentFileOrDirectory[currentFileLen - 4] = '\0';
                 card.cd(currentFileOrDirectory);
               }
             }

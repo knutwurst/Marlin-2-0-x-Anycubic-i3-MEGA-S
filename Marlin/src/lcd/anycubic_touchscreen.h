@@ -114,9 +114,11 @@ private:
   void FilamentChangeResume();
   void ReheatNozzle();
   void ParkAfterStop();
+  uint16_t MyGetFileNr();
 
   char currentTouchscreenSelection[30];
   char currentFileOrDirectory[30];
+  uint16_t MyFileNrCnt = 0;
   uint8_t SpecialMenu = false;
   uint8_t FilamentSensorEnabled = true;
   
