@@ -55,7 +55,7 @@ unsigned char ResumingFlag = 0;
 #endif
 
 //#define MAX_PRINTABLE_FILENAME_LEN 21
-#define MAX_PRINTABLE_FILENAME_LEN 23
+#define MAX_PRINTABLE_FILENAME_LEN 30
 
 void setup_OutageTestPin()
 {
@@ -542,17 +542,20 @@ void AnycubicTouchscreenClass::HandleSpecialMenu()
   }
 #endif
 
-  else if (strcasestr(currentTouchscreenSelection, "Fil. Change Pause") != NULL)
+  else if ((strcasestr(currentTouchscreenSelection, "Fil. Change Pause") != NULL)
+  || (strcasestr(currentTouchscreenSelection, "_FILCH~2.GCO") != NULL))
   {
     SERIAL_ECHOLNPGM("Special Menu: Fil. Change Pause");
     FilamentChangePause();
   }
-  else if (strcasestr(currentTouchscreenSelection, "Fil. Change Resume") != NULL)
+  else if ((strcasestr(currentTouchscreenSelection, "Fil. Change Resume") != NULL)
+  || (strcasestr(currentTouchscreenSelection, "_FILCH~1.GCO") != NULL))
   {
     SERIAL_ECHOLNPGM("Special Menu: Fil. Change Resume");
     FilamentChangeResume();
   }
-  else if (strcasestr(currentTouchscreenSelection, "Disable Fil. Sensor") != NULL)
+  else if ((strcasestr(currentTouchscreenSelection, "Disable Fil. Sensor") != NULL)
+  || (strcasestr(currentTouchscreenSelection, "_DISAB~1") != NULL))
   {
     SERIAL_ECHOLNPGM("Special Menu: Disable Filament Sensor");
     FilamentSensorEnabled = false;
@@ -560,14 +563,16 @@ void AnycubicTouchscreenClass::HandleSpecialMenu()
     buzzer.tone(105, 1108);
     buzzer.tone(105, 1108);
   }
-  else if (strcasestr(currentTouchscreenSelection, "Enable Fil. Sensor") != NULL)
+  else if ((strcasestr(currentTouchscreenSelection, "Enable Fil. Sensor") != NULL)
+  || (strcasestr(currentTouchscreenSelection, "_ENABL~1.GCO") != NULL))
   {
     SERIAL_ECHOLNPGM("Special Menu: Enable Filament Sensor");
     FilamentSensorEnabled = true;
     buzzer.tone(105, 1108);
     buzzer.tone(105, 1108);
   }
-  else if (strcasestr(currentTouchscreenSelection, "Exit") != NULL)
+  else if ((strcasestr(currentTouchscreenSelection, "Exit") != NULL)
+  || (strcasestr(currentTouchscreenSelection, "_EXIT_~1.GCO") != NULL))
   {
     SpecialMenu = false;
   }
@@ -757,15 +762,15 @@ void AnycubicTouchscreenClass::PrintList()
           HARDWARE_SERIAL_PROTOCOL("/");
           HARDWARE_SERIAL_PROTOCOLLN(card.filename);
           HARDWARE_SERIAL_PROTOCOL("/");
-          HARDWARE_SERIAL_PROTOCOLLN(outputString);
+          HARDWARE_SERIAL_PROTOCOLLN(card.longFilename);
           SERIAL_ECHO(count);
           SERIAL_ECHOPGM(": /");
-          SERIAL_ECHOLN(outputString);
+          SERIAL_ECHOLN(card.longFilename);
         }
         else
         {
           HARDWARE_SERIAL_PROTOCOLLN(card.filename);
-          HARDWARE_SERIAL_PROTOCOLLN(outputString);
+          HARDWARE_SERIAL_PROTOCOLLN(card.longFilename);
           SERIAL_ECHO(count);
           SERIAL_ECHOPGM(": ");
           SERIAL_ECHOLN(card.longFilename);
