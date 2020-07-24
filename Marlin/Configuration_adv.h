@@ -1471,7 +1471,9 @@
  *
  * Warning: Does not respect endstops!
  */
-//#define BABYSTEPPING
+#if ENABLED(KNUTWURST_BLTOUCH)
+#define BABYSTEPPING
+#endif
 #if ENABLED(BABYSTEPPING)
   //#define INTEGRATED_BABYSTEPPING         // EXPERIMENTAL integration of babystepping into the Stepper ISR
   //#define BABYSTEP_WITHOUT_HOMING
@@ -1520,6 +1522,7 @@
  */
 #define LIN_ADVANCE
 #if ENABLED(LIN_ADVANCE)
+  //#define EXTRA_LIN_ADVANCE_K // Enable for second linear advance constants
   #define LIN_ADVANCE_K 0	  // Unit: mm compression per 1mm/s extruder speed
   //#define LA_DEBUG          // If enabled, this will generate debug information output over USB.
 #endif
@@ -1556,11 +1559,22 @@
  * probe points will follow. This prevents any change from causing
  * the probe to be unable to reach any points.
  */
+#if ENABLED(KNUTWURST_BLTOUCH)
+#if PROBE_SELECTED && !IS_KINEMATIC
+  #define MIN_PROBE_EDGE_LEFT 10
+  #define MIN_PROBE_EDGE_RIGHT 10
+  #define MIN_PROBE_EDGE_FRONT 10
+  #define MIN_PROBE_EDGE_BACK 10
+#endif
+#endif
+
+#if DISABLED(KNUTWURST_BLTOUCH)
 #if PROBE_SELECTED && !IS_KINEMATIC
   //#define MIN_PROBE_EDGE_LEFT MIN_PROBE_EDGE
   //#define MIN_PROBE_EDGE_RIGHT MIN_PROBE_EDGE
   //#define MIN_PROBE_EDGE_FRONT MIN_PROBE_EDGE
   //#define MIN_PROBE_EDGE_BACK MIN_PROBE_EDGE
+#endif
 #endif
 
 #if EITHER(MESH_BED_LEVELING, AUTO_BED_LEVELING_UBL)

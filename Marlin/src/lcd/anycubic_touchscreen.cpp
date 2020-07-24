@@ -305,19 +305,21 @@ void AnycubicTouchscreenClass::PausePrint()
   TFTstate = ANYCUBIC_TFT_STATE_SDPAUSE_REQ;
 }
 
-void AnycubicTouchscreenClass::StopPrint()
+inline void AnycubicTouchscreenClass::StopPrint()
 {
   // stop print, disable heaters
   wait_for_user = false;
   wait_for_heatup = false;
-  card.endFilePrint();
-  card.closefile();
-#ifdef ANYCUBIC_TFT_DEBUGANYCUBIC_TFT_STATE_SDSTOP_REQ
+  IsParked = false;
+  if(card.isFileOpen) {
+    card.endFilePrint();
+    card.closefile();
+  }
+#ifdef ANYCUBIC_TFT_DEBUG
   SERIAL_ECHOLNPGM("DEBUG: Stopped and cleared");
 #endif
   print_job_timer.stop();
   thermalManager.disable_all_heaters();
-  IsParked = false;
   ai3m_pause_state = 0;
 #ifdef ANYCUBIC_TFT_DEBUG
   SERIAL_ECHOPAIR(" DEBUG: AI3M Pause State: ", ai3m_pause_state);
@@ -413,8 +415,8 @@ void AnycubicTouchscreenClass::ParkAfterStop()
     SERIAL_ECHOLNPGM("DEBUG: SDSTOP: Park XY");
 #endif
   }
-  queue.inject_P(PSTR("M84")); // disable stepper motors
-  queue.inject_P(PSTR("M27")); // force report of SD status
+  queue.enqueue_now_P(PSTR("M84")); // disable stepper motors
+  queue.enqueue_now_P(PSTR("M27")); // force report of SD status
   ai3m_pause_state = 0;
 #ifdef ANYCUBIC_TFT_DEBUG
   SERIAL_ECHOPAIR(" DEBUG: AI3M Pause State: ", ai3m_pause_state);
@@ -523,6 +525,13 @@ void AnycubicTouchscreenClass::HandleSpecialMenu()
     queue.inject_P(PSTR("G28\nG29"));
   }
   #endif
+  #if ENABLED(KNUTWURST_BLTOUCH)
+  else if (strcasestr(currentTouchscreenSelection, "<BLTouch Leveling>") != NULL)
+  {
+    SERIAL_ECHOLNPGM("Special Menu: BLTouch Leveling");
+    queue.inject_P(PSTR("G28\nG29"));
+  }
+  #endif
   else if (strcasestr(currentTouchscreenSelection, "<Fil. Change Pause>") != NULL)
   {
     SERIAL_ECHOLNPGM("Special Menu: Fil. Change Pause");
@@ -584,6 +593,7 @@ void AnycubicTouchscreenClass::PrintList()
       HARDWARE_SERIAL_PROTOCOLLNPGM("<Fil. Change Resume>");
       break;
 
+#if DISABLED(KNUTWURST_BLTOUCH)
     case 4: // Page 2
       HARDWARE_SERIAL_PROTOCOLLNPGM("<Start Mesh Leveling>");
       HARDWARE_SERIAL_PROTOCOLLNPGM("<Start Mesh Leveling>");
@@ -625,6 +635,30 @@ void AnycubicTouchscreenClass::PrintList()
       HARDWARE_SERIAL_PROTOCOLLNPGM("<Exit>");
       HARDWARE_SERIAL_PROTOCOLLNPGM("<Exit>");
       break;
+#endif
+#if ENABLED(KNUTWURST_BLTOUCH)
+    case 4: // Page 2
+      HARDWARE_SERIAL_PROTOCOLLNPGM("<BLTouch Leveling>");
+      HARDWARE_SERIAL_PROTOCOLLNPGM("<BLTouch Leveling>");
+      HARDWARE_SERIAL_PROTOCOLLNPGM("<PID Tune Hotend>");
+      HARDWARE_SERIAL_PROTOCOLLNPGM("<PID Tune Hotend>");
+      HARDWARE_SERIAL_PROTOCOLLNPGM("<PID Tune Ultrabase>");
+      HARDWARE_SERIAL_PROTOCOLLNPGM("<PID Tune Ultrabase>");
+      HARDWARE_SERIAL_PROTOCOLLNPGM("<Disable Fil. Sensor>");
+      HARDWARE_SERIAL_PROTOCOLLNPGM("<Disable Fil. Sensor>");
+      break;
+
+    case 8: // Page 3
+      HARDWARE_SERIAL_PROTOCOLLNPGM("<Enable Fil. Sensor>");
+      HARDWARE_SERIAL_PROTOCOLLNPGM("<Enable Fil. Sensor>");
+      HARDWARE_SERIAL_PROTOCOLLNPGM("<Save EEPROM>");
+      HARDWARE_SERIAL_PROTOCOLLNPGM("<Save EEPROM>");
+      HARDWARE_SERIAL_PROTOCOLLNPGM("<Load FW Defaults>");
+      HARDWARE_SERIAL_PROTOCOLLNPGM("<Load FW Defaults>");
+      HARDWARE_SERIAL_PROTOCOLLNPGM("<Exit>");
+      HARDWARE_SERIAL_PROTOCOLLNPGM("<Exit>");
+      break;
+    #endif
 
     default:
       break;
@@ -710,12 +744,10 @@ void AnycubicTouchscreenClass::PrintList()
 
         if (card.flag.filenameIsDir)
         {
-          HARDWARE_SERIAL_PROTOCOLPGM("/");
-          HARDWARE_SERIAL_PROTOCOL(card.filename);
-          HARDWARE_SERIAL_PROTOCOLLNPGM(".gco");
-          HARDWARE_SERIAL_PROTOCOLPGM("DIR_");
-          HARDWARE_SERIAL_PROTOCOL(outputString);
-          HARDWARE_SERIAL_PROTOCOLLNPGM(".gcode");
+          HARDWARE_SERIAL_PROTOCOL("/");
+          HARDWARE_SERIAL_PROTOCOLLN(card.filename);
+          HARDWARE_SERIAL_PROTOCOL("/");
+          HARDWARE_SERIAL_PROTOCOLLN(buffer);
           SERIAL_ECHO(count);
           SERIAL_ECHOPGM(": /");
           SERIAL_ECHOLN(outputString);
@@ -730,6 +762,11 @@ void AnycubicTouchscreenClass::PrintList()
         }
       }
     }
+  }
+#endif
+  else
+  {
+    // Do nothing?
   }
 }
 
@@ -895,7 +932,7 @@ void AnycubicTouchscreenClass::StateHandler()
     // did we park the hotend already?
     if ((!IsParked) && (!card.isPrinting()) && (!planner.movesplanned()))
     {
-      queue.inject_P(PSTR("G91\nG1 E-1 F1800\nG90")); //retract
+      queue.enqueue_now_P(PSTR("G91\nG1 E-1 F1800\nG90")); //retract
       ParkAfterStop();
       IsParked = true;
     }

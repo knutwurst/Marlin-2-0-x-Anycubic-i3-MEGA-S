@@ -1,12 +1,15 @@
-# Knutwurst's i3 MEGA S Firmware (based on Marlin 2.0.5.3)
+# Knutwurst's i3 MEGA S Firmware (based on Marlin 2.0.5.4)
 
 <span style="color: red;">(BITTE GENAU DURCHLESEN! / PLEASE READ CAREFULLY!)</span>
+
+### Wenn dir gefällt, was ich mache, kannst du mir hier einen Kaffee spendieren*: [![Donate](https://img.shields.io/badge/Donate-PayPal-green.svg)](https://paypal.me/oliverkoester)
+<sub>*Es muss jetzt keine großzügige Spende sein. Ein paar Cent reichen um mir zu zeigen, wer überhaupt Interesse daran hat und wem die Weiterentwicklung wichtig ist. So bleibt die Motivation da und ich weiß einfach, dass ich nicht für die Tonne programmiere ;)<sub>
 
 ## Readme - German (english below)
 
 Diese Firmwarekonfiguration aktiviert viele neue erweitere Funktionen der Marlin Firmware:
 
- * Mesh-Bed Kalibrierung
+ * Mesh-Bed Kalibrierung / Autokalibrierung mit BLTouch (WiP)
  * S-Kurven Beschleunigung
  * "Juction Deviation" statt des klassischen "Jerk" 
  * "Linear Pressure Control v1.5" aktiviert (kann mit M900 konfiguriert werden)
@@ -14,12 +17,13 @@ Diese Firmwarekonfiguration aktiviert viele neue erweitere Funktionen der Marlin
  * Bilinear Bed Leveling (BBL)
  * Manuelles Editieren der Messpunkte
  * Volle Anycubic Touchscreen Unterstützung
- * Spannung vom Bauteillüfter von 8V auf 12V
+ * Bauteilkühler läuft nun auf 100% statt maximal 70%
  * Pause & Filamentwechselfunktion
  * Automatische EEPROM Initialisierung
  * Filament Runout Sensor kann im Menü deaktiviert werden
  * Wiederaufnahme des Drucks nach Stromausfall (WiP)
  * Druckbettgröße erweitert auf 220 x 225 x 210 mm
+ * Automatischer 'Slowdown', falls Daten nicht schnell genug fließen
 
 Besser im Vergleich zu anderen Firmwares (Bugfixes):
  * Aufgeräumtes Special-Menü
@@ -43,6 +47,14 @@ Bekannte Bugs:
 >Knutwurst, wieso machst du auch noch so eine Firmware? Es gibt doch schon so viele?
 
 Weil ich bisher keine gesehen habe, die nicht die blöden Bugs enthält, wie z.B. dass sie abstürzt, wenn man Dateien mit Sonderzeichen auf der SD Karte hat.
+
+>Ist es richtig, dass du mehr Wert auf den Druck von SD-Karte legst und andere eher auf USB?
+
+ich lege nicht "mehr Wert auf SD", sondern habe einfach die zahlreichen Bugs dahingehend gefixed. Die kleinen Anpassungen mit dem USB Puffer etc sind sowieso drin. Die sind aber in meinen Augen so uninteressant, dass ich es nicht erwähne, denn das wirklich komplizierte ist es, das proprietäre Display und den Cardreader korrekt anzusteuern. Alles andere ist Pillepalle.
+
+>Was ist dieser "Slowdown"?
+
+Der automatische Slowdown wird aktiv, falls der Drucker nicht schnell genug Daten bekommt. Dann fährt er automatisch mit der Geschwindigkeit auf 50% runter, satt unbehelligt weiterzumachen und dann zu ruckeln und Blobs zu verursachen.
 
 >Wieso ist mein Drucker plötzlich lauter als vorher?
 
@@ -88,13 +100,25 @@ Bei diesem Mapping ist man eben darauf angewiesen, dass die Funktionen, die man 
 
 ---
 
-### Bilder
+### Bilder - Special Menu
 
-![Manual Mesh Bed Leveling](images/Mesh_Level.jpg)
+![SpecialMenu](images/SpecialMenu.jpg)
 
-![Ultra Fine mesh tuning](images/Fine_Tuning.jpg)
+### Bilder - Manual Mesh Beld Leveling
 
-![Enable or Disable Filament Runout Sensor](images/Filament_Sensor_on_off.jpg)
+![Seite 1](images/MN_Page1.jpg)
+
+![Seite 2](images/MN_Page2.jpg)
+
+![Seite 3](images/MN_Page3.jpg)
+
+![Seite 4](images/MN_Page4.jpg)
+
+### Bilder - BLTouch Beld Leveling
+
+![Seite 1](images/BL_Page1.jpg)
+
+![Seite 2](images/BL_Page2.jpg)
 
 ---
 
@@ -113,13 +137,14 @@ Du kannst die fertigen Binärdateien hier herunterladen: https://github.com/knut
 
 ---
 
+### If you like what I do you can buy me a coffee: [![Donate](https://img.shields.io/badge/Donate-PayPal-green.svg)](https://paypal.me/oliverkoester)
+<sub>*It doesn't have to be a generous donation. A few cents are enough to show me who is interested in further development. So the motivation stays and I just know that I am not programming for the bin ;)<sub>
+
 ## Readme - English
-
-
 
 This firmware configuration activates many new features of the Marlin firmware:
 
- * Mesh bed calibration
+ * Mesh bed calibration / Auto calibration with BLTouch (WiP)
  * S-curve acceleration
  * "Juction Deviation" instead of the classic "Jerk"
  * "Linear Pressure Control v1.5" enabled (can be configured with M900)
@@ -127,11 +152,13 @@ This firmware configuration activates many new features of the Marlin firmware:
  * Bilinear Bed Leveling (BBL)
  * Manual editing of the measuring points
  * Full Anycubic touchscreen support
+ * Part cooling fan now runs at 100% instead of 70%
  * Pause & filament change function
  * Automatic EEPROM initialization
  * Filament Runout Sensor can be deactivated in the menu
  * Power outage support
  * Print bed size enlarged to 220 x 225 x 210 mm
+ * Automatic slowdown in if the data is not received fast enough
 
 What's better in coparison to other firmwares (bug fixes):
  * Tidy special menu
@@ -155,6 +182,14 @@ Known bugs:
 > Knutwurst, why are you still doing such a firmware? Aren't there already so many?
 
 Because I've never seen one that doesn't contain the stupid bugs like the crashes when you have files with special characters on the SD card.
+
+> Is it correct that you put more emphasis on printing from SD card and others more on USB?
+
+I don't put "more emphasis on SD", but just fixed the numerous bugs. The small adjustments with the USB buffer etc are included anyway. But they are so uninteresting in my eyes that I don't mention it, because the really complicated thing is to control the proprietary display and the card reader correctly. Everything else is easy-peasy.
+
+> What is this "slowdown"?
+
+The automatic slowdown is activated if the printer does not receive data quickly enough (e.g. via USB). Then it automatically goes down to 50%. This prevents stuttering and eliminated blobs.
 
 >Why is my printer so much louder than before?
 
@@ -200,13 +235,26 @@ With this mapping, you have to rely on the fact that the functions you want to u
 
 ---
 
-### Pictures
+### Pictures - Special Menu
 
-![Manual Mesh Bed Leveling](images/Mesh_Level.jpg)
+![SpecialMenu](images/SpecialMenu.jpg)
 
-![Ultra Fine mesh tuning](images/Fine_Tuning.jpg)
+### Pictures - Manual Mesh Beld Leveling
 
-![Enable or Disable Filament Runout Sensor](images/Filament_Sensor_on_off.jpg)
+![Page 1](images/MN_Page1.jpg)
+
+![Page 2](images/MN_Page2.jpg)
+
+![Page 3](images/MN_Page3.jpg)
+
+![Page 4](images/MN_Page4.jpg)
+
+### Pictures - BLTouch Beld Leveling
+
+![Page 1](images/BL_Page1.jpg)
+
+![Page 2](images/BL_Page2.jpg)
+
 
 ---
 
