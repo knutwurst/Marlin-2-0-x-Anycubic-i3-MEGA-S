@@ -59,7 +59,7 @@ unsigned char ResumingFlag = 0;
 
 void setup_OutageTestPin()
 {
-#if defined(POWER_OUTAGE_TEST)
+#ifdef POWER_OUTAGE_TEST
   pinMode(OUTAGETEST_PIN, INPUT);
   pinMode(OUTAGECON_PIN, OUTPUT);
   WRITE(OUTAGECON_PIN, LOW);
@@ -474,7 +474,8 @@ void AnycubicTouchscreenClass::HandleSpecialMenu()
     SERIAL_ECHOLNPGM("Special Menu: Preheat Ultrabase");
     queue.inject_P(PSTR("M140 S60"));
   }
-  #if DISABLED(KNUTWURST_BLTOUCH)
+
+#if DISABLED(KNUTWURST_BLTOUCH)
   else if (strcasestr(currentTouchscreenSelection, "<Start Mesh Leveling>") != NULL)
   {
     SERIAL_ECHOLNPGM("Special Menu: Start Mesh Leveling");
@@ -517,21 +518,16 @@ void AnycubicTouchscreenClass::HandleSpecialMenu()
     queue.enqueue_now_P(PSTR("G91\nG1 Z+0.02\nG90"));
     queue.enqueue_now_P(PSTR("G91\nG1 Z-0.03\nG90"));
   }
-  #endif
-  #if ENABLED(KNUTWURST_BLTOUCH)
+#endif
+
+#if ENABLED(KNUTWURST_BLTOUCH)
   else if (strcasestr(currentTouchscreenSelection, "<BLTouch Leveling>") != NULL)
   {
     SERIAL_ECHOLNPGM("Special Menu: BLTouch Leveling");
     queue.inject_P(PSTR("G28\nG29"));
   }
-  #endif
-  #if ENABLED(KNUTWURST_BLTOUCH)
-  else if (strcasestr(currentTouchscreenSelection, "<BLTouch Leveling>") != NULL)
-  {
-    SERIAL_ECHOLNPGM("Special Menu: BLTouch Leveling");
-    queue.inject_P(PSTR("G28\nG29"));
-  }
-  #endif
+#endif
+
   else if (strcasestr(currentTouchscreenSelection, "<Fil. Change Pause>") != NULL)
   {
     SERIAL_ECHOLNPGM("Special Menu: Fil. Change Pause");
@@ -747,7 +743,7 @@ void AnycubicTouchscreenClass::PrintList()
           HARDWARE_SERIAL_PROTOCOL("/");
           HARDWARE_SERIAL_PROTOCOLLN(card.filename);
           HARDWARE_SERIAL_PROTOCOL("/");
-          HARDWARE_SERIAL_PROTOCOLLN(buffer);
+          HARDWARE_SERIAL_PROTOCOLLN(outputString);
           SERIAL_ECHO(count);
           SERIAL_ECHOPGM(": /");
           SERIAL_ECHOLN(outputString);
