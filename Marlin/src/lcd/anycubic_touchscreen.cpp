@@ -660,6 +660,7 @@ void AnycubicTouchscreenClass::PrintList()
       break;
     }
   }
+  #ifdef SDSUPPORT
   else if (card.isMounted())
   {
     uint16_t count = filenumber;
