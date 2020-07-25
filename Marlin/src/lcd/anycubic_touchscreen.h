@@ -34,6 +34,7 @@ char *ftostr32(const float &);
 #define TFTBUFSIZE 4
 #define TFT_MAX_CMD_SIZE 96
 #define MSG_MY_VERSION "Knutwurst-1.0.7"
+#define MAX_PRINTABLE_FILENAME_LEN 64
 
 #define ANYCUBIC_TFT_STATE_IDLE 0
 #define ANYCUBIC_TFT_STATE_SDPRINT 1
@@ -158,10 +159,9 @@ private:
   void FilamentChangeResume();
   void ReheatNozzle();
   void ParkAfterStop();
-  uint16_t MyGetFileNr();
 
-  char currentTouchscreenSelection[30];
-  char currentFileOrDirectory[30];
+  char currentTouchscreenSelection[64];
+  char currentFileOrDirectory[64];
   uint16_t MyFileNrCnt = 0;
   uint8_t SpecialMenu = false;
   uint8_t FilamentSensorEnabled = true;
