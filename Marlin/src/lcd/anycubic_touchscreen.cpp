@@ -1336,14 +1336,6 @@ void AnycubicTouchscreenClass::GetCommandFromTFT()
 #ifdef SDSUPPORT
           if ((!planner.movesplanned()) && (TFTstate != ANYCUBIC_TFT_STATE_SDPAUSE) && (TFTstate != ANYCUBIC_TFT_STATE_SDOUTAGE) && (card.isFileOpen()))
           {
-            if ((currentTouchscreenSelection[0] == '<') || (currentTouchscreenSelection[0] == 0))
-            {
-                SERIAL_ECHOLNPGM("ERROR: Special entry found! Stopping...");
-                KillTFT();
-                return;
-            }
-
-
             ai3m_pause_state = 0;
 #ifdef ANYCUBIC_TFT_DEBUG
             SERIAL_ECHOPAIR(" DEBUG: AI3M Pause State: ", ai3m_pause_state);
