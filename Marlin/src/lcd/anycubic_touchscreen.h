@@ -33,7 +33,7 @@ char *ftostr32(const float &);
 
 #define TFTBUFSIZE 4
 #define TFT_MAX_CMD_SIZE 96
-#define MSG_MY_VERSION "Knutwurst-1.0.7"
+#define MSG_MY_VERSION CUSTOM_BUILD_VERSION
 #define MAX_PRINTABLE_FILENAME_LEN 30
 
 #define ANYCUBIC_TFT_STATE_IDLE 0
@@ -44,7 +44,7 @@ char *ftostr32(const float &);
 #define ANYCUBIC_TFT_STATE_SDSTOP_REQ 5
 #define ANYCUBIC_TFT_STATE_SDOUTAGE 99
 
-#if DISABLED(KNUTWURS_DGUS2_TFT)
+#if DISABLED(KNUTWURST_DGUS2_TFT)
 #define SM_DIR_UP_L           "/.."
 #define SM_DIR_UP_S           ".."
 #define SM_SPECIAL_MENU_L     "<Special Menu>"
@@ -89,7 +89,7 @@ char *ftostr32(const float &);
 #define SM_EXIT_S             "<EXIT_~1.GCO"
 #endif
 
-#if ENABLED(KNUTWURS_DGUS2_TFT)
+#if ENABLED(KNUTWURST_DGUS2_TFT)
 #define SM_DIR_UP_L           "<<<<<<.gcode"
 #define SM_DIR_UP_S           "DIR_UP~1.GCO"
 #define SM_SPECIAL_MENU_L     "<Special Menu>.gcode"

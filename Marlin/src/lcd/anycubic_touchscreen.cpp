@@ -748,7 +748,7 @@ void AnycubicTouchscreenClass::PrintList()
 
         if (card.flag.filenameIsDir)
         {
-          #if ENABLED(KNUTWURS_DGUS2_TFT)
+          #if ENABLED(KNUTWURST_DGUS2_TFT)
           HARDWARE_SERIAL_PROTOCOLPGM("/");
           HARDWARE_SERIAL_PROTOCOL(card.filename);
           HARDWARE_SERIAL_PROTOCOLLNPGM(".GCO");
@@ -1608,7 +1608,7 @@ void AnycubicTouchscreenClass::GetCommandFromTFT()
             SERIAL_ECHOLNPGM("TFT Serial Debug: Not a menu. Must be a directory!");
 #endif
 
-                #if ENABLED(KNUTWURS_DGUS2_TFT)
+                #if ENABLED(KNUTWURST_DGUS2_TFT)
                 strcpy(currentFileOrDirectory, currentTouchscreenSelection);
                 int currentFileLen = strlen(currentFileOrDirectory);
                 currentFileOrDirectory[currentFileLen - 4] = '\0';
