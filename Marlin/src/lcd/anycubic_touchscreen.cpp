@@ -744,10 +744,21 @@ void AnycubicTouchscreenClass::PrintList()
           }
         }
 
-        outputString[fileNameLen] = '\0';
+        outputString[fileNameLen] = '\0';        
 
         if (card.flag.filenameIsDir)
         {
+          #if ENABLED(KNUTWURS_DGUS2_TFT)
+          HARDWARE_SERIAL_PROTOCOLPGM("/");
+          HARDWARE_SERIAL_PROTOCOL(card.filename);
+          HARDWARE_SERIAL_PROTOCOLLNPGM(".GCO");
+          HARDWARE_SERIAL_PROTOCOLPGM("/");
+          HARDWARE_SERIAL_PROTOCOL(outputString);
+          HARDWARE_SERIAL_PROTOCOLLNPGM(".gcode");
+          SERIAL_ECHO(count);
+          SERIAL_ECHOPGM(": /");
+          SERIAL_ECHOLN(outputString);
+          #else
           HARDWARE_SERIAL_PROTOCOL("/");
           HARDWARE_SERIAL_PROTOCOLLN(card.filename);
           HARDWARE_SERIAL_PROTOCOL("/");
@@ -755,6 +766,7 @@ void AnycubicTouchscreenClass::PrintList()
           SERIAL_ECHO(count);
           SERIAL_ECHOPGM(": /");
           SERIAL_ECHOLN(outputString);
+          #endif
         }
         else
         {
@@ -1284,15 +1296,13 @@ void AnycubicTouchscreenClass::GetCommandFromTFT()
             SERIAL_EOL();
 #endif
             }
-            else if ((TFTstrchr_pointer[4] == '<')
-            || (TFTstrchr_pointer[4] == '[')
-            || (TFTstrchr_pointer[4] == '_'))
+            else if (TFTstrchr_pointer[4] == '<')
             {
               strcpy(currentTouchscreenSelection, TFTstrchr_pointer + 4);
             }
             else
             {
-              //currentTouchscreenSelection[0] = 0;
+              currentTouchscreenSelection[0] = 0;
 
 #ifdef ANYCUBIC_TFT_DEBUG
                 SERIAL_ECHOLNPGM("TFT Serial Debug: Normal file open path");
@@ -1326,6 +1336,14 @@ void AnycubicTouchscreenClass::GetCommandFromTFT()
 #ifdef SDSUPPORT
           if ((!planner.movesplanned()) && (TFTstate != ANYCUBIC_TFT_STATE_SDPAUSE) && (TFTstate != ANYCUBIC_TFT_STATE_SDOUTAGE) && (card.isFileOpen()))
           {
+            if ((currentTouchscreenSelection[0] == '<') || (currentTouchscreenSelection[0] == 0))
+            {
+                SERIAL_ECHOLNPGM("ERROR: Special entry found! Stopping...");
+                KillTFT();
+                return;
+            }
+
+
             ai3m_pause_state = 0;
 #ifdef ANYCUBIC_TFT_DEBUG
             SERIAL_ECHOPAIR(" DEBUG: AI3M Pause State: ", ai3m_pause_state);
@@ -1567,11 +1585,8 @@ void AnycubicTouchscreenClass::GetCommandFromTFT()
           }
           else
           {
-            //if ((SelectedDirectory[0] == '.') && (SelectedDirectory[1] == '.'))
-            if ((currentTouchscreenSelection[0] == 'D') 
-            && (currentTouchscreenSelection[1] == 'I')
-            && (currentTouchscreenSelection[2] == 'R')
-            && (currentTouchscreenSelection[3] == '_'))
+            if ((strcasestr(currentTouchscreenSelection, SM_DIR_UP_S) != NULL)
+            ||  (strcasestr(currentTouchscreenSelection, SM_DIR_UP_L) != NULL))
             {
 #ifdef ANYCUBIC_TFT_DEBUG
             SERIAL_ECHOLNPGM("TFT Serial Debug: Directory UP (cd ..)");
@@ -1580,8 +1595,7 @@ void AnycubicTouchscreenClass::GetCommandFromTFT()
             }
             else
             {
-              if ((currentTouchscreenSelection[0] == '[')
-              || (currentTouchscreenSelection[0] == '_'))
+              if (currentTouchscreenSelection[0] == '<')
               {
 #ifdef ANYCUBIC_TFT_DEBUG
             SERIAL_ECHOLNPGM("TFT Serial Debug: Enter Special Menu");
@@ -1593,10 +1607,15 @@ void AnycubicTouchscreenClass::GetCommandFromTFT()
 #ifdef ANYCUBIC_TFT_DEBUG
             SERIAL_ECHOLNPGM("TFT Serial Debug: Not a menu. Must be a directory!");
 #endif
+
+                #if ENABLED(KNUTWURS_DGUS2_TFT)
                 strcpy(currentFileOrDirectory, currentTouchscreenSelection);
                 int currentFileLen = strlen(currentFileOrDirectory);
                 currentFileOrDirectory[currentFileLen - 4] = '\0';
                 card.cd(currentFileOrDirectory);
+                #else
+                card.cd(currentTouchscreenSelection);
+                #endif
               }
             }
           }

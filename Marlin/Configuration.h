@@ -38,11 +38,19 @@
  */
 #define CONFIGURATION_H_VERSION 020005
 
+#define ANYCUBIC_TOUCHSCREEN
+#define ANYCUBIC_FILAMENT_RUNOUT_SENSOR
+#define ANYCUBIC_TFT_DEBUG
+//#define POWER_OUTAGE_TEST
+
 #define KNUTWURST_MEGAS
 //#define KNUTWURST_TMC
+//#define KNUTWURS_DGUS2_TFT
 //#define KNUTWURST_BLTOUCH
+
+
 //#define KNUTWURST_DEBUG
-//#define POWER_OUTAGE_TEST
+
 
 //===========================================================================
 //============================= Getting Started =============================
@@ -2387,9 +2395,3 @@
 
 // Allow servo angle to be edited and saved to EEPROM
 //#define EDITABLE_SERVO_ANGLES
-
-#define ANYCUBIC_TOUCHSCREEN
-#define ANYCUBIC_FILAMENT_RUNOUT_SENSOR
-//#define ANYCUBIC_TFT_DEBUG
-//#define KNUTWURST_MEGAS_DEBUG
-//#define KNUTWURST_TMC_DEBUG
