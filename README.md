@@ -1,4 +1,4 @@
-# Knutwurst's i3 MEGA S Firmware (based on Marlin 2.0.5.4)
+# Knutwurst's i3 MEGA (S/X) Firmware (based on Marlin 2.0.5.4)
 
 <span style="color: red;">(BITTE GENAU DURCHLESEN! / PLEASE READ CAREFULLY!)</span>
 
@@ -17,6 +17,7 @@ Diese Firmwarekonfiguration aktiviert viele neue erweitere Funktionen der Marlin
  * Bilinear Bed Leveling (BBL)
  * Manuelles Editieren der Messpunkte
  * Volle Anycubic Touchscreen Unterstützung
+ * Unterstützung des neuen Anycubic Touchscreens (DGUS II)
  * Bauteilkühler läuft nun auf 100% statt maximal 70%
  * Pause & Filamentwechselfunktion
  * Automatische EEPROM Initialisierung
@@ -24,6 +25,7 @@ Diese Firmwarekonfiguration aktiviert viele neue erweitere Funktionen der Marlin
  * Wiederaufnahme des Drucks nach Stromausfall (WiP)
  * Druckbettgröße erweitert auf 220 x 225 x 210 mm
  * Automatischer 'Slowdown', falls Daten nicht schnell genug fließen
+
 
 Besser im Vergleich zu anderen Firmwares (Bugfixes):
  * Aufgeräumtes Special-Menü
@@ -134,6 +136,9 @@ Du kannst die fertigen Binärdateien hier herunterladen: https://github.com/knut
 
 -> `i3_Mega_S_TMC.hex` benutzt du, wenn du sowohl die "S" Version mit Titan-Extruder und TMC Motortreiber verwendest.
 
+-> `i3_Mega_S_DGUS.hex` wird verwendet, wenn du den neuere "S" Version mit Titan-Extruder und außerdem auch das neue Display in blau/gelb besitzt.
+
+-> `i3_Mega_S_DGUS_TMC.hex` benutzt du, wenn du sowohl die "S" Version mit Titan-Extruder, neuem TFT in blau/gelb und TMC Motortreiber verwendest.
 
 ---
 
@@ -152,6 +157,7 @@ This firmware configuration activates many new features of the Marlin firmware:
  * Bilinear Bed Leveling (BBL)
  * Manual editing of the measuring points
  * Full Anycubic touchscreen support
+ * Support for the new Anycubic Touchscreen (DGUS II)
  * Part cooling fan now runs at 100% instead of 70%
  * Pause & filament change function
  * Automatic EEPROM initialization
@@ -269,5 +275,8 @@ You can download the precompiled binary files from here: https://github.com/knut
 -> `i3_Mega_S.hex` is used if you use the newer "S" version with titan extruder.
 
 -> `i3_Mega_S_TMC.hex` you use if you use both the "S" version with titan extruder and TMC motor driver.
+-> `i3_Mega_S_DGUS.hex` is used if you use the newer "S" version with titan extruder and also the newer DGUS TFT with blue/yellow colors.
+
+-> `i3_Mega_S_DGUS_TMC.hex` you use if you use the newest "S" version with titan extruder and TMC motor driver and also the new blue/yellow TFT.
 
 
