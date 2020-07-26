@@ -685,12 +685,14 @@ void AnycubicTouchscreenClass::PrintList()
 
     for (count = filenumber; count <= max_files; count++)
     {
+#ifdef ANYCUBIC_TFT_DEBUG
       SERIAL_ECHOPGM("filenumber: ");
       SERIAL_ECHOLN(filenumber);
       SERIAL_ECHOPGM("max_files: ");
       SERIAL_ECHOLN(max_files);
       SERIAL_ECHOPGM("count: ");
       SERIAL_ECHOLN(count);
+#endif
 
       if (count == 0) // Special Entry
       {
