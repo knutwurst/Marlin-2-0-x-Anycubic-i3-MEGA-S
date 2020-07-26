@@ -1076,10 +1076,7 @@ void AnycubicTouchscreenClass::GetCommandFromTFT()
           if( (int)(strtod(&TFTcmdbuffer[TFTbufindw][TFTstrchr_pointer - TFTcmdbuffer[TFTbufindw] + 1], NULL)) != checksum)
           {
               HARDWARE_SERIAL_ERROR_START;
-              NEWFlushSerialRequestResend();
-
-              HARDWARE_SERIAL_ERROR_START;
-              NEWFlushSerialRequestResend();
+              HardwareSerial.flush();
               serial3_count = 0;
               return;
           }
@@ -1088,7 +1085,7 @@ void AnycubicTouchscreenClass::GetCommandFromTFT()
        else
        {
          HARDWARE_SERIAL_ERROR_START;
-         NEWFlushSerialRequestResend();
+         HardwareSerial.flush();
          serial3_count = 0;
          return;
        }  
