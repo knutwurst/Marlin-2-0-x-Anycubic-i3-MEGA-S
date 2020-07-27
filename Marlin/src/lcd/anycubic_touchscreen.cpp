@@ -519,15 +519,17 @@ void AnycubicTouchscreenClass::HandleSpecialMenu()
   || (strcasestr(currentTouchscreenSelection, SM_Z_UP_001_S) != NULL))
   {
     SERIAL_ECHOLNPGM("Special Menu: Z Up 0.01");
-    queue.enqueue_now_P(PSTR("G91\nG1 Z+0.03\nG90"));
-    queue.enqueue_now_P(PSTR("G91\nG1 Z-0.02\nG90"));
+    queue.inject_P(PSTR("G91\nG1 Z+0.01\nG90"));
+    //queue.inject_P(PSTR("G91\nG1 Z+0.01\nG90"));
+    //queue.inject_P(PSTR("G91\nG1 Z-0.02\nG90"));
   }
   else if ((strcasestr(currentTouchscreenSelection, SM_Z_DN_001_L) != NULL)
   || (strcasestr(currentTouchscreenSelection, SM_Z_DN_001_L) != NULL))
   {
     SERIAL_ECHOLNPGM("Special Menu: Z Down 0.01");
-    queue.enqueue_now_P(PSTR("G91\nG1 Z+0.02\nG90"));
-    queue.enqueue_now_P(PSTR("G91\nG1 Z-0.03\nG90"));
+    queue.inject_P(PSTR("G91\nG1 Z-0.01\nG90"));
+    //queue.inject_P(PSTR("G91\nG1 Z+0.02\nG90"));
+    //queue.inject_P(PSTR("G91\nG1 Z-0.03\nG90"));
   }
 #endif
 
