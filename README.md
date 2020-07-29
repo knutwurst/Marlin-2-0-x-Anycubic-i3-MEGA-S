@@ -6,7 +6,7 @@
 <sub>*Es muss jetzt keine großzügige Spende sein. Ein paar Cent reichen um mir zu zeigen, wer überhaupt Interesse daran hat und wem die Weiterentwicklung wichtig ist. So bleibt die Motivation da und ich weiß einfach, dass ich nicht für die Tonne programmiere ;)<sub>
 
 
-### Wenn du Fragen hast, schaue gern in der offiziellen Facebook-Gruppe (deutsch) vorbei: https://www.facebook.com/groups/3094090037303577/
+### Wenn du Fragen hast, schaue gern in der offiziellen [Facebook-Gruppe](https://www.facebook.com/groups/3094090037303577/) vorbei.
 
 ## Readme - German (english below)
 
