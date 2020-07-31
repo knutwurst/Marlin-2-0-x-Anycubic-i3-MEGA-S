@@ -46,7 +46,7 @@
 //#define KNUTWURST_MEGAS
 //#define KNUTWURST_TMC
 //#define KNUTWURST_DGUS2_TFT
-//#define KNUTWURST_BLTOUCH
+//#define KNUTWURST_BLTOUCH // see <https://github.com/DerDominik/Marlin-AnycubicI3Mega-BLTouch/wiki/Aufbauplan_BLTouch>
 
 
 //#define KNUTWURST_DEBUG
@@ -1038,7 +1038,8 @@
  * Specify a Probe position as { X, Y, Z }
  */
 #if ENABLED(KNUTWURST_BLTOUCH)
-#define NOZZLE_TO_PROBE_OFFSET { 29, -15, 0 }
+#define NOZZLE_TO_PROBE_OFFSET { -2, -25, 0 } //https://www.thingiverse.com/thing:2824005
+//#define NOZZLE_TO_PROBE_OFFSET { 29, -15, 0 } //X-Carriage
 #endif
 
 #if DISABLED(KNUTWURST_BLTOUCH)
