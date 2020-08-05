@@ -43,12 +43,48 @@
 //#define ANYCUBIC_TFT_DEBUG
 //#define POWER_OUTAGE_TEST
 
-//#define KNUTWURST_MEGAS
-//#define KNUTWURST_TMC
+/*
+ * Select your printer.
+ * DO NOT ENABLE MORE THAN ONE LINE!
+ * 
+ * MEGA is the normal i3 Version without spool holder and the cassic extruder
+ * MEGA_S is the S version with Titan clone extruder
+ * MEGA_X is the big version with 310x310mm Bed
+ */
+//#define KNUTWURST_MEGA
+//#define KNUTWURST_MEGA_S
+//#define KNUTWURST_MEGA_X
+
+/*
+ * If you have defined the MEGA_X or if
+ * you have the "new" Mega S with the blue/yellow
+ * Touchscreen display, you need to enable the
+ * DGUS2 switch to get the special menu to work
+ */
 //#define KNUTWURST_DGUS2_TFT
+
+/*
+ * Enable Support for Trinamic Stepper drivers.
+ * This also inverts the X,Y,Z and Extruder motor
+ * outputs/directions.
+ */
+//#define KNUTWURST_TMC
+
+/*
+ * This enables the BLTouch Support and also 
+ * activates the BLTouch Menu item in the 
+ * special menu. It also removes all manual 
+ * leveling features because they are not 
+ * neccessary at all.
+ */
 //#define KNUTWURST_BLTOUCH // see <https://github.com/DerDominik/Marlin-AnycubicI3Mega-BLTouch/wiki/Aufbauplan_BLTouch>
 
-
+/*
+ * This feature is for debugging purpose only.
+ * It enabled more console output and should be
+ * disabled in production. It can cause the
+ * printer to stutter.
+ */
 //#define KNUTWURST_DEBUG
 
 
@@ -675,14 +711,27 @@
   //#define ENDSTOPPULLDOWN_ZMIN_PROBE
 #endif
 
-// Mechanical endstop with COM to ground and NC to Signal uses "false" here (most common setup).
-#define X_MIN_ENDSTOP_INVERTING true // set to true to invert the logic of the endstop.
-#define Y_MIN_ENDSTOP_INVERTING true // set to true to invert the logic of the endstop.
-#define Z_MIN_ENDSTOP_INVERTING true // set to true to invert the logic of the endstop.
-#define X_MAX_ENDSTOP_INVERTING true // set to true to invert the logic of the endstop.
-#define Y_MAX_ENDSTOP_INVERTING true // set to true to invert the logic of the endstop.
-#define Z_MAX_ENDSTOP_INVERTING true // set to true to invert the logic of the endstop.
-#define Z_MIN_PROBE_ENDSTOP_INVERTING true // set to true to invert the logic of the probe.
+#if ENABLED(KNUTWURST_MEGA_X)
+    // Mechanical endstop with COM to ground and NC to Signal uses "false" here (most common setup).
+    #define X_MIN_ENDSTOP_INVERTING true // set to true to invert the logic of the endstop.
+    #define Y_MIN_ENDSTOP_INVERTING true // set to true to invert the logic of the endstop.
+    #define Z_MIN_ENDSTOP_INVERTING true // set to true to invert the logic of the endstop.
+    #define X_MAX_ENDSTOP_INVERTING true // set to true to invert the logic of the endstop.
+    #define Y_MAX_ENDSTOP_INVERTING true // set to true to invert the logic of the endstop.
+    #define Z_MAX_ENDSTOP_INVERTING true // set to true to invert the logic of the endstop.
+    #define Z_MIN_PROBE_ENDSTOP_INVERTING true // set to true to invert the logic of the probe.
+#endif
+
+#if EITHER(KNUTWURST_MEGA, KNUTWURST_MEGA_S)
+    // Mechanical endstop with COM to ground and NC to Signal uses "false" here (most common setup).
+    #define X_MIN_ENDSTOP_INVERTING true // set to true to invert the logic of the endstop.
+    #define Y_MIN_ENDSTOP_INVERTING false // set to true to invert the logic of the endstop.
+    #define Z_MIN_ENDSTOP_INVERTING true // set to true to invert the logic of the endstop.
+    #define X_MAX_ENDSTOP_INVERTING true // set to true to invert the logic of the endstop.
+    #define Y_MAX_ENDSTOP_INVERTING true // set to true to invert the logic of the endstop.
+    #define Z_MAX_ENDSTOP_INVERTING true // set to true to invert the logic of the endstop.
+    #define Z_MIN_PROBE_ENDSTOP_INVERTING true // set to true to invert the logic of the probe.
+#endif
 
 /**
  * Stepper Drivers
@@ -781,13 +830,16 @@
  * Override with M92
  *                                      X, Y, Z, E0 [, E1[, E2...]]
  */
-
-#if ENABLED(KNUTWURST_MEGAS)
-#define DEFAULT_AXIS_STEPS_PER_UNIT   { 80, 80, 400, 392 }
+#if ENABLED(KNUTWURST_MEGA)
+    #define DEFAULT_AXIS_STEPS_PER_UNIT   { 80, 80, 400, 96 }
 #endif
 
-#if DISABLED(KNUTWURST_MEGAS)
-#define DEFAULT_AXIS_STEPS_PER_UNIT   { 80, 80, 400, 96 }
+#if ENABLED(KNUTWURST_MEGA_S)
+    #define DEFAULT_AXIS_STEPS_PER_UNIT   { 80, 80, 400, 392 }
+#endif
+
+#if ENABLED(KNUTWURST_MEGA_X)
+    #define DEFAULT_AXIS_STEPS_PER_UNIT    { 80, 80, 800, 400 }
 #endif
 
 /**
@@ -795,12 +847,16 @@
  * Override with M203
  *                                      X, Y, Z, E0 [, E1[, E2...]]
  */
-#if ENABLED(KNUTWURST_MEGAS)
-#define DEFAULT_MAX_FEEDRATE          { 500, 500, 6, 30 }
+#if ENABLED(KNUTWURST_MEGA)
+    #define DEFAULT_MAX_FEEDRATE          { 500, 500, 6, 60 }
 #endif
 
-#if DISABLED(KNUTWURST_MEGAS)
-#define DEFAULT_MAX_FEEDRATE          { 500, 500, 6, 60 }
+#if ENABLED(KNUTWURST_MEGA_S)
+    #define DEFAULT_MAX_FEEDRATE          { 500, 500, 6, 30 }
+#endif
+
+#if ENABLED(KNUTWURST_MEGA_X)
+    #define DEFAULT_MAX_FEEDRATE            { 120, 120, 20, 80 }
 #endif
 
 
@@ -832,17 +888,24 @@
  *   M204 T    Travel Acceleration
  */
 
-#if ENABLED(KNUTWURST_MEGAS)
-#define DEFAULT_ACCELERATION          1600    // X, Y, Z and E acceleration for printing moves
-#define DEFAULT_RETRACT_ACCELERATION  1500    // E acceleration for retracts
-#define DEFAULT_TRAVEL_ACCELERATION   3000    // X, Y, Z acceleration for travel (non printing) moves
+#if ENABLED(KNUTWURST_MEGA)
+    #define DEFAULT_ACCELERATION          1600    // X, Y, Z and E acceleration for printing moves
+    #define DEFAULT_RETRACT_ACCELERATION  3000    // E acceleration for retracts
+    #define DEFAULT_TRAVEL_ACCELERATION   3000    // X, Y, Z acceleration for travel (non printing) moves
 #endif
 
-#if DISABLED(KNUTWURST_MEGAS)
-#define DEFAULT_ACCELERATION          1600    // X, Y, Z and E acceleration for printing moves
-#define DEFAULT_RETRACT_ACCELERATION  3000    // E acceleration for retracts
-#define DEFAULT_TRAVEL_ACCELERATION   3000    // X, Y, Z acceleration for travel (non printing) moves
+#if ENABLED(KNUTWURST_MEGA_S)
+    #define DEFAULT_ACCELERATION          1600    // X, Y, Z and E acceleration for printing moves
+    #define DEFAULT_RETRACT_ACCELERATION  1500    // E acceleration for retracts
+    #define DEFAULT_TRAVEL_ACCELERATION   3000    // X, Y, Z acceleration for travel (non printing) moves
 #endif
+
+#if ENABLED(KNUTWURST_MEGA_X)
+    #define DEFAULT_ACCELERATION          400     // X, Y, Z and E acceleration for printing moves
+    #define DEFAULT_RETRACT_ACCELERATION  3000    // E acceleration for retracts
+    #define DEFAULT_TRAVEL_ACCELERATION   400     // X, Y, Z acceleration for travel (non printing) moves
+#endif
+
 /**
  * Default Jerk limits (mm/s)
  * Override with M205 X Y Z E
@@ -1210,8 +1273,17 @@
 // @section machine
 
 // The size of the print bed
-#define X_BED_SIZE 225
-#define Y_BED_SIZE 220
+#if EITHER(KNUTWURST_MEGA, KNUTWURST_MEGA_S)
+    #define X_BED_SIZE 225
+    #define Y_BED_SIZE 220
+    #define Z_BED_HEIGHT 210
+#endif
+
+#if ENABLED(KNUTWURST_MEGA_X)
+    #define X_BED_SIZE 310
+    #define Y_BED_SIZE 310
+    #define Z_BED_HEIGHT 305
+#endif
 
 // Travel limits (mm) after homing, corresponding to endstop positions.
 #define X_MIN_POS 0
@@ -1219,7 +1291,7 @@
 #define Z_MIN_POS 0
 #define X_MAX_POS X_BED_SIZE
 #define Y_MAX_POS Y_BED_SIZE
-#define Z_MAX_POS 210
+#define Z_MAX_POS Z_BED_HEIGHT
 
 /**
  * Software Endstops
