@@ -278,6 +278,7 @@ You can download the precompiled binary files from here: https://github.com/knut
 -> `i3_Mega_S.hex` is used if you use the newer "S" version with titan extruder.
 
 -> `i3_Mega_S_TMC.hex` you use if you use both the "S" version with titan extruder and TMC motor driver.
+
 -> `i3_Mega_S_DGUS.hex` is used if you use the newer "S" version with titan extruder and also the newer DGUS TFT with blue/yellow colors.
 
 -> `i3_Mega_S_DGUS_TMC.hex` you use if you use the newest "S" version with titan extruder and TMC motor driver and also the new blue/yellow TFT.
