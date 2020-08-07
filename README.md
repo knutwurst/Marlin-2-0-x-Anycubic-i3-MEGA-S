@@ -134,16 +134,21 @@ Bei diesem Mapping ist man eben darauf angewiesen, dass die Funktionen, die man 
 ## Spezial Menü
 
 ![SpecialMenu](images/SpecialMenu.jpg)
+![SpecialMenu DGUS](images/SpecialMenu_DGUS.jpg)
 
 ## Manuelles Leveln
 
 ![Seite 1](images/MN_Page1.jpg)
+![Seite 1 DGUS](images/MN_Page1_DGUS.jpg)
 
-![Seite 2](images/MN_Page2.jpg)
+![Seite 2 DGUS](images/MN_Page2.jpg)
+![Seite 2](images/MN_Page2_DGUS.jpg)
 
 ![Seite 3](images/MN_Page3.jpg)
+![Seite 3 DGUS](images/MN_Page3_DGUS.jpg)
 
 ![Seite 4](images/MN_Page4.jpg)
+![Seite 4 DGUS](images/MN_Page4_DGUS.jpg)
 
 ## Automatisches BLTouch Leveln
 
@@ -274,16 +279,21 @@ With this mapping, you have to rely on the fact that the functions you want to u
 ##  Special Menu
 
 ![SpecialMenu](images/SpecialMenu.jpg)
+![SpecialMenu DGUS](images/SpecialMenu_DGUS.jpg)
 
 ## Manual Mesh Beld Leveling
 
 ![Page 1](images/MN_Page1.jpg)
+![Page 1 DGUS](images/MN_Page1_DGUS.jpg)
 
 ![Page 2](images/MN_Page2.jpg)
+![Page 2 DGUS](images/MN_Page2_DGUS.jpg)
 
 ![Page 3](images/MN_Page3.jpg)
+![Page 3 DGUS](images/MN_Page3_DGUS.jpg)
 
 ![Page 4](images/MN_Page4.jpg)
+![Page 4 DGUS](images/MN_Page4_DGUS.jpg)
 
 ## BLTouch Beld Leveling
 
