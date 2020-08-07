@@ -8,15 +8,16 @@
 
 ### Wenn du Fragen hast, schaue gern in der offiziellen [Facebook-Gruppe](https://www.facebook.com/groups/3094090037303577/) vorbei.
 
-# Inhalt (Deutsch)
-- [Funktionen](#faq)
-   - [Was ist besser?](#faq)
-   - [Bekannte Bugs](#faq)
-- [Häufig gestellte Fragen (FAQ)](#faq)
-- [Fotos / Bilder](#faq)
-   - [Spezial Menü](#faq)
-   - [Manual Mesh Beld Leveling](#faq)
-   - [BLTouch Beld Leveling](#faq)
+
+# Inhaltsverzeichnis (Deutsch)
+- [Funktionen](#funktionen)
+   - [Was ist besser?](#besser-im-vergleich-zu-anderen-firmwares-bugfixes)
+   - [Bekannte Bugs](#bekannte-bugs)
+- [Häufig gestellte Fragen (FAQ)](#häufig-gesellte-fragen-faq)
+- [Fotos / Bilder](#bilder)
+   - [Spezial Menü](#special-menu)
+   - [Manual Mesh Beld Leveling](#manuelles-leveln)
+   - [BLTouch Beld Leveling](#automatisches-bltouch-leveln)
 - [Downloads](#downloads)
 
 
@@ -25,10 +26,10 @@
    - [What's better?](#faq)
    - [Known Bugs](#faq)
 - [Frequently asked questions (FAQ)](#faq)
-- [Photos / Pictures](#faq)
-   - [Special Menu](#faq)
-   - [Manual Mesh Beld Leveling](#faq)
-   - [BLTouch Beld Leveling](#faq)
+- [Photos / Pictures](#bilder)
+   - [Special Menü](#special-menu)
+   - [Manual Mesh Beld Leveling](#manual-mesh-beld-leveling)
+   - [BLTouch Beld Leveling](#bltouch-beld-leveling)
 - [Download](#download)
 
 
@@ -130,11 +131,11 @@ Bei diesem Mapping ist man eben darauf angewiesen, dass die Funktionen, die man 
 ---
 
 # Bilder
-## Special Menu
+## Spezial Menü
 
 ![SpecialMenu](images/SpecialMenu.jpg)
 
-## Manual Mesh Beld Leveling
+## Manuelles Leveln
 
 ![Seite 1](images/MN_Page1.jpg)
 
@@ -144,7 +145,7 @@ Bei diesem Mapping ist man eben darauf angewiesen, dass die Funktionen, die man 
 
 ![Seite 4](images/MN_Page4.jpg)
 
-## BLTouch Beld Leveling
+## Automatisches BLTouch Leveln
 
 ![Seite 1](images/BL_Page1.jpg)
 
