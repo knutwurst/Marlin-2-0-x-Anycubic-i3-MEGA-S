@@ -15,7 +15,7 @@
    - [Bekannte Bugs](#bekannte-bugs)
 - [Häufig gestellte Fragen (FAQ)](#häufig-gesellte-fragen-faq)
 - [Fotos / Bilder](#bilder)
-   - [Spezial Menü](#special-menu)
+   - [Spezial Menü](#spezial-menü)
    - [Manual Mesh Beld Leveling](#manuelles-leveln)
    - [BLTouch Beld Leveling](#automatisches-bltouch-leveln)
 - [Downloads](#downloads)
