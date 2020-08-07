@@ -8,9 +8,33 @@
 
 ### Wenn du Fragen hast, schaue gern in der offiziellen [Facebook-Gruppe](https://www.facebook.com/groups/3094090037303577/) vorbei.
 
-## Readme - German (english below)
+# Inhalt (Deutsch)
+- [Funktionen](#faq)
+   - [Was ist besser?](#faq)
+   - [Bekannte Bugs](#faq)
+- [Häufig gestellte Fragen (FAQ)](#faq)
+- [Fotos / Bilder](#faq)
+   - [Spezial Menü](#faq)
+   - [Manual Mesh Beld Leveling](#faq)
+   - [BLTouch Beld Leveling](#faq)
+- [Downloads](#downloads)
 
-Diese Firmwarekonfiguration aktiviert viele neue erweitere Funktionen der Marlin Firmware:
+
+# Table of Contets (english)
+- [Features](#faq)
+   - [What's better?](#faq)
+   - [Known Bugs](#faq)
+- [Frequently asked questions (FAQ)](#faq)
+- [Photos / Pictures](#faq)
+   - [Special Menu](#faq)
+   - [Manual Mesh Beld Leveling](#faq)
+   - [BLTouch Beld Leveling](#faq)
+- [Download](#download)
+
+
+# Readme - German
+
+## Funktionen
 
  * Mesh-Bed Kalibrierung / Autokalibrierung mit BLTouch (WiP)
  * S-Kurven Beschleunigung
@@ -30,7 +54,7 @@ Diese Firmwarekonfiguration aktiviert viele neue erweitere Funktionen der Marlin
  * Automatischer 'Slowdown', falls Daten nicht schnell genug fließen
 
 
-Besser im Vergleich zu anderen Firmwares (Bugfixes):
+## Besser im Vergleich zu anderen Firmwares (Bugfixes):
  * Aufgeräumtes Special-Menü
  * Drucker hängt sich nicht auf, wenn man Dateien mit Sonderzeichen (Umlaute, Chinesisch etc.) auf der SD Karte hat
  * Kein dummes "wackeln" der Düse nach Stoppen eines Druckvorgangs
@@ -41,13 +65,13 @@ Besser im Vergleich zu anderen Firmwares (Bugfixes):
  * Kein Aufhängen wenn man Pause drückt
  * Kein Aufhängen, wenn das Filament leer ist.
 
-Bekannte Bugs:
+## Bekannte Bugs:
  * Filament Runout Sensor wird bei jedem Neustart wieder aktiviert
  * Wiederaufnahme nach Stromausfall funktioniert nur sehr unzuverlässig
 
 ---
 
-### FAQ:
+# Häufig gesellte Fragen (FAQ):
 
 >Knutwurst, wieso machst du auch noch so eine Firmware? Es gibt doch schon so viele?
 
@@ -105,11 +129,12 @@ Bei diesem Mapping ist man eben darauf angewiesen, dass die Funktionen, die man 
 
 ---
 
-### Bilder - Special Menu
+# Bilder
+## Special Menu
 
 ![SpecialMenu](images/SpecialMenu.jpg)
 
-### Bilder - Manual Mesh Beld Leveling
+## Manual Mesh Beld Leveling
 
 ![Seite 1](images/MN_Page1.jpg)
 
@@ -119,7 +144,7 @@ Bei diesem Mapping ist man eben darauf angewiesen, dass die Funktionen, die man 
 
 ![Seite 4](images/MN_Page4.jpg)
 
-### Bilder - BLTouch Beld Leveling
+## BLTouch Beld Leveling
 
 ![Seite 1](images/BL_Page1.jpg)
 
@@ -127,7 +152,7 @@ Bei diesem Mapping ist man eben darauf angewiesen, dass die Funktionen, die man 
 
 ---
 
-### Download
+# Downloads
 
 Du kannst die fertigen Binärdateien hier herunterladen: https://github.com/knutwurst/Marlin-2-0-x-Anycubic-i3-MEGA-S/releases. Natürlich kannst du die Firmware mit PlatformIO oder der Arduino IDE auch selbst kompilieren.
 
@@ -148,9 +173,9 @@ Du kannst die fertigen Binärdateien hier herunterladen: https://github.com/knut
 ### If you like what I do you can buy me a coffee: [![Donate](https://img.shields.io/badge/Donate-PayPal-green.svg)](https://paypal.me/oliverkoester)
 <sub>*It doesn't have to be a generous donation. A few cents are enough to show me who is interested in further development. So the motivation stays and I just know that I am not programming for the bin ;)<sub>
 
-## Readme - English
+# Readme - English
 
-This firmware configuration activates many new features of the Marlin firmware:
+## Features:
 
  * Mesh bed calibration / Auto calibration with BLTouch (WiP)
  * S-curve acceleration
@@ -169,7 +194,7 @@ This firmware configuration activates many new features of the Marlin firmware:
  * Print bed size enlarged to 220 x 225 x 210 mm
  * Automatic slowdown in if the data is not received fast enough
 
-What's better in coparison to other firmwares (bug fixes):
+### What's better in coparison to other firmwares (bug fixes):
  * Tidy special menu
  * Printer does not freeze if you have files with special characters (umlauts, Chinese..) on your SD card
  * No stupid "wobble" of the nozzle after stopping printing
@@ -180,13 +205,13 @@ What's better in coparison to other firmwares (bug fixes):
  * No freezing when you press pause and try to resume
  * No freezing when the filament is empty
 
-Known bugs:
+### Known bugs:
  * Filament Runout Sensor is reactivated with every reboot
  * Power outage support does not work reliably
 
 ---
 
-### FAQ:
+# FAQ:
 
 > Knutwurst, why are you still doing such a firmware? Aren't there already so many?
 
@@ -244,11 +269,12 @@ With this mapping, you have to rely on the fact that the functions you want to u
 
 ---
 
-### Pictures - Special Menu
+# Pictures
+##  Special Menu
 
 ![SpecialMenu](images/SpecialMenu.jpg)
 
-### Pictures - Manual Mesh Beld Leveling
+## Manual Mesh Beld Leveling
 
 ![Page 1](images/MN_Page1.jpg)
 
@@ -258,7 +284,7 @@ With this mapping, you have to rely on the fact that the functions you want to u
 
 ![Page 4](images/MN_Page4.jpg)
 
-### Pictures - BLTouch Beld Leveling
+## BLTouch Beld Leveling
 
 ![Page 1](images/BL_Page1.jpg)
 
@@ -267,7 +293,7 @@ With this mapping, you have to rely on the fact that the functions you want to u
 
 ---
 
-### Download
+# Download
 
 You can download the precompiled binary files from here: https://github.com/knutwurst/Marlin-2-0-x-Anycubic-i3-MEGA-S/releases. Of course you can also compile the firmware yourself with PlatformIO or the Arduino IDE.
 
