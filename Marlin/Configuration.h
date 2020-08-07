@@ -70,6 +70,17 @@
  */
 //#define KNUTWURST_TMC
 
+
+/*
+ * Here you can set the default preheat-Temperatures
+ * which are set when you use the builtin preheat
+ * functions in the TFT.
+ */
+#define KNUTWURST_PRHEAT_NOZZLE_PLA 200
+#define KNUTWURST_PRHEAT_BED_PLA     60
+#define KNUTWURST_PRHEAT_NOZZLE_ABS 240
+#define KNUTWURST_PRHEAT_BED_ABS     90
+
 /*
  * This enables the BLTouch Support and also 
  * activates the BLTouch Menu item in the 

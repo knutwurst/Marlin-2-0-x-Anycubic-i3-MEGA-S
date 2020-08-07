@@ -1534,8 +1534,8 @@ void AnycubicTouchscreenClass::GetCommandFromTFT()
           {
             if ((current_position[Z_AXIS] < 10))
               queue.inject_P(PSTR("G1 Z10")); // RAISE Z AXIS
-            thermalManager.setTargetBed(50);
-            thermalManager.setTargetHotend(200, 0);
+            thermalManager.setTargetBed(KNUTWURST_PRHEAT_BED_PLA);
+            thermalManager.setTargetHotend(KNUTWURST_PRHEAT_NOZZLE_PLA, 0);
             HARDWARE_SERIAL_SUCC_START;
             HARDWARE_SERIAL_ENTER();
           }
@@ -1545,9 +1545,8 @@ void AnycubicTouchscreenClass::GetCommandFromTFT()
           {
             if ((current_position[Z_AXIS] < 10))
               queue.inject_P(PSTR("G1 Z10")); //RAISE Z AXIS
-            thermalManager.setTargetBed(80);
-            thermalManager.setTargetHotend(240, 0);
-
+            thermalManager.setTargetBed(KNUTWURST_PRHEAT_BED_ABS);
+            thermalManager.setTargetHotend(KNUTWURST_PRHEAT_NOZZLE_ABS, 0);
             HARDWARE_SERIAL_SUCC_START;
             HARDWARE_SERIAL_ENTER();
           }
