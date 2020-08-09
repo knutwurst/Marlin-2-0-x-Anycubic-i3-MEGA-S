@@ -64,7 +64,9 @@
  * Fehler "Melodie" bei Thermal Runaway Protection
  * Kein Aufhängen, wenn SD Karte + USB gleichzeitig genutzt wird
  * Kein Aufhängen wenn man Pause drückt
- * Kein Aufhängen, wenn das Filament leer ist.
+ * Kein Aufhängen, wenn das Filament leer ist
+ * Keine "spezielle" BLTouch Firmware nötig. Hier ist alles drin
+ * Konfiguration ganz einfach über Feature-Toggles
 
 ---
 
@@ -206,6 +208,8 @@ Du kannst die fertigen Binärdateien hier herunterladen: https://github.com/knut
  * No freezing when SD card + USB is used at the same time
  * No freezing when you press pause and try to resume
  * No freezing when the filament is empty
+ * No need for a "special" BLTouch firmware. In this firmware is everything included
+ * Configuration made easy via feature toggles
 
 ---
 
