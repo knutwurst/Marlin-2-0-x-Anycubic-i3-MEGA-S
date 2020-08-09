@@ -1,4 +1,4 @@
-# Knutwurst's i3 MEGA (S/X) Firmware (based on Marlin 2.0.5.4)
+# Knutwurst's i3 MEGA (M/S/X) Firmware (based on Marlin 2.0.5.4)
 
 <span style="color: red;">(BITTE GENAU DURCHLESEN! / PLEASE READ CAREFULLY!)</span>
 
@@ -37,7 +37,7 @@
 
 ## Funktionen
 
- * Mesh-Bed Kalibrierung / Autokalibrierung mit BLTouch (WiP)
+ * Mesh-Bed Kalibrierung / Autokalibrierung mit BLTouch
  * S-Kurven Beschleunigung
  * "Juction Deviation" statt des klassischen "Jerk" 
  * "Linear Pressure Control v1.5" aktiviert (kann mit M900 konfiguriert werden)
@@ -49,7 +49,7 @@
  * Bauteilkühler läuft nun auf 100% statt maximal 70%
  * Pause & Filamentwechselfunktion
  * Automatische EEPROM Initialisierung
- * Filament Runout Sensor kann im Menü deaktiviert werden
+ * Filament Runout Sensor kann im Menü temporär deaktiviert werden
  * Wiederaufnahme des Drucks nach Stromausfall (WiP)
  * Druckbettgröße erweitert auf 220 x 225 x 210 mm
  * Automatischer 'Slowdown', falls Daten nicht schnell genug fließen
@@ -65,10 +65,6 @@
  * Kein Aufhängen, wenn SD Karte + USB gleichzeitig genutzt wird
  * Kein Aufhängen wenn man Pause drückt
  * Kein Aufhängen, wenn das Filament leer ist.
-
-## Bekannte Bugs:
- * Filament Runout Sensor wird bei jedem Neustart wieder aktiviert
- * Wiederaufnahme nach Stromausfall funktioniert nur sehr unzuverlässig
 
 ---
 
@@ -183,7 +179,7 @@ Du kannst die fertigen Binärdateien hier herunterladen: https://github.com/knut
 
 ## Features:
 
- * Mesh bed calibration / Auto calibration with BLTouch (WiP)
+ * Mesh bed calibration / Auto calibration with BLTouch
  * S-curve acceleration
  * "Juction Deviation" instead of the classic "Jerk"
  * "Linear Pressure Control v1.5" enabled (can be configured with M900)
@@ -195,7 +191,7 @@ Du kannst die fertigen Binärdateien hier herunterladen: https://github.com/knut
  * Part cooling fan now runs at 100% instead of 70%
  * Pause & filament change function
  * Automatic EEPROM initialization
- * Filament Runout Sensor can be deactivated in the menu
+ * Filament Runout Sensor can be temporarily deactivated in the menu
  * Power outage support
  * Print bed size enlarged to 220 x 225 x 210 mm
  * Automatic slowdown in if the data is not received fast enough
@@ -210,10 +206,6 @@ Du kannst die fertigen Binärdateien hier herunterladen: https://github.com/knut
  * No freezing when SD card + USB is used at the same time
  * No freezing when you press pause and try to resume
  * No freezing when the filament is empty
-
-### Known bugs:
- * Filament Runout Sensor is reactivated with every reboot
- * Power outage support does not work reliably
 
 ---
 
