@@ -538,7 +538,7 @@ void AnycubicTouchscreenClass::HandleSpecialMenu()
   || (strcasestr(currentTouchscreenSelection, SM_BLTOUCH_S) != NULL))
   {
     SERIAL_ECHOLNPGM("Special Menu: BLTouch Leveling");
-    queue.inject_P(PSTR("G28\nG29"));
+    queue.inject_P(PSTR("G28\nG29\nM500\nG90\nG1 X0 Z30 F4000\nG91"));
   }
 #endif
 
