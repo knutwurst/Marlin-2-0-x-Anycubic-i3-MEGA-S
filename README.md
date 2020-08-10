@@ -160,17 +160,17 @@ Bei diesem Mapping ist man eben darauf angewiesen, dass die Funktionen, die man 
 
 Du kannst die fertigen Binärdateien hier herunterladen: https://github.com/knutwurst/Marlin-2-0-x-Anycubic-i3-MEGA-S/releases. Natürlich kannst du die Firmware mit PlatformIO oder der Arduino IDE auch selbst kompilieren.
 
--> `i3_Mega.hex` ist für den unmodifizierten originalen Anycubic i3 MEGA (ohne S).
+Um es übersichtlich zu gestalten, beinhalten die Dateinamen die einzelnen Features.
 
--> `i3_Mega_TMC.hex` hat Optimierungen und invertierte Ausgänge für TMC2100 and TMC2208 Motortreiber.
+`_S` steht für den Mega S mit dem Titan Extruder.
+`_X` steht für den Mega X.
+`_TMC` steht für Trinamic TMC Motortreiber. Hierbei wird auch die Drehrichtung der Motoren invertiert.
+`_DGUS` steht für das "neue" blau/gelbe DGUS II Display, welches sonst kein Special-Menü anzeigen kann.
+`_BLTOUCH` steht für die BL-Touch Version mit Autoleveling-Sensor. Das manuelle Mesh-Leveling ist hier deaktiviert.
+`_10` steht für das Trigorilla_14 v1.0 Mainboard, welches normalerweise der Standard sein sollte.
+`_11` steht für das Trigorilla_14 v1.1 Mainboard, bei welchem sich die Pinbelegung für den Server-Port geändert hat.
 
--> `i3_Mega_S.hex` wird verwendet, wenn du den neuere "S" Version mit Titan-Extruder verwendest.
-
--> `i3_Mega_S_TMC.hex` benutzt du, wenn du sowohl die "S" Version mit Titan-Extruder und TMC Motortreiber verwendest.
-
--> `i3_Mega_S_DGUS.hex` wird verwendet, wenn du den neuere "S" Version mit Titan-Extruder und außerdem auch das neue Display in blau/gelb besitzt.
-
--> `i3_Mega_S_DGUS_TMC.hex` benutzt du, wenn du sowohl die "S" Version mit Titan-Extruder, neuem TFT in blau/gelb und TMC Motortreiber verwendest.
+Für (fast) jede Kombination gibt es eine passende Firmware im Download-Bereich. ;)
 
 ---
 
@@ -304,16 +304,16 @@ With this mapping, you have to rely on the fact that the functions you want to u
 
 You can download the precompiled binary files from here: https://github.com/knutwurst/Marlin-2-0-x-Anycubic-i3-MEGA-S/releases. Of course you can also compile the firmware yourself with PlatformIO or the Arduino IDE.
 
--> `i3_Mega.hex` is for the unmodified original Anycubic i3 MEGA (without S).
+In order to make it clear, the file names contain the individual features.
 
--> `i3_Mega_TMC.hex` has optimizations and inverted outputs for TMC2100 and TMC2208 motor drivers.
+`_S` stands for the Mega S with the titan extruder.
+`_X` stands for the Mega X.
+`_TMC` stands for Trinamic TMC motor driver. The direction of rotation of the motors is also inverted.
+`_DGUS` stands for the "new" blue / yellow DGUS II display, which otherwise cannot show a special menu.
+`_BLTOUCH` stands for the BL-Touch version with auto-leveling sensor. Manual mesh leveling is deactivated here.
+`_10` stands for the Trigorilla_14 v1.0 mainboard, which should normally be the standard.
+`_11` stands for the Trigorilla_14 v1.1 mainboard, on which the pin assignment for the server port has changed.
 
--> `i3_Mega_S.hex` is used if you use the newer "S" version with titan extruder.
-
--> `i3_Mega_S_TMC.hex` you use if you use both the "S" version with titan extruder and TMC motor driver.
-
--> `i3_Mega_S_DGUS.hex` is used if you use the newer "S" version with titan extruder and also the newer DGUS TFT with blue/yellow colors.
-
--> `i3_Mega_S_DGUS_TMC.hex` you use if you use the newest "S" version with titan extruder and TMC motor driver and also the new blue/yellow TFT.
+For (almost) every combination there is a suitable firmware in the download area. ;)
 
 
