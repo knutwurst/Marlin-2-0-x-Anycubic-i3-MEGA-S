@@ -163,12 +163,19 @@ Du kannst die fertigen Binärdateien hier herunterladen: https://github.com/knut
 Um es übersichtlich zu gestalten, beinhalten die Dateinamen die einzelnen Features.
 
 `_S` steht für den Mega S mit dem Titan Extruder.
+
 `_X` steht für den Mega X.
+
 `_TMC` steht für Trinamic TMC Motortreiber. Hierbei wird auch die Drehrichtung der Motoren invertiert.
+
 `_DGUS` steht für das "neue" blau/gelbe DGUS II Display, welches sonst kein Special-Menü anzeigen kann.
+
 `_BLTOUCH` steht für die BL-Touch Version mit Autoleveling-Sensor. Das manuelle Mesh-Leveling ist hier deaktiviert.
+
 `_10` steht für das Trigorilla_14 v1.0 Mainboard, welches normalerweise der Standard sein sollte.
+
 `_11` steht für das Trigorilla_14 v1.1 Mainboard, bei welchem sich die Pinbelegung für den Server-Port geändert hat.
+
 
 Für (fast) jede Kombination gibt es eine passende Firmware im Download-Bereich. ;)
 
@@ -307,12 +314,19 @@ You can download the precompiled binary files from here: https://github.com/knut
 In order to make it clear, the file names contain the individual features.
 
 `_S` stands for the Mega S with the titan extruder.
+
 `_X` stands for the Mega X.
+
 `_TMC` stands for Trinamic TMC motor driver. The direction of rotation of the motors is also inverted.
+
 `_DGUS` stands for the "new" blue / yellow DGUS II display, which otherwise cannot show a special menu.
+
 `_BLTOUCH` stands for the BL-Touch version with auto-leveling sensor. Manual mesh leveling is deactivated here.
+
 `_10` stands for the Trigorilla_14 v1.0 mainboard, which should normally be the standard.
+
 `_11` stands for the Trigorilla_14 v1.1 mainboard, on which the pin assignment for the server port has changed.
+
 
 For (almost) every combination there is a suitable firmware in the download area. ;)
 
