@@ -43,6 +43,20 @@
 //#define ANYCUBIC_TFT_DEBUG
 //#define POWER_OUTAGE_TEST
 
+/*****************************************************************************************
+ *                                                                                       *
+ *                                                                                       *
+ *   WARNING:                                                                            *
+ *   THE FOLLOWING SETTINGS ARE NORMALLY SET BY PLATFORMIO!                              *
+ *                                                                                       *
+ *   IF YOU CHANGE THEM WITHIN THE SOURCECODE, DO NOT COMMIT                             *
+ *   TO MASTER BRANCH OR BUILD WITH PLATFORMIO ENVIRONMENT!                              *
+ *   OTHERWISE SOME SETTINGS MIGHT BE OVERWRITTEN AND YOU END                            *
+ *   UP WITH A NON FUNCTIONING FIRMWARE!                                                 *
+ *                                                                                       *
+ * ***************************************************************************************/
+ 
+
 /*
  * Select your printer.
  * DO NOT ENABLE MORE THAN ONE LINE!
@@ -70,17 +84,6 @@
  */
 //#define KNUTWURST_TMC
 
-
-/*
- * Here you can set the default preheat-Temperatures
- * which are set when you use the builtin preheat
- * functions in the TFT.
- */
-#define KNUTWURST_PRHEAT_NOZZLE_PLA 200
-#define KNUTWURST_PRHEAT_BED_PLA     60
-#define KNUTWURST_PRHEAT_NOZZLE_ABS 240
-#define KNUTWURST_PRHEAT_BED_ABS     90
-
 /*
  * This enables the BLTouch Support and also 
  * activates the BLTouch Menu item in the 
@@ -97,6 +100,33 @@
  * printer to stutter.
  */
 //#define KNUTWURST_DEBUG
+
+
+/*****************************************************************************************
+ *                                                                                       *
+ *                                                                                       *
+ *   WARNING:                                                                            *
+ *   THE SETTINGS ABOVE ARE NORMALLY SET BY PLATFORMIO!                                  *
+ *                                                                                       *
+ *   IF YOU CHANGE THEM WITHIN THE SOURCECODE, DO NOT COMMIT                             *
+ *   TO MASTER BRANCH OR BUILD WITH PLATFORMIO ENVIRONMENT!                              *
+ *   OTHERWISE SOME SETTINGS MIGHT BE OVERWRITTEN AND YOU END                            *
+ *   UP WITH A NON FUNCTIONING FIRMWARE!                                                 *
+ *                                                                                       *
+ * ***************************************************************************************/
+
+
+/*
+ * Here you can set the default preheat-Temperatures
+ * which are set when you use the builtin preheat
+ * functions in the TFT.
+ * 
+ * These settings are required and not set by PlatformIO.
+ */
+#define KNUTWURST_PRHEAT_NOZZLE_PLA 200
+#define KNUTWURST_PRHEAT_BED_PLA     60
+#define KNUTWURST_PRHEAT_NOZZLE_ABS 240
+#define KNUTWURST_PRHEAT_BED_ABS     90
 
 
 //===========================================================================
@@ -201,7 +231,7 @@
  * on the upper left of the PCB silkscreen.
  */
 #ifndef MOTHERBOARD
-  #define MOTHERBOARD BOARD_TRIGORILLA_14
+  //#define MOTHERBOARD BOARD_TRIGORILLA_14  // Is normally set by PlatformIO
 #endif
 
 // Name displayed in the LCD "Ready" message and Info menu
