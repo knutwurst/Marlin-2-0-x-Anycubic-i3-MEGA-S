@@ -43,18 +43,24 @@
 //#define ANYCUBIC_TFT_DEBUG
 //#define POWER_OUTAGE_TEST
 
-/*****************************************************************************************
- *                                                                                       *
- *                                                                                       *
- *   WARNING:                                                                            *
- *   THE FOLLOWING SETTINGS ARE NORMALLY SET BY PLATFORMIO!                              *
- *                                                                                       *
- *   IF YOU CHANGE THEM WITHIN THE SOURCECODE, DO NOT COMMIT                             *
- *   TO MASTER BRANCH OR BUILD WITH PLATFORMIO ENVIRONMENT!                              *
- *   OTHERWISE SOME SETTINGS MIGHT BE OVERWRITTEN AND YOU END                            *
- *   UP WITH A NON FUNCTIONING FIRMWARE!                                                 *
- *                                                                                       *
- * ***************************************************************************************/
+/*******************************************************************************************
+ **                                                                                       **
+ **                                                                                       **
+ **   WARNING:                                                                            **
+ **   THE FOLLOWING SETTINGS ARE NORMALLY SET BY PLATFORMIO!                              **
+ **                                                                                       **
+ **   IF YOU CHANGE THEM WITHIN THE SOURCECODE, DO NOT COMMIT                             **
+ **   TO MASTER BRANCH OR BUILD WITH PLATFORMIO ENVIRONMENT!                              **
+ **   OTHERWISE SOME SETTINGS MIGHT BE OVERWRITTEN AND YOU END                            **
+ **   UP WITH A NON FUNCTIONING FIRMWARE!                                                 **
+ **                                                                                       **
+ **   If you want to select a specific configuration for your                             **
+ **   printer, just open the PlatformIO tab on the left, select                           **
+ **   PROJECT TASKS and then "env:i3_MEGA*" (your desired config)                         **
+ **   From there you can build and upload your code.                                      **
+ **                                                                                       **
+ **                                                                                       **
+ *******************************************************************************************/
  
 
 /*
@@ -64,6 +70,9 @@
  * MEGA is the normal i3 Version without spool holder and the cassic extruder
  * MEGA_S is the S version with Titan clone extruder
  * MEGA_X is the big version with 310x310mm Bed
+ * 
+ * PLEASE READ THE WARNING ABOVE!
+ * 
  */
 //#define KNUTWURST_MEGA
 //#define KNUTWURST_MEGA_S
@@ -74,6 +83,9 @@
  * you have the "new" Mega S with the blue/yellow
  * Touchscreen display, you need to enable the
  * DGUS2 switch to get the special menu to work
+ * 
+ * PLEASE READ THE WARNING ABOVE!
+ * 
  */
 //#define KNUTWURST_DGUS2_TFT
 
@@ -81,6 +93,8 @@
  * Enable Support for Trinamic Stepper drivers.
  * This also inverts the X,Y,Z and Extruder motor
  * outputs/directions.
+ * 
+ * PLEASE READ THE WARNING ABOVE!
  */
 //#define KNUTWURST_TMC
 
@@ -90,6 +104,9 @@
  * special menu. It also removes all manual 
  * leveling features because they are not 
  * neccessary at all.
+ * 
+ * PLEASE READ THE WARNING ABOVE!
+ * 
  */
 //#define KNUTWURST_BLTOUCH // see <https://github.com/DerDominik/Marlin-AnycubicI3Mega-BLTouch/wiki/Aufbauplan_BLTouch>
 
@@ -98,22 +115,31 @@
  * It enabled more console output and should be
  * disabled in production. It can cause the
  * printer to stutter.
+ * 
+ * PLEASE READ THE WARNING ABOVE!
+ * 
  */
 //#define KNUTWURST_DEBUG
 
 
-/*****************************************************************************************
- *                                                                                       *
- *                                                                                       *
- *   WARNING:                                                                            *
- *   THE SETTINGS ABOVE ARE NORMALLY SET BY PLATFORMIO!                                  *
- *                                                                                       *
- *   IF YOU CHANGE THEM WITHIN THE SOURCECODE, DO NOT COMMIT                             *
- *   TO MASTER BRANCH OR BUILD WITH PLATFORMIO ENVIRONMENT!                              *
- *   OTHERWISE SOME SETTINGS MIGHT BE OVERWRITTEN AND YOU END                            *
- *   UP WITH A NON FUNCTIONING FIRMWARE!                                                 *
- *                                                                                       *
- * ***************************************************************************************/
+/*******************************************************************************************
+ **                                                                                       **
+ **                                                                                       **
+ **   WARNING:                                                                            **
+ **   THE SETTINGS ABOVE ARE NORMALLY SET BY PLATFORMIO!                                  **
+ **                                                                                       **
+ **   IF YOU CHANGE THEM WITHIN THE SOURCECODE, DO NOT COMMIT                             **
+ **   TO MASTER BRANCH OR BUILD WITH PLATFORMIO ENVIRONMENT!                              **
+ **   OTHERWISE SOME SETTINGS MIGHT BE OVERWRITTEN AND YOU END                            **
+ **   UP WITH A NON FUNCTIONING FIRMWARE!                                                 **
+ **                                                                                       **
+ **   If you want to select a specific configuration for your                             **
+ **   printer, just open the PlatformIO tab on the left, select                           **
+ **   PROJECT TASKS and then "env:i3_MEGA*" (your desired config)                         **
+ **   From there you can build and upload your code.                                      **
+ **                                                                                       **
+ **                                                                                       **
+ *******************************************************************************************/
 
 
 /*
