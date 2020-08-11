@@ -37,7 +37,7 @@
 
 ## Funktionen
 
- * Mesh-Bed Kalibrierung / Autokalibrierung mit BLTouch
+ * Mesh-Bed Kalibrierung / Autokalibrierung mit BLTouch [(Anleitung im Wiki)](https://github.com/knutwurst/Marlin-2-0-x-Anycubic-i3-MEGA-S/wiki)
  * S-Kurven Beschleunigung
  * "Juction Deviation" statt des klassischen "Jerk" 
  * "Linear Pressure Control v1.5" aktiviert (kann mit M900 konfiguriert werden)
