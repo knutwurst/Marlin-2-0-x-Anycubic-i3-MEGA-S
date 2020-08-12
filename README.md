@@ -37,7 +37,7 @@
 
 ## Funktionen
 
- * Mesh-Bed Kalibrierung / Autokalibrierung mit BLTouch [(Anleitung im Wiki)](https://github.com/knutwurst/Marlin-2-0-x-Anycubic-i3-MEGA-S/wiki)
+ * Mesh-Bed Kalibrierung / Autokalibrierung mit BLTouch [(Installations-Anleitung)](https://github.com/knutwurst/Marlin-2-0-x-Anycubic-i3-MEGA-S/wiki/BLTouch-Installation-(deutsch))
  * S-Kurven Beschleunigung
  * "Juction Deviation" statt des klassischen "Jerk" 
  * "Linear Pressure Control v1.5" aktiviert (kann mit M900 konfiguriert werden)
@@ -188,7 +188,7 @@ Für (fast) jede Kombination gibt es eine passende Firmware im Download-Bereich.
 
 ## Features:
 
- * Mesh bed calibration / Auto calibration with BLTouch
+ * Mesh bed calibration / Auto calibration with BLTouch [(see installation Manual)](https://github.com/knutwurst/Marlin-2-0-x-Anycubic-i3-MEGA-S/wiki/BLTouch-Installation-(english))
  * S-curve acceleration
  * "Juction Deviation" instead of the classic "Jerk"
  * "Linear Pressure Control v1.5" enabled (can be configured with M900)
