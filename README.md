@@ -67,6 +67,8 @@
  * Kein Aufhängen, wenn das Filament leer ist
  * Keine "spezielle" BLTouch Firmware nötig. Hier ist alles drin
  * Konfiguration ganz einfach über Feature-Toggles
+ * Man muss keine Grundkonfiguration per GCODE machen.
+ * Man muss kein Werksreset durchführen
 
 ---
 
@@ -204,6 +206,8 @@ Für (fast) jede Kombination gibt es eine passende Firmware im Download-Bereich.
  * Power outage support
  * Print bed size enlarged to 220 x 225 x 210 mm
  * Automatic slowdown in if the data is not received fast enough
+ * You don't have to do a basic configuration via GCODE.
+ * You do not have to perform a factory reset
 
 ### What's better in coparison to other firmwares (bug fixes):
  * Tidy special menu
