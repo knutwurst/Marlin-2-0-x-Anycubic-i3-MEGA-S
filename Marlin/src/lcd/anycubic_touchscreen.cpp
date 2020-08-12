@@ -447,7 +447,8 @@ void AnycubicTouchscreenClass::HandleSpecialMenu()
   || (strcasestr(currentTouchscreenSelection, SM_PID_HOTEND_S) != NULL))
   {
     SERIAL_ECHOLNPGM("Special Menu: PID Tune Hotend");
-    queue.inject_P(PSTR("M106 S204\nM303 E0 S210 C15 U1"));
+    queue.inject_P(PSTR("M106 S204\nG4 P500\nM303 E0 S215 C15 U1"));
+    
   }
   else if ((strcasestr(currentTouchscreenSelection, SM_PID_BED_L) != NULL)
   || (strcasestr(currentTouchscreenSelection, SM_PID_BED_S) != NULL))
