@@ -1080,6 +1080,8 @@ void AnycubicTouchscreenClass::GetCommandFromTFT()
           {
               HARDWARE_SERIAL_ERROR_START;
               HardwareSerial.flush();
+              HARDWARE_SERIAL_ERROR_START;
+              HardwareSerial.flush();
               serial3_count = 0;
               return;
           }
