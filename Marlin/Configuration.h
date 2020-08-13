@@ -108,7 +108,7 @@
  * PLEASE READ THE WARNING ABOVE!
  * 
  */
-//#define KNUTWURST_BLTOUCH // see <https://github.com/knutwurst/Marlin-2-0-x-Anycubic-i3-MEGA-S/wiki/BLTouch-Installation-(english)>
+//#define KNUTWURST_BLTOUCH // see <https://github.com/DerDominik/Marlin-AnycubicI3Mega-BLTouch/wiki/Aufbauplan_BLTouch>
 
 /*
  * This feature is for debugging purpose only.
@@ -1634,7 +1634,7 @@
 
 // Homing speeds (mm/m)
 #define HOMING_FEEDRATE_XY (50*60)
-#define HOMING_FEEDRATE_Z  (10*60)
+#define HOMING_FEEDRATE_Z  (6*60)
 
 // Validate that endstops are triggered on homing moves
 #define VALIDATE_HOMING_ENDSTOPS
