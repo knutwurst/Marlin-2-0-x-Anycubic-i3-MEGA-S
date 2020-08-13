@@ -108,7 +108,7 @@
  * PLEASE READ THE WARNING ABOVE!
  * 
  */
-//#define KNUTWURST_BLTOUCH // see <https://github.com/DerDominik/Marlin-AnycubicI3Mega-BLTouch/wiki/Aufbauplan_BLTouch>
+//#define KNUTWURST_BLTOUCH // see <https://github.com/knutwurst/Marlin-2-0-x-Anycubic-i3-MEGA-S/wiki/BLTouch-Installation-(english)>
 
 /*
  * This feature is for debugging purpose only.
