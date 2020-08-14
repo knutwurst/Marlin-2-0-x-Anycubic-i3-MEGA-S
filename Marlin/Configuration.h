@@ -992,8 +992,13 @@
  */
 //#define CLASSIC_JERK
 
-#if ENABLED(KNUTWURST_MEGA_X)
+// I Know.. it's useless to put it here ;)
+#if EITHER(KNUTWURST_MEGA, KNUTWURST_MEGA_S)
     //#define CLASSIC_JERK
+#endif
+
+#if ENABLED(KNUTWURST_MEGA_X)
+    #define CLASSIC_JERK
 #endif
 
 #if ENABLED(CLASSIC_JERK)
@@ -1036,7 +1041,13 @@
  *   http://blog.kyneticcnc.com/2018/10/computing-junction-deviation-for-marlin.html
  */
 #if DISABLED(CLASSIC_JERK)
-  #define JUNCTION_DEVIATION_MM 0.013 // (mm) Distance from real junction edge
+    #if EITHER(KNUTWURST_MEGA, KNUTWURST_MEGA_S)
+        #define JUNCTION_DEVIATION_MM 0.013 // (mm) Distance from real junction edge
+    #endif
+
+    #if ENABLED(KNUTWURST_MEGA_X)
+        #define JUNCTION_DEVIATION_MM 0.013 // (mm) Distance from real junction edge
+    #endif
 #endif
 
 /**
