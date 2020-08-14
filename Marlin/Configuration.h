@@ -939,7 +939,16 @@
  * Override with M201
  *                                      X, Y, Z, E0 [, E1[, E2...]]
  */
-#define DEFAULT_MAX_ACCELERATION      { 3000, 2000,  60, 10000 }
+#if EITHER(KNUTWURST_MEGA, KNUTWURST_MEGA_S)
+    #define DEFAULT_MAX_ACCELERATION      { 3000, 2000,  60, 10000 }
+#endif
+
+#if ENABLED(KNUTWURST_MEGA_X)
+    #define DEFAULT_MAX_ACCELERATION      { 400, 400, 60, 10000 }
+#endif
+
+
+
 
 //#define LIMITED_MAX_ACCEL_EDITING     // Limit edit via M201 or LCD to DEFAULT_MAX_ACCELERATION * 2
 #if ENABLED(LIMITED_MAX_ACCEL_EDITING)
@@ -982,10 +991,26 @@
  * value set here, it may happen instantaneously.
  */
 //#define CLASSIC_JERK
+
+#if ENABLED(KNUTWURST_MEGA_X)
+    //#define CLASSIC_JERK
+#endif
+
 #if ENABLED(CLASSIC_JERK)
-  #define DEFAULT_XJERK  10.0
-  #define DEFAULT_YJERK  10.0
-  #define DEFAULT_ZJERK  0.4
+
+#if EITHER(KNUTWURST_MEGA, KNUTWURST_MEGA_S)
+    #define DEFAULT_XJERK  10.0
+    #define DEFAULT_YJERK  10.0
+    #define DEFAULT_ZJERK  0.4
+#endif
+
+#if ENABLED(KNUTWURST_MEGA_X)
+    #define DEFAULT_XJERK  4.0
+    #define DEFAULT_YJERK  4.0
+    #define DEFAULT_ZJERK  0.15
+#endif
+
+
 
   //#define TRAVEL_EXTRA_XYJERK 0.0     // Additional jerk allowance for all travel moves
 
@@ -995,7 +1020,13 @@
   #endif
 #endif
 
-#define DEFAULT_EJERK    5.0  // May be used by Linear Advance
+#if EITHER(KNUTWURST_MEGA, KNUTWURST_MEGA_S)
+    #define DEFAULT_EJERK    5.0  // May be used by Linear Advance
+#endif
+
+#if ENABLED(KNUTWURST_MEGA_X)
+    #define DEFAULT_EJERK    8.0  // May be used by Linear Advance
+#endif
 
 /**
  * Junction Deviation Factor
