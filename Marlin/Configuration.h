@@ -915,11 +915,11 @@
  *                                      X, Y, Z, E0 [, E1[, E2...]]
  */
 #if ENABLED(KNUTWURST_MEGA)
-    #define DEFAULT_MAX_FEEDRATE          { 500, 500, 20, 60 }
+    #define DEFAULT_MAX_FEEDRATE          { 500, 500, 8, 60 }
 #endif
 
 #if ENABLED(KNUTWURST_MEGA_S)
-    #define DEFAULT_MAX_FEEDRATE          { 500, 500, 20, 30 }
+    #define DEFAULT_MAX_FEEDRATE          { 500, 500, 8, 30 }
 #endif
 
 #if ENABLED(KNUTWURST_MEGA_X)
@@ -1676,7 +1676,7 @@
 
 // Homing speeds (mm/m)
 #define HOMING_FEEDRATE_XY (50*60)
-#define HOMING_FEEDRATE_Z  (6*60)
+#define HOMING_FEEDRATE_Z  (5*60)
 
 // Validate that endstops are triggered on homing moves
 #define VALIDATE_HOMING_ENDSTOPS
