@@ -12,7 +12,6 @@
 # Inhaltsverzeichnis (Deutsch)
 - [Funktionen](#funktionen)
    - [Was ist besser?](#besser-im-vergleich-zu-anderen-firmwares-bugfixes)
-   - [Bekannte Bugs](#bekannte-bugs)
 - [Häufig gestellte Fragen (FAQ)](#häufig-gesellte-fragen-faq)
 - [Fotos / Bilder](#bilder)
    - [Spezial Menü](#spezial-menü)
@@ -22,11 +21,10 @@
 
 
 # Table of Contets (english)
-- [Features](#faq)
-   - [What's better?](#faq)
-   - [Known Bugs](#faq)
+- [Features](#features)
+   - [What's better?](#whats-better-in-coparison-to-other-firmwares-bug-fixes)
 - [Frequently asked questions (FAQ)](#faq)
-- [Photos / Pictures](#bilder)
+- [Photos / Pictures](#pictures)
    - [Special Menü](#special-menu)
    - [Manual Mesh Beld Leveling](#manual-mesh-beld-leveling)
    - [BLTouch Beld Leveling](#bltouch-beld-leveling)
