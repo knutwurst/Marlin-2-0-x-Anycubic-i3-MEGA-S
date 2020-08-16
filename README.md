@@ -53,6 +53,7 @@
  * Wiederaufnahme des Drucks nach Stromausfall (WiP)
  * Druckbettgröße erweitert auf 220 x 225 x 210 mm
  * Automatischer 'Slowdown', falls Daten nicht schnell genug fließen
+ * Vollautomatisches Hotend und Ultrabase PID Tuning
 
 
 ## Besser im Vergleich zu anderen Firmwares (Bugfixes):
@@ -193,8 +194,8 @@ Für (fast) jede Kombination gibt es eine passende Firmware im Download-Bereich.
  * Mesh bed calibration / Auto calibration with BLTouch [(see installation Manual)](https://github.com/knutwurst/Marlin-2-0-x-Anycubic-i3-MEGA-S/wiki/BLTouch-Installation-(english))
  * S-curve acceleration
  * "Juction Deviation" instead of the classic "Jerk"
- * "Linear Pressure Control v1.5" enabled (can be configured with M900)
- * Baby stepping during printing
+ * "Linear Pressure Control v1.5" activated (can be configured with M900)
+ * Baby stepping during the printing process
  * Bilinear Bed Leveling (BBL)
  * Manual editing of the measuring points
  * Full Anycubic touchscreen support
@@ -202,12 +203,11 @@ Für (fast) jede Kombination gibt es eine passende Firmware im Download-Bereich.
  * Part cooling fan now runs at 100% instead of 70%
  * Pause & filament change function
  * Automatic EEPROM initialization
- * Filament Runout Sensor can be temporarily deactivated in the menu
- * Power outage support
- * Print bed size enlarged to 220 x 225 x 210 mm
- * Automatic slowdown in if the data is not received fast enough
- * You don't have to do a basic configuration via GCODE.
- * You do not have to perform a factory reset
+ * Filament runout sensor can be temporarily deactivated in the menu
+ * Resumption of printing after a power failure (WiP)
+ * Print bed size expanded to 220 x 225 x 210 mm
+ * Automatic 'slowdown' if data does not flow fast enough
+ * Fully automatic hotend and ultrabase PID tuning
 
 ### What's better in coparison to other firmwares (bug fixes):
  * Tidy special menu
