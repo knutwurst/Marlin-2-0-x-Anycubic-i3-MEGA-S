@@ -447,7 +447,7 @@ void AnycubicTouchscreenClass::HandleSpecialMenu()
   || (strcasestr(currentTouchscreenSelection, SM_PID_HOTEND_S) != NULL))
   {
     SERIAL_ECHOLNPGM("Special Menu: PID Tune Hotend");
-    queue.inject_P(PSTR("G28\nG1 Z20\nG1 X100 Y100 F4000\nG1 Z5\nM106 S172\nG4 P500\nM303 E0 S215 C15 U1\nG4 P500\nM107\nG28\nG1 Z10"));
+    queue.inject_P(PSTR("G28\nG1 Z20\nG1 X100 Y100 F4000\nG1 Z5\nM106 S172\nG4 P500\nM303 E0 S215 C15 U1\nG4 P500\nM107\nG28\nG1 Z10\nM84"));
     buzzer.tone(200, 1108);
     buzzer.tone(200, 1661);
     buzzer.tone(200, 1108);
@@ -527,17 +527,15 @@ void AnycubicTouchscreenClass::HandleSpecialMenu()
   || (strcasestr(currentTouchscreenSelection, SM_Z_UP_001_S) != NULL))
   {
     SERIAL_ECHOLNPGM("Special Menu: Z Up 0.01");
-    queue.inject_P(PSTR("G91\nG1 Z+0.01\nG90"));
     //queue.inject_P(PSTR("G91\nG1 Z+0.01\nG90"));
-    //queue.inject_P(PSTR("G91\nG1 Z-0.02\nG90"));
+    queue.inject_P(PSTR("G91\nG1 Z+0.03\nG4 P250\nG1 Z-0.02\nG90"));
   }
   else if ((strcasestr(currentTouchscreenSelection, SM_Z_DN_001_L) != NULL)
-  || (strcasestr(currentTouchscreenSelection, SM_Z_DN_001_L) != NULL))
+  || (strcasestr(currentTouchscreenSelection, SM_Z_DN_001_S) != NULL))
   {
     SERIAL_ECHOLNPGM("Special Menu: Z Down 0.01");
-    queue.inject_P(PSTR("G91\nG1 Z-0.01\nG90"));
-    //queue.inject_P(PSTR("G91\nG1 Z+0.02\nG90"));
-    //queue.inject_P(PSTR("G91\nG1 Z-0.03\nG90"));
+    //queue.inject_P(PSTR("G91\nG1 Z-0.01\nG90"));
+    queue.inject_P(PSTR("G91\nG1 Z+0.02\nG4 P250\nG1 Z-0.03\nG90"));
   }
 #endif
 
