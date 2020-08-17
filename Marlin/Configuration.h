@@ -997,9 +997,9 @@
     //#define CLASSIC_JERK
 #endif
 
-#if ENABLED(KNUTWURST_MEGA_X)
-    #define CLASSIC_JERK
-#endif
+//#if ENABLED(KNUTWURST_MEGA_X)
+    //#define CLASSIC_JERK
+//#endif
 
 #if ENABLED(CLASSIC_JERK)
 
@@ -1046,7 +1046,7 @@
     #endif
 
     #if ENABLED(KNUTWURST_MEGA_X)
-        #define JUNCTION_DEVIATION_MM 0.013 // (mm) Distance from real junction edge
+        #define JUNCTION_DEVIATION_MM 0.16 // (mm) Distance from real junction edge
     #endif
 #endif
 
