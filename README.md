@@ -49,7 +49,7 @@
  * Automatische EEPROM Initialisierung
  * Filament Runout Sensor kann im Menü temporär deaktiviert werden
  * Wiederaufnahme des Drucks nach Stromausfall (WiP)
- * Druckbettgröße erweitert auf 225 x 220 x 210 mm
+ * [Druckbettgröße erweitert auf 225 x 220 x 210 mm](https://github.com/knutwurst/Marlin-2-0-x-Anycubic-i3-MEGA-S/wiki/Set-new-print-bed-size)
  * Automatischer 'Slowdown', falls Daten nicht schnell genug fließen
  * Vollautomatisches Hotend und Ultrabase PID Tuning
 
@@ -203,7 +203,7 @@ Für (fast) jede Kombination gibt es eine passende Firmware im Download-Bereich.
  * Automatic EEPROM initialization
  * Filament runout sensor can be temporarily deactivated in the menu
  * Resumption of printing after a power failure (WiP)
- * Print bed size expanded to 225 x 220 x 210 mm
+ * [Print bed size enlarged to 225 x 220 x 210 mm](https://github.com/knutwurst/Marlin-2-0-x-Anycubic-i3-MEGA-S/wiki/Set-new-print-bed-size)
  * Automatic 'slowdown' if data does not flow fast enough
  * Fully automatic hotend and ultrabase PID tuning
 
