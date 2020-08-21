@@ -1646,6 +1646,7 @@ void AnycubicTouchscreenClass::GetCommandFromTFT()
         case 33: // A33 get version info
         {
           HARDWARE_SERIAL_PROTOCOLPGM("J33 ");
+          HARDWARE_SERIAL_PROTOCOLPGM("Knutwurst-");
           HARDWARE_SERIAL_PROTOCOLPGM(MSG_MY_VERSION);
           HARDWARE_SERIAL_ENTER();
         }
