@@ -790,7 +790,8 @@ void AnycubicTouchscreenClass::PrintList()
 #endif
   else
   {
-    // Do nothing?
+    HARDWARE_SERIAL_PROTOCOLLNPGM(SM_SPECIAL_MENU_S);
+    HARDWARE_SERIAL_PROTOCOLLNPGM(SM_SPECIAL_MENU_L);
   }
 }
 
@@ -1180,7 +1181,7 @@ void AnycubicTouchscreenClass::GetCommandFromTFT()
             }
             else
             {
-              HARDWARE_SERIAL_PROTOCOLPGM("J02");
+              HARDWARE_SERIAL_PROTOCOLPGM("J02");  // J02 SD Card initilized
             }
           }
           else
@@ -1216,10 +1217,8 @@ void AnycubicTouchscreenClass::GetCommandFromTFT()
           currentTouchscreenSelection[0] = 0;
           if (!IS_SD_INSERTED())
           {
-            HARDWARE_SERIAL_PROTOCOLPGM("J02");
+            HARDWARE_SERIAL_PROTOCOLPGM("J02");  // J02 SD Card initilized
             HARDWARE_SERIAL_ENTER();
-          }
-          else
           {
             if (CodeSeen('S'))
               filenumber = CodeValue();
