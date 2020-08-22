@@ -731,8 +731,8 @@ void AnycubicTouchscreenClass::PrintList()
         
         // Cut off too long filenames.
         // They don't fit on the screen anyways.
-        if(fileNameLen > MAX_PRINTABLE_FILENAME_LEN)
-          fileNameLen = MAX_PRINTABLE_FILENAME_LEN;
+        //if(fileNameLen > MAX_PRINTABLE_FILENAME_LEN)
+        //  fileNameLen = MAX_PRINTABLE_FILENAME_LEN;
         
         char outputString[fileNameLen];
 
