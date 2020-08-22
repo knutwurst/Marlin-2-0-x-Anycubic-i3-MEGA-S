@@ -997,9 +997,9 @@
     //#define CLASSIC_JERK
 #endif
 
-//#if ENABLED(KNUTWURST_MEGA_X)
-    //#define CLASSIC_JERK
-//#endif
+#if ENABLED(KNUTWURST_MEGA_X)
+    #define CLASSIC_JERK
+#endif
 
 #if ENABLED(CLASSIC_JERK)
 
@@ -1012,7 +1012,7 @@
 #if ENABLED(KNUTWURST_MEGA_X)
     #define DEFAULT_XJERK  4.0
     #define DEFAULT_YJERK  4.0
-    #define DEFAULT_ZJERK  0.15
+    #define DEFAULT_ZJERK  0.1
 #endif
 
 
@@ -1674,9 +1674,18 @@
   #define Z_SAFE_HOMING_Y_POINT ((Y_BED_SIZE) / 2)    // Y point for Z homing when homing all axes (G28).
 #endif
 
-// Homing speeds (mm/m)
-#define HOMING_FEEDRATE_XY (50*60)
-#define HOMING_FEEDRATE_Z  (5*60)
+#if EITHER(KNUTWURST_MEGA, KNUTWURST_MEGA_S)
+    // Homing speeds (mm/m)
+    #define HOMING_FEEDRATE_XY (50*60)
+    #define HOMING_FEEDRATE_Z  (5*60)
+#endif
+
+#if ENABLED(KNUTWURST_MEGA_X)
+    // Homing speeds (mm/m)
+    #define HOMING_FEEDRATE_XY (40*60)
+    #define HOMING_FEEDRATE_Z  (6*60)
+#endif
+
 
 // Validate that endstops are triggered on homing moves
 #define VALIDATE_HOMING_ENDSTOPS
