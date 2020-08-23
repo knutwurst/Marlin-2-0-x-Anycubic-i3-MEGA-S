@@ -923,7 +923,7 @@
 #endif
 
 #if ENABLED(KNUTWURST_MEGA_X)
-    #define DEFAULT_MAX_FEEDRATE            { 120, 120, 20, 80 }
+    #define DEFAULT_MAX_FEEDRATE            { 120, 120, 8, 80 } // { 120, 120, 20, 80 }
 #endif
 
 
