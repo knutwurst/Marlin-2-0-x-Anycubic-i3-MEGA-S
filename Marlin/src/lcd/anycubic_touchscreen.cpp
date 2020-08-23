@@ -1219,16 +1219,17 @@ void AnycubicTouchscreenClass::GetCommandFromTFT()
           {
             HARDWARE_SERIAL_PROTOCOLPGM("J02");  // J02 SD Card initilized
             HARDWARE_SERIAL_ENTER();
-          {
-            if (CodeSeen('S'))
-              filenumber = CodeValue();
-              
-            HARDWARE_SERIAL_PROTOCOLPGM("FN "); // Filelist start
-            HARDWARE_SERIAL_ENTER();
-            PrintList();
-            HARDWARE_SERIAL_PROTOCOLPGM("END"); // Filelist stop
-            HARDWARE_SERIAL_ENTER();
           }
+          
+          if (CodeSeen('S'))
+            filenumber = CodeValue();
+            
+          HARDWARE_SERIAL_PROTOCOLPGM("FN "); // Filelist start
+          HARDWARE_SERIAL_ENTER();
+          PrintList();
+          HARDWARE_SERIAL_PROTOCOLPGM("END"); // Filelist stop
+          HARDWARE_SERIAL_ENTER();
+          
 #endif
           break;
         case 9: // A9 pause sd print

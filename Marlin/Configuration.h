@@ -998,7 +998,7 @@
 #endif
 
 #if ENABLED(KNUTWURST_MEGA_X)
-    #define CLASSIC_JERK
+    //#define CLASSIC_JERK
 #endif
 
 #if ENABLED(CLASSIC_JERK)
@@ -1012,7 +1012,7 @@
 #if ENABLED(KNUTWURST_MEGA_X)
     #define DEFAULT_XJERK  4.0
     #define DEFAULT_YJERK  4.0
-    #define DEFAULT_ZJERK  0.1
+    #define DEFAULT_ZJERK  0.2
 #endif
 
 
