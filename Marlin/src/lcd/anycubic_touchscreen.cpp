@@ -137,6 +137,7 @@ void AnycubicTouchscreenClass::Setup()
   currentTouchscreenSelection[0] = '\0';
   currentFileOrDirectory[0] = '\0';
   SpecialMenu = false;
+  MMLMenu = false;
   FilamentSensorEnabled = true;
   MyFileNrCnt = 0;
 
@@ -492,6 +493,7 @@ void AnycubicTouchscreenClass::HandleSpecialMenu()
   {
     SERIAL_ECHOLNPGM("Special Menu: Start Mesh Leveling");
     queue.inject_P(PSTR("G29 S1"));
+    MMLMenu = true;
   }
   else if ((strcasestr(currentTouchscreenSelection, SM_MESH_NEXT_L) != NULL)
   || (strcasestr(currentTouchscreenSelection, SM_MESH_NEXT_S) != NULL))
@@ -527,14 +529,12 @@ void AnycubicTouchscreenClass::HandleSpecialMenu()
   || (strcasestr(currentTouchscreenSelection, SM_Z_UP_001_S) != NULL))
   {
     SERIAL_ECHOLNPGM("Special Menu: Z Up 0.01");
-    //queue.inject_P(PSTR("G91\nG1 Z+0.01\nG90"));
     queue.inject_P(PSTR("G91\nG1 Z+0.03\nG4 P250\nG1 Z-0.02\nG90"));
   }
   else if ((strcasestr(currentTouchscreenSelection, SM_Z_DN_001_L) != NULL)
   || (strcasestr(currentTouchscreenSelection, SM_Z_DN_001_S) != NULL))
   {
     SERIAL_ECHOLNPGM("Special Menu: Z Down 0.01");
-    //queue.inject_P(PSTR("G91\nG1 Z-0.01\nG90"));
     queue.inject_P(PSTR("G91\nG1 Z+0.02\nG4 P250\nG1 Z-0.03\nG90"));
   }
 #endif
@@ -582,12 +582,47 @@ void AnycubicTouchscreenClass::HandleSpecialMenu()
   {
     SpecialMenu = false;
   }
+  else if ((strcasestr(currentTouchscreenSelection, SM_BACK_L) != NULL)
+  || (strcasestr(currentTouchscreenSelection, SM_BACK_S) != NULL))
+  {
+    MMLMenu = false;
+  }
 }
 
 
 void AnycubicTouchscreenClass::PrintList()
 {
-  if (SpecialMenu)
+  if(MMLMenu)
+  {
+    switch (filenumber)
+    {
+        case 0: // Page 1
+          HARDWARE_SERIAL_PROTOCOLLNPGM(SM_Z_UP_01_S);
+          HARDWARE_SERIAL_PROTOCOLLNPGM(SM_Z_UP_01_L);
+          HARDWARE_SERIAL_PROTOCOLLNPGM(SM_Z_DN_01_S);
+          HARDWARE_SERIAL_PROTOCOLLNPGM(SM_Z_DN_01_L);
+          HARDWARE_SERIAL_PROTOCOLLNPGM(SM_Z_UP_002_S);
+          HARDWARE_SERIAL_PROTOCOLLNPGM(SM_Z_UP_002_L);
+          HARDWARE_SERIAL_PROTOCOLLNPGM(SM_Z_DN_002_S);
+          HARDWARE_SERIAL_PROTOCOLLNPGM(SM_Z_DN_002_L);
+        break;
+
+        case 4: // Page 2
+          HARDWARE_SERIAL_PROTOCOLLNPGM(SM_Z_UP_001_S);
+          HARDWARE_SERIAL_PROTOCOLLNPGM(SM_Z_UP_001_L);
+          HARDWARE_SERIAL_PROTOCOLLNPGM(SM_Z_DN_001_S);
+          HARDWARE_SERIAL_PROTOCOLLNPGM(SM_Z_DN_001_L);
+          HARDWARE_SERIAL_PROTOCOLLNPGM(SM_MESH_NEXT_S);
+          HARDWARE_SERIAL_PROTOCOLLNPGM(SM_MESH_NEXT_L);
+          HARDWARE_SERIAL_PROTOCOLLNPGM(SM_BACK_S);
+          HARDWARE_SERIAL_PROTOCOLLNPGM(SM_BACK_L);
+          break;
+        
+        default:
+        break;
+      }
+  }
+  else if (SpecialMenu)
   {
     switch (filenumber)
     {
@@ -606,37 +641,17 @@ void AnycubicTouchscreenClass::PrintList()
     case 4: // Page 2
       HARDWARE_SERIAL_PROTOCOLLNPGM(SM_MESH_START_S);
       HARDWARE_SERIAL_PROTOCOLLNPGM(SM_MESH_START_L);
-      HARDWARE_SERIAL_PROTOCOLLNPGM(SM_MESH_NEXT_S);
-      HARDWARE_SERIAL_PROTOCOLLNPGM(SM_MESH_NEXT_L);
-      HARDWARE_SERIAL_PROTOCOLLNPGM(SM_Z_UP_01_S);
-      HARDWARE_SERIAL_PROTOCOLLNPGM(SM_Z_UP_01_L);
-      HARDWARE_SERIAL_PROTOCOLLNPGM(SM_Z_DN_01_S);
-      HARDWARE_SERIAL_PROTOCOLLNPGM(SM_Z_DN_01_L);
-      break;
-
-    case 8: // Page 3
-      HARDWARE_SERIAL_PROTOCOLLNPGM(SM_Z_UP_002_S);
-      HARDWARE_SERIAL_PROTOCOLLNPGM(SM_Z_UP_002_L);
-      HARDWARE_SERIAL_PROTOCOLLNPGM(SM_Z_DN_002_S);
-      HARDWARE_SERIAL_PROTOCOLLNPGM(SM_Z_DN_002_L);
-      HARDWARE_SERIAL_PROTOCOLLNPGM(SM_Z_UP_001_S);
-      HARDWARE_SERIAL_PROTOCOLLNPGM(SM_Z_UP_001_L);
-      HARDWARE_SERIAL_PROTOCOLLNPGM(SM_Z_DN_001_S);
-      HARDWARE_SERIAL_PROTOCOLLNPGM(SM_Z_DN_001_L);
-      break;
-
-    case 12: // Page 4
       HARDWARE_SERIAL_PROTOCOLLNPGM(SM_PID_HOTEND_S);
       HARDWARE_SERIAL_PROTOCOLLNPGM(SM_PID_HOTEND_L);
       HARDWARE_SERIAL_PROTOCOLLNPGM(SM_PID_BED_S);
       HARDWARE_SERIAL_PROTOCOLLNPGM(SM_PID_BED_L);
       HARDWARE_SERIAL_PROTOCOLLNPGM(SM_SAVE_EEPROM_S);
       HARDWARE_SERIAL_PROTOCOLLNPGM(SM_SAVE_EEPROM_L);
-      HARDWARE_SERIAL_PROTOCOLLNPGM(SM_LOAD_DEFAULTS_S);
-      HARDWARE_SERIAL_PROTOCOLLNPGM(SM_LOAD_DEFAULTS_L);
       break;
 
-    case 16: // Page 5
+    case 8: // Page 3
+      HARDWARE_SERIAL_PROTOCOLLNPGM(SM_LOAD_DEFAULTS_S);
+      HARDWARE_SERIAL_PROTOCOLLNPGM(SM_LOAD_DEFAULTS_L);
       HARDWARE_SERIAL_PROTOCOLLNPGM(SM_DIS_FILSENS_S);
       HARDWARE_SERIAL_PROTOCOLLNPGM(SM_DIS_FILSENS_L);
       HARDWARE_SERIAL_PROTOCOLLNPGM(SM_EN_FILSENS_S);
@@ -645,6 +660,7 @@ void AnycubicTouchscreenClass::PrintList()
       HARDWARE_SERIAL_PROTOCOLLNPGM(SM_EXIT_L);
       break;
 #endif
+
 #if ENABLED(KNUTWURST_BLTOUCH)
     case 4: // Page 2
       HARDWARE_SERIAL_PROTOCOLLNPGM(SM_BLTOUCH_S);
@@ -667,8 +683,7 @@ void AnycubicTouchscreenClass::PrintList()
       HARDWARE_SERIAL_PROTOCOLLNPGM(SM_EXIT_S);
       HARDWARE_SERIAL_PROTOCOLLNPGM(SM_EXIT_L);
       break;
-    #endif
-
+#endif
     default:
       break;
     }
@@ -1220,7 +1235,7 @@ void AnycubicTouchscreenClass::GetCommandFromTFT()
             HARDWARE_SERIAL_PROTOCOLPGM("J02");  // J02 SD Card initilized
             HARDWARE_SERIAL_ENTER();
           }
-          
+
           if (CodeSeen('S'))
             filenumber = CodeValue();
             
