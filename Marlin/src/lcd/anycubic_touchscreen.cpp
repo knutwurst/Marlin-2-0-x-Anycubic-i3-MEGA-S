@@ -1232,8 +1232,8 @@ void AnycubicTouchscreenClass::GetCommandFromTFT()
           currentTouchscreenSelection[0] = 0;
           if (!IS_SD_INSERTED())
           {
-            HARDWARE_SERIAL_PROTOCOLPGM("J02");  // J02 SD Card initilized
-            HARDWARE_SERIAL_ENTER();
+            //HARDWARE_SERIAL_PROTOCOLPGM("J02");  // J02 SD Card initilized
+            //HARDWARE_SERIAL_ENTER();
           }
 
           if (CodeSeen('S'))
@@ -1637,8 +1637,8 @@ void AnycubicTouchscreenClass::GetCommandFromTFT()
 
           if (!IS_SD_INSERTED())
           {
-            HARDWARE_SERIAL_PROTOCOLPGM("J02"); // J02 SD Card initilized
-            HARDWARE_SERIAL_ENTER();
+            //HARDWARE_SERIAL_PROTOCOLPGM("J02"); // J02 SD Card initilized
+            //HARDWARE_SERIAL_ENTER();
 #ifdef ANYCUBIC_TFT_DEBUG
             SERIAL_ECHOLNPGM("TFT Serial Debug: SD card initialized... J02");
 #endif
