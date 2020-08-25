@@ -1002,8 +1002,8 @@ void AnycubicTouchscreenClass::FilamentRunout()
 #ifdef ANYCUBIC_TFT_DEBUG
         SERIAL_ECHOLNPGM("DEBUG: Set filament trigger time");
 #endif
-        // set the delayed timestamp to 3000ms later
-        fil_delay = fil_ms + 3000UL;
+        // set the delayed timestamp to 5000ms later
+        fil_delay = fil_ms + 5000UL;
         // this doesn't need to run until the filament is recovered again
         FilamentSetMillis = false;
       }
@@ -1015,7 +1015,7 @@ void AnycubicTouchscreenClass::FilamentRunout()
         if (!IsParked)
         {
 #ifdef ANYCUBIC_TFT_DEBUG
-          SERIAL_ECHOLNPGM("DEBUG: 3000ms delay done");
+          SERIAL_ECHOLNPGM("DEBUG: 5000ms delay done");
 #endif
           if (card.isPrinting())
           {
