@@ -134,7 +134,7 @@ void AnycubicTouchscreenClass::Setup()
   }
 #endif
 
-  currentTouchscreenSelection[0] = '\0';
+  currentTouchscreenSelection[0] = 0;
   currentFileOrDirectory[0] = '\0';
   SpecialMenu = false;
   MMLMenu = false;
