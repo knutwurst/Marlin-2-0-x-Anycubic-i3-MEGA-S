@@ -15,8 +15,8 @@
 - [Häufig gestellte Fragen (FAQ)](#häufig-gesellte-fragen-faq)
 - [Fotos / Bilder](#bilder)
    - [Spezial Menü](#spezial-menü)
-   - [Manual Mesh Beld Leveling](#manuelles-leveln)
-   - [BLTouch Beld Leveling](#automatisches-bltouch-leveln)
+   - [Manual Mesh Bed Leveling](#manuelles-leveln)
+   - [BLTouch Bed Leveling](#automatisches-bltouch-leveln)
 - [Downloads](#downloads)
 
 
@@ -26,8 +26,8 @@
 - [Frequently asked questions (FAQ)](#faq)
 - [Photos / Pictures](#pictures)
    - [Special Menü](#special-menu)
-   - [Manual Mesh Beld Leveling](#manual-mesh-beld-leveling)
-   - [BLTouch Beld Leveling](#bltouch-beld-leveling)
+   - [Manual Mesh Bed Leveling](#manual-mesh-bed-leveling)
+   - [BLTouch Bed Leveling](#bltouch-bed-leveling)
 - [Download](#download)
 
 
@@ -286,7 +286,7 @@ With this mapping, you have to rely on the fact that the functions you want to u
 ![SpecialMenu](images/SpecialMenu.jpg)
 ![SpecialMenu DGUS](images/SpecialMenu_DGUS.jpg)
 
-## Manual Mesh Beld Leveling
+## Manual Mesh Bed Leveling
 
 ![Page 1](images/MN_Page1.jpg)
 ![Page 1 DGUS](images/MN_Page1_DGUS.jpg)
@@ -300,7 +300,7 @@ With this mapping, you have to rely on the fact that the functions you want to u
 ![Page 4](images/MN_Page4.jpg)
 ![Page 4 DGUS](images/MN_Page4_DGUS.jpg)
 
-## BLTouch Beld Leveling
+## BLTouch Bed Leveling
 
 ![Page 1](images/BL_Page1.jpg)
 
