@@ -51,6 +51,7 @@
  * [Druckbettgröße erweitert auf 225 x 220 x 210 mm](https://github.com/knutwurst/Marlin-2-0-x-Anycubic-i3-MEGA-S/wiki/Set-new-print-bed-size)
  * Automatischer 'Slowdown', falls Daten nicht schnell genug fließen
  * Vollautomatisches Hotend und Ultrabase PID Tuning
+ * Optimierungen für [Trinamic TMC Schrittmotortreiber](https://github.com/knutwurst/Marlin-2-0-x-Anycubic-i3-MEGA-S/wiki/Schrittmotortreiber-gegen-TMC2xxx-tauschen)
 
 
 ## Besser im Vergleich zu anderen Firmwares (Bugfixes):
@@ -204,6 +205,7 @@ Für (fast) jede Kombination gibt es eine passende Firmware im Download-Bereich.
  * [Print bed size enlarged to 225 x 220 x 210 mm](https://github.com/knutwurst/Marlin-2-0-x-Anycubic-i3-MEGA-S/wiki/Set-new-print-bed-size)
  * Automatic 'slowdown' if data does not flow fast enough
  * Fully automatic hotend and ultrabase PID tuning
+ * Optimizations for [Trinamic TMC Stepper drivers](https://github.com/knutwurst/Marlin-2-0-x-Anycubic-i3-MEGA-S/wiki/Swap-stepper-motor-driver-for-TMC2xxx)
 
 ### What's better in coparison to other firmwares (bug fixes):
  * Tidy special menu
