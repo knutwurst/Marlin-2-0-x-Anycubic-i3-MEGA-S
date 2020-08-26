@@ -121,10 +121,10 @@ void AnycubicTouchscreenClass::Setup()
   pinMode(SD_DETECT_PIN, INPUT);
   WRITE(SD_DETECT_PIN, HIGH);
 #endif
-  pinMode(19, INPUT);
-  WRITE(19, HIGH);
+  pinMode(FILAMENT_RUNOUT_PIN, INPUT);
+  WRITE(FILAMENT_RUNOUT_PIN, HIGH);
 #if ENABLED(ANYCUBIC_FILAMENT_RUNOUT_SENSOR)
-  if ((READ(19) == true) && FilamentSensorEnabled)
+  if ((READ(FILAMENT_RUNOUT_PIN) == true) && FilamentSensorEnabled)
   {
     HARDWARE_SERIAL_PROTOCOLPGM("J15"); //J15 FILAMENT LACK
     HARDWARE_SERIAL_ENTER();
@@ -990,7 +990,7 @@ void AnycubicTouchscreenClass::FilamentRunout()
   if (FilamentSensorEnabled == true)
   {
 #if ENABLED(ANYCUBIC_FILAMENT_RUNOUT_SENSOR)
-    FilamentTestStatus = READ(19) & 0xff;
+    FilamentTestStatus = READ(FILAMENT_RUNOUT_PIN) & 0xff;
 
     if (FilamentTestStatus > FilamentTestLastStatus)
     {
@@ -1075,49 +1075,34 @@ void AnycubicTouchscreenClass::GetCommandFromTFT()
     if(!TFTcomment_mode)
     {
         TFTcomment_mode = false; //for new command
-        
-        //TFTfromsd[TFTbufindw] = false;
-        
+
         if(strchr(TFTcmdbuffer[TFTbufindw], 'N') != NULL)
         {
-        /*
-          TFTstrchr_pointer = strchr(TFTcmdbuffer[TFTbufindw], 'N');
-          gcode_N = (strtol(&TFTcmdbuffer[TFTbufindw][TFTstrchr_pointer - TFTcmdbuffer[TFTbufindw] + 1], NULL, 10));
-          if(gcode_N != gcode_LastN+1 && (strstr_P(TFTcmdbuffer[TFTbufindw], PSTR("M110")) == NULL) )
+          if(strchr(TFTcmdbuffer[TFTbufindw], '*') != NULL)
           {
-              HARDWARE_SERIAL_ERROR_START;
-              NEWFlushSerialRequestResend();
-              serial3_count = 0;
-              return;
+              byte checksum = 0;
+              byte count = 0;
+              while(TFTcmdbuffer[TFTbufindw][count] != '*') checksum = checksum^TFTcmdbuffer[TFTbufindw][count++];
+              TFTstrchr_pointer = strchr(TFTcmdbuffer[TFTbufindw], '*');
+        
+              if( (int)(strtod(&TFTcmdbuffer[TFTbufindw][TFTstrchr_pointer - TFTcmdbuffer[TFTbufindw] + 1], NULL)) != checksum)
+              {
+                  HARDWARE_SERIAL_ERROR_START;
+                  HardwareSerial.flush();
+                  HARDWARE_SERIAL_ERROR_START;
+                  HardwareSerial.flush();
+                  serial3_count = 0;
+                  return;
+              }
+            //if no errors, continue parsing
           }
-        */
-  
-       if(strchr(TFTcmdbuffer[TFTbufindw], '*') != NULL)
-       {
-          byte checksum = 0;
-          byte count = 0;
-          while(TFTcmdbuffer[TFTbufindw][count] != '*') checksum = checksum^TFTcmdbuffer[TFTbufindw][count++];
-          TFTstrchr_pointer = strchr(TFTcmdbuffer[TFTbufindw], '*');
-    
-          if( (int)(strtod(&TFTcmdbuffer[TFTbufindw][TFTstrchr_pointer - TFTcmdbuffer[TFTbufindw] + 1], NULL)) != checksum)
+          else
           {
-              HARDWARE_SERIAL_ERROR_START;
-              HardwareSerial.flush();
-              HARDWARE_SERIAL_ERROR_START;
-              HardwareSerial.flush();
-              serial3_count = 0;
-              return;
+            HARDWARE_SERIAL_ERROR_START;
+            HardwareSerial.flush();
+            serial3_count = 0;
+            return;
           }
-         //if no errors, continue parsing
-       }
-       else
-       {
-         HARDWARE_SERIAL_ERROR_START;
-         HardwareSerial.flush();
-         serial3_count = 0;
-         return;
-       }  
-       //gcode_LastN = gcode_N;
        //if no errors, continue parsing
        }
        else  // if we don't receive 'N' but still see '*'
@@ -1232,11 +1217,6 @@ void AnycubicTouchscreenClass::GetCommandFromTFT()
         case 8: // A8 GET SD LIST
 #ifdef SDSUPPORT
           currentTouchscreenSelection[0] = 0;
-          if (!IS_SD_INSERTED())
-          {
-            //HARDWARE_SERIAL_PROTOCOLPGM("J02");  // J02 SD Card initilized
-            //HARDWARE_SERIAL_ENTER();
-          }
 
           if (CodeSeen('S'))
             filenumber = CodeValue();
@@ -1636,15 +1616,6 @@ void AnycubicTouchscreenClass::GetCommandFromTFT()
           }
 
           currentTouchscreenSelection[0] = 0;
-
-          if (!IS_SD_INSERTED())
-          {
-            //HARDWARE_SERIAL_PROTOCOLPGM("J02"); // J02 SD Card initilized
-            //HARDWARE_SERIAL_ENTER();
-#ifdef ANYCUBIC_TFT_DEBUG
-            SERIAL_ECHOLNPGM("TFT Serial Debug: SD card initialized... J02");
-#endif
-          }
 #endif
           break;
 #ifdef SERVO_ENDSTOPS
