@@ -159,7 +159,7 @@ Bei diesem Mapping ist man eben darauf angewiesen, dass die Funktionen, die man 
 
 # Downloads
 
-Du kannst die fertigen Binärdateien hier herunterladen: https://github.com/knutwurst/Marlin-2-0-x-Anycubic-i3-MEGA-S/releases. Natürlich kannst du die Firmware mit PlatformIO oder der Arduino IDE auch selbst kompilieren.
+Du kannst die fertigen Binärdateien hier herunterladen: https://github.com/knutwurst/Marlin-2-0-x-Anycubic-i3-MEGA-S/releases. Natürlich kannst du die Firmware mit PlatformIO oder der Arduino IDE auch [selbst kompilieren](https://github.com/knutwurst/Marlin-2-0-x-Anycubic-i3-MEGA-S/wiki/Howto:-Compile-Firmware-with-PlatformIO).
 
 Um es übersichtlich zu gestalten, beinhalten die Dateinamen die einzelnen Features.
 
@@ -311,7 +311,7 @@ With this mapping, you have to rely on the fact that the functions you want to u
 
 # Download
 
-You can download the precompiled binary files from here: https://github.com/knutwurst/Marlin-2-0-x-Anycubic-i3-MEGA-S/releases. Of course you can also compile the firmware yourself with PlatformIO or the Arduino IDE.
+You can download the precompiled binary files from here: https://github.com/knutwurst/Marlin-2-0-x-Anycubic-i3-MEGA-S/releases. Of course you can also [compile the firmware yourself](https://github.com/knutwurst/Marlin-2-0-x-Anycubic-i3-MEGA-S/wiki/Howto:-Compile-Firmware-with-PlatformIO) with PlatformIO or the Arduino IDE.
 
 In order to make it clear, the file names contain the individual features.
 
