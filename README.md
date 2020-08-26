@@ -66,7 +66,7 @@
  * Keine "spezielle" BLTouch Firmware nötig. Hier ist alles drin
  * Konfiguration ganz einfach über Feature-Toggles
  * Man muss keine Grundkonfiguration per GCODE machen.
- * Man muss kein Werksreset durchführen
+ * Man muss keinen Werksreset durchführen
 
 ---
 
