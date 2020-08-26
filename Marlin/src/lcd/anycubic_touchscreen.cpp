@@ -448,7 +448,7 @@ void AnycubicTouchscreenClass::HandleSpecialMenu()
   || (strcasestr(currentTouchscreenSelection, SM_PID_HOTEND_S) != NULL))
   {
     SERIAL_ECHOLNPGM("Special Menu: PID Tune Hotend");
-    queue.inject_P(PSTR("G28\nG90\nG1 Z20\nG1 X110 Y110 F4000\nG1 Z5\nM106 S172\nG4 P500\nM303 E0 S215 C15 U1\nG4 P500\nM107\nG28\nG1 Z10\nM84"));
+    queue.inject_P(PSTR("G28\nG90\nG1 Z20\nG1 X110 Y110 F4000\nG1 Z5\nM106 S172\nG4 P500\nM303 E0 S215 C15 U1\nG4 P500\nM107\nG28\nG1 Z10\nM84\nM500"));
     buzzer.tone(200, 1108);
     buzzer.tone(200, 1661);
     buzzer.tone(200, 1108);
@@ -458,7 +458,7 @@ void AnycubicTouchscreenClass::HandleSpecialMenu()
   || (strcasestr(currentTouchscreenSelection, SM_PID_BED_S) != NULL))
   {
     SERIAL_ECHOLNPGM("Special Menu: PID Tune Ultrabase");
-    queue.inject_P(PSTR("M303 E-1 S60 C6 U1"));
+    queue.inject_P(PSTR("M303 E-1 S60 C6 U1\nM500"));
     buzzer.tone(200, 1108);
     buzzer.tone(200, 1661);
     buzzer.tone(200, 1108);
@@ -545,6 +545,8 @@ void AnycubicTouchscreenClass::HandleSpecialMenu()
   {
     SERIAL_ECHOLNPGM("Special Menu: BLTouch Leveling");
     queue.inject_P(PSTR("G28\nG29\nM500\nG90\nG1 Z30 F4000\nG1 X0 F4000\nG91\nM84"));
+    buzzer.tone(105, 1108);
+    buzzer.tone(210, 1661);
   }
 #endif
 
@@ -845,8 +847,8 @@ void AnycubicTouchscreenClass::CheckHeaterError()
     if (HeaterCheckCount > 60000)
     {
       HeaterCheckCount = 0;
-      HARDWARE_SERIAL_PROTOCOLPGM("J10"); // J10 Hotend temperature abnormal
-      HARDWARE_SERIAL_ENTER();
+      //HARDWARE_SERIAL_PROTOCOLPGM("J10"); // J10 Hotend temperature abnormal
+      //HARDWARE_SERIAL_ENTER();
 #ifdef ANYCUBIC_TFT_DEBUG
       SERIAL_ECHOLNPGM("TFT Serial Debug: Hotend temperature abnormal... J20");
 #endif
