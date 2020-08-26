@@ -847,8 +847,8 @@ void AnycubicTouchscreenClass::CheckHeaterError()
     if (HeaterCheckCount > 60000)
     {
       HeaterCheckCount = 0;
-      //HARDWARE_SERIAL_PROTOCOLPGM("J10"); // J10 Hotend temperature abnormal
-      //HARDWARE_SERIAL_ENTER();
+      HARDWARE_SERIAL_PROTOCOLPGM("J10"); // J10 Hotend temperature abnormal
+      HARDWARE_SERIAL_ENTER();
 #ifdef ANYCUBIC_TFT_DEBUG
       SERIAL_ECHOLNPGM("TFT Serial Debug: Hotend temperature abnormal... J20");
 #endif
