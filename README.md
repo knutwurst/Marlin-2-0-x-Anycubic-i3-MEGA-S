@@ -42,8 +42,7 @@
  * Babystepping während des Druckvorgangs
  * Bilinear Bed Leveling (BBL)
  * Manuelles Editieren der Messpunkte
- * Volle Anycubic Touchscreen Unterstützung
- * Unterstützung des neuen Anycubic Touchscreens (DGUS II)
+ * Volle Unterstützung aller [Anycubic Touchscreens](https://github.com/knutwurst/Marlin-2-0-x-Anycubic-i3-MEGA-S/wiki/Types-of-Anycubic-Touchscreens)
  * Bauteilkühler läuft nun auf 100% statt maximal 70%
  * Pause & Filamentwechselfunktion
  * Automatische EEPROM Initialisierung
@@ -196,8 +195,7 @@ Für (fast) jede Kombination gibt es eine passende Firmware im Download-Bereich.
  * Baby stepping during the printing process
  * Bilinear Bed Leveling (BBL)
  * Manual editing of the measuring points
- * Full Anycubic touchscreen support
- * Support for the new Anycubic Touchscreen (DGUS II)
+ * Full Support for all [Anycubic Touchscreens](https://github.com/knutwurst/Marlin-2-0-x-Anycubic-i3-MEGA-S/wiki/Types-of-Anycubic-Touchscreens)
  * Part cooling fan now runs at 100% instead of 70%
  * Pause & filament change function
  * Automatic EEPROM initialization
