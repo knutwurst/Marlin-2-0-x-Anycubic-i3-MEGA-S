@@ -1,4 +1,4 @@
-# Knutwurst's i3 MEGA (M/S/X) Firmware <br>(based on Marlin 2.0.x)
+# Knutwurst's i3 MEGA (M/S/P/X) Firmware <br>(based on Marlin 2.0.x)
 
 <span style="color: red;">(BITTE GENAU DURCHLESEN! / PLEASE READ CAREFULLY!)</span>
 
@@ -8,6 +8,7 @@
 
 ### Wenn du Fragen hast, schaue gern in der offiziellen [Facebook-Gruppe](https://www.facebook.com/groups/3094090037303577/) vorbei.
 
+###WARNUNG: Der Mega Pro / Mega P Support befindet sich noch in der Entwicklung. Aktuell wird der Laser noch nicht unterstützt, ebensowenig wie das Piezo-Leveling! 
 
 # Inhaltsverzeichnis (Deutsch)
 - [Funktionen](#funktionen)
@@ -19,6 +20,8 @@
    - [BLTouch Bed Leveling](#automatisches-bltouch-leveln)
 - [Downloads](#downloads)
 
+
+###WARNING: The Mega Pro / Mega P support is still under development. The laser is currently not supported, nor is piezo leveling!
 
 # Table of Contets (english)
 - [Features](#features)

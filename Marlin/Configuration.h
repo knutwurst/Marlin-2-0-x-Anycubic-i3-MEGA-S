@@ -70,6 +70,7 @@
  * MEGA is the normal i3 Version without spool holder and the cassic extruder
  * MEGA_S is the S version with Titan clone extruder
  * MEGA_X is the big version with 310x310mm Bed
+ * MEGA_P is the "Pro" Version with BMG Extruder, 2 TMC Steppers and Laser
  * 
  * PLEASE READ THE WARNING ABOVE!
  * 
@@ -77,6 +78,7 @@
 //#define KNUTWURST_MEGA
 //#define KNUTWURST_MEGA_S
 //#define KNUTWURST_MEGA_X
+//#define KNUTWURST_MEGA_P
 
 /*
  * If you have defined the MEGA_X or if
@@ -778,6 +780,17 @@
   //#define ENDSTOPPULLDOWN_ZMIN_PROBE
 #endif
 
+#if ENABLED(KNUTWURST_MEGA) || ENABLED(KNUTWURST_MEGA_S) || ENABLED(KNUTWURST_MEGA_P)
+    // Mechanical endstop with COM to ground and NC to Signal uses "false" here (most common setup).
+    #define X_MIN_ENDSTOP_INVERTING true // set to true to invert the logic of the endstop.
+    #define Y_MIN_ENDSTOP_INVERTING true // set to true to invert the logic of the endstop.
+    #define Z_MIN_ENDSTOP_INVERTING true // set to true to invert the logic of the endstop.
+    #define X_MAX_ENDSTOP_INVERTING true // set to true to invert the logic of the endstop.
+    #define Y_MAX_ENDSTOP_INVERTING true // set to true to invert the logic of the endstop.
+    #define Z_MAX_ENDSTOP_INVERTING false // set to true to invert the logic of the endstop.
+    //#define Z_MIN_PROBE_ENDSTOP_INVERTING true // set to true to invert the logic of the endstop.
+#endif
+
 #if ENABLED(KNUTWURST_MEGA_X)
     // Mechanical endstop with COM to ground and NC to Signal uses "false" here (most common setup).
     #define X_MIN_ENDSTOP_INVERTING true // set to true to invert the logic of the endstop.
@@ -789,16 +802,6 @@
     //#define Z_MIN_PROBE_ENDSTOP_INVERTING true // set to true to invert the logic of the endstop.
 #endif
 
-#if EITHER(KNUTWURST_MEGA, KNUTWURST_MEGA_S)
-    // Mechanical endstop with COM to ground and NC to Signal uses "false" here (most common setup).
-    #define X_MIN_ENDSTOP_INVERTING true // set to true to invert the logic of the endstop.
-    #define Y_MIN_ENDSTOP_INVERTING true // set to true to invert the logic of the endstop.
-    #define Z_MIN_ENDSTOP_INVERTING true // set to true to invert the logic of the endstop.
-    #define X_MAX_ENDSTOP_INVERTING true // set to true to invert the logic of the endstop.
-    #define Y_MAX_ENDSTOP_INVERTING true // set to true to invert the logic of the endstop.
-    #define Z_MAX_ENDSTOP_INVERTING false // set to true to invert the logic of the endstop.
-    //#define Z_MIN_PROBE_ENDSTOP_INVERTING true // set to true to invert the logic of the endstop.
-#endif
 
 /**
  * Stepper Drivers
@@ -817,41 +820,41 @@
  * :['A4988', 'A5984', 'DRV8825', 'LV8729', 'L6470', 'L6474', 'POWERSTEP01', 'TB6560', 'TB6600', 'TMC2100', 'TMC2130', 'TMC2130_STANDALONE', 'TMC2160', 'TMC2160_STANDALONE', 'TMC2208', 'TMC2208_STANDALONE', 'TMC2209', 'TMC2209_STANDALONE', 'TMC26X', 'TMC26X_STANDALONE', 'TMC2660', 'TMC2660_STANDALONE', 'TMC5130', 'TMC5130_STANDALONE', 'TMC5160', 'TMC5160_STANDALONE']
  */
 #if ENABLED(KNUTWURST_TMC)
-#define X_DRIVER_TYPE  TMC2208_STANDALONE
-#define Y_DRIVER_TYPE  TMC2208_STANDALONE
-#define Z_DRIVER_TYPE  TMC2208_STANDALONE
-//#define X2_DRIVER_TYPE TMC2208_STANDALONE
-//#define Y2_DRIVER_TYPE TMC2208_STANDALONE
-//#define Z2_DRIVER_TYPE TMC2208_STANDALONE
-//#define Z3_DRIVER_TYPE TMC2208_STANDALONE
-//#define Z4_DRIVER_TYPE TMC2208_STANDALONE
-#define E0_DRIVER_TYPE TMC2208_STANDALONE
-#define E1_DRIVER_TYPE TMC2208_STANDALONE
-//#define E2_DRIVER_TYPE TMC2208_STANDALONE
-//#define E3_DRIVER_TYPE TMC2208_STANDALONE
-//#define E4_DRIVER_TYPE TMC2208_STANDALONE
-//#define E5_DRIVER_TYPE TMC2208_STANDALONE
-//#define E6_DRIVER_TYPE TMC2208_STANDALONE
-//#define E7_DRIVER_TYPE TMC2208_STANDALONE
+    #define X_DRIVER_TYPE  TMC2208_STANDALONE
+    #define Y_DRIVER_TYPE  TMC2208_STANDALONE
+    #define Z_DRIVER_TYPE  TMC2208_STANDALONE
+    //#define X2_DRIVER_TYPE TMC2208_STANDALONE
+    //#define Y2_DRIVER_TYPE TMC2208_STANDALONE
+    //#define Z2_DRIVER_TYPE TMC2208_STANDALONE
+    //#define Z3_DRIVER_TYPE TMC2208_STANDALONE
+    //#define Z4_DRIVER_TYPE TMC2208_STANDALONE
+    #define E0_DRIVER_TYPE TMC2208_STANDALONE
+    #define E1_DRIVER_TYPE TMC2208_STANDALONE
+    //#define E2_DRIVER_TYPE TMC2208_STANDALONE
+    //#define E3_DRIVER_TYPE TMC2208_STANDALONE
+    //#define E4_DRIVER_TYPE TMC2208_STANDALONE
+    //#define E5_DRIVER_TYPE TMC2208_STANDALONE
+    //#define E6_DRIVER_TYPE TMC2208_STANDALONE
+    //#define E7_DRIVER_TYPE TMC2208_STANDALONE
 #endif
 
 #if DISABLED(KNUTWURST_TMC)
-#define X_DRIVER_TYPE  A4988
-#define Y_DRIVER_TYPE  A4988
-#define Z_DRIVER_TYPE  A4988
-//#define X2_DRIVER_TYPE A4988
-//#define Y2_DRIVER_TYPE A4988
-//#define Z2_DRIVER_TYPE A4988
-//#define Z3_DRIVER_TYPE A4988
-//#define Z4_DRIVER_TYPE A4988
-#define E0_DRIVER_TYPE A4988
-#define E1_DRIVER_TYPE A4988
-//#define E2_DRIVER_TYPE A4988
-//#define E3_DRIVER_TYPE A4988
-//#define E4_DRIVER_TYPE A4988
-//#define E5_DRIVER_TYPE A4988
-//#define E6_DRIVER_TYPE A4988
-//#define E7_DRIVER_TYPE A4988
+    #define X_DRIVER_TYPE  A4988
+    #define Y_DRIVER_TYPE  A4988
+    #define Z_DRIVER_TYPE  A4988
+    //#define X2_DRIVER_TYPE A4988
+    //#define Y2_DRIVER_TYPE A4988
+    //#define Z2_DRIVER_TYPE A4988
+    //#define Z3_DRIVER_TYPE A4988
+    //#define Z4_DRIVER_TYPE A4988
+    #define E0_DRIVER_TYPE A4988
+    #define E1_DRIVER_TYPE A4988
+    //#define E2_DRIVER_TYPE A4988
+    //#define E3_DRIVER_TYPE A4988
+    //#define E4_DRIVER_TYPE A4988
+    //#define E5_DRIVER_TYPE A4988
+    //#define E6_DRIVER_TYPE A4988
+    //#define E7_DRIVER_TYPE A4988
 #endif
 
 // Enable this feature if all enabled endstop pins are interrupt-capable.
@@ -909,6 +912,11 @@
     #define DEFAULT_AXIS_STEPS_PER_UNIT    { 80, 80, 800, 400 }
 #endif
 
+#if ENABLED(KNUTWURST_MEGA_P)
+    #define DEFAULT_AXIS_STEPS_PER_UNIT   { 80, 80, 400, 415 }
+#endif
+
+
 /**
  * Default Max Feed Rate (mm/s)
  * Override with M203
@@ -926,6 +934,9 @@
     #define DEFAULT_MAX_FEEDRATE            { 120, 120, 18, 80 } // thanks to Simon Geis
 #endif
 
+#if ENABLED(KNUTWURST_MEGA_P)
+    #define DEFAULT_MAX_FEEDRATE          { 500, 500, 8, 30 }
+#endif
 
 
 //#define LIMITED_MAX_FR_EDITING        // Limit edit via M203 or LCD to DEFAULT_MAX_FEEDRATE * 2
@@ -939,7 +950,7 @@
  * Override with M201
  *                                      X, Y, Z, E0 [, E1[, E2...]]
  */
-#if EITHER(KNUTWURST_MEGA, KNUTWURST_MEGA_S)
+#if ENABLED(KNUTWURST_MEGA) || ENABLED(KNUTWURST_MEGA_S) || ENABLED(KNUTWURST_MEGA_P)
     #define DEFAULT_MAX_ACCELERATION      { 3000, 2000,  60, 10000 }
 #endif
 
@@ -982,6 +993,12 @@
     #define DEFAULT_TRAVEL_ACCELERATION   400     // X, Y, Z acceleration for travel (non printing) moves
 #endif
 
+#if ENABLED(KNUTWURST_MEGA_P)
+    #define DEFAULT_ACCELERATION          1600    // X, Y, Z and E acceleration for printing moves
+    #define DEFAULT_RETRACT_ACCELERATION  1500    // E acceleration for retracts
+    #define DEFAULT_TRAVEL_ACCELERATION   3000    // X, Y, Z acceleration for travel (non printing) moves
+#endif
+
 /**
  * Default Jerk limits (mm/s)
  * Override with M205 X Y Z E
@@ -993,7 +1010,7 @@
 //#define CLASSIC_JERK
 
 // I Know.. it's useless to put it here ;)
-#if EITHER(KNUTWURST_MEGA, KNUTWURST_MEGA_S)
+#if ENABLED(KNUTWURST_MEGA) || ENABLED(KNUTWURST_MEGA_S) || ENABLED(KNUTWURST_MEGA_P)
     //#define CLASSIC_JERK
 #endif
 
@@ -1003,7 +1020,7 @@
 
 #if ENABLED(CLASSIC_JERK)
 
-#if EITHER(KNUTWURST_MEGA, KNUTWURST_MEGA_S)
+#if ENABLED(KNUTWURST_MEGA) || ENABLED(KNUTWURST_MEGA_S) || ENABLED(KNUTWURST_MEGA_P)
     #define DEFAULT_XJERK  10.0
     #define DEFAULT_YJERK  10.0
     #define DEFAULT_ZJERK  0.4
@@ -1025,7 +1042,7 @@
   #endif
 #endif
 
-#if EITHER(KNUTWURST_MEGA, KNUTWURST_MEGA_S)
+#if ENABLED(KNUTWURST_MEGA) || ENABLED(KNUTWURST_MEGA_S) || ENABLED(KNUTWURST_MEGA_P)
     #define DEFAULT_EJERK    5.0  // May be used by Linear Advance
 #endif
 
@@ -1041,7 +1058,7 @@
  *   http://blog.kyneticcnc.com/2018/10/computing-junction-deviation-for-marlin.html
  */
 #if DISABLED(CLASSIC_JERK)
-    #if EITHER(KNUTWURST_MEGA, KNUTWURST_MEGA_S)
+    #if ENABLED(KNUTWURST_MEGA) || ENABLED(KNUTWURST_MEGA_S) || ENABLED(KNUTWURST_MEGA_P)
         #define JUNCTION_DEVIATION_MM 0.013 // (mm) Distance from real junction edge
     #endif
 
@@ -1324,42 +1341,84 @@
 
 // @section machine
 
-#if ENABLED(KNUTWURST_TMC)
-// Invert the stepper direction. Change (or reverse the motor connector) if an axis goes the wrong way.
-#define INVERT_X_DIR false // set to true for stock drivers or TMC2208 with reversed connectors
-#define INVERT_Y_DIR true // set to false for stock drivers or TMC2208 with reversed connectors
-#define INVERT_Z_DIR true // set to false for stock drivers or TMC2208 with reversed connectors
+#if DISABLED(KNUTWURST_TMC)
 
-// @section extruder
+    #if ENABLED(KNUTWURST_MEGA) || ENABLED(KNUTWURST_MEGA_S) || ENABLED(KNUTWURST_MEGA_X)
+        // Invert the stepper direction. Change (or reverse the motor connector) if an axis goes the wrong way.
+        #define INVERT_X_DIR true // set to true for stock drivers or TMC2208 with reversed connectors
+        #define INVERT_Y_DIR false // set to false for stock drivers or TMC2208 with reversed connectors
+        #define INVERT_Z_DIR false // set to false for stock drivers or TMC2208 with reversed connectors
 
-// For direct drive extruder v9 set to true, for geared extruder set to false.
-#define INVERT_E0_DIR true // set to false for stock drivers or TMC2208 with reversed connectors
-#define INVERT_E1_DIR true // set to false for stock drivers or TMC2208 with reversed connectors
-#define INVERT_E2_DIR false
-#define INVERT_E3_DIR false
-#define INVERT_E4_DIR false
-#define INVERT_E5_DIR false
-#define INVERT_E6_DIR false
-#define INVERT_E7_DIR false
+        // @section extruder
+
+        // For direct drive extruder v9 set to true, for geared extruder set to false.
+        #define INVERT_E0_DIR false // set to false for stock drivers or TMC2208 with reversed connectors
+        #define INVERT_E1_DIR false // set to false for stock drivers or TMC2208 with reversed connectors
+        #define INVERT_E2_DIR false
+        #define INVERT_E3_DIR false
+        #define INVERT_E4_DIR false
+        #define INVERT_E5_DIR false
+        #define INVERT_E6_DIR false
+        #define INVERT_E7_DIR false
+    #endif
+
+    #if ENABLED(KNUTWURST_MEGA_P)
+        // Invert the stepper direction. Change (or reverse the motor connector) if an axis goes the wrong way.
+        #define INVERT_X_DIR false // set to true for stock drivers or TMC2208 with reversed connectors
+        #define INVERT_Y_DIR true // set to false for stock drivers or TMC2208 with reversed connectors
+        #define INVERT_Z_DIR false // set to false for stock drivers or TMC2208 with reversed connectors
+
+        // @section extruder
+
+        // For direct drive extruder v9 set to true, for geared extruder set to false.
+        #define INVERT_E0_DIR true // set to false for stock drivers or TMC2208 with reversed connectors
+        #define INVERT_E1_DIR false // set to false for stock drivers or TMC2208 with reversed connectors
+        #define INVERT_E2_DIR false
+        #define INVERT_E3_DIR false
+        #define INVERT_E4_DIR false
+        #define INVERT_E5_DIR false
+        #define INVERT_E6_DIR false
+        #define INVERT_E7_DIR false
+    #endif
 #endif
 
-#if DISABLED(KNUTWURST_TMC)
-// Invert the stepper direction. Change (or reverse the motor connector) if an axis goes the wrong way.
-#define INVERT_X_DIR true // set to true for stock drivers or TMC2208 with reversed connectors
-#define INVERT_Y_DIR false // set to false for stock drivers or TMC2208 with reversed connectors
-#define INVERT_Z_DIR false // set to false for stock drivers or TMC2208 with reversed connectors
+#if ENABLED(KNUTWURST_TMC)
+    #if ENABLED(KNUTWURST_MEGA) || ENABLED(KNUTWURST_MEGA_S) || ENABLED(KNUTWURST_MEGA_X)
+        // Invert the stepper direction. Change (or reverse the motor connector) if an axis goes the wrong way.
+        #define INVERT_X_DIR false // set to true for stock drivers or TMC2208 with reversed connectors
+        #define INVERT_Y_DIR true // set to false for stock drivers or TMC2208 with reversed connectors
+        #define INVERT_Z_DIR true // set to false for stock drivers or TMC2208 with reversed connectors
 
-// @section extruder
+        // @section extruder
 
-// For direct drive extruder v9 set to true, for geared extruder set to false.
-#define INVERT_E0_DIR false // set to false for stock drivers or TMC2208 with reversed connectors
-#define INVERT_E1_DIR false // set to false for stock drivers or TMC2208 with reversed connectors
-#define INVERT_E2_DIR false
-#define INVERT_E3_DIR false
-#define INVERT_E4_DIR false
-#define INVERT_E5_DIR false
-#define INVERT_E6_DIR false
-#define INVERT_E7_DIR false
+        // For direct drive extruder v9 set to true, for geared extruder set to false.
+        #define INVERT_E0_DIR true // set to false for stock drivers or TMC2208 with reversed connectors
+        #define INVERT_E1_DIR true // set to false for stock drivers or TMC2208 with reversed connectors
+        #define INVERT_E2_DIR false
+        #define INVERT_E3_DIR false
+        #define INVERT_E4_DIR false
+        #define INVERT_E5_DIR false
+        #define INVERT_E6_DIR false
+        #define INVERT_E7_DIR false
+    #endif
+    #if ENABLED(KNUTWURST_MEGA_P)
+        // Invert the stepper direction. Change (or reverse the motor connector) if an axis goes the wrong way.
+        #define INVERT_X_DIR true // set to true for stock drivers or TMC2208 with reversed connectors
+        #define INVERT_Y_DIR false // set to false for stock drivers or TMC2208 with reversed connectors
+        #define INVERT_Z_DIR true // set to false for stock drivers or TMC2208 with reversed connectors
+
+        // @section extruder
+
+        // For direct drive extruder v9 set to true, for geared extruder set to false.
+        #define INVERT_E0_DIR false // set to false for stock drivers or TMC2208 with reversed connectors
+        #define INVERT_E1_DIR true // set to false for stock drivers or TMC2208 with reversed connectors
+        #define INVERT_E2_DIR false
+        #define INVERT_E3_DIR false
+        #define INVERT_E4_DIR false
+        #define INVERT_E5_DIR false
+        #define INVERT_E6_DIR false
+        #define INVERT_E7_DIR false
+    #endif
 #endif
 
 // @section homing
@@ -1382,7 +1441,7 @@
 // @section machine
 
 // The size of the print bed
-#if EITHER(KNUTWURST_MEGA, KNUTWURST_MEGA_S)
+#if ENABLED(KNUTWURST_MEGA) || ENABLED(KNUTWURST_MEGA_S) || ENABLED(KNUTWURST_MEGA_P)
     #define X_BED_SIZE 225
     #define Y_BED_SIZE 220
     #define Z_BED_HEIGHT 210
@@ -1674,7 +1733,7 @@
   #define Z_SAFE_HOMING_Y_POINT ((Y_BED_SIZE) / 2)    // Y point for Z homing when homing all axes (G28).
 #endif
 
-#if EITHER(KNUTWURST_MEGA, KNUTWURST_MEGA_S)
+#if ENABLED(KNUTWURST_MEGA) || ENABLED(KNUTWURST_MEGA_S) || ENABLED(KNUTWURST_MEGA_P)
     // Homing speeds (mm/m)
     #define HOMING_FEEDRATE_XY (50*60)
     #define HOMING_FEEDRATE_Z  (5*60)
