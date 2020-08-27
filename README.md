@@ -8,7 +8,7 @@
 
 ### Wenn du Fragen hast, schaue gern in der offiziellen [Facebook-Gruppe](https://www.facebook.com/groups/3094090037303577/) vorbei.
 
-###WARNUNG: Der Mega Pro / Mega P Support befindet sich noch in der Entwicklung. Aktuell wird der Laser noch nicht unterstützt, ebensowenig wie das Piezo-Leveling! 
+### WARNUNG: Der Mega Pro / Mega P Support befindet sich noch in der Entwicklung. Aktuell wird der Laser noch nicht unterstützt, ebensowenig wie das Piezo-Leveling! 
 
 # Inhaltsverzeichnis (Deutsch)
 - [Funktionen](#funktionen)
@@ -21,7 +21,7 @@
 - [Downloads](#downloads)
 
 
-###WARNING: The Mega Pro / Mega P support is still under development. The laser is currently not supported, nor is piezo leveling!
+### WARNING: The Mega Pro / Mega P support is still under development. The laser is currently not supported, nor is piezo leveling!
 
 # Table of Contets (english)
 - [Features](#features)
