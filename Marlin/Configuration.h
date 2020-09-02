@@ -81,6 +81,20 @@
 //#define KNUTWURST_MEGA_P
 
 /*
+ * If you own the first generation i3 Mega
+ * with only one Z endstop, you need to activate
+ * KNUTWURST_MEGA and also this to disable
+ * the left endstop and switch the Z Motors.
+ * 
+ * If the option is disabled, two Z endstops
+ * are used by default.
+ * 
+ * PLEASE READ THE WARNING ABOVE!
+ * 
+ */
+#define KNUTWURST_ONE_Z_ENDSTOP
+
+/*
  * If you have defined the MEGA_X or if
  * you have the "new" Mega S with the blue/yellow
  * Touchscreen display, you need to enable the
@@ -750,7 +764,10 @@
 #define USE_XMIN_PLUG
 #define USE_YMIN_PLUG
 #define USE_ZMIN_PLUG
-#define USE_XMAX_PLUG
+
+#if DISABLED(KNUTWURST_ONE_Z_ENDSTOP)
+  #define USE_XMAX_PLUG
+#endif
 //#define USE_YMAX_PLUG
 //#define USE_ZMAX_PLUG
 

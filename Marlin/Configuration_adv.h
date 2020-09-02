@@ -537,19 +537,21 @@
 #define NUM_Z_STEPPER_DRIVERS 2   // (1-4) Z options change based on how many
 
 #if NUM_Z_STEPPER_DRIVERS > 1
-  #define Z_MULTI_ENDSTOPS
-  #if ENABLED(Z_MULTI_ENDSTOPS)
-    #define Z2_USE_ENDSTOP          _XMAX_
-    #define Z2_ENDSTOP_ADJUSTMENT   0
-    #if NUM_Z_STEPPER_DRIVERS >= 3
-      #define Z3_USE_ENDSTOP        _YMAX_
-      #define Z3_ENDSTOP_ADJUSTMENT 0
-    #endif
-    #if NUM_Z_STEPPER_DRIVERS >= 4
-      #define Z4_USE_ENDSTOP        _ZMAX_
-      #define Z4_ENDSTOP_ADJUSTMENT 0
-    #endif
+  #if DISABLED(KNUTWURST_ONE_Z_ENDSTOP)
+    #define Z_MULTI_ENDSTOPS
   #endif
+    #if ENABLED(Z_MULTI_ENDSTOPS)
+      #define Z2_USE_ENDSTOP          _XMAX_
+      #define Z2_ENDSTOP_ADJUSTMENT   0
+      #if NUM_Z_STEPPER_DRIVERS >= 3
+        #define Z3_USE_ENDSTOP        _YMAX_
+        #define Z3_ENDSTOP_ADJUSTMENT 0
+      #endif
+      #if NUM_Z_STEPPER_DRIVERS >= 4
+        #define Z4_USE_ENDSTOP        _ZMAX_
+        #define Z4_ENDSTOP_ADJUSTMENT 0
+      #endif
+    #endif
 #endif
 
 /**
@@ -1486,7 +1488,7 @@
  * Warning: Does not respect endstops!
  */
 #if ENABLED(KNUTWURST_BLTOUCH)
-#define BABYSTEPPING
+    #define BABYSTEPPING
 #endif
 #if ENABLED(BABYSTEPPING)
   //#define INTEGRATED_BABYSTEPPING         // EXPERIMENTAL integration of babystepping into the Stepper ISR
