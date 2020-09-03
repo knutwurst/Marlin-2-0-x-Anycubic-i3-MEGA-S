@@ -6,71 +6,34 @@
 name: CI
 
 on:
-  pull_request:
-    branches:
-    - master
-    paths-ignore:
-    - config/**
-    - data/**
-    - docs/**
-    - '**/*.md'
+  #pull_request:
+  #  branches:
+  #  - master
+  #  paths-ignore:
+  #  - config/**
+  #  - data/**
+  #  - docs/**
+  #  - '**/*.md'
   push:
     branches:
     - master
-    paths-ignore:
-    - config/**
-    - data/**
-    - docs/**
-    - '**/*.md'
+  #  paths-ignore:
+  #  - config/**
+  #  - data/**
+  #  - docs/**
+  #  - '**/*.md'
 
 jobs:
-  test_builds:
-    name: Run All Tests
-    if: github.repository == 'knutwurst/Marlin-2-0-x-Anycubic-i3-MEGA-S'
+  build:
+    name: Build all Environments
+    #if: github.repository == 'knutwurst/Marlin-2-0-x-Anycubic-i3-MEGA-S'
 
     runs-on: ubuntu-latest
 
-    strategy:
-      matrix:
-        test-platform:
+    #strategy:
+    #  matrix:
+    #    test-platform:
         # Knutwurst Base Environments
-
-        - i3_MEGA_1stgen
-        - i3_MEGA_1stgen_TMC
-        - i3_MEGA_1stgen_BLTOUCH_10
-        - i3_MEGA_1stgen_BLTOUCH_11
-        - i3_MEGA_1stgen_TMC_BLTOUCH_10
-        - i3_MEGA_1stgen_TMC_BLTOUCH_11
-        - i3_MEGA
-        - i3_MEGA_TMC
-        - i3_MEGA_BLTOUCH_10
-        - i3_MEGA_BLTOUCH_11
-        - i3_MEGA_TMC_BLTOUCH_10
-        - i3_MEGA_TMC_BLTOUCH_11
-        - i3_MEGA_S
-        - i3_MEGA_S_TMC
-        - i3_MEGA_S_BLTOUCH_10
-        - i3_MEGA_S_BLTOUCH_11
-        - i3_MEGA_S_TMC_BLTOUCH_10
-        - i3_MEGA_S_TMC_BLTOUCH_11
-        - i3_MEGA_S_DGUS
-        - i3_MEGA_S_DGUS_TMC
-        - i3_MEGA_S_DGUS_BLTOUCH_10
-        - i3_MEGA_S_DGUS_BLTOUCH_11
-        - i3_MEGA_S_DGUS_TMC_BLTOUCH_10
-        - i3_MEGA_S_DGUS_TMC_BLTOUCH_11
-        - i3_MEGA_X
-        - i3_MEGA_X_TMC
-        - i3_MEGA_X_BLTOUCH_10
-        - i3_MEGA_X_BLTOUCH_11
-        - i3_MEGA_X_TMC_BLTOUCH_10
-        - i3_MEGA_X_TMC_BLTOUCH_11
-        - i3_MEGA_P
-        - i3_MEGA_P_TMC
-        - i3_MEGA_P_BLTOUCH_10
-        - i3_MEGA_P_BLTOUCH_11
-        - i3_MEGA_P_TMC_BLTOUCH_10
-        - i3_MEGA_P_TMC_BLTOUCH_11
 
         #- DUE
         #- esp32
@@ -161,5 +124,6 @@ jobs:
       run: |
         python -m pip install --upgrade pip
         pip install platformio
+    
     - name: Run PlatformIO
       run: platformio run
