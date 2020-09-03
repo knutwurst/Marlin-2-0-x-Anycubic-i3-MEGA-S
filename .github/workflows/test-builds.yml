@@ -146,13 +146,20 @@ jobs:
         pip install -U https://github.com/platformio/platformio-core/archive/develop.zip
         platformio update
 
-    - name: Check out the PR
-      uses: actions/checkout@v2
+    #- name: Check out the PR
+    #  uses: actions/checkout@v2
 
-    - name: Run ${{ matrix.test-platform }} Tests
+    #- name: Run ${{ matrix.test-platform }} Tests
+    #  run: |
+    #    # Inline tests script
+    #    chmod +x buildroot/bin/*
+    #    chmod +x buildroot/tests/*
+    #    export PATH=./buildroot/bin/:./buildroot/tests/:${PATH}
+    #    run_tests . ${{ matrix.test-platform }}
+
+    - name: Install dependencies
       run: |
-        # Inline tests script
-        chmod +x buildroot/bin/*
-        chmod +x buildroot/tests/*
-        export PATH=./buildroot/bin/:./buildroot/tests/:${PATH}
-        run_tests . ${{ matrix.test-platform }}
+        python -m pip install --upgrade pip
+        pip install platformio
+    - name: Run PlatformIO
+      run: platformio run ${{ matrix.test-platform }}
