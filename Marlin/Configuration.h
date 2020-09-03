@@ -92,7 +92,7 @@
  * PLEASE READ THE WARNING ABOVE!
  * 
  */
-#define KNUTWURST_ONE_Z_ENDSTOP
+//#define KNUTWURST_ONE_Z_ENDSTOP
 
 /*
  * If you have defined the MEGA_X or if
