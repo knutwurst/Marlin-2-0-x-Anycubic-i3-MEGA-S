@@ -126,4 +126,4 @@ jobs:
         pip install platformio
     
     - name: Run PlatformIO
-      run: platformio run
+      run: platformio run -d 
