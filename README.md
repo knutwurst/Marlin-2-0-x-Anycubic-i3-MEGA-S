@@ -13,11 +13,8 @@
 # Inhaltsverzeichnis (Deutsch)
 - [Funktionen](#funktionen)
    - [Was ist besser?](#besser-im-vergleich-zu-anderen-firmwares-bugfixes)
-- [Häufig gestellte Fragen (FAQ)](#häufig-gesellte-fragen-faq)
-- [Fotos / Bilder](#bilder)
-   - [Spezial Menü](#spezial-menü)
-   - [Manual Mesh Bed Leveling](#manuelles-leveln)
-   - [BLTouch Bed Leveling](#automatisches-bltouch-leveln)
+- [Häufig gestellte Fragen (FAQ)](https://github.com/knutwurst/Marlin-2-0-x-Anycubic-i3-MEGA-S/wiki/FAQ-(deutsch))
+- [Fotos / Bilder](https://github.com/knutwurst/Marlin-2-0-x-Anycubic-i3-MEGA-S/wiki/Pictures)
 - [Downloads](#downloads)
 
 
@@ -26,11 +23,8 @@
 # Table of Contets (english)
 - [Features](#features)
    - [What's better?](#whats-better-in-coparison-to-other-firmwares-bug-fixes)
-- [Frequently asked questions (FAQ)](#faq)
-- [Photos / Pictures](#pictures)
-   - [Special Menü](#special-menu)
-   - [Manual Mesh Bed Leveling](#manual-mesh-bed-leveling)
-   - [BLTouch Bed Leveling](#bltouch-bed-leveling)
+- [Frequently asked questions (FAQ)](https://github.com/knutwurst/Marlin-2-0-x-Anycubic-i3-MEGA-S/wiki/FAQ-(english))
+- [Photos / Pictures](https://github.com/knutwurst/Marlin-2-0-x-Anycubic-i3-MEGA-S/wiki/Pictures)
 - [Download](#download)
 
 
@@ -71,92 +65,6 @@
  * Konfiguration ganz einfach über Feature-Toggles
  * Man muss keine Grundkonfiguration per GCODE machen.
  * Man muss keinen Werksreset durchführen
-
----
-
-# Häufig gesellte Fragen (FAQ):
-
->Knutwurst, wieso machst du auch noch so eine Firmware? Es gibt doch schon so viele?
-
-Weil ich bisher keine gesehen habe, die nicht die blöden Bugs enthält, wie z.B. dass sie abstürzt, wenn man Dateien mit Sonderzeichen auf der SD Karte hat.
-
->Ist es richtig, dass du mehr Wert auf den Druck von SD-Karte legst und andere eher auf USB?
-
-ich lege nicht "mehr Wert auf SD", sondern habe einfach die zahlreichen Bugs dahingehend gefixed. Die kleinen Anpassungen mit dem USB Puffer etc sind sowieso drin. Die sind aber in meinen Augen so uninteressant, dass ich es nicht erwähne, denn das wirklich komplizierte ist es, das proprietäre Display und den Cardreader korrekt anzusteuern. Alles andere ist Pillepalle.
-
->Was ist dieser "Slowdown"?
-
-Der automatische Slowdown wird aktiv, falls der Drucker nicht schnell genug Daten bekommt. Dann fährt er automatisch mit der Geschwindigkeit auf 50% runter, satt unbehelligt weiterzumachen und dann zu ruckeln und Blobs zu verursachen.
-
->Wieso ist mein Drucker plötzlich lauter als vorher?
-
-Dein Bauteillüfter läuft jetzt mit voller Drehzahl, was er vorher nicht tat. Stelle im Slicer (z.B. Cura) die Geschwindigkeit einfach auf 70% und schon hast du die alte Lautstärke wieder. Diese Modifikation ist notwendig, falls man den Lüfter tauschen möchte und viele Lüfter mit den originalen 8V nicht oder nur unzureichend laufen.
-
->Ist deine Firmware besser als andere?
-
-Nein. Aber sicher auch nicht schlechter.
-
->Wo sind die Downloads?
-
-Weiter unten.
-
->Muss ich bei TMC Treibern die Stecker drehen?
-
-Nö. Lade dir einfach die korrekte Version herunter.
-
->Welche TMC2208 Motortreiber sollte ich kaufen? Lieber die V2 oder die Bigtreetech V3?
-
-Weder noch! Es gibt keine "V2" oder "V3". Die offizielle letzte Version von Trinamic ist v1.2 und die beiden großen primären Hersteller für die echten SilentStepSticks sind FYSETC und WATTERROTT. Lass bloß die Finger von Bigtreetech.
-
->Ich habe die Stecker bei meinen Motoren schon gedreht, als ich die TMC Treiber eingebaut habe. Muss ich jetzt trotzdem die TMC Version flashen?
-
-Nein. Benutze einfach die Nicht-TMC Version, da sonst die Motoren wieder in die falsche Richtung laufen.
-
->Als ich die Treiber eingebaut habe, qualmte mein Mainboard in der Mitte rechts. Ist das normal?
-
-Nein. Du hast die Treiber falsch herum eingebaut. Jetzt ist die Z-Diode (733A) verbrannt. Tausche sie aus und alles funktioniert wieder. Deine falsch gesteckten Treiber kannst du aber vermutlich wegschmeißen.
-
->Muss ich wie bei anderen Firmwares noch die E-Steps einstellen, wenn ich einen Mega S besitze?
-
-Nein, lade dir einfach die korrekte Version herunter. Trotzdem solltest du die Steps noch kalibrieren.
-
->Wieso zeigt das Display keine Fehlermeldungen an und wieso sieht es noch genau so aus wie vorher?
-
-Dein Mainboard (Trigorilla) kann nur Grafikdisplays wie das 2004 oder 12864 ansteuern. Auf denen würdest du auch exakt das sehen, was in der Firmware wirklich passiert - eben weil diese das anzeigen, was die Firmware sagt. Texte, Fehlermeldungen etc...
-
-Bei deinem (und auch allen anderen) Touchdisplay sieht das anders aus. Das Touch-Display ist nur eine hübsche Aufmachung und übersetzt intern die eigentlichen Befehle in etwas, was das Mainboard versteht. Es ist bloß eine "Maske" für die eigentliche Firmware.
-
-Es besteht ein 1-zu-1 Mapping zwischen den Befehlen, die das Mainboard umsetzen kann (Setze Temperatur auf Wert x, Bewege Motor um 10 mm nach rechts etc). Stellst du die Temperatur im Display auf 200°C ein, schickst du eigentlich nur einen Gcode wie z.B. "M104 T1 S200", was schon im Display vorhanden sein muss.
-
-Bei diesem Mapping ist man eben darauf angewiesen, dass die Funktionen, die man nutzen will, auch im Display vorhanden sind. Und leider ist nicht viel drin. Die Dateiliste ist das einzige(!) über das man einigermaßen die Kontrolle hat, da sie dynamisch angezeigt wird. Leider muss man deswegen leider auch diese dämlichen Eigenarten in Kauf nehmen, wie die Tatsache, dass nach einem Bestätigen/Aktualisieren die Liste neu aufgebaut wird und somit oben beginnt.
-
----
-
-# Bilder
-## Spezial Menü
-
-![SpecialMenu](images/SpecialMenu.jpg)
-![SpecialMenu DGUS](images/SpecialMenu_DGUS.jpg)
-
-## Manuelles Leveln
-
-![Seite 1](images/MN_Page1.jpg)
-![Seite 1 DGUS](images/MN_Page1_DGUS.jpg)
-
-![Seite 2 DGUS](images/MN_Page2.jpg)
-![Seite 2](images/MN_Page2_DGUS.jpg)
-
-![Seite 3](images/MN_Page3.jpg)
-![Seite 3 DGUS](images/MN_Page3_DGUS.jpg)
-
-![Seite 4](images/MN_Page4.jpg)
-![Seite 4 DGUS](images/MN_Page4_DGUS.jpg)
-
-## Automatisches BLTouch Leveln
-
-![Seite 1](images/BL_Page1.jpg)
-
-![Seite 2](images/BL_Page2.jpg)
 
 ---
 
@@ -222,92 +130,6 @@ Für (fast) jede Kombination gibt es eine passende Firmware im Download-Bereich.
  * No freezing when the filament is empty
  * No need for a "special" BLTouch firmware. In this firmware is everything included
  * Configuration made easy via feature toggles
-
----
-
-# FAQ:
-
-> Knutwurst, why are you still doing such a firmware? Aren't there already so many?
-
-Because I've never seen one that doesn't contain the stupid bugs like the crashes when you have files with special characters on the SD card.
-
-> Is it correct that you put more emphasis on printing from SD card and others more on USB?
-
-I don't put "more emphasis on SD", but just fixed the numerous bugs. The small adjustments with the USB buffer etc are included anyway. But they are so uninteresting in my eyes that I don't mention it, because the really complicated thing is to control the proprietary display and the card reader correctly. Everything else is easy-peasy.
-
-> What is this "slowdown"?
-
-The automatic slowdown is activated if the printer does not receive data quickly enough (e.g. via USB). Then it automatically goes down to 50%. This prevents stuttering and eliminated blobs.
-
->Why is my printer so much louder than before?
-
-Your component fan is now running at full speed, which it did no before. Simply set the speed to 70% in the slicer (e.g. Cura) and you will have the old speed again. This modification is necessary if you want to replace the fan. Many aftermarket fans do not run properly or at all with the original 8V.
-
-> Is your firmware better than others?
-
-No. But certainly not worse either.
-
-> Where are the downloads?
-
-Further down.
-
-> Do I have to turn the plugs for TMC drivers?
-
-Nope, just download the correct version.
-
-> Which TMC2208 motor drivers should I buy? The V2 or the Bigtreetech V3?
-
-Neither! There is no "V2" or "V3". The official last version of Trinamic is v1.2 and the two major primary manufacturers for the real SilentStepSticks are FYSETC and WATTERROTT. Just stay away from Bigtreetech.
-
-> I already turned the plugs on my motors when I installed the TMC drivers. Do I still have to flash the TMC version?
-
-No. Just use the non-TMC version, otherwise the motors will turn in the wrong direction again.
-
-> When I installed the drivers, my mainboard gave me the "magic smoke". Is that normal?
-
-No. You installed the drivers the wrong way round. Now the Zener diode (733A) is burned. Exchange it and everything works again. You can probably throw away your wrongly inserted drivers.
-
-> As with other firmwares, do I still have to set the E-Steps if I have a Mega S?
-
-No, just download the correct version. Nevertheless, you should still calibrate the e-steps.
-
-> Why doesn't the display show any error messages and why does it still look exactly as before?
-
-Your mainboard (Trigorilla) can only control graphic displays like the 2004 or 12864. On them you would also see exactly what really happens in the firmware - to be precise, they show what the firmware says. Texts, error messages etc.
-
-With your (and all other) touch displays, things look different. The touch display is just a pretty presentation and internally translates the actual commands into something that the motherboard understands. It is just a "mask" for the actual firmware.
-
-There is a 1-to-1 mapping between the commands that the mainboard has implemented (set temperature to value x, move motor by 10 mm to the right, etc.). If you set the temperature in the display to 200°C, you actually only send a Gcode such as "M104 T1 S200", which must already be on the display firmware.
-
-With this mapping, you have to rely on the fact that the functions you want to use are also available on the display. And unfortunately there is not much in it. The file list is the only thing(!) over which you have some control because it is displayed dynamically. Unfortunately, you have to accept these stupid idiosyncrasies, such as the fact that after confirming/updating the list is rebuilt and thus starts at the top.
-
----
-
-# Pictures
-##  Special Menu
-
-![SpecialMenu](images/SpecialMenu.jpg)
-![SpecialMenu DGUS](images/SpecialMenu_DGUS.jpg)
-
-## Manual Mesh Bed Leveling
-
-![Page 1](images/MN_Page1.jpg)
-![Page 1 DGUS](images/MN_Page1_DGUS.jpg)
-
-![Page 2](images/MN_Page2.jpg)
-![Page 2 DGUS](images/MN_Page2_DGUS.jpg)
-
-![Page 3](images/MN_Page3.jpg)
-![Page 3 DGUS](images/MN_Page3_DGUS.jpg)
-
-![Page 4](images/MN_Page4.jpg)
-![Page 4 DGUS](images/MN_Page4_DGUS.jpg)
-
-## BLTouch Bed Leveling
-
-![Page 1](images/BL_Page1.jpg)
-
-![Page 2](images/BL_Page2.jpg)
 
 
 ---
