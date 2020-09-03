@@ -126,5 +126,5 @@ jobs:
         pip install platformio
     
     - name: Run PlatformIO
-    - uses: actions/checkout@master
+      uses: actions/checkout@master
       run: platformio run --environment i3_MEGA
