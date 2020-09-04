@@ -1,4 +1,4 @@
-name: Build All Firmware Variants
+name: CI
 
 on:
   #pull_request:
@@ -106,7 +106,7 @@ jobs:
     #    path: |
     #     .pio/build/${{ matrix.platform }}/${{ matrix.platform }}_v*.hex
 
-    - name: Archive all artifacts into one ZIP
+    - name: Archive all artifacts into one ZIP file
       uses: actions/upload-artifact@master
       with:
         name: Knuwurst-all-in-one_v$CUSTOM_BUILD_VER
