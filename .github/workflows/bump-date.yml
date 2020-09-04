@@ -18,10 +18,10 @@ jobs:
 
     steps:
 
-    - name: Check out bugfix-2.0.x
-      uses: actions/checkout@v2
+    - name: Check out master
+      uses: actions/checkout@master
       with:
-        ref: bugfix-2.0.x
+        ref: master
 
     - name: Bump Distribution Date
       run: |
