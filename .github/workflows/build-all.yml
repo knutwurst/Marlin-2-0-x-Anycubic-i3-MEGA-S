@@ -1,4 +1,4 @@
-name: CI
+name: Build All Firmware Variants
 
 on:
   #pull_request:
@@ -20,7 +20,7 @@ on:
 
 jobs:
   build:
-    name: Build all Environments
+    name: Build
     if: github.repository == 'knutwurst/Marlin-2-0-x-Anycubic-i3-MEGA-S'
 
     runs-on: ubuntu-latest
