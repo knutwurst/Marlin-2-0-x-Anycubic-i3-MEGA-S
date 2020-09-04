@@ -92,9 +92,8 @@ jobs:
     
     - name: Rename Output Files
       run: |
-        CUSTOM_BUILD_VERSION=$(egrep -o "([0-9]{1,}\.)+[0-9]{1,}" Marlin/src/inc/Version.h -m2 | tail -n1)
+        CUSTOM_BUILD_VERSION=$(egrep -o "([0-9]{1,}\.)+[0-9]{1,}" Marlin/src/inc/Version.h -m2 | tail -n1) && \
         mv .pio/build/${{ matrix.platform }}/firmware.hex .pio/build/${{ matrix.platform }}/${{ matrix.platform }}_v$CUSTOM_BUILD_VERSION.hex
-        done
 
     - name: Archive production artifacts
       uses: actions/upload-artifact@master
