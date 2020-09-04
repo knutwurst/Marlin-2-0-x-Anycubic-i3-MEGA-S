@@ -35,7 +35,7 @@ jobs:
          platform:
          # Knutwurst Base Environments
 
-         #- i3_MEGA_1stgen
+         - i3_MEGA_1stgen
          #- i3_MEGA_1stgen_TMC
          #- i3_MEGA_1stgen_BLTOUCH_10
          #- i3_MEGA_1stgen_BLTOUCH_11
@@ -93,14 +93,9 @@ jobs:
     - uses: actions/checkout@master
 
     - name: Run PlatformIO
-      run: |
-          platformio run --environment ${{ matrix.platform }}
+      run: platformio run --environment ${{ matrix.platform }}
     
-    - name: Create artifact dir
-        run: |
-          mkdir -partifacts
-
-     - name: Archive production artifacts
+    - name: Archive production artifacts
         uses: actions/upload-artifact@master 
         with:
           name: ${{ matrix.platform }}.hex
