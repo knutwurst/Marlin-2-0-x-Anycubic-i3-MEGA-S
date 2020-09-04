@@ -35,43 +35,42 @@ jobs:
          platform:
          # Knutwurst Base Environments
 
-         - i3_MEGA_1stgen
-         - i3_MEGA_1stgen_TMC
-         - i3_MEGA_1stgen_BLTOUCH_10
-         - i3_MEGA_1stgen_BLTOUCH_11
-         - i3_MEGA_1stgen_TMC_BLTOUCH_10
-         - i3_MEGA_1stgen_TMC_BLTOUCH_11
-         - i3_MEGA
-         - i3_MEGA_TMC
-         - i3_MEGA_BLTOUCH_10
-         - i3_MEGA_BLTOUCH_11
-         - i3_MEGA_TMC_BLTOUCH_10
-         - i3_MEGA_TMC_BLTOUCH_11
+         #- i3_MEGA_1stgen
+         #- i3_MEGA_1stgen_TMC
+         #- i3_MEGA_1stgen_BLTOUCH_10
+         #- i3_MEGA_1stgen_BLTOUCH_11
+         #- i3_MEGA_1stgen_TMC_BLTOUCH_10
+         #- i3_MEGA_1stgen_TMC_BLTOUCH_11
+         #- i3_MEGA
+         #- i3_MEGA_TMC
+         #- i3_MEGA_BLTOUCH_10
+         #- i3_MEGA_BLTOUCH_11
+         #- i3_MEGA_TMC_BLTOUCH_10
+         #- i3_MEGA_TMC_BLTOUCH_11
          - i3_MEGA_S
-         - i3_MEGA_S_TMC
-         - i3_MEGA_S_BLTOUCH_10
-         - i3_MEGA_S_BLTOUCH_11
-         - i3_MEGA_S_TMC_BLTOUCH_10
-         - i3_MEGA_S_TMC_BLTOUCH_11
-         - i3_MEGA_S_DGUS
-         - i3_MEGA_S_DGUS_TMC
-         - i3_MEGA_S_DGUS_BLTOUCH_10
-         - i3_MEGA_S_DGUS_BLTOUCH_11
-         - i3_MEGA_S_DGUS_TMC_BLTOUCH_10
-         - i3_MEGA_S_DGUS_TMC_BLTOUCH_11
-         - i3_MEGA_X
-         - i3_MEGA_X_TMC
-         - i3_MEGA_X_BLTOUCH_10
-         - i3_MEGA_X_BLTOUCH_11
-         - i3_MEGA_X_TMC_BLTOUCH_10
-         - i3_MEGA_X_TMC_BLTOUCH_11
-         - i3_MEGA_P
-         - i3_MEGA_P_TMC
-         - i3_MEGA_P_BLTOUCH_10
-         - i3_MEGA_P_BLTOUCH_11
-         - i3_MEGA_P_TMC_BLTOUCH_10
-         - i3_MEGA_P_TMC_BLTOUCH_11
-
+         #- i3_MEGA_S_TMC
+         #- i3_MEGA_S_BLTOUCH_10
+         #- i3_MEGA_S_BLTOUCH_11
+         #- i3_MEGA_S_TMC_BLTOUCH_10
+         #- i3_MEGA_S_TMC_BLTOUCH_11
+         #- i3_MEGA_S_DGUS
+         #- i3_MEGA_S_DGUS_TMC
+         #- i3_MEGA_S_DGUS_BLTOUCH_10
+         #- i3_MEGA_S_DGUS_BLTOUCH_11
+         #- i3_MEGA_S_DGUS_TMC_BLTOUCH_10
+         #- i3_MEGA_S_DGUS_TMC_BLTOUCH_11
+         #- i3_MEGA_X
+         #- i3_MEGA_X_TMC
+         #- i3_MEGA_X_BLTOUCH_10
+         #- i3_MEGA_X_BLTOUCH_11
+         #- i3_MEGA_X_TMC_BLTOUCH_10
+         #- i3_MEGA_X_TMC_BLTOUCH_11
+         #- i3_MEGA_P
+         #- i3_MEGA_P_TMC
+         #- i3_MEGA_P_BLTOUCH_10
+         #- i3_MEGA_P_BLTOUCH_11
+         #- i3_MEGA_P_TMC_BLTOUCH_10
+         #- i3_MEGA_P_TMC_BLTOUCH_11
 
     steps:
 
@@ -94,5 +93,16 @@ jobs:
     - uses: actions/checkout@master
 
     - name: Run PlatformIO
-      run: platformio run --environment ${{ matrix.platform }}
-      
+      run: |
+          platformio run --environment ${{ matrix.platform }}
+    
+    - name: Create artifact dir
+        run: |
+          mkdir -partifacts
+
+     - name: Archive production artifacts
+        uses: actions/upload-artifact@master 
+        with:
+          name: ${{ matrix.platform }}.hex
+          path: |
+            .pio/build/firmware.hex

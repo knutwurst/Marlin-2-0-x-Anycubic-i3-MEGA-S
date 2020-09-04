@@ -12,16 +12,12 @@ on:
 jobs:
   bump_date:
     name: Bump Distribution Date
-    if: github.repository == 'knutwurst/Marlin-2-0-x-Anycubic-i3-MEGA-S'
-
+  
     runs-on: ubuntu-latest
 
     steps:
 
-    - name: Check out master
-      uses: actions/checkout@master
-      with:
-        ref: master
+    - uses: actions/checkout@master
 
     - name: Bump Distribution Date
       run: |
