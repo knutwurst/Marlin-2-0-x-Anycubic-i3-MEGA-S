@@ -95,16 +95,20 @@ jobs:
         CUSTOM_BUILD_VERSION=$(egrep -o "([0-9]{1,}\.)+[0-9]{1,}" Marlin/src/inc/Version.h -m2 | tail -n1) && \
         mv .pio/build/${{ matrix.platform }}/firmware.hex .pio/build/${{ matrix.platform }}/${{ matrix.platform }}_v$CUSTOM_BUILD_VERSION.hex
 
+    - name: Set Environment Variables
+      run: |
+         echo "::set-env name=CUSTOM_BUILD_VER::$(egrep -o '"([0-9]{1,}\.)+[0-9]{1,}"' Marlin/src/inc/Version.h -m2 | tail -n1)"
+
     - name: Archive artifacts
       uses: actions/upload-artifact@master
       with:
-        name: Knutwurst_${{ matrix.platform }}_v$CUSTOM_BUILD_VERSION
+        name: Knutwurst_${{ matrix.platform }}_v$CUSTOM_BUILD_VER
         path: |
          .pio/build/${{ matrix.platform }}/${{ matrix.platform }}_v*.hex
 
     - name: Archive artifacts ino single ZIP
       uses: actions/upload-artifact@master
       with:
-        name: Knutwurst_i3_Mega_Firmware_v$CUSTOM_BUILD_VERSION
+        name: Knuwurst-all-in-one_v$CUSTOM_BUILD_VER
         path: |
          .pio/build/${{ matrix.platform }}/${{ matrix.platform }}_v*.hex
