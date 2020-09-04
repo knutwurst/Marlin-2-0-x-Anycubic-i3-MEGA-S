@@ -90,14 +90,24 @@ jobs:
     - name: Run PlatformIO
       run: platformio run --environment ${{ matrix.platform }}
     
+    - name: Get custom build version
+        run: echo '::set-env name=CUSTOM_BUILD_VER::$(egrep -o "([0-9]{1,}\.)+[0-9]{1,}" Marlin/src/inc/Version.h -m2 | tail -n1)'
+
     - name: Rename Output Files
       run: |
         CUSTOM_BUILD_VERSION=$(egrep -o "([0-9]{1,}\.)+[0-9]{1,}" Marlin/src/inc/Version.h -m2 | tail -n1) && \
         mv .pio/build/${{ matrix.platform }}/firmware.hex .pio/build/${{ matrix.platform }}/${{ matrix.platform }}_v$CUSTOM_BUILD_VERSION.hex
 
-    - name: Archive production artifacts
+    - name: Archive artifacts
       uses: actions/upload-artifact@master
       with:
-        name: ${{ matrix.platform }}
+        name: Knutwurst_${{ matrix.platform }}
+        path: |
+         .pio/build/${{ matrix.platform }}/${{ matrix.platform }}_v*.hex
+
+    - name: Archive artifacts ino single ZIP
+      uses: actions/upload-artifact@master
+      with:
+        name: Knutwurst_i3_Mega_Firmware_vCUSTOM_BUILD_VER
         path: |
          .pio/build/${{ matrix.platform }}/${{ matrix.platform }}_v*.hex
