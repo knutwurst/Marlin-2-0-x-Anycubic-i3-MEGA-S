@@ -99,13 +99,13 @@ jobs:
     - name: Archive artifacts
       uses: actions/upload-artifact@master
       with:
-        name: Knutwurst_${{ matrix.platform }}
+        name: Knutwurst_${{ matrix.platform }}_v$CUSTOM_BUILD_VER
         path: |
          .pio/build/${{ matrix.platform }}/${{ matrix.platform }}_v*.hex
 
     - name: Archive artifacts ino single ZIP
       uses: actions/upload-artifact@master
       with:
-        name: Knutwurst_i3_Mega_Firmware_vCUSTOM_BUILD_VER
+        name: Knutwurst_i3_Mega_Firmware_v$CUSTOM_BUILD_VER
         path: |
          .pio/build/${{ matrix.platform }}/${{ matrix.platform }}_v*.hex
