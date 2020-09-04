@@ -96,8 +96,8 @@ jobs:
       run: platformio run --environment ${{ matrix.platform }}
     
     - name: Archive production artifacts
-        uses: actions/download-artifact@master 
-        with:
-          name: ${{ matrix.platform }}.hex
-          path: |
-            .pio/build/firmware.hex
+      uses: actions/upload-artifact@master
+      with:
+        name: Firmware
+        path: |
+         .pio/build/firmware.hex
