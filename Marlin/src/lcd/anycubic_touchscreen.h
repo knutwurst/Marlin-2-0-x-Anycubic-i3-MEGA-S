@@ -61,6 +61,8 @@ char *ftostr32(const float &);
 #define SM_LOAD_DEFAULTS_S    "<LDDEF>"
 #define SM_PREHEAT_BED_L      "<Preheat Ultrabase>"
 #define SM_PREHEAT_BED_S      "<PREHE>"
+#define SM_MESH_MENU_L        "<Mesh Leveling>"
+#define SM_MESH_MENU_S        "<MESHL>"
 #define SM_MESH_START_L       "<Start Mesh Leveling>"
 #define SM_MESH_START_S       "<SMESH>"
 #define SM_MESH_NEXT_L        "<Next Mesh Point>"
@@ -89,8 +91,20 @@ char *ftostr32(const float &);
 #define SM_EN_FILSENS_S       "<ENSEN>"
 #define SM_EXIT_L             "<Exit>"
 #define SM_EXIT_S             "<EXIT>"
+
 #define SM_BACK_L             "<End Mesh Leveling>"
 #define SM_BACK_S             "<BACK>"
+
+#define SM_FLOWMENU_L         "<Set Flowrate>"
+#define SM_FLOWMENU_S         "<SETFLO>"
+#define SM_FLOW_DISP_L        "<Flow is XXX>"
+#define SM_FLOW_DISP_S        "<FLDISP>"
+#define SM_FLOW_UP_L          "<Up>"
+#define SM_FLOW_UP_S          "<UP>"
+#define SM_FLOW_DN_L          "<Down>"
+#define SM_FLOW_DN_S          "<DOWN>"
+#define SM_FLOW_EXIT_L        "<End Flow Settings>"
+#define SM_FLOW_EXIT_S        "<EXTFLW>"
 #endif
 
 #if ENABLED(KNUTWURST_DGUS2_TFT)
@@ -108,7 +122,9 @@ char *ftostr32(const float &);
 #define SM_LOAD_DEFAULTS_S    "<LOADF~1.GCO"
 #define SM_PREHEAT_BED_L      "<Preheat Ultrabase> .gcode"
 #define SM_PREHEAT_BED_S      "<PREHE~1.GCO"
-#define SM_MESH_START_L       "<Mesh Leveling>     .gcode"
+#define SM_MESH_MENU_L        "<Mesh Leveling>     .gcode"
+#define SM_MESH_MENU_S        "<MESHL~1.GCO"
+#define SM_MESH_START_L       "<Start MeshLeveling>.gcode"
 #define SM_MESH_START_S       "<START~1.GCO"
 #define SM_MESH_NEXT_L        "<Next Mesh Point>   .gcode"
 #define SM_MESH_NEXT_S        "<NEXTM~1.GCO"
@@ -136,8 +152,20 @@ char *ftostr32(const float &);
 #define SM_EN_FILSENS_S       "<ENABL~1.GCO"
 #define SM_EXIT_L             "<Exit>              .gcode"
 #define SM_EXIT_S             "<EXIT_~1.GCO"
+
 #define SM_BACK_L             "<End Mesh Leveling> .gcode"
 #define SM_BACK_S             "<BACK_~1.GCO"
+
+#define SM_FLOWMENU_L         "<Set Flowrate>      .gcode"
+#define SM_FLOWMENU_S         "<SETFLO1.GCO"
+#define SM_FLOW_DISP_L        "<Flow is XXX%>      .gcode"
+#define SM_FLOW_DISP_S        "<FLDISPL.GCO"
+#define SM_FLOW_UP_L          "<Up>                .gcode"
+#define SM_FLOW_UP_S          "<UPFLOW1.GCO"
+#define SM_FLOW_DN_L          "<Down>              .gcode"
+#define SM_FLOW_DN_S          "<DWNFLOW.GCO"
+#define SM_FLOW_EXIT_L        "<End Flow Settings> .gcode"
+#define SM_FLOW_EXIT_S        "<EXTFLW1.GCO"
 #endif
 
 
@@ -183,6 +211,7 @@ private:
   char LastSDstatus = 0;
   uint16_t HeaterCheckCount = 0;
   bool IsParked = false;
+  int currentFlowRate = 0;
 
 #if defined(POWER_OUTAGE_TEST)
   struct OutageDataStruct
@@ -216,10 +245,11 @@ private:
   char currentTouchscreenSelection[64];
   char currentFileOrDirectory[64];
   uint16_t MyFileNrCnt = 0;
+  uint8_t FilamentSensorEnabled = true;
+
   uint8_t SpecialMenu = false;
   uint8_t MMLMenu = false;
-  uint8_t FilamentSensorEnabled = true;
-  
+  uint8_t FlowMenu = false;  
 
 #if ENABLED(ANYCUBIC_FILAMENT_RUNOUT_SENSOR)
   char FilamentTestStatus = false;

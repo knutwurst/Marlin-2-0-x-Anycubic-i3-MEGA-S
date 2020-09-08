@@ -123,6 +123,8 @@ void AnycubicTouchscreenClass::Setup()
 #endif
   pinMode(FILAMENT_RUNOUT_PIN, INPUT);
   WRITE(FILAMENT_RUNOUT_PIN, HIGH);
+
+/*
 #if ENABLED(ANYCUBIC_FILAMENT_RUNOUT_SENSOR)
   if ((READ(FILAMENT_RUNOUT_PIN) == true) && FilamentSensorEnabled)
   {
@@ -133,13 +135,16 @@ void AnycubicTouchscreenClass::Setup()
 #endif
   }
 #endif
+*/
 
   currentTouchscreenSelection[0] = 0;
   currentFileOrDirectory[0] = '\0';
   SpecialMenu = false;
   MMLMenu = false;
+  FlowMenu = false;
   FilamentSensorEnabled = true;
   MyFileNrCnt = 0;
+  currentFlowRate = 100;
 
 #ifdef STARTUP_CHIME
   buzzer.tone(100, 554);
@@ -488,12 +493,16 @@ void AnycubicTouchscreenClass::HandleSpecialMenu()
   }
 
 #if DISABLED(KNUTWURST_BLTOUCH)
+  else if ((strcasestr(currentTouchscreenSelection, SM_MESH_MENU_L) != NULL)
+  || (strcasestr(currentTouchscreenSelection, SM_MESH_MENU_S) != NULL))
+  {
+    MMLMenu = true;
+  }
   else if ((strcasestr(currentTouchscreenSelection, SM_MESH_START_L) != NULL)
   || (strcasestr(currentTouchscreenSelection, SM_MESH_START_S) != NULL))
   {
     SERIAL_ECHOLNPGM("Special Menu: Start Mesh Leveling");
     queue.inject_P(PSTR("G29 S1"));
-    MMLMenu = true;
   }
   else if ((strcasestr(currentTouchscreenSelection, SM_MESH_NEXT_L) != NULL)
   || (strcasestr(currentTouchscreenSelection, SM_MESH_NEXT_S) != NULL))
@@ -588,6 +597,45 @@ void AnycubicTouchscreenClass::HandleSpecialMenu()
   || (strcasestr(currentTouchscreenSelection, SM_BACK_S) != NULL))
   {
     MMLMenu = false;
+  } 
+  else if ((strcasestr(currentTouchscreenSelection, SM_FLOWMENU_L) != NULL)
+  || (strcasestr(currentTouchscreenSelection, SM_FLOWMENU_S) != NULL))
+  {
+    SERIAL_ECHOLNPGM("Special Menu: Enter Flow Menu");
+    FlowMenu = true;
+  } 
+  else if ((strcasestr(currentTouchscreenSelection, SM_FLOW_UP_L) != NULL)
+  || (strcasestr(currentTouchscreenSelection, SM_FLOW_UP_S) != NULL))
+  {
+    SERIAL_ECHOLNPGM("Special Menu: Flow UP");
+    currentFlowRate = currentFlowRate + 5;
+
+    if(currentFlowRate > 800)
+       currentFlowRate = 800;
+
+    char value[30];
+    sprintf_P(value, PSTR("M221 S%i"), currentFlowRate);
+    queue.enqueue_one_now(value);
+
+  } 
+  else if ((strcasestr(currentTouchscreenSelection, SM_FLOW_DN_L) != NULL)
+  || (strcasestr(currentTouchscreenSelection, SM_FLOW_DN_S) != NULL))
+  {
+    SERIAL_ECHOLNPGM("Special Menu: Flow Down");
+    currentFlowRate = currentFlowRate - 5;
+
+    if(currentFlowRate < 5)
+       currentFlowRate = 5;
+
+    char value[30];
+    sprintf_P(value, PSTR("M221 S%i"), currentFlowRate);
+    queue.enqueue_one_now(value);
+  }  
+  else if ((strcasestr(currentTouchscreenSelection, SM_FLOW_EXIT_L) != NULL)
+  || (strcasestr(currentTouchscreenSelection, SM_FLOW_EXIT_S) != NULL))
+  {
+    SERIAL_ECHOLNPGM("Special Menu: Exit Flow Menu");
+    FlowMenu = false;
   }
 }
 
@@ -599,27 +647,56 @@ void AnycubicTouchscreenClass::PrintList()
     switch (filenumber)
     {
         case 0: // Page 1
+          HARDWARE_SERIAL_PROTOCOLLNPGM(SM_MESH_START_S);
+          HARDWARE_SERIAL_PROTOCOLLNPGM(SM_MESH_START_L);
           HARDWARE_SERIAL_PROTOCOLLNPGM(SM_Z_UP_01_S);
           HARDWARE_SERIAL_PROTOCOLLNPGM(SM_Z_UP_01_L);
           HARDWARE_SERIAL_PROTOCOLLNPGM(SM_Z_DN_01_S);
           HARDWARE_SERIAL_PROTOCOLLNPGM(SM_Z_DN_01_L);
           HARDWARE_SERIAL_PROTOCOLLNPGM(SM_Z_UP_002_S);
           HARDWARE_SERIAL_PROTOCOLLNPGM(SM_Z_UP_002_L);
-          HARDWARE_SERIAL_PROTOCOLLNPGM(SM_Z_DN_002_S);
-          HARDWARE_SERIAL_PROTOCOLLNPGM(SM_Z_DN_002_L);
         break;
 
         case 4: // Page 2
+          HARDWARE_SERIAL_PROTOCOLLNPGM(SM_Z_DN_002_S);
+          HARDWARE_SERIAL_PROTOCOLLNPGM(SM_Z_DN_002_L);
           HARDWARE_SERIAL_PROTOCOLLNPGM(SM_Z_UP_001_S);
           HARDWARE_SERIAL_PROTOCOLLNPGM(SM_Z_UP_001_L);
           HARDWARE_SERIAL_PROTOCOLLNPGM(SM_Z_DN_001_S);
           HARDWARE_SERIAL_PROTOCOLLNPGM(SM_Z_DN_001_L);
           HARDWARE_SERIAL_PROTOCOLLNPGM(SM_MESH_NEXT_S);
           HARDWARE_SERIAL_PROTOCOLLNPGM(SM_MESH_NEXT_L);
+          break;
+
+        case 8: // Page 2
+          HARDWARE_SERIAL_PROTOCOLLNPGM(SM_SAVE_EEPROM_S);
+          HARDWARE_SERIAL_PROTOCOLLNPGM(SM_SAVE_EEPROM_L);
           HARDWARE_SERIAL_PROTOCOLLNPGM(SM_BACK_S);
           HARDWARE_SERIAL_PROTOCOLLNPGM(SM_BACK_L);
           break;
         
+        default:
+        break;
+      }
+  }
+  else if(FlowMenu)
+  {
+    String blah = SM_FLOW_DISP_L;
+    blah.replace("XXX", String(currentFlowRate));
+    
+    switch (filenumber)
+    {
+        case 0: // Page 1
+          HARDWARE_SERIAL_PROTOCOLLNPGM(SM_FLOW_DISP_S);
+          HARDWARE_SERIAL_PROTOCOLLN(blah);
+          HARDWARE_SERIAL_PROTOCOLLNPGM(SM_FLOW_UP_S);
+          HARDWARE_SERIAL_PROTOCOLLNPGM(SM_FLOW_UP_L);
+          HARDWARE_SERIAL_PROTOCOLLNPGM(SM_FLOW_DN_S);
+          HARDWARE_SERIAL_PROTOCOLLNPGM(SM_FLOW_DN_L);
+          HARDWARE_SERIAL_PROTOCOLLNPGM(SM_FLOW_EXIT_S);
+          HARDWARE_SERIAL_PROTOCOLLNPGM(SM_FLOW_EXIT_L);
+        break;
+
         default:
         break;
       }
@@ -629,8 +706,8 @@ void AnycubicTouchscreenClass::PrintList()
     switch (filenumber)
     {
     case 0: // Page 1
-      HARDWARE_SERIAL_PROTOCOLLNPGM(SM_EXIT_S);
-      HARDWARE_SERIAL_PROTOCOLLNPGM(SM_EXIT_L);
+      HARDWARE_SERIAL_PROTOCOLLNPGM(SM_FLOWMENU_S);
+      HARDWARE_SERIAL_PROTOCOLLNPGM(SM_FLOWMENU_L);
       HARDWARE_SERIAL_PROTOCOLLNPGM(SM_PREHEAT_BED_S);
       HARDWARE_SERIAL_PROTOCOLLNPGM(SM_PREHEAT_BED_L);
       HARDWARE_SERIAL_PROTOCOLLNPGM(SM_PAUSE_S);
@@ -641,8 +718,8 @@ void AnycubicTouchscreenClass::PrintList()
 
 #if DISABLED(KNUTWURST_BLTOUCH)
     case 4: // Page 2
-      HARDWARE_SERIAL_PROTOCOLLNPGM(SM_MESH_START_S);
-      HARDWARE_SERIAL_PROTOCOLLNPGM(SM_MESH_START_L);
+      HARDWARE_SERIAL_PROTOCOLLNPGM(SM_MESH_MENU_S);
+      HARDWARE_SERIAL_PROTOCOLLNPGM(SM_MESH_MENU_L);
       HARDWARE_SERIAL_PROTOCOLLNPGM(SM_PID_HOTEND_S);
       HARDWARE_SERIAL_PROTOCOLLNPGM(SM_PID_HOTEND_L);
       HARDWARE_SERIAL_PROTOCOLLNPGM(SM_PID_BED_S);
