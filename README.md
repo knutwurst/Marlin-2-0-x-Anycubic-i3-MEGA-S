@@ -76,6 +76,8 @@ Um es übersichtlich zu gestalten, beinhalten die Dateinamen die einzelnen Featu
 
 `_S` steht für den Mega S mit dem Titan Extruder.
 
+`_P` steht für den Mega P mit dem BMG Extruder.
+
 `_X` steht für den Mega X.
 
 `_TMC` steht für Trinamic TMC Motortreiber. Hierbei wird auch die Drehrichtung der Motoren invertiert.
@@ -141,6 +143,8 @@ You can download the precompiled binary files from here: https://github.com/knut
 In order to make it clear, the file names contain the individual features.
 
 `_S` stands for the Mega S with the titan extruder.
+
+`_P` stands for the Mega P with the BMG extruder.
 
 `_X` stands for the Mega X.
 
