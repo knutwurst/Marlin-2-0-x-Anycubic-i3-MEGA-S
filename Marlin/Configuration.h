@@ -948,7 +948,11 @@
  *                                      X, Y, Z, E0 [, E1[, E2...]]
  */
 #if ENABLED(KNUTWURST_MEGA)
-    #define DEFAULT_MAX_FEEDRATE          { 500, 500, 8, 60 }
+    #if ENABLED(KNUTWURST_BMG)
+        #define DEFAULT_MAX_FEEDRATE          { 500, 500, 8, 30 }
+    #else
+        #define DEFAULT_MAX_FEEDRATE          { 500, 500, 8, 60 }
+    #endif 
 #endif
 
 #if ENABLED(KNUTWURST_MEGA_S)
@@ -1002,7 +1006,11 @@
 
 #if ENABLED(KNUTWURST_MEGA)
     #define DEFAULT_ACCELERATION          1600    // X, Y, Z and E acceleration for printing moves
-    #define DEFAULT_RETRACT_ACCELERATION  3000    // E acceleration for retracts
+    #if ENABLED(KNUTWURST_BMG)
+        #define DEFAULT_RETRACT_ACCELERATION  1500    // E acceleration for retracts
+    #else
+        #define DEFAULT_RETRACT_ACCELERATION  3000    // E acceleration for retracts
+    #endif
     #define DEFAULT_TRAVEL_ACCELERATION   3000    // X, Y, Z acceleration for travel (non printing) moves
 #endif
 
