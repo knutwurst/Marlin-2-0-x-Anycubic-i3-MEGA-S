@@ -118,6 +118,10 @@
  * Invert E0 Stepper driver for
  * Bondtech Mini Geared (BMG) Extruders
  * 
+ * This flag is mandatory if you own a
+ * MEGA Pro, which has this Extruder by
+ * default.
+ * 
  * PLEASE READ THE WARNING ABOVE!
  */
 //#define KNUTWURST_BMG
@@ -132,7 +136,7 @@
  * PLEASE READ THE WARNING ABOVE!
  * 
  */
-//#define KNUTWURST_BLTOUCH // see <https://github.com/DerDominik/Marlin-AnycubicI3Mega-BLTouch/wiki/Aufbauplan_BLTouch>
+//#define KNUTWURST_BLTOUCH
 
 /*
  * This feature is for debugging purpose only.
