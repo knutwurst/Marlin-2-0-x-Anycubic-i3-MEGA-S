@@ -124,7 +124,6 @@ void AnycubicTouchscreenClass::Setup()
   pinMode(FILAMENT_RUNOUT_PIN, INPUT);
   WRITE(FILAMENT_RUNOUT_PIN, HIGH);
 
-/*
 #if ENABLED(ANYCUBIC_FILAMENT_RUNOUT_SENSOR)
   if ((READ(FILAMENT_RUNOUT_PIN) == true) && FilamentSensorEnabled)
   {
@@ -135,7 +134,6 @@ void AnycubicTouchscreenClass::Setup()
 #endif
   }
 #endif
-*/
 
   currentTouchscreenSelection[0] = 0;
   currentFileOrDirectory[0] = '\0';
