@@ -29,7 +29,6 @@ jobs:
        matrix:
          platform:
          # Knutwurst Base Environments
-
          - MEGA_1G
          - MEGA_1G_TMC
          - MEGA_1G_BLT_10
@@ -92,7 +91,8 @@ jobs:
     
     - name: Set Environment Variables
       run: |
-         echo "::set-env name=CUSTOM_BUILD_VER::$(egrep -o '"([0-9]{1,}\.)+[0-9]{1,}"' Marlin/src/inc/Version.h -m2 | tail -n1)"
+         CUSTOM_BUILD_VERSION=$(egrep -o "([0-9]{1,}\.)+[0-9]{1,}" Marlin/src/inc/Version.h -m2 | tail -n1) && \
+         echo "::set-env name=CUSTOM_BUILD_VER::$CUSTOM_BUILD_VERSION"
 
     - name: Rename Output Files
       run: |
