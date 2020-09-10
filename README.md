@@ -84,7 +84,7 @@ Um es übersichtlich zu gestalten, beinhalten die Dateinamen die einzelnen Featu
 
 `_DGUS` steht für das "neue" blau/gelbe DGUS II Display, welches sonst kein Special-Menü anzeigen kann.
 
-`_BLTOUCH` steht für die BL-Touch Version mit Autoleveling-Sensor. Das manuelle Mesh-Leveling ist hier deaktiviert.
+`_BLT` steht für die BL-Touch Version mit Autoleveling-Sensor. Das manuelle Mesh-Leveling ist hier deaktiviert.
 
 `_10` steht für das Trigorilla_14 v1.0 Mainboard, welches normalerweise der Standard sein sollte.
 
@@ -152,7 +152,7 @@ In order to make it clear, the file names contain the individual features.
 
 `_DGUS` stands for the "new" blue / yellow DGUS II display, which otherwise cannot show a special menu.
 
-`_BLTOUCH` stands for the BL-Touch version with auto-leveling sensor. Manual mesh leveling is deactivated here.
+`_BLT` stands for the BL-Touch version with auto-leveling sensor. Manual mesh leveling is deactivated here.
 
 `_10` stands for the Trigorilla_14 v1.0 mainboard, which should normally be the standard.
 
