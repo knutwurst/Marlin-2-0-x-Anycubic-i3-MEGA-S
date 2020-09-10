@@ -74,6 +74,8 @@ Du kannst die fertigen Binärdateien hier herunterladen: https://github.com/knut
 
 Um es übersichtlich zu gestalten, beinhalten die Dateinamen die einzelnen Features.
 
+`_1G` steht für die erste Generation des i3 Mega mit nur einem Z Endstop. Diese Firmware ist nicht für den normalen i3 Mega geeignet!
+
 `_S` steht für den Mega S mit dem Titan Extruder.
 
 `_P` steht für den Mega P mit dem BMG Extruder.
@@ -141,6 +143,8 @@ Für (fast) jede Kombination gibt es eine passende Firmware im Download-Bereich.
 You can download the precompiled binary files from here: https://github.com/knutwurst/Marlin-2-0-x-Anycubic-i3-MEGA-S/releases. Of course you can also [compile the firmware yourself](https://github.com/knutwurst/Marlin-2-0-x-Anycubic-i3-MEGA-S/wiki/Howto:-Compile-Firmware-with-PlatformIO) with PlatformIO or the Arduino IDE.
 
 In order to make it clear, the file names contain the individual features.
+
+`_1G` stands for the firt generation i3 Mega with only one Z endstop. Do NOT use this Firmware on the regular i3 Mega!
 
 `_S` stands for the Mega S with the titan extruder.
 
