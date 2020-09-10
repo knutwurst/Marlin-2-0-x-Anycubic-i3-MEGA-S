@@ -122,7 +122,6 @@
  * MEGA Pro, which has this Extruder by
  * default.
  * 
- * PLEASE READ THE WARNING ABOVE!
  */
 //#define KNUTWURST_BMG
 

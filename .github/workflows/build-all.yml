@@ -32,10 +32,10 @@ jobs:
 
          - i3_MEGA_1stgen
          - i3_MEGA_1stgen_TMC
-         - i3_MEGA_1stgen_BLTOUCH_10
-         - i3_MEGA_1stgen_BLTOUCH_11
-         - i3_MEGA_1stgen_TMC_BLTOUCH_10
-         - i3_MEGA_1stgen_TMC_BLTOUCH_11
+         #- i3_MEGA_1stgen_BLTOUCH_10
+         #- i3_MEGA_1stgen_BLTOUCH_11
+         #- i3_MEGA_1stgen_TMC_BLTOUCH_10
+         #- i3_MEGA_1stgen_TMC_BLTOUCH_11
          - i3_MEGA
          - i3_MEGA_TMC
          - i3_MEGA_BLTOUCH_10
@@ -60,12 +60,12 @@ jobs:
          - i3_MEGA_X_BLTOUCH_11
          - i3_MEGA_X_TMC_BLTOUCH_10
          - i3_MEGA_X_TMC_BLTOUCH_11
-         - i3_MEGA_P
-         - i3_MEGA_P_TMC
-         - i3_MEGA_P_BLTOUCH_10
-         - i3_MEGA_P_BLTOUCH_11
-         - i3_MEGA_P_TMC_BLTOUCH_10
-         - i3_MEGA_P_TMC_BLTOUCH_11
+         #- i3_MEGA_P
+         #- i3_MEGA_P_TMC
+         #- i3_MEGA_P_BLTOUCH_10
+         #- i3_MEGA_P_BLTOUCH_11
+         #- i3_MEGA_P_TMC_BLTOUCH_10
+         #- i3_MEGA_P_TMC_BLTOUCH_11
 
     steps:
 
