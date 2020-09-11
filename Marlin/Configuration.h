@@ -1014,6 +1014,7 @@
     #else
         #define DEFAULT_RETRACT_ACCELERATION  3000    // E acceleration for retracts
     #endif
+    
     #define DEFAULT_TRAVEL_ACCELERATION   3000    // X, Y, Z acceleration for travel (non printing) moves
 #endif
 
@@ -1146,7 +1147,7 @@
  *
  */
 #if ENABLED(KNUTWURST_BLTOUCH)
-#define Z_MIN_PROBE_PIN 2 // Pin 32 is the RAMPS default
+    #define Z_MIN_PROBE_PIN 2 // Pin 32 is the RAMPS default
 #endif
 
 /**
@@ -1189,7 +1190,7 @@
  * The BLTouch probe uses a Hall effect sensor and emulates a servo.
  */
 #if ENABLED(KNUTWURST_BLTOUCH)
-#define BLTOUCH
+    #define BLTOUCH
 #endif
 
 /**
@@ -1263,12 +1264,12 @@
  * Specify a Probe position as { X, Y, Z }
  */
 #if ENABLED(KNUTWURST_BLTOUCH)
-#define NOZZLE_TO_PROBE_OFFSET { -2, -25, 0 } //https://www.thingiverse.com/thing:2824005
-//#define NOZZLE_TO_PROBE_OFFSET { 29, -15, 0 } //X-Carriage
+    #define NOZZLE_TO_PROBE_OFFSET { -2, -25, 0 } //https://www.thingiverse.com/thing:2824005
+    //#define NOZZLE_TO_PROBE_OFFSET { 29, -15, 0 } //X-Carriage
 #endif
 
 #if DISABLED(KNUTWURST_BLTOUCH)
-#define NOZZLE_TO_PROBE_OFFSET { 10, 10, 0 }
+    #define NOZZLE_TO_PROBE_OFFSET { 10, 10, 0 }
 #endif
 
 // Most probes should stay away from the edges of the bed, but
@@ -1316,11 +1317,11 @@
 //#define Z_AFTER_PROBING           5 // Z position after probing is done
 
 #if ENABLED(KNUTWURST_BLTOUCH)
-#define Z_PROBE_LOW_POINT          -5 // Farthest distance below the trigger-point to go before stopping
+    #define Z_PROBE_LOW_POINT          -10 // Farthest distance below the trigger-point to go before stopping
 #endif
 
 #if DISABLED(KNUTWURST_BLTOUCH)
-#define Z_PROBE_LOW_POINT          -2 // Farthest distance below the trigger-point to go before stopping
+    #define Z_PROBE_LOW_POINT          -2 // Farthest distance below the trigger-point to go before stopping
 #endif
 
 
@@ -1330,7 +1331,7 @@
 
 // Enable the M48 repeatability test to test probe accuracy
 #if ENABLED(KNUTWURST_BLTOUCH)
-#define Z_MIN_PROBE_REPEATABILITY_TEST
+    #define Z_MIN_PROBE_REPEATABILITY_TEST
 #endif
 
 // Before deploy/stow pause for user confirmation
@@ -1613,19 +1614,19 @@
  *   With an LCD controller the process is guided step-by-step.
  */
 #if ENABLED(KNUTWURST_BLTOUCH)
-//#define AUTO_BED_LEVELING_3POINT
-//#define AUTO_BED_LEVELING_LINEAR
-#define AUTO_BED_LEVELING_BILINEAR
-//#define AUTO_BED_LEVELING_UBL
-//#define MESH_BED_LEVELING
+    //#define AUTO_BED_LEVELING_3POINT
+    //#define AUTO_BED_LEVELING_LINEAR
+    #define AUTO_BED_LEVELING_BILINEAR
+    //#define AUTO_BED_LEVELING_UBL
+    //#define MESH_BED_LEVELING
 #endif
 
 #if DISABLED(KNUTWURST_BLTOUCH)
-//#define AUTO_BED_LEVELING_3POINT
-//#define AUTO_BED_LEVELING_LINEAR
-//#define AUTO_BED_LEVELING_BILINEAR
-//#define AUTO_BED_LEVELING_UBL
-#define MESH_BED_LEVELING
+    //#define AUTO_BED_LEVELING_3POINT
+    //#define AUTO_BED_LEVELING_LINEAR
+    //#define AUTO_BED_LEVELING_BILINEAR
+    //#define AUTO_BED_LEVELING_UBL
+    #define MESH_BED_LEVELING
 #endif
 
 /**
