@@ -1044,15 +1044,13 @@
  * When changing speed and direction, if the difference is less than the
  * value set here, it may happen instantaneously.
  */
-//#define CLASSIC_JERK
 
-// I Know.. it's useless to put it here ;)
 #if ENABLED(KNUTWURST_MEGA) || ENABLED(KNUTWURST_MEGA_S) || ENABLED(KNUTWURST_MEGA_P)
-    //#define CLASSIC_JERK
+    #define CLASSIC_JERK
 #endif
 
 #if ENABLED(KNUTWURST_MEGA_X)
-    //#define CLASSIC_JERK
+    #define CLASSIC_JERK
 #endif
 
 #if ENABLED(CLASSIC_JERK)
