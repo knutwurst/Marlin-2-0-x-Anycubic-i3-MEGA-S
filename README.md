@@ -34,7 +34,6 @@
 
  * Mesh-Bed Kalibrierung / Autokalibrierung mit [BLTouch (Installations-Anleitung)](https://github.com/knutwurst/Marlin-2-0-x-Anycubic-i3-MEGA-S/wiki/BLTouch-Installation-(deutsch))
  * S-Kurven Beschleunigung
- * "Junction Deviation" statt des klassischen "Jerk" 
  * "Linear Pressure Control v1.5" aktiviert (kann mit M900 konfiguriert werden)
  * Babystepping während des Druckvorgangs
  * Bilinear Bed Leveling (BBL)
@@ -106,7 +105,6 @@ Für (fast) jede Kombination gibt es eine passende Firmware im Download-Bereich.
 
  * Mesh bed calibration / Auto calibration with [BLTouch (Installation Manual)](https://github.com/knutwurst/Marlin-2-0-x-Anycubic-i3-MEGA-S/wiki/BLTouch-Installation-(english))
  * S-curve acceleration
- * "Junction Deviation" instead of the classic "Jerk"
  * "Linear Pressure Control v1.5" activated (can be configured with M900)
  * Baby stepping during the printing process
  * Bilinear Bed Leveling (BBL)
