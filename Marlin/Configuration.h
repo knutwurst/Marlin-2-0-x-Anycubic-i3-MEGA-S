@@ -1492,7 +1492,13 @@
 // @section machine
 
 // The size of the print bed
-#if ENABLED(KNUTWURST_MEGA) || ENABLED(KNUTWURST_MEGA_S) || ENABLED(KNUTWURST_MEGA_P)
+#if ENABLED(KNUTWURST_MEGA)
+    #define X_BED_SIZE 210
+    #define Y_BED_SIZE 210
+    #define Z_BED_HEIGHT 210
+#endif
+
+#if ENABLED(KNUTWURST_MEGA_S) || ENABLED(KNUTWURST_MEGA_P)
     #define X_BED_SIZE 225
     #define Y_BED_SIZE 220
     #define Z_BED_HEIGHT 210
