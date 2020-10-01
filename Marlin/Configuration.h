@@ -808,7 +808,7 @@
   //#define ENDSTOPPULLDOWN_ZMIN_PROBE
 #endif
 
-#if ENABLED(KNUTWURST_MEGA) || ENABLED(KNUTWURST_MEGA_S) || ENABLED(KNUTWURST_MEGA_P)
+#if ANY(KNUTWURST_MEGA, KNUTWURST_MEGA_S, KNUTWURST_MEGA_P)
     // Mechanical endstop with COM to ground and NC to Signal uses "false" here (most common setup).
     #define X_MIN_ENDSTOP_INVERTING true // set to true to invert the logic of the endstop.
     #define Y_MIN_ENDSTOP_INVERTING true // set to true to invert the logic of the endstop.
@@ -982,7 +982,7 @@
  * Override with M201
  *                                      X, Y, Z, E0 [, E1[, E2...]]
  */
-#if ENABLED(KNUTWURST_MEGA) || ENABLED(KNUTWURST_MEGA_S) || ENABLED(KNUTWURST_MEGA_P)
+#if ANY(KNUTWURST_MEGA, KNUTWURST_MEGA_S, KNUTWURST_MEGA_P)
     #define DEFAULT_MAX_ACCELERATION      { 3000, 2000,  60, 10000 }
 #endif
 
@@ -1045,7 +1045,7 @@
  * value set here, it may happen instantaneously.
  */
 
-#if ENABLED(KNUTWURST_MEGA) || ENABLED(KNUTWURST_MEGA_S) || ENABLED(KNUTWURST_MEGA_P)
+#if ANY(KNUTWURST_MEGA, KNUTWURST_MEGA_S, KNUTWURST_MEGA_P)
     #define CLASSIC_JERK
 #endif
 
@@ -1055,7 +1055,7 @@
 
 #if ENABLED(CLASSIC_JERK)
 
-#if ENABLED(KNUTWURST_MEGA) || ENABLED(KNUTWURST_MEGA_S) || ENABLED(KNUTWURST_MEGA_P)
+#if ANY(KNUTWURST_MEGA, KNUTWURST_MEGA_S, KNUTWURST_MEGA_P)
     #define DEFAULT_XJERK  10.0
     #define DEFAULT_YJERK  10.0
     #define DEFAULT_ZJERK  0.4
@@ -1077,7 +1077,7 @@
   #endif
 #endif
 
-#if ENABLED(KNUTWURST_MEGA) || ENABLED(KNUTWURST_MEGA_S) || ENABLED(KNUTWURST_MEGA_P)
+#if ANY(KNUTWURST_MEGA, KNUTWURST_MEGA_S, KNUTWURST_MEGA_P)
     #define DEFAULT_EJERK    5.0  // May be used by Linear Advance
 #endif
 
@@ -1093,7 +1093,7 @@
  *   http://blog.kyneticcnc.com/2018/10/computing-junction-deviation-for-marlin.html
  */
 #if DISABLED(CLASSIC_JERK)
-    #if ENABLED(KNUTWURST_MEGA) || ENABLED(KNUTWURST_MEGA_S) || ENABLED(KNUTWURST_MEGA_P)
+    #if ANY(KNUTWURST_MEGA, KNUTWURST_MEGA_S, KNUTWURST_MEGA_P)
         #define JUNCTION_DEVIATION_MM 0.013 // (mm) Distance from real junction edge
     #endif
 
@@ -1378,7 +1378,7 @@
 
 #if DISABLED(KNUTWURST_TMC)
 
-    #if ENABLED(KNUTWURST_MEGA) || ENABLED(KNUTWURST_MEGA_S) || ENABLED(KNUTWURST_MEGA_X)
+    #if ANY(KNUTWURST_MEGA, KNUTWURST_MEGA_S, KNUTWURST_MEGA_X)
         // Invert the stepper direction. Change (or reverse the motor connector) if an axis goes the wrong way.
         #define INVERT_X_DIR true // set to true for stock drivers or TMC2208 with reversed connectors
         #define INVERT_Y_DIR false // set to false for stock drivers or TMC2208 with reversed connectors
@@ -1426,7 +1426,7 @@
 #endif
 
 #if ENABLED(KNUTWURST_TMC)
-    #if ENABLED(KNUTWURST_MEGA) || ENABLED(KNUTWURST_MEGA_S) || ENABLED(KNUTWURST_MEGA_X)
+    #if ANY(KNUTWURST_MEGA, KNUTWURST_MEGA_S, KNUTWURST_MEGA_X)
         // Invert the stepper direction. Change (or reverse the motor connector) if an axis goes the wrong way.
         #define INVERT_X_DIR false // set to true for stock drivers or TMC2208 with reversed connectors
         #define INVERT_Y_DIR true // set to false for stock drivers or TMC2208 with reversed connectors
@@ -1498,7 +1498,7 @@
     #define Z_BED_HEIGHT 210
 #endif
 
-#if ENABLED(KNUTWURST_MEGA_S) || ENABLED(KNUTWURST_MEGA_P)
+#if ANY(KNUTWURST_MEGA_S, KNUTWURST_MEGA_P)
     #define X_BED_SIZE 225
     #define Y_BED_SIZE 220
     #define Z_BED_HEIGHT 210
@@ -1790,7 +1790,7 @@
   #define Z_SAFE_HOMING_Y_POINT ((Y_BED_SIZE) / 2)    // Y point for Z homing when homing all axes (G28).
 #endif
 
-#if ENABLED(KNUTWURST_MEGA) || ENABLED(KNUTWURST_MEGA_S) || ENABLED(KNUTWURST_MEGA_P)
+#if ANY(KNUTWURST_MEGA, KNUTWURST_MEGA_S, KNUTWURST_MEGA_P)
     // Homing speeds (mm/m)
     #define HOMING_FEEDRATE_XY (50*60)
     #define HOMING_FEEDRATE_Z  (5*60)
