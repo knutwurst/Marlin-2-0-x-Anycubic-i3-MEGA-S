@@ -952,14 +952,14 @@
  */
 #if ENABLED(KNUTWURST_MEGA)
     #if ENABLED(KNUTWURST_BMG)
-        #define DEFAULT_MAX_FEEDRATE          { 500, 500, 8, 30 }
+        #define DEFAULT_MAX_FEEDRATE          { 500, 500, 6, 30 }
     #else
-        #define DEFAULT_MAX_FEEDRATE          { 500, 500, 8, 60 }
+        #define DEFAULT_MAX_FEEDRATE          { 500, 500, 6, 60 }
     #endif 
 #endif
 
 #if ENABLED(KNUTWURST_MEGA_S)
-    #define DEFAULT_MAX_FEEDRATE          { 500, 500, 8, 30 }
+    #define DEFAULT_MAX_FEEDRATE          { 500, 500, 6, 30 }
 #endif
 
 #if ENABLED(KNUTWURST_MEGA_X)
@@ -967,7 +967,7 @@
 #endif
 
 #if ENABLED(KNUTWURST_MEGA_P)
-    #define DEFAULT_MAX_FEEDRATE          { 500, 500, 8, 30 }
+    #define DEFAULT_MAX_FEEDRATE          { 500, 500, 6, 30 }
 #endif
 
 
@@ -1494,9 +1494,9 @@
 // The size of the print bed
 /*
 #if ENABLED(KNUTWURST_MEGA)
-    #define X_BED_SIZE 210
-    #define Y_BED_SIZE 210
-    #define Z_BED_HEIGHT 210
+    #define X_BED_SIZE 215
+    #define Y_BED_SIZE 215
+    #define Z_BED_HEIGHT 206
 #endif
 */
 
