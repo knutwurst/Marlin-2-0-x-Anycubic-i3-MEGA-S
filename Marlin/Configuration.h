@@ -1794,8 +1794,8 @@
 
 #if ANY(KNUTWURST_MEGA, KNUTWURST_MEGA_S, KNUTWURST_MEGA_P)
     // Homing speeds (mm/m)
-    #define HOMING_FEEDRATE_XY (50*60)
-    #define HOMING_FEEDRATE_Z  (5*60)
+    #define HOMING_FEEDRATE_XY (40*60)
+    #define HOMING_FEEDRATE_Z  (6*60)
 #endif
 
 #if ENABLED(KNUTWURST_MEGA_X)
