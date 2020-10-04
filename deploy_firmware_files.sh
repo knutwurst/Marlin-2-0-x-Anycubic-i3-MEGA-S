@@ -4,7 +4,7 @@ VERSION_FILE="/Users/OKoester/Documents/Arduino/Marlin-2-0-x-Anycubic-i3-MEGA-S-
 FIRMWARE_FOLDER="/Users/OKoester/Documents/Arduino/Marlin-2-0-x-Anycubic-i3-MEGA-S-Master/.pio/build/"
 OUTPUT_FOLDER="/Users/OKoester/Desktop/i3_FIRMWARE"
 
-CUSTOM_BUILD_VERSION=$(egrep -o "([0-9]{1,}\.)+[0-9]{1,}" $VERSION_FILE -m2 | tail -n1)
+CUSTOM_BUILD_VERSION=$(egrep -o "([0-9]{1,}\.)+[a-zA-Z0-9_.-]{1,}" $VERSION_FILE -m2 | tail -n1)
 
 if [ -d "$$OUTPUT_FOLDER/v$CUSTOM_BUILD_VERSION" ]; then
     echo "$$OUTPUT_FOLDER/$CUSTOM_BUILD_VERSION already exists."
