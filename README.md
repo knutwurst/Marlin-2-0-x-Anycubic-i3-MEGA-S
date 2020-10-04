@@ -32,6 +32,7 @@
 
 ## Funktionen
 
+ * 4-Punkt Leveling-Hilfe "Easy Leveling"
  * Mesh-Bed Kalibrierung / Autokalibrierung mit [BLTouch (Installations-Anleitung)](https://github.com/knutwurst/Marlin-2-0-x-Anycubic-i3-MEGA-S/wiki/BLTouch-Installation-(deutsch))
  * S-Kurven Beschleunigung
  * "Linear Pressure Control v1.5" aktiviert (kann mit M900 konfiguriert werden)
@@ -103,6 +104,7 @@ Für (fast) jede Kombination gibt es eine passende Firmware im Download-Bereich.
 
 ## Features:
 
+ * 4-Ppoint Leveling-Assistant "Easy Leveling"
  * Mesh bed calibration / Auto calibration with [BLTouch (Installation Manual)](https://github.com/knutwurst/Marlin-2-0-x-Anycubic-i3-MEGA-S/wiki/BLTouch-Installation-(english))
  * S-curve acceleration
  * "Linear Pressure Control v1.5" activated (can be configured with M900)
