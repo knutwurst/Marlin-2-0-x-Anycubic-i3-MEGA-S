@@ -88,11 +88,6 @@ jobs:
 
     - name: Compile Firmware with PlatformIO
       run: platformio run --environment ${{ matrix.platform }}
-    
-    - name: Set Environment Variables
-      run: |
-         CUSTOM_BUILD_VERSION=$(egrep -o "([0-9]{1,}\.)+[a-zA-Z0-9_.-]{1,}" Marlin/src/inc/Version.h -m2 | tail -n1) && \
-         echo "::set-env name=CUSTOM_BUILD_VER::$CUSTOM_BUILD_VERSION"
 
     - name: Rename Output Files
       run: |
@@ -109,6 +104,6 @@ jobs:
     - name: Archive all artifacts into one ZIP file
       uses: actions/upload-artifact@master
       with:
-        name: Knuwurst-all-in-one_$GITHUB_SHA_SHORT
+        name: Knuwurst-all-in-one_RELEASE
         path: |
          .pio/build/${{ matrix.platform }}/${{ matrix.platform }}_v*.hex
