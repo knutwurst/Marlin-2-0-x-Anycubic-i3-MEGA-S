@@ -963,7 +963,8 @@
 #endif
 
 #if ENABLED(KNUTWURST_MEGA_X)
-    #define DEFAULT_MAX_FEEDRATE            { 120, 120, 18, 80 } // thanks to Simon Geis
+    //#define DEFAULT_MAX_FEEDRATE            { 120, 120, 18, 80 } // thanks to Simon Geis
+    #define DEFAULT_MAX_FEEDRATE            { 400, 400, 18, 80 } // thanks to DanJunior78 
 #endif
 
 #if ENABLED(KNUTWURST_MEGA_P)
@@ -987,7 +988,8 @@
 #endif
 
 #if ENABLED(KNUTWURST_MEGA_X)
-    #define DEFAULT_MAX_ACCELERATION      { 400, 400, 60, 10000 }
+    //#define DEFAULT_MAX_ACCELERATION      { 400, 400, 60, 10000 } //Original Values
+    #define DEFAULT_MAX_ACCELERATION      { 2000, 1500, 60, 10000 } 
 #endif
 
 
@@ -2193,7 +2195,7 @@
 //
 // Short 2KHz beep when endstops are hit
 //
-//#define ENDSTOP_BEEP
+#define ENDSTOP_BEEP
 
 //
 // The duration and frequency for the UI feedback sound.
