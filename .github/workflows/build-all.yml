@@ -104,6 +104,6 @@ jobs:
     - name: Archive all artifacts into one ZIP file
       uses: actions/upload-artifact@master
       with:
-        name: Knuwurst-all-in-one_RELEASE
+        name: Knuwurst-all-in-one-$( date +"%Y-%m-%d" )
         path: |
          .pio/build/${{ matrix.platform }}/${{ matrix.platform }}_v*.hex
