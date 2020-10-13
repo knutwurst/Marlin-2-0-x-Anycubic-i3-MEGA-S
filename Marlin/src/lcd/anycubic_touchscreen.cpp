@@ -440,6 +440,7 @@ bool AnycubicTouchscreenClass::CodeSeen(char code)
 
 void AnycubicTouchscreenClass::HandleSpecialMenu()
 {
+#if ENABLED(KNUTWURST_SPECIAL_MENU)
 #ifdef ANYCUBIC_TFT_DEBUG
     SERIAL_ECHOPAIR(" DEBUG: Special Menu Selection: ", currentTouchscreenSelection);
     SERIAL_EOL();
@@ -693,11 +694,13 @@ void AnycubicTouchscreenClass::HandleSpecialMenu()
     LevelMenu = false;
     queue.inject_P(PSTR("G90\nG1 Z10\nG1 X15 Y15 F4000"));
   }
+#endif
 }
 
 
 void AnycubicTouchscreenClass::PrintList()
 {
+#if ENABLED(KNUTWURST_SPECIAL_MENU)
   if(MMLMenu)
   {
     switch (filenumber)
@@ -842,8 +845,13 @@ void AnycubicTouchscreenClass::PrintList()
       break;
     }
   }
+  #endif
   #ifdef SDSUPPORT
+#if ENABLED(KNUTWURST_SPECIAL_MENU)
   else if (card.isMounted())
+#else
+  if (card.isMounted())
+#endif
   {
     uint16_t count = filenumber;
     uint16_t max_files;
@@ -959,8 +967,10 @@ void AnycubicTouchscreenClass::PrintList()
 #endif
   else
   {
-    HARDWARE_SERIAL_PROTOCOLLNPGM(SM_SPECIAL_MENU_S);
-    HARDWARE_SERIAL_PROTOCOLLNPGM(SM_SPECIAL_MENU_L);
+      #if ENABLED(KNUTWURST_SPECIAL_MENU_WO_SD)
+      HARDWARE_SERIAL_PROTOCOLLNPGM(SM_SPECIAL_MENU_S);
+      HARDWARE_SERIAL_PROTOCOLLNPGM(SM_SPECIAL_MENU_L);
+      #endif
   }
 }
 
@@ -1372,17 +1382,27 @@ void AnycubicTouchscreenClass::GetCommandFromTFT()
         }
         case 8: // A8 GET SD LIST
 #ifdef SDSUPPORT
-          currentTouchscreenSelection[0] = 0;
-
-          if (CodeSeen('S'))
-            filenumber = CodeValue();
-            
-          HARDWARE_SERIAL_PROTOCOLPGM("FN "); // Filelist start
-          HARDWARE_SERIAL_ENTER();
-          PrintList();
-          HARDWARE_SERIAL_PROTOCOLPGM("END"); // Filelist stop
-          HARDWARE_SERIAL_ENTER();
           
+          currentTouchscreenSelection[0] = 0;
+#if ENABLED(KNUTWURST_SPECIAL_MENU_WO_SD)
+          if (!IS_SD_INSERTED())
+          {
+            HARDWARE_SERIAL_PROTOCOLPGM("J02");
+            HARDWARE_SERIAL_ENTER();
+          }
+          else
+#endif
+          {
+            if (CodeSeen('S'))
+              filenumber = CodeValue();
+              
+            HARDWARE_SERIAL_PROTOCOLPGM("FN "); // Filelist start
+            HARDWARE_SERIAL_ENTER();
+            PrintList();
+            HARDWARE_SERIAL_PROTOCOLPGM("END"); // Filelist stop
+            HARDWARE_SERIAL_ENTER();
+          }
+    
 #endif
           break;
         case 9: // A9 pause sd print
