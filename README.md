@@ -6,23 +6,25 @@
 <sub>*Es muss jetzt keine großzügige Spende sein. Ein paar Cent reichen um mir zu zeigen, wer überhaupt Interesse daran hat und wem die Weiterentwicklung wichtig ist. So bleibt die Motivation da und ich weiß einfach, dass ich nicht für die Tonne programmiere ;)<sub>
 
 
-### Wenn du Fragen hast, schaue gern in der offiziellen [Facebook-Gruppe](https://www.facebook.com/groups/3094090037303577/) vorbei.
+Wenn Du Fragen hast, schaue gern in der offiziellen [Facebook-Gruppe](https://www.facebook.com/groups/3094090037303577/) vorbei.
 
-### WARNUNG: Der Mega Pro / Mega P Support befindet sich noch in der Entwicklung. Aktuell wird der Laser noch nicht unterstützt, ebensowenig wie das Piezo-Leveling! 
+<b>WARNUNG:</b> Der Mega Pro / Mega P Support befindet sich noch in der Entwicklung. Aktuell wird der Laser noch nicht unterstützt, ebensowenig wie das Piezo-Leveling!
+
+<b>WARNING:</b> The Mega Pro / Mega P support is still under development. The laser is currently not supported, nor is piezo leveling!
+
+Wenn du einen Piezo-Sensor verwenden möchtest (egal an welchem Anycubic Mega Drucker), empfehle ich die [Version von Roland Piewitt](https://github.com/GrevanGER/Marlin-2-0-x-Anycubic-i3-MEGA-S).
+
+If you want to use a piezo sensor (regardless of which Anycubic Mega printer), I recommend the [version by Roland Piewitt](https://github.com/GrevanGER/Marlin-2-0-x-Anycubic-i3-MEGA-S).
 
 # Inhaltsverzeichnis (Deutsch)
 - [Funktionen](#funktionen)
-   - [Was ist besser?](#besser-im-vergleich-zu-anderen-firmwares-bugfixes)
 - [Häufig gestellte Fragen (FAQ)](https://github.com/knutwurst/Marlin-2-0-x-Anycubic-i3-MEGA-S/wiki/FAQ-(deutsch))
 - [Fotos / Bilder](https://github.com/knutwurst/Marlin-2-0-x-Anycubic-i3-MEGA-S/wiki/Pictures)
 - [Downloads](#downloads)
 
 
-### WARNING: The Mega Pro / Mega P support is still under development. The laser is currently not supported, nor is piezo leveling!
-
 # Table of Contets (english)
 - [Features](#features)
-   - [What's better?](#whats-better-in-coparison-to-other-firmwares-bug-fixes)
 - [Frequently asked questions (FAQ)](https://github.com/knutwurst/Marlin-2-0-x-Anycubic-i3-MEGA-S/wiki/FAQ-(english))
 - [Photos / Pictures](https://github.com/knutwurst/Marlin-2-0-x-Anycubic-i3-MEGA-S/wiki/Pictures)
 - [Download](#download)
@@ -50,21 +52,6 @@
  * Vollautomatisches Hotend und Ultrabase PID Tuning
  * Optimierungen für [Trinamic TMC Schrittmotortreiber](https://github.com/knutwurst/Marlin-2-0-x-Anycubic-i3-MEGA-S/wiki/Schrittmotortreiber-gegen-TMC2xxx-tauschen)
 
-
-## Besser im Vergleich zu anderen Firmwares (Bugfixes):
- * Aufgeräumtes Special-Menü
- * Drucker hängt sich nicht auf, wenn man Dateien mit Sonderzeichen (Umlaute, Chinesisch etc.) auf der SD Karte hat
- * Kein dummes "wackeln" der Düse nach Stoppen eines Druckvorgangs
- * Kein Abstürzen bei zu vielen Dateien auf der SD Karte
- * Kein Abstürzen bei SD-Karten über 16 GB
- * Fehler "Melodie" bei Thermal Runaway Protection
- * Kein Aufhängen, wenn SD Karte + USB gleichzeitig genutzt wird
- * Kein Aufhängen wenn man Pause drückt
- * Kein Aufhängen, wenn das Filament leer ist
- * Keine "spezielle" BLTouch Firmware nötig. Hier ist alles drin
- * Konfiguration ganz einfach über Feature-Toggles
- * Man muss keine Grundkonfiguration per GCODE machen.
- * Man muss keinen Werksreset durchführen
 
 ---
 
@@ -121,20 +108,6 @@ Für (fast) jede Kombination gibt es eine passende Firmware im Download-Bereich.
  * Automatic 'slowdown' if data does not flow fast enough
  * Fully automatic hotend and ultrabase PID tuning
  * Optimizations for [Trinamic TMC Stepper drivers](https://github.com/knutwurst/Marlin-2-0-x-Anycubic-i3-MEGA-S/wiki/Swap-stepper-motor-driver-for-TMC2xxx)
-
-### What's better in coparison to other firmwares (bug fixes):
- * Tidy special menu
- * Printer does not freeze if you have files with special characters (umlauts, Chinese..) on your SD card
- * No stupid "wobble" of the nozzle after stopping printing
- * No firmware crash when there are too many files on the SD card
- * No crash with SD cards over 16 GB
- * Acoustic alarm in case of a thermal runaway
- * No freezing when SD card + USB is used at the same time
- * No freezing when you press pause and try to resume
- * No freezing when the filament is empty
- * No need for a "special" BLTouch firmware. In this firmware is everything included
- * Configuration made easy via feature toggles
-
 
 ---
 
