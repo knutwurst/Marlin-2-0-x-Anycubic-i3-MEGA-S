@@ -963,12 +963,16 @@
 #endif
 
 #if ENABLED(KNUTWURST_MEGA_S)
-    #define DEFAULT_MAX_FEEDRATE          { 500, 500, 6, 30 }
+    #define DEFAULT_MAX_FEEDRATE          { 500, 500, 6, 30 } // same feedrate for BMG
 #endif
 
 #if ENABLED(KNUTWURST_MEGA_X)
-    #define DEFAULT_MAX_FEEDRATE            { 120, 120, 18, 80 } // thanks to Simon Geis
-    //#define DEFAULT_MAX_FEEDRATE            { 400, 400, 18, 80 } // thanks to DanJunior78 
+    #if ENABLED(KNUTWURST_BMG)
+        #define DEFAULT_MAX_FEEDRATE            { 120, 120, 18, 30 } // correct for BMG?
+    #else
+        #define DEFAULT_MAX_FEEDRATE            { 120, 120, 18, 80 } // thanks to Simon Geis
+        //#define DEFAULT_MAX_FEEDRATE            { 400, 400, 18, 80 } // thanks to DanJunior78 
+    #endif 
 #endif
 
 #if ENABLED(KNUTWURST_MEGA_P)
