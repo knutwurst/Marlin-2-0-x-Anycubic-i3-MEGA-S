@@ -454,17 +454,17 @@ void AnycubicTouchscreenClass::HandleSpecialMenu()
   || (strcasestr(currentTouchscreenSelection, SM_PID_HOTEND_S) != NULL))
   {
     SERIAL_ECHOLNPGM("Special Menu: PID Tune Hotend");
-    queue.inject_P(PSTR("G28\nG90\nG1 Z20\nG1 X110 Y110 F4000\nG1 Z5\nM106 S172\nG4 P500\nM303 E0 S215 C15 U1\nG4 P500\nM107\nG28\nG1 Z10\nM84\nM500"));
+    queue.inject_P(PSTR("G28\nG90\nG1 Z20\nG1 X110 Y110 F4000\nG1 Z5\nM106 S172\nG4 P500\nM303 E0 S215 C15 U1\nG4 P500\nM107\nG28\nG1 Z10\nM84\nM500\nM300 S440 P200\nM300 S660 P250\nM300 S880 P300"));
     buzzer.tone(200, 1108);
     buzzer.tone(200, 1661);
     buzzer.tone(200, 1108);
-    buzzer.tone(600, 1661);
+    buzzer.tone(600, 1661); 
   }
   else if ((strcasestr(currentTouchscreenSelection, SM_PID_BED_L) != NULL)
   || (strcasestr(currentTouchscreenSelection, SM_PID_BED_S) != NULL))
   {
     SERIAL_ECHOLNPGM("Special Menu: PID Tune Ultrabase");
-    queue.inject_P(PSTR("M303 E-1 S60 C6 U1\nM500"));
+    queue.inject_P(PSTR("M303 E-1 S60 C6 U1\nM500\nM300 S440 P200\nM300 S660 P250\nM300 S880 P300"));
     buzzer.tone(200, 1108);
     buzzer.tone(200, 1661);
     buzzer.tone(200, 1108);
