@@ -58,7 +58,7 @@ If you want to use a piezo sensor (regardless of which Anycubic Mega printer), I
 
 # Downloads
 
-Du kannst die fertigen Binärdateien hier herunterladen: https://github.com/knutwurst/Marlin-2-0-x-Anycubic-i3-MEGA-S/releases. Natürlich kannst du die Firmware mit PlatformIO oder der Arduino IDE auch [selbst kompilieren](https://github.com/knutwurst/Marlin-2-0-x-Anycubic-i3-MEGA-S/wiki/Howto:-Compile-Firmware-with-PlatformIO).
+Du kannst die fertigen Binärdateien hier herunterladen: https://github.com/knutwurst/Marlin-2-0-x-Anycubic-i3-MEGA-S/releases. Natürlich kannst du die Firmware mit PlatformIO auch [selbst kompilieren](https://github.com/knutwurst/Marlin-2-0-x-Anycubic-i3-MEGA-S/wiki/Howto:-Compile-Firmware-with-PlatformIO).
 
 Um es übersichtlich zu gestalten, beinhalten die Dateinamen die einzelnen Features.
 
@@ -114,7 +114,7 @@ Für (fast) jede Kombination gibt es eine passende Firmware im Download-Bereich.
 
 # Download
 
-You can download the precompiled binary files from here: https://github.com/knutwurst/Marlin-2-0-x-Anycubic-i3-MEGA-S/releases. Of course you can also [compile the firmware yourself](https://github.com/knutwurst/Marlin-2-0-x-Anycubic-i3-MEGA-S/wiki/Howto:-Compile-Firmware-with-PlatformIO) with PlatformIO or the Arduino IDE.
+You can download the precompiled binary files from here: https://github.com/knutwurst/Marlin-2-0-x-Anycubic-i3-MEGA-S/releases. Of course you can also [compile the firmware yourself](https://github.com/knutwurst/Marlin-2-0-x-Anycubic-i3-MEGA-S/wiki/Howto:-Compile-Firmware-with-PlatformIO) with PlatformIO.
 
 In order to make it clear, the file names contain the individual features.
 
