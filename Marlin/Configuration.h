@@ -1421,9 +1421,9 @@
 
         // For direct drive extruder v9 set to true, for geared extruder set to false.
         #if ENABLED(KNUTWURST_BMG)
-            #define INVERT_E0_DIR true // set to false for stock drivers or TMC2208 with reversed connectors
-        #else
             #define INVERT_E0_DIR false // set to false for stock drivers or TMC2208 with reversed connectors
+        #else
+            #define INVERT_E0_DIR true // set to false for stock drivers or TMC2208 with reversed connectors
         #endif
         #define INVERT_E1_DIR false // set to false for stock drivers or TMC2208 with reversed connectors
         #define INVERT_E2_DIR false
@@ -1468,9 +1468,9 @@
 
         // For direct drive extruder v9 set to true, for geared extruder set to false.
         #if ENABLED(KNUTWURST_BMG)
-            #define INVERT_E0_DIR false // set to false for stock drivers or TMC2208 with reversed connectors
-        #else
             #define INVERT_E0_DIR true // set to false for stock drivers or TMC2208 with reversed connectors
+        #else
+            #define INVERT_E0_DIR false // set to false for stock drivers or TMC2208 with reversed connectors
         #endif
         #define INVERT_E1_DIR true // set to false for stock drivers or TMC2208 with reversed connectors
         #define INVERT_E2_DIR false
