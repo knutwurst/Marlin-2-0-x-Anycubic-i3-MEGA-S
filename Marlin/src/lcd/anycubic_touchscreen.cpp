@@ -24,21 +24,22 @@
 #include <stdlib.h>
 #include <string.h>
 
-#include "../MarlinCore.h"
-#include "../core/language.h"
-#include "../core/macros.h"
-#include "../core/serial.h"
 #include "../gcode/queue.h"
 #include "../feature/e_parser.h"
 #include "../feature/pause.h"
-#include "../inc/MarlinConfig.h"
 #include "../libs/buzzer.h"
 #include "../module/planner.h"
 #include "../module/printcounter.h"
-#include "../module/stepper.h"
 #include "../module/temperature.h"
 #include "../sd/cardreader.h"
-#include "../module/configuration_store.h"
+//#include "../MarlinCore.h"
+//#include "../core/language.h"
+//#include "../core/macros.h"
+//#include "../core/serial.h"
+//#include "../module/stepper.h"
+//#include "../inc/MarlinConfig.h"
+//#include "../module/configuration_store.h"
+
 
 #ifdef ANYCUBIC_TOUCHSCREEN
 #include "anycubic_touchscreen.h"
