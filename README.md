@@ -12,8 +12,6 @@ Wenn Du Fragen hast, schaue gern in der offiziellen [Facebook-Gruppe](https://ww
 # Inhaltsverzeichnis (Deutsch)
 <b>WARNUNG:</b> Der Mega Pro / Mega P Support befindet sich noch in der Entwicklung. Aktuell wird der Laser noch nicht unterstützt, ebensowenig wie das Piezo-Leveling!
 
-Wenn du einen Piezo-Sensor verwenden möchtest (egal an welchem Anycubic Mega Drucker), empfehle ich die [Version von Roland Piewitt](https://github.com/GrevanGER/Marlin-2-0-x-Anycubic-i3-MEGA-S).
-
 - [Funktionen](#funktionen)
 - [Häufig gestellte Fragen (FAQ)](https://github.com/knutwurst/Marlin-2-0-x-Anycubic-i3-MEGA-S/wiki/FAQ-(deutsch))
 - [Fotos / Bilder](https://github.com/knutwurst/Marlin-2-0-x-Anycubic-i3-MEGA-S/wiki/Pictures)
@@ -22,8 +20,6 @@ Wenn du einen Piezo-Sensor verwenden möchtest (egal an welchem Anycubic Mega Dr
 
 # Table of Contets (english)
 <b>WARNING:</b> The Mega Pro / Mega P support is still under development. The laser is currently not supported, nor is piezo leveling!
-
-If you want to use a piezo sensor (regardless of which Anycubic Mega printer), I recommend the [version by Roland Piewitt](https://github.com/GrevanGER/Marlin-2-0-x-Anycubic-i3-MEGA-S).
 
 - [Features](#features)
 - [Frequently asked questions (FAQ)](https://github.com/knutwurst/Marlin-2-0-x-Anycubic-i3-MEGA-S/wiki/FAQ-(english))
