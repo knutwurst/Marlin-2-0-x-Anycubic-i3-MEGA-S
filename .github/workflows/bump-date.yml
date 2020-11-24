@@ -1,13 +1,21 @@
 #
 # bump-date.yml
-# Bump the distribution date once per day
+# Bump the distribution date
 #
 
 name: Bump Distribution Date
 
 on:
-  schedule:
-    - cron: '0 0 * * *'
+  push:
+    branches:
+    - master
+    paths-ignore:
+    - config/**
+    - data/**
+    - docs/**
+    - '**/*.md'
+  #schedule:
+  #  - cron: '0 0 * * *'
 
 jobs:
   bump_date:
