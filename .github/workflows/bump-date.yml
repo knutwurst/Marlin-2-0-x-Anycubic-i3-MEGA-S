@@ -6,7 +6,7 @@
 name: Bump Distribution Date
 
 on:
-  push:
+  release:
     branches:
     - master
     paths-ignore:
