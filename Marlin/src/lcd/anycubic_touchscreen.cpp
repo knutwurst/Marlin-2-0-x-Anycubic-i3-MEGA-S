@@ -1385,7 +1385,7 @@ void AnycubicTouchscreenClass::GetCommandFromTFT()
 #ifdef SDSUPPORT
           
           currentTouchscreenSelection[0] = 0;
-#if ENABLED(KNUTWURST_SPECIAL_MENU_WO_SD)
+#if DISABLED(KNUTWURST_SPECIAL_MENU_WO_SD)
           if (!IS_SD_INSERTED())
           {
             HARDWARE_SERIAL_PROTOCOLPGM("J02");
