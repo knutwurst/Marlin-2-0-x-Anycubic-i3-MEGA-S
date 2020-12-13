@@ -1487,9 +1487,7 @@
  *
  * Warning: Does not respect endstops!
  */
-#if ENABLED(KNUTWURST_BLTOUCH)
-    #define BABYSTEPPING
-#endif
+#define BABYSTEPPING
 #if ENABLED(BABYSTEPPING)
   //#define INTEGRATED_BABYSTEPPING         // EXPERIMENTAL integration of babystepping into the Stepper ISR
   //#define BABYSTEP_WITHOUT_HOMING
@@ -1663,11 +1661,11 @@
 //
 #define ARC_SUPPORT                 // Disable this feature to save ~3226 bytes
 #if ENABLED(ARC_SUPPORT)
-  #define MM_PER_ARC_SEGMENT      0 // (mm) Length (or minimum length) of each arc segment (default: 1)
+  #define MM_PER_ARC_SEGMENT      1 // (mm) Length (or minimum length) of each arc segment (default: 1)
   //#define ARC_SEGMENTS_PER_R    1 // Max segment length, MM_PER = Min
-  #define MIN_ARC_SEGMENTS        0 // Minimum number of segments in a complete circle (default: 24)
+  #define MIN_ARC_SEGMENTS        24 // Minimum number of segments in a complete circle (default: 24)
   //#define ARC_SEGMENTS_PER_SEC 50 // Use feedrate to choose segment length (with MM_PER_ARC_SEGMENT as the minimum)
-  //#define N_ARC_CORRECTION       25 // Number of interpolated segments between corrections
+  #define N_ARC_CORRECTION       25 // Number of interpolated segments between corrections
   #define ARC_P_CIRCLES             // Enable the 'P' parameter to specify complete circles
   #define CNC_WORKSPACE_PLANES      // Allow G2/G3 to operate in XY, ZX, or YZ planes
 #endif
