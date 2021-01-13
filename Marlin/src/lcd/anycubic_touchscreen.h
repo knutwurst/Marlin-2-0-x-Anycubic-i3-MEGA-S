@@ -252,7 +252,7 @@ private:
   } OutageData;
 #endif
 
-
+  int CodeValueInt();
   float CodeValue();
   bool CodeSeen(char);
   void PrintList();
@@ -284,6 +284,7 @@ private:
   char FilamentTestStatus = false;
   char FilamentTestLastStatus = false;
   bool FilamentSetMillis = true;
+  int FilamentRunoutCounter = 0;
 #endif
 };
 

@@ -428,6 +428,11 @@ void AnycubicTouchscreenClass::ParkAfterStop()
 #endif
 }
 
+int AnycubicTouchscreenClass::CodeValueInt()
+{
+  return (atoi(&TFTcmdbuffer[TFTbufindr][TFTstrchr_pointer - TFTcmdbuffer[TFTbufindr] + 1]));
+}
+
 float AnycubicTouchscreenClass::CodeValue()
 {
   return (strtod(&TFTcmdbuffer[TFTbufindr][TFTstrchr_pointer - TFTcmdbuffer[TFTbufindr] + 1], NULL));
@@ -1806,8 +1811,8 @@ void AnycubicTouchscreenClass::GetCommandFromTFT()
           else if (CodeSeen('C'))
             ;
         }
-          HARDWARE_SERIAL_ENTER();
-          break;
+        HARDWARE_SERIAL_ENTER();
+        break;
         case 33: // A33 get version info
         {
           HARDWARE_SERIAL_PROTOCOLPGM("J33 ");
