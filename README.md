@@ -58,6 +58,8 @@ Du kannst die fertigen Binärdateien hier herunterladen: https://github.com/knut
 
 Um es übersichtlich zu gestalten, beinhalten die Dateinamen die einzelnen Features.
 
+Das Fehlen von Zusätzen (z.B. MEGA_1.0.0.hex) bedeutet, dass die Firmware für den "normalen" i3 Mega gedacht ist, an dem keine Veränderungen vorgenommen wurden.
+
 `_1G` steht für die erste Generation des i3 Mega mit nur einem Z Endstop. Diese Firmware ist nicht für den normalen i3 Mega geeignet!
 
 `_S` steht für den Mega S mit dem Titan Extruder.
@@ -75,6 +77,8 @@ Um es übersichtlich zu gestalten, beinhalten die Dateinamen die einzelnen Featu
 `_10` steht für das Trigorilla_14 v1.0 Mainboard, welches normalerweise der Standard sein sollte.
 
 `_11` steht für das Trigorilla_14 v1.1 Mainboard, bei welchem sich die Pinbelegung für den Server-Port geändert hat.
+
+Anmerkung: Die Mainboard-Version 1.0 oder 1.1 ist nur für den Einbau des BLTouch Sensors relevant und kann normalerweise ignoriert werden.
 
 
 Für (fast) jede Kombination gibt es eine passende Firmware im Download-Bereich. ;)
@@ -114,6 +118,8 @@ You can download the precompiled binary files from here: https://github.com/knut
 
 In order to make it clear, the file names contain the individual features.
 
+The lack of additions (e.g. MEGA_1.0.0.hex) means that the firmware is intended for the "normal" i3 Mega on which no changes have been made.
+
 `_1G` stands for the firt generation i3 Mega with only one Z endstop. Do NOT use this Firmware on the regular i3 Mega!
 
 `_S` stands for the Mega S with the titan extruder.
@@ -132,6 +138,7 @@ In order to make it clear, the file names contain the individual features.
 
 `_11` stands for the Trigorilla_14 v1.1 mainboard, on which the pin assignment for the server port has changed.
 
+Note: The mainboard version 1.0 or 1.1 is only relevant for the installation of the BLTouch sensor and can normally be ignored.
 
 For (almost) every combination there is a suitable firmware in the download area. ;)
 
