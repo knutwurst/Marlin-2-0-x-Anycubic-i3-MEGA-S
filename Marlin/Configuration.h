@@ -81,6 +81,7 @@
 //#define KNUTWURST_MEGA_S
 //#define KNUTWURST_MEGA_X
 //#define KNUTWURST_MEGA_P
+//#define KNUTWURST_CHIRON
 
 /*
  * If you own the first generation i3 Mega
@@ -781,6 +782,11 @@
 #if DISABLED(KNUTWURST_ONE_Z_ENDSTOP)
   #define USE_XMAX_PLUG
 #endif
+
+#if ENABLED(KNUTWURST_CHIRON)
+  #define USE_ZMAX_PLUG
+#endif
+
 //#define USE_YMAX_PLUG
 //#define USE_ZMAX_PLUG
 
@@ -832,6 +838,16 @@
     //#define Z_MIN_PROBE_ENDSTOP_INVERTING true // set to true to invert the logic of the endstop.
 #endif
 
+#if ENABLED(KNUTWURST_CHIRON)
+    // Mechanical endstop with COM to ground and NC to Signal uses "false" here (most common setup).
+    #define X_MIN_ENDSTOP_INVERTING true // set to true to invert the logic of the endstop.
+    #define Y_MIN_ENDSTOP_INVERTING true // set to true to invert the logic of the endstop.
+    #define Z_MIN_ENDSTOP_INVERTING false // set to true to invert the logic of the endstop.
+    #define X_MAX_ENDSTOP_INVERTING true // set to true to invert the logic of the endstop.
+    #define Y_MAX_ENDSTOP_INVERTING true // set to true to invert the logic of the endstop.
+    #define Z_MAX_ENDSTOP_INVERTING false // set to true to invert the logic of the endstop.
+    #define Z_MIN_PROBE_ENDSTOP_INVERTING false // set to true to invert the logic of the endstop.
+#endif
 
 /**
  * Stepper Drivers
@@ -925,6 +941,11 @@
     #define DEFAULT_AXIS_STEPS_PER_UNIT   { 80, 80, 400, 415 }
 #endif
 
+#if ENABLED(KNUTWURST_CHIRON)
+    #define DEFAULT_AXIS_STEPS_PER_UNIT   { 80, 100, 400, 405 }
+#endif
+
+
 
 /**
  * Default Max Feed Rate (mm/s)
@@ -956,6 +977,14 @@
     #define DEFAULT_MAX_FEEDRATE          { 500, 500, 6, 30 }
 #endif
 
+#if ENABLED(KNUTWURST_CHIRON)
+    #if ENABLED(KNUTWURST_BMG)
+        #define DEFAULT_MAX_FEEDRATE          { 100, 100, 20, 30 }
+    #else
+        #define DEFAULT_MAX_FEEDRATE          { 100, 100, 20, 80 }
+    #endif
+#endif
+
 
 //#define LIMITED_MAX_FR_EDITING        // Limit edit via M203 or LCD to DEFAULT_MAX_FEEDRATE * 2
 #if ENABLED(LIMITED_MAX_FR_EDITING)
@@ -977,7 +1006,9 @@
     //#define DEFAULT_MAX_ACCELERATION      { 2000, 1500, 60, 10000 } 
 #endif
 
-
+#if ENABLED(KNUTWURST_CHIRON)
+   #define DEFAULT_MAX_ACCELERATION      { 350, 350, 50, 20000 }
+#endif
 
 
 //#define LIMITED_MAX_ACCEL_EDITING     // Limit edit via M201 or LCD to DEFAULT_MAX_ACCELERATION * 2
@@ -1023,6 +1054,12 @@
     #define DEFAULT_TRAVEL_ACCELERATION   3000    // X, Y, Z acceleration for travel (non printing) moves
 #endif
 
+#if ENABLED(KNUTWURST_CHIRON)
+    #define DEFAULT_ACCELERATION          350    // X, Y, Z and E acceleration for printing moves
+    #define DEFAULT_RETRACT_ACCELERATION  2000//3000    // E acceleration for retracts
+    #define DEFAULT_TRAVEL_ACCELERATION   350    // X, Y, Z acceleration for travel (non printing) moves
+#endif
+
 /**
  * Default Jerk limits (mm/s)
  * Override with M205 X Y Z E
@@ -1032,29 +1069,28 @@
  * value set here, it may happen instantaneously.
  */
 
-#if ANY(KNUTWURST_MEGA, KNUTWURST_MEGA_S, KNUTWURST_MEGA_P)
-    #define CLASSIC_JERK
-#endif
-
-#if ENABLED(KNUTWURST_MEGA_X)
+#if ANY(KNUTWURST_MEGA, KNUTWURST_MEGA_S, KNUTWURST_MEGA_P, KNUTWURST_MEGA_X, KNUTWURST_CHIRON)
     #define CLASSIC_JERK
 #endif
 
 #if ENABLED(CLASSIC_JERK)
+  #if ANY(KNUTWURST_MEGA, KNUTWURST_MEGA_S, KNUTWURST_MEGA_P)
+      #define DEFAULT_XJERK  8.0
+      #define DEFAULT_YJERK  8.0
+      #define DEFAULT_ZJERK  0.4
+  #endif
 
-#if ANY(KNUTWURST_MEGA, KNUTWURST_MEGA_S, KNUTWURST_MEGA_P)
-    #define DEFAULT_XJERK  8.0
-    #define DEFAULT_YJERK  8.0
-    #define DEFAULT_ZJERK  0.4
-#endif
+  #if ENABLED(KNUTWURST_MEGA_X)
+      #define DEFAULT_XJERK  4.0
+      #define DEFAULT_YJERK  4.0
+      #define DEFAULT_ZJERK  0.2
+  #endif
 
-#if ENABLED(KNUTWURST_MEGA_X)
-    #define DEFAULT_XJERK  4.0
-    #define DEFAULT_YJERK  4.0
-    #define DEFAULT_ZJERK  0.2
-#endif
-
-
+  #if ENABLED(KNUTWURST_CHIRON)
+      #define DEFAULT_XJERK                 4
+      #define DEFAULT_YJERK                 4
+      #define DEFAULT_ZJERK                 0.4
+  #endif
 
   //#define TRAVEL_EXTRA_XYJERK 0.0     // Additional jerk allowance for all travel moves
 
@@ -1070,6 +1106,10 @@
 
 #if ENABLED(KNUTWURST_MEGA_X)
     #define DEFAULT_EJERK    8.0  // May be used by Linear Advance
+#endif
+
+#if ENABLED(KNUTWURST_CHIRON)
+    #define DEFAULT_EJERK    15.0  // May be used by Linear Advance
 #endif
 
 /**
@@ -1131,7 +1171,7 @@
  *      - normally-open switches to 5V and D32.
  *
  */
-#if ENABLED(KNUTWURST_BLTOUCH)
+#if ANY(KNUTWURST_BLTOUCH, KNUTWURST_CHIRON)
     #define Z_MIN_PROBE_PIN 2 // Pin 32 is the RAMPS default
 #endif
 
@@ -1148,7 +1188,9 @@
  * or (with LCD_BED_LEVELING) the LCD controller.
  */
 #if DISABLED(KNUTWURST_BLTOUCH)
-#define PROBE_MANUALLY
+    #if DISABLED(KNUTWURST_CHIRON)
+      #define PROBE_MANUALLY
+    #endif
 #endif
 
 //#define MANUAL_PROBE_START_Z 0.2
@@ -1168,6 +1210,10 @@
 /**
  * Z Servo Probe, such as an endstop switch on a rotating arm.
  */
+#if ENABLED(KNUTWURST_CHIRON)
+    #define Z_PROBE_SERVO_NR 0
+    #define Z_SERVO_ANGLES {70,0} // Z Servo Deploy and Stow angles
+#endif
 //#define Z_PROBE_SERVO_NR 0       // Defaults to SERVO 0 connector.
 //#define Z_SERVO_ANGLES { 70, 0 } // Z Servo Deploy and Stow angles
 
@@ -1254,7 +1300,7 @@
 #endif
 
 #if DISABLED(KNUTWURST_BLTOUCH)
-    #define NOZZLE_TO_PROBE_OFFSET { 10, 10, 0 }
+    #define NOZZLE_TO_PROBE_OFFSET { 0, 0, -17 } // Chiron Default Value!
 #endif
 
 // Most probes should stay away from the edges of the bed, but
@@ -1410,6 +1456,29 @@
         #define INVERT_E6_DIR false
         #define INVERT_E7_DIR false
     #endif
+
+    #if ENABLED(KNUTWURST_CHIRON)
+        // Invert the stepper direction. Change (or reverse the motor connector) if an axis goes the wrong way.
+        #define INVERT_X_DIR true // set to true for stock drivers or TMC2208 with reversed connectors
+        #define INVERT_Y_DIR true // set to false for stock drivers or TMC2208 with reversed connectors
+        #define INVERT_Z_DIR true // set to false for stock drivers or TMC2208 with reversed connectors
+
+        // @section extruder
+
+        // For direct drive extruder v9 set to true, for geared extruder set to false.
+        #if ENABLED(KNUTWURST_BMG)
+            #define INVERT_E0_DIR true // set to false for stock drivers or TMC2208 with reversed connectors
+        #else
+            #define INVERT_E0_DIR false // set to false for stock drivers or TMC2208 with reversed connectors
+        #endif
+        #define INVERT_E1_DIR true // set to false for stock drivers or TMC2208 with reversed connectors
+        #define INVERT_E2_DIR false
+        #define INVERT_E3_DIR false
+        #define INVERT_E4_DIR false
+        #define INVERT_E5_DIR false
+        #define INVERT_E6_DIR false
+        #define INVERT_E7_DIR false
+    #endif
 #endif
 
 #if ENABLED(KNUTWURST_TMC)
@@ -1457,6 +1526,29 @@
         #define INVERT_E6_DIR false
         #define INVERT_E7_DIR false
     #endif
+
+    #if ENABLED(KNUTWURST_CHIRON)
+        // Invert the stepper direction. Change (or reverse the motor connector) if an axis goes the wrong way.
+        #define INVERT_X_DIR false // set to true for stock drivers or TMC2208 with reversed connectors
+        #define INVERT_Y_DIR false // set to false for stock drivers or TMC2208 with reversed connectors
+        #define INVERT_Z_DIR false // set to false for stock drivers or TMC2208 with reversed connectors
+
+        // @section extruder
+
+        // For direct drive extruder v9 set to true, for geared extruder set to false.
+        #if ENABLED(KNUTWURST_BMG)
+            #define INVERT_E0_DIR false // set to false for stock drivers or TMC2208 with reversed connectors
+        #else
+            #define INVERT_E0_DIR true // set to false for stock drivers or TMC2208 with reversed connectors
+        #endif
+        #define INVERT_E1_DIR false // set to false for stock drivers or TMC2208 with reversed connectors
+        #define INVERT_E2_DIR false
+        #define INVERT_E3_DIR false
+        #define INVERT_E4_DIR false
+        #define INVERT_E5_DIR false
+        #define INVERT_E6_DIR false
+        #define INVERT_E7_DIR false
+    #endif
 #endif
 
 // @section homing
@@ -1497,6 +1589,12 @@
     #define X_BED_SIZE 310
     #define Y_BED_SIZE 310
     #define Z_BED_HEIGHT 305
+#endif
+
+#if ENABLED(KNUTWURST_CHIRON)
+    #define X_BED_SIZE 410
+    #define Y_BED_SIZE 410
+    #define Z_BED_HEIGHT 455
 #endif
 
 // Travel limits (mm) after homing, corresponding to endstop positions.
@@ -1606,7 +1704,7 @@
  *   leveling in steps so you can manually adjust the Z height at each grid-point.
  *   With an LCD controller the process is guided step-by-step.
  */
-#if ENABLED(KNUTWURST_BLTOUCH)
+#if ANY(KNUTWURST_BLTOUCH, KNUTWURST_CHIRON)
     //#define AUTO_BED_LEVELING_3POINT
     //#define AUTO_BED_LEVELING_LINEAR
     #define AUTO_BED_LEVELING_BILINEAR
@@ -1614,7 +1712,7 @@
     //#define MESH_BED_LEVELING
 #endif
 
-#if DISABLED(KNUTWURST_BLTOUCH)
+#if NONE(KNUTWURST_BLTOUCH, KNUTWURST_CHIRON)
     //#define AUTO_BED_LEVELING_3POINT
     //#define AUTO_BED_LEVELING_LINEAR
     //#define AUTO_BED_LEVELING_BILINEAR
@@ -1785,7 +1883,7 @@
     #define HOMING_FEEDRATE_Z  (4*60)
 #endif
 
-#if ENABLED(KNUTWURST_MEGA_X)
+#if ANY(KNUTWURST_MEGA_X, KNUTWURST_CHIRON)
     // Homing speeds (mm/m)
     #define HOMING_FEEDRATE_XY (40*60)
     #define HOMING_FEEDRATE_Z  (6*60)
@@ -2679,7 +2777,9 @@
  * Set this manually if there are extra servos needing manual control.
  * Leave undefined or set to 0 to entirely disable the servo subsystem.
  */
-//#define NUM_SERVOS 3 // Servo index starts with 0 for M280 command
+#if ENABLED(KNUTWURST_CHIRON)
+    #define NUM_SERVOS 1 // Servo index starts with 0 for M280 command
+#endif
 
 // (ms) Delay  before the next move will start, to give the servo time to reach its target angle.
 // 300ms is a good value but you can try less delay.

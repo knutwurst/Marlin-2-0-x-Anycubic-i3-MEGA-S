@@ -1892,7 +1892,8 @@ void AnycubicTouchscreenClass::GetCommandFromTFT()
  * me adding the leveling features for the Anycubic
  * Chiron printer.
  */
-#if ENABLED(KNUTWURST_CHRIRON)
+
+#if ENABLED(KNUTWURST_CHIRON_LEVELING)
 
         #ifdef AUTO_BED_LEVELING_BILINEAR 
         case 29:   //A29 bed grid read
