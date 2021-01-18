@@ -1416,6 +1416,8 @@ void AnycubicTouchscreenClass::GetCommandFromTFT()
           if (card.isPrinting())
           {
             PausePrint();
+            HARDWARE_SERIAL_PROTOCOLPGM("J05");//j05 pausing
+            HARDWARE_SERIAL_ENTER();     
           }
           else
           {
