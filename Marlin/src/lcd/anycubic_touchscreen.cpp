@@ -152,10 +152,75 @@ void AnycubicTouchscreenClass::Setup()
   buzzer.tone(100, 740);
   buzzer.tone(100, 831);
 #endif
-
+ 
 
 setup_OutageTestPin();
 }
+
+#if ENABLED(KNUTWURST_MEGA_P_LASER)
+void laser_init()
+{
+
+	Laser_printer_st.pic_pixel_distance = PIC_FIXED;//����֮��ľ���?.1-0.3��
+	Laser_printer_st.laser_height = 50;//����߶�?
+	Laser_printer_st.x_offset = 0;//X�����ƫ��?
+	Laser_printer_st.x_offset = 0;//Y�����ƫ��?
+	
+	Laser_printer_st.pic_vector = 0;//�Ƿ���ʸ��ͼ��1Ϊʸ��ͼ��0Ϊλͼ
+	Laser_printer_st.pic_x_mirror = 1; //X������,1Ϊ����
+	Laser_printer_st.pic_y_mirror = 0; //Y������1Ϊ����
+	Laser_printer_st.pic_laser_time = 15;//��������ʱ�䣨1-100��
+
+	send_laser_param() ;
+}
+
+void send_pic_param()
+{
+
+HARDWARE_SERIAL_PROTOCOLPGM("A45V");
+HARDWARE_SERIAL_SPACE();
+HARDWARE_SERIAL_PROTOCOLPGM("W");
+HARDWARE_SERIAL_PROTOCOL(Laser_printer_st.pic_widht);//ͼƬ�Ŀ��?
+HARDWARE_SERIAL_SPACE();
+HARDWARE_SERIAL_PROTOCOLPGM("H");
+HARDWARE_SERIAL_PROTOCOL(Laser_printer_st.pic_hight);//ͼƬ�ĸ߶�
+HARDWARE_SERIAL_SPACE();
+HARDWARE_SERIAL_ENTER(); 
+
+
+}
+void send_laser_param()
+{
+	HARDWARE_SERIAL_PROTOCOLPGM("A44V");
+	HARDWARE_SERIAL_SPACE();
+	HARDWARE_SERIAL_PROTOCOLPGM("A");
+	HARDWARE_SERIAL_PROTOCOL(Laser_printer_st.pic_vector);
+	HARDWARE_SERIAL_SPACE();
+	HARDWARE_SERIAL_PROTOCOLPGM("B");
+	HARDWARE_SERIAL_PROTOCOL(Laser_printer_st.pic_laser_time);
+	HARDWARE_SERIAL_SPACE();
+	HARDWARE_SERIAL_PROTOCOLPGM("C");
+	HARDWARE_SERIAL_PROTOCOL(Laser_printer_st.laser_height); 
+	HARDWARE_SERIAL_SPACE(); 
+	HARDWARE_SERIAL_PROTOCOLPGM("D");
+	HARDWARE_SERIAL_PROTOCOL(Laser_printer_st.pic_pixel_distance); 
+	HARDWARE_SERIAL_SPACE(); 
+	HARDWARE_SERIAL_PROTOCOLPGM("E");
+	HARDWARE_SERIAL_PROTOCOL(Laser_printer_st.x_offset); 
+	HARDWARE_SERIAL_SPACE(); 
+	HARDWARE_SERIAL_PROTOCOLPGM("F");
+	HARDWARE_SERIAL_PROTOCOL(Laser_printer_st.y_offset); 
+	HARDWARE_SERIAL_SPACE(); 
+	HARDWARE_SERIAL_PROTOCOLPGM("G");
+	HARDWARE_SERIAL_PROTOCOL(Laser_printer_st.pic_x_mirror); 
+	HARDWARE_SERIAL_SPACE();
+    HARDWARE_SERIAL_PROTOCOLPGM("H");
+	HARDWARE_SERIAL_PROTOCOL(Laser_printer_st.pic_y_mirror); 
+	HARDWARE_SERIAL_SPACE();
+	HARDWARE_SERIAL_ENTER();  
+
+}
+#endif
 
 void AnycubicTouchscreenClass::KillTFT()
 {
@@ -2135,6 +2200,46 @@ void AnycubicTouchscreenClass::GetCommandFromTFT()
     }     
   }
 }
+
+#if ENABLED(KNUTWURST_MEGA_P_LASER)
+void prepare_laser_print()
+{
+  static unsigned long times = 0;
+
+  if(times>100)
+  	{
+  	 times -- ;
+  	 return;
+  	}
+  times = 10000;
+
+  if(laser_print_steps == 0)
+  {
+	cvalue[0]= 0;
+	while (planner.blocks_queued());//�ȴ��˶�ֹͣ
+    enqueue_and_echo_commands_P(PSTR("G28"));//�ȹ������˶����ƶ��߶�
+    sprintf_P(cvalue,PSTR("G1 Z%i F500"),(int)Laser_printer_st.laser_height);
+	
+SERIAL_PROTOCOLLN(cvalue);
+	enqueue_and_echo_command_now(cvalue);//�˶����ƶ��߶�
+	laser_print_steps =1;
+    times = 120000;
+  }
+  else if(laser_print_steps==1)
+  {
+   if(planner.blocks_queued())return;//��������˶�?�򷵻�
+   laser_print_steps =2;
+  }
+    else if(laser_print_steps==2)
+  {
+   Laset_print_picture( );//��ʼ������?
+   laser_print_steps=0;
+   card.printingHasFinished();
+   card.checkautostart(true);
+   en_continue = 0;
+  }
+}
+#endif
 
 
 void AnycubicTouchscreenClass::CommandScan()
