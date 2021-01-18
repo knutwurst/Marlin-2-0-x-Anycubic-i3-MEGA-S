@@ -32,13 +32,6 @@
 #include "../module/printcounter.h"
 #include "../module/temperature.h"
 #include "../sd/cardreader.h"
-//#include "../MarlinCore.h"
-//#include "../core/language.h"
-//#include "../core/macros.h"
-//#include "../core/serial.h"
-//#include "../module/stepper.h"
-//#include "../inc/MarlinConfig.h"
-//#include "../module/configuration_store.h"
 
 
 #ifdef ANYCUBIC_TOUCHSCREEN
@@ -158,6 +151,10 @@ setup_OutageTestPin();
 }
 
 #if ENABLED(KNUTWURST_MEGA_P_LASER)
+
+PRINTER_STRUCT   Laser_printer_st={0};
+BMP_HEAD st_bmp={0};
+
 void laser_init()
 {
 
