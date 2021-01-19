@@ -145,77 +145,73 @@ void AnycubicTouchscreenClass::Setup()
   buzzer.tone(100, 740);
   buzzer.tone(100, 831);
 #endif
- 
+
 
 setup_OutageTestPin();
 }
 
 #if ENABLED(KNUTWURST_MEGA_P_LASER)
 
-PRINTER_STRUCT   Laser_printer_st={0};
-BMP_HEAD st_bmp={0};
+PRINTER_STRUCT  Laser_printer_st = {0};
+BMP_HEAD        st_bmp = {0};
 
 void laser_init()
 {
+    Laser_printer_st.pic_pixel_distance = PIC_FIXED;
+    Laser_printer_st.laser_height = 50;
+    Laser_printer_st.x_offset = 0;
+    Laser_printer_st.x_offset = 0;
 
-	Laser_printer_st.pic_pixel_distance = PIC_FIXED;//����֮��ľ���?.1-0.3��
-	Laser_printer_st.laser_height = 50;//����߶�?
-	Laser_printer_st.x_offset = 0;//X�����ƫ��?
-	Laser_printer_st.x_offset = 0;//Y�����ƫ��?
-	
-	Laser_printer_st.pic_vector = 0;//�Ƿ���ʸ��ͼ��1Ϊʸ��ͼ��0Ϊλͼ
-	Laser_printer_st.pic_x_mirror = 1; //X������,1Ϊ����
-	Laser_printer_st.pic_y_mirror = 0; //Y������1Ϊ����
-	Laser_printer_st.pic_laser_time = 15;//��������ʱ�䣨1-100��
+    Laser_printer_st.pic_vector = 0;
+    Laser_printer_st.pic_x_mirror = 1; 
+    Laser_printer_st.pic_y_mirror = 0; 
+    Laser_printer_st.pic_laser_time = 15;
 
-	send_laser_param() ;
+    send_laser_param() ;
 }
 
 void send_pic_param()
 {
-
-HARDWARE_SERIAL_PROTOCOLPGM("A45V");
-HARDWARE_SERIAL_SPACE();
-HARDWARE_SERIAL_PROTOCOLPGM("W");
-HARDWARE_SERIAL_PROTOCOL(Laser_printer_st.pic_widht);//ͼƬ�Ŀ��?
-HARDWARE_SERIAL_SPACE();
-HARDWARE_SERIAL_PROTOCOLPGM("H");
-HARDWARE_SERIAL_PROTOCOL(Laser_printer_st.pic_hight);//ͼƬ�ĸ߶�
-HARDWARE_SERIAL_SPACE();
-HARDWARE_SERIAL_ENTER(); 
-
-
+    HARDWARE_SERIAL_PROTOCOLPGM("A45V");
+    HARDWARE_SERIAL_SPACE();
+    HARDWARE_SERIAL_PROTOCOLPGM("W");
+    HARDWARE_SERIAL_PROTOCOL(Laser_printer_st.pic_widht);
+    HARDWARE_SERIAL_SPACE();
+    HARDWARE_SERIAL_PROTOCOLPGM("H");
+    HARDWARE_SERIAL_PROTOCOL(Laser_printer_st.pic_hight);
+    HARDWARE_SERIAL_SPACE();
+    HARDWARE_SERIAL_ENTER(); 
 }
+
 void send_laser_param()
 {
-	HARDWARE_SERIAL_PROTOCOLPGM("A44V");
-	HARDWARE_SERIAL_SPACE();
-	HARDWARE_SERIAL_PROTOCOLPGM("A");
-	HARDWARE_SERIAL_PROTOCOL(Laser_printer_st.pic_vector);
-	HARDWARE_SERIAL_SPACE();
-	HARDWARE_SERIAL_PROTOCOLPGM("B");
-	HARDWARE_SERIAL_PROTOCOL(Laser_printer_st.pic_laser_time);
-	HARDWARE_SERIAL_SPACE();
-	HARDWARE_SERIAL_PROTOCOLPGM("C");
-	HARDWARE_SERIAL_PROTOCOL(Laser_printer_st.laser_height); 
-	HARDWARE_SERIAL_SPACE(); 
-	HARDWARE_SERIAL_PROTOCOLPGM("D");
-	HARDWARE_SERIAL_PROTOCOL(Laser_printer_st.pic_pixel_distance); 
-	HARDWARE_SERIAL_SPACE(); 
-	HARDWARE_SERIAL_PROTOCOLPGM("E");
-	HARDWARE_SERIAL_PROTOCOL(Laser_printer_st.x_offset); 
-	HARDWARE_SERIAL_SPACE(); 
-	HARDWARE_SERIAL_PROTOCOLPGM("F");
-	HARDWARE_SERIAL_PROTOCOL(Laser_printer_st.y_offset); 
-	HARDWARE_SERIAL_SPACE(); 
-	HARDWARE_SERIAL_PROTOCOLPGM("G");
-	HARDWARE_SERIAL_PROTOCOL(Laser_printer_st.pic_x_mirror); 
-	HARDWARE_SERIAL_SPACE();
+    HARDWARE_SERIAL_PROTOCOLPGM("A44V");
+    HARDWARE_SERIAL_SPACE();
+    HARDWARE_SERIAL_PROTOCOLPGM("A");
+    HARDWARE_SERIAL_PROTOCOL(Laser_printer_st.pic_vector);
+    HARDWARE_SERIAL_SPACE();
+    HARDWARE_SERIAL_PROTOCOLPGM("B");
+    HARDWARE_SERIAL_PROTOCOL(Laser_printer_st.pic_laser_time);
+    HARDWARE_SERIAL_SPACE();
+    HARDWARE_SERIAL_PROTOCOLPGM("C");
+    HARDWARE_SERIAL_PROTOCOL(Laser_printer_st.laser_height); 
+    HARDWARE_SERIAL_SPACE(); 
+    HARDWARE_SERIAL_PROTOCOLPGM("D");
+    HARDWARE_SERIAL_PROTOCOL(Laser_printer_st.pic_pixel_distance); 
+    HARDWARE_SERIAL_SPACE(); 
+    HARDWARE_SERIAL_PROTOCOLPGM("E");
+    HARDWARE_SERIAL_PROTOCOL(Laser_printer_st.x_offset); 
+    HARDWARE_SERIAL_SPACE(); 
+    HARDWARE_SERIAL_PROTOCOLPGM("F");
+    HARDWARE_SERIAL_PROTOCOL(Laser_printer_st.y_offset); 
+    HARDWARE_SERIAL_SPACE(); 
+    HARDWARE_SERIAL_PROTOCOLPGM("G");
+    HARDWARE_SERIAL_PROTOCOL(Laser_printer_st.pic_x_mirror); 
+    HARDWARE_SERIAL_SPACE();
     HARDWARE_SERIAL_PROTOCOLPGM("H");
-	HARDWARE_SERIAL_PROTOCOL(Laser_printer_st.pic_y_mirror); 
-	HARDWARE_SERIAL_SPACE();
-	HARDWARE_SERIAL_ENTER();  
-
+    HARDWARE_SERIAL_PROTOCOL(Laser_printer_st.pic_y_mirror); 
+    HARDWARE_SERIAL_SPACE();
+    HARDWARE_SERIAL_ENTER();  
 }
 #endif
 

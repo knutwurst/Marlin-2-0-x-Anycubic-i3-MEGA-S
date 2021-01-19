@@ -289,62 +289,58 @@ private:
 
 
 #if ENABLED(KNUTWURST_MEGA_P_LASER)
+
 typedef struct { 
-	
-unsigned char       bfType[2]; 
-unsigned char       bfSize[4]; 
-unsigned char       bfReserved1[2]; 
-unsigned char       bfReserved2[2]; 
-unsigned char       bfOffBits[4];
-unsigned char       biSize[4]; 
-unsigned char       biWidth[4]; 
-unsigned char       biHeight[4]; 
-unsigned char       biPlanes[2]; 
-unsigned char       biBitCount[2]; 
-unsigned char      biCompression[4]; 
-unsigned char      biSizeImage[4]; 
-unsigned char      biXPelsPerMeter[4]; 
-unsigned char      biYPelsPerMeter[4]; 
-unsigned char      biClrUsed[4]; 
-unsigned char      biClrImportant[4]; 
+    unsigned char       bfType[2]; 
+    unsigned char       bfSize[4]; 
+    unsigned char       bfReserved1[2]; 
+    unsigned char       bfReserved2[2]; 
+    unsigned char       bfOffBits[4];
+    unsigned char       biSize[4]; 
+    unsigned char       biWidth[4]; 
+    unsigned char       biHeight[4]; 
+    unsigned char       biPlanes[2]; 
+    unsigned char       biBitCount[2]; 
+    unsigned char      biCompression[4]; 
+    unsigned char      biSizeImage[4]; 
+    unsigned char      biXPelsPerMeter[4]; 
+    unsigned char      biYPelsPerMeter[4]; 
+    unsigned char      biClrUsed[4]; 
+    unsigned char      biClrImportant[4]; 
 }BMP_HEAD;
 
 
-
 typedef struct 
-{		/*ͼƬ��ӡ���ֲ���**/
-	unsigned long pic_file_size;
-	unsigned long pic_ptr;
-	unsigned long pic_start;
+{
+    unsigned long pic_file_size;
+    unsigned long pic_ptr;
+    unsigned long pic_start;
 
-	float pic_pixel_distance;//����֮��ľ��루0.1-0.3��
-	float laser_height;//����߶�
-	float x_offset;//X�����ƫ��
-	float y_offset;//Y�����ƫ��
-	
-	unsigned int  pic_realy_widht;
-	unsigned int  pic_widht;
- 	unsigned int  pic_hight;
-	unsigned char pic_bit;
-	unsigned char pic_widht_odd; //��ż��
-	unsigned char pic_hight_odd; //��ż��
-	
-	unsigned char pic_print_status; //��ӡ״̬
-	unsigned char pic_dir;//ͼƬ����
-	
-	unsigned char pic_vector;//�Ƿ���ʸ��ͼ��1Ϊʸ��ͼ��0Ϊλͼ
-	unsigned char pic_x_mirror; //X������,1Ϊ����
-	unsigned char pic_y_mirror; //Y������1Ϊ����
-	unsigned char pic_laser_time;//��������ʱ�䣨10-30��
+    float pic_pixel_distance;
+    float laser_height;
+    float x_offset;
+    float y_offset;
 
+    unsigned int  pic_realy_widht;
+    unsigned int  pic_widht;
+    unsigned int  pic_hight;
+    unsigned char pic_bit;
+    unsigned char pic_widht_odd; 
+    unsigned char pic_hight_odd; 
 
+    unsigned char pic_print_status;
+    unsigned char pic_dir;
 
+    unsigned char pic_vector;
+    unsigned char pic_x_mirror;
+    unsigned char pic_y_mirror;
+    unsigned char pic_laser_time;
 }PRINTER_STRUCT;
 
 #define PIC_FIXED 0.1f //  //  POINT/MM
 #define PIC_OPEN  50 //  //  ms
 #define PIC_SPEDD 20000
-#define MIN_GRAY_VLAUE  20  //��С�ĻҶ�ֵ С�ڸ�ֵ����������
+#define MIN_GRAY_VLAUE  20
 #define LASER_PRINT_SPEED 30  //50*60
 #endif
 
