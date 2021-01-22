@@ -696,7 +696,8 @@
  * Z Steppers Auto-Alignment
  * Add the G34 command to align multiple Z steppers using a bed probe.
  */
-// BLTouch Endstop
+
+// Align the Z Steppers using BLTouch
 #if ENABLED(KNUTWURST_ENDSTOP_ADV)
   #define Z_STEPPER_AUTO_ALIGN
 #endif
