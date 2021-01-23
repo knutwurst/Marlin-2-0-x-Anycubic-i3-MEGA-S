@@ -145,6 +145,7 @@
  * This supports the BLTouch as an Z-Endstop.
  * So the Hardware Endstops should be dismantled
  * and the BLTouch should be properly configurated.
+ * 
  * PLEASE READ THE WARNING ABOVE!
  * 
  */
