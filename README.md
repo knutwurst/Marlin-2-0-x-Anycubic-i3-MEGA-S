@@ -75,7 +75,7 @@ Um es übersichtlich zu gestalten, beinhalten die Dateinamen die einzelnen Featu
 
 `_10` steht für das Trigorilla_14 v1.0 Mainboard, welches normalerweise der Standard sein sollte.
 
-`_11` steht für das Trigorilla_14 v1.1 Mainboard, bei welchem sich die Pinbelegung für den Server-Port geändert hat.
+`_11` steht für das Trigorilla_14 v1.1 Mainboard, bei welchem sich die Pinbelegung für den Servo-Port geändert hat.
 
 <b>Anmerkung: Die Mainboard-Version 1.0 oder 1.1 ist nur für den Einbau des BLTouch Sensors relevant und kann normalerweise ignoriert werden.</b>
 
@@ -134,7 +134,7 @@ In order to make it clear, the file names contain the individual features.
 
 `_10` stands for the Trigorilla_14 v1.0 mainboard, which should normally be the standard.
 
-`_11` stands for the Trigorilla_14 v1.1 mainboard, on which the pin assignment for the server port has changed.
+`_11` stands for the Trigorilla_14 v1.1 mainboard, on which the pin assignment for the servo port has changed.
 
 <b>Note: The mainboard version 1.0 or 1.1 is only relevant for the installation of the BLTouch sensor and can normally be ignored.</b>
 
