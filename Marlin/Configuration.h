@@ -152,6 +152,18 @@
  */
 //#define KNUTWURST_DEBUG
 
+/*
+ * This enabled the integrated leveling features
+ * in the anycubic touchscreen. It's currently only
+ * supported by the Anycubic Chiron and therefore it
+ * is automatically set if the chiron is enabled.
+ * 
+ * PLEASE READ THE WARNING ABOVE!
+ * 
+ */
+#if ENABLED(KNUTWURST_CHIRON)
+  //#define KNUTWURST_TFT_LEVELING
+#endif
 
 /*******************************************************************************************
  **                                                                                       **
@@ -785,6 +797,8 @@
 #endif
 
 #if ENABLED(KNUTWURST_CHIRON)
+  #define X_MAX_PIN 2
+  #define Z_MAX_PIN 43
   #define USE_ZMAX_PLUG
 #endif
 
@@ -931,7 +945,7 @@
 #endif
 
 #if ENABLED(KNUTWURST_MEGA_S)
-    #define DEFAULT_AXIS_STEPS_PER_UNIT   { 80, 80, 400, 392 }
+    #define DEFAULT_AXIS_STEPS_PER_UNIT   { 80, 80, 400, 400 }
 #endif
 
 #if ENABLED(KNUTWURST_MEGA_X)
@@ -1172,8 +1186,12 @@
  *      - normally-open switches to 5V and D32.
  *
  */
-#if ANY(KNUTWURST_BLTOUCH, KNUTWURST_CHIRON)
+#if ENABLED(KNUTWURST_BLTOUCH)
     #define Z_MIN_PROBE_PIN 2 // Pin 32 is the RAMPS default
+#endif
+
+#if ENABLED(KNUTWURST_CHIRON)
+    #define Z_MIN_PROBE_PIN 32
 #endif
 
 /**

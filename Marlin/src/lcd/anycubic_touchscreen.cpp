@@ -1889,7 +1889,10 @@ void AnycubicTouchscreenClass::GetCommandFromTFT()
  * Chiron printer.
  */
 
-#if ENABLED(KNUTWURST_CHIRON_LEVELING)
+//#define KNUTWURST_TFT_LEVELING
+//#define AUTO_BED_LEVELING_BILINEAR
+
+#if ENABLED(KNUTWURST_TFT_LEVELING)
 
         #ifdef AUTO_BED_LEVELING_BILINEAR 
         case 29:   //A29 bed grid read
@@ -2029,42 +2032,42 @@ void AnycubicTouchscreenClass::GetCommandFromTFT()
 
 
 #if ENABLED(KNUTWURST_MEGA_P_LASER)
-            case 34:// Continuous printing ʹ��������ӡ,Ҫ��һЩ׼����������ͷ�½�
+            case 34:// Continuous printing 
                          {
                             en_continue = 1 ;}
                          
 						  break;
-						  case 35:// Continuous printing ʧ��������ӡ
+						  case 35:// Continuous printing 
                          {
                             en_continue = 0 ;}
                          
                          break;
 						  
-                         case 36://A36 λͼ ����ʸ��ͼ
+                         case 36://A36
 						  if(CodeSeen('S'))
                          {
                           int coorvalue;
                           coorvalue=CodeValueInt();
 						  if(coorvalue!=0)
-						  Laser_printer_st.pic_vector = 1; //��ʸ��ͼ
+						  Laser_printer_st.pic_vector = 1;
 						  else
-						  Laser_printer_st.pic_vector = 0;//��λͼ
+						  Laser_printer_st.pic_vector = 0;
 						  	
                          }
 						  case 37:
-						  if(CodeSeen('S'))//X������
+						  if(CodeSeen('S'))//X
                          {
                           int coorvalue;
                           coorvalue=CodeValueInt();
 						  if(coorvalue == 0)
 						  Laser_printer_st.pic_x_mirror = 0;
 						  else if(coorvalue == 1)
-						  Laser_printer_st.pic_x_mirror = 1; //x����			  
+						  Laser_printer_st.pic_x_mirror = 1; //x	  
                          }
                          	
 						  break;
 						  case 38:
-                         if(CodeSeen('S'))//A38 ��������ʱ��
+                         if(CodeSeen('S'))//A38 
                          {
                           int coorvalue;
                           coorvalue=CodeValueInt();
@@ -2147,35 +2150,35 @@ void AnycubicTouchscreenClass::GetCommandFromTFT()
 						  }
 						   
 						  break;
-						 case 51:// A51�Զ���ƽ
+						 case 51:
 						  {
-						     if(CodeSeen('H'))//��һ��
+						     if(CodeSeen('H'))
                             {
                              enqueue_and_echo_commands_P(PSTR("G1 Z5 F500")); 
 							 enqueue_and_echo_commands_P(PSTR("G1 X30 Y30 F5000")); 
 							 enqueue_and_echo_commands_P(PSTR("G1 Z0.15 F300")); 
 						    }
-							 else if(CodeSeen('I'))//�ڶ���
+							 else if(CodeSeen('I'))
                             {
                               enqueue_and_echo_commands_P(PSTR("G1 Z5 F500")); 
 							 enqueue_and_echo_commands_P(PSTR("G1 X190 Y30 F5000")); 
 							 enqueue_and_echo_commands_P(PSTR("G1 Z0.15 F300")); 
 						    }
-							  else if(CodeSeen('J'))//������
+							  else if(CodeSeen('J'))
                             {
                               enqueue_and_echo_commands_P(PSTR("G1 Z5 F500")); 
 							 enqueue_and_echo_commands_P(PSTR("G1 X190 Y190 F5000")); 
 							 enqueue_and_echo_commands_P(PSTR("G1 Z0.15 F300"));                            
 						    }
-							   else if(CodeSeen('K'))//���Ĳ�
+							   else if(CodeSeen('K'))
                             {
                               enqueue_and_echo_commands_P(PSTR("G1 Z5 F500")); 
 							 enqueue_and_echo_commands_P(PSTR("G1 X30 Y190 F5000")); 
 							 enqueue_and_echo_commands_P(PSTR("G1 Z0.15 F300"));                            
 						    }
-							 else if(CodeSeen('L'))//���Ĳ�
+							 else if(CodeSeen('L'))
                             {
-							 enqueue_and_echo_commands_P(PSTR("G1 X100 Y100  Z50 F5000"));  //�ص�����λ��                           
+							 enqueue_and_echo_commands_P(PSTR("G1 X100 Y100  Z50 F5000"));                    
 						    }
 						  }
 						  break;

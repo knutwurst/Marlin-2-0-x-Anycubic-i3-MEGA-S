@@ -434,7 +434,7 @@
     #define CHAMBER_AUTO_FAN_PIN -1
 #endif
 
-#if ENABLED(KNUTWURST_MEGAX)
+#if EITHER(KNUTWURST_MEGA_X, KNUTWURST_CHIRON)
     #define E0_AUTO_FAN_PIN -1
     #define E1_AUTO_FAN_PIN -1
     #define E2_AUTO_FAN_PIN -1
@@ -443,7 +443,6 @@
     #define E5_AUTO_FAN_PIN -1
     #define CHAMBER_AUTO_FAN_PIN -1
 #endif
-
 
 #define EXTRUDER_AUTO_FAN_TEMPERATURE 50
 #define EXTRUDER_AUTO_FAN_SPEED 255   // 255 == full speed
@@ -541,7 +540,14 @@
     #define Z_MULTI_ENDSTOPS
   #endif
     #if ENABLED(Z_MULTI_ENDSTOPS)
-      #define Z2_USE_ENDSTOP          _XMAX_
+      #if ANY(KNUTWURST_MEGA, KNUTWURST_MEGA_S, KNUTWURST_MEGA_X)
+          #define Z2_USE_ENDSTOP      _XMAX_
+      #endif
+      
+      #if ENABLED(KNUTWURST_CHIRON)
+          #define Z2_USE_ENDSTOP      _ZMAX_
+      #endif
+
       #define Z2_ENDSTOP_ADJUSTMENT   0
       #if NUM_Z_STEPPER_DRIVERS >= 3
         #define Z3_USE_ENDSTOP        _YMAX_
@@ -1574,12 +1580,12 @@
  * the probe to be unable to reach any points.
  */
 #if ENABLED(KNUTWURST_BLTOUCH)
-#if PROBE_SELECTED && !IS_KINEMATIC
-  #define MIN_PROBE_EDGE_LEFT 10
-  #define MIN_PROBE_EDGE_RIGHT 10
-  #define MIN_PROBE_EDGE_FRONT 10
-  #define MIN_PROBE_EDGE_BACK 10
-#endif
+  #if PROBE_SELECTED && !IS_KINEMATIC
+    #define MIN_PROBE_EDGE_LEFT 10
+    #define MIN_PROBE_EDGE_RIGHT 10
+    #define MIN_PROBE_EDGE_FRONT 10
+    #define MIN_PROBE_EDGE_BACK 10
+  #endif
 #endif
 
 #if DISABLED(KNUTWURST_BLTOUCH)
