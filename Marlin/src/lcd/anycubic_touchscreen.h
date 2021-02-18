@@ -287,6 +287,12 @@ private:
   int FilamentRunoutCounter = 0;
 #endif
 
+#if ENABLED(KNUTWURST_TFT_LEVELING)
+  extern int z_values_index;
+  extern int z_values_size;
+  extern float SAVE_zprobe_zoffset;
+#endif
+
 
 #if ENABLED(KNUTWURST_MEGA_P_LASER)
 

@@ -161,9 +161,9 @@
  * PLEASE READ THE WARNING ABOVE!
  * 
  */
-#if ENABLED(KNUTWURST_CHIRON)
+//#if ENABLED(KNUTWURST_CHIRON)
   //#define KNUTWURST_TFT_LEVELING
-#endif
+//#endif
 
 /*******************************************************************************************
  **                                                                                       **

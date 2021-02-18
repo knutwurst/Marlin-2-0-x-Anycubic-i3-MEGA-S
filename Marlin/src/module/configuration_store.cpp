@@ -51,6 +51,7 @@
 #include "stepper.h"
 #include "temperature.h"
 #include "../lcd/ultralcd.h"
+#include "../lcd/anycubic_touchscreen.h"
 #include "../core/language.h"
 #include "../libs/vector_3.h"   // for matrix_3x3
 #include "../gcode/gcode.h"
@@ -717,6 +718,11 @@ void MarlinSettings::postprocess() {
       EEPROM_WRITE(grid_max_y);
       EEPROM_WRITE(bilinear_grid_spacing);
       EEPROM_WRITE(bilinear_start);
+
+      #if ENABLED(KNUTWURST_TFT_LEVELING)
+        z_values_index = eeprom_index;
+        z_values_size = sizeof(z_values);
+      #endif
 
       #if ENABLED(AUTO_BED_LEVELING_BILINEAR)
         EEPROM_WRITE(z_values);              // 9-256 floats
