@@ -69,7 +69,7 @@ Um es übersichtlich zu gestalten, beinhalten die Dateinamen die einzelnen Featu
 
 `_TMC` steht für Trinamic TMC Motortreiber. Hierbei wird die Drehrichtung der Motoren invertiert. Sollten die Stecker der Motoren jedoch bereits gedreht sein, nimmt man einfach die Nicht-TMC Version.
 
-`_DGUS` steht für das "neue" blau/gelbe DGUS II Display, welches sonst kein Special-Menü anzeigen kann.
+`_DGUS` steht für das "neue" blau/gelbe DGUS II Display, welches sonst kein Special-Menü anzeigen kann. (Nur für MEGA S relevant)
 
 `_BLT` steht für die BL-Touch Version mit Autoleveling-Sensor. Das manuelle Mesh-Leveling ist hier deaktiviert.
 
@@ -128,13 +128,13 @@ In order to make it clear, the file names contain the individual features.
 
 `_TMC` stands for Trinamic TMC motor driver. The direction of rotation of the motors is inverted. However, if the plugs of the motors are already turned, you simply take the non-TMC version. 
 
-`_DGUS` stands for the "new" blue / yellow DGUS II display, which otherwise cannot show a special menu.
+`_DGUS` stands for the "new" blue / yellow DGUS II display, which otherwise cannot show a special menu. (Only relevant for MEGA S)
 
 `_BLT` stands for the BL-Touch version with auto-leveling sensor. Manual mesh leveling is deactivated here.
 
-`_10` stands for the Trigorilla_14 v1.0 mainboard, which should normally be the standard.
+`_10` stands for the Trigorilla_14 v1.0 mainboard, which should normally be the standard. (Only relevant for BLTouch)
 
-`_11` stands for the Trigorilla_14 v1.1 mainboard, on which the pin assignment for the servo port has changed.
+`_11` stands for the Trigorilla_14 v1.1 mainboard, on which the pin assignment for the servo port has changed. (Only relevant for BLTouch)
 
 <b>Note: The mainboard version 1.0 or 1.1 is only relevant for the installation of the BLTouch sensor and can normally be ignored.</b>
 
