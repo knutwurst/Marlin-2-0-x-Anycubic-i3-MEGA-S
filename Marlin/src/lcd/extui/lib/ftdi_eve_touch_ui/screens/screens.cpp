@@ -17,7 +17,7 @@
  *   GNU General Public License for more details.                           *
  *                                                                          *
  *   To view a copy of the GNU General Public License, go to the following  *
- *   location: <http://www.gnu.org/licenses/>.                              *
+ *   location: <https://www.gnu.org/licenses/>.                              *
  ****************************************************************************/
 
 #include "../config.h"
@@ -62,10 +62,16 @@ SCREEN_TABLE {
   DECL_SCREEN(StepperCurrentScreen),
   DECL_SCREEN(StepperBumpSensitivityScreen),
 #endif
-#if HAS_BED_PROBE
-  DECL_SCREEN(ZOffsetScreen),
+#if HAS_LEVELING
+  DECL_SCREEN(LevelingMenu),
+  #if HAS_BED_PROBE
+    DECL_SCREEN(ZOffsetScreen),
+  #endif
+  #if HAS_MESH
+    DECL_SCREEN(BedMeshScreen),
+  #endif
 #endif
-#if HOTENDS > 1
+#if HAS_MULTI_HOTEND
   DECL_SCREEN(NozzleOffsetScreen),
 #endif
 #if ENABLED(BACKLASH_GCODE)
@@ -75,12 +81,12 @@ SCREEN_TABLE {
   DECL_SCREEN(MaxVelocityScreen),
   DECL_SCREEN(MaxAccelerationScreen),
   DECL_SCREEN(DefaultAccelerationScreen),
-#if DISABLED(CLASSIC_JERK)
+#if HAS_JUNCTION_DEVIATION
   DECL_SCREEN(JunctionDeviationScreen),
 #else
   DECL_SCREEN(JerkScreen),
 #endif
-#if HAS_CASE_LIGHT
+#if ENABLED(CASE_LIGHT_ENABLE)
   DECL_SCREEN(CaseLightScreen),
 #endif
 #if EITHER(LIN_ADVANCE, FILAMENT_RUNOUT_SENSOR)
@@ -97,7 +103,9 @@ SCREEN_TABLE {
   DECL_SCREEN(InterfaceSettingsScreen),
   DECL_SCREEN(InterfaceSoundsScreen),
   DECL_SCREEN(LockScreen),
+#if ENABLED(SDSUPPORT)
   DECL_SCREEN(FilesScreen),
+#endif
   DECL_SCREEN(EndstopStatesScreen),
 #if ENABLED(TOUCH_UI_LULZBOT_BIO)
   DECL_SCREEN(BioPrintingDialogBox),

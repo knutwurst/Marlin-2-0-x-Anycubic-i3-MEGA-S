@@ -16,12 +16,12 @@
  * GNU General Public License for more details.
  *
  * You should have received a copy of the GNU General Public License
- * along with this program.  If not, see <http://www.gnu.org/licenses/>.
+ * along with this program.  If not, see <https://www.gnu.org/licenses/>.
  *
  */
 #pragma once
 
-#if !defined(__STM32F1__) && !defined(__STM32F4__)
+#if NOT_TARGET(__STM32F1__, __STM32F4__)
   #error "Oops! Select an STM32F1/4 board in 'Tools > Board.'"
 #endif
 
@@ -36,7 +36,7 @@
 //#define I2C_EEPROM
 
 // Ignore temp readings during development.
-//#define BOGUS_TEMPERATURE_GRACE_PERIOD 2000
+//#define BOGUS_TEMPERATURE_GRACE_PERIOD    2000
 
 //
 // Steppers
@@ -84,7 +84,10 @@
 //
 #define SDSS                                -1
 #define LED_PIN                             -1
-#define CASE_LIGHT_PIN                      PA8   // 8
+
+#ifndef CASE_LIGHT_PIN
+  #define CASE_LIGHT_PIN                    PA8   // 8
+#endif
 
 #define PS_ON_PIN                           -1
 #define KILL_PIN                            PD6   // LED strip 24v
@@ -117,7 +120,7 @@
 //
 // LCD Pins
 //
-#if HAS_SPI_LCD
+#if HAS_WIRED_LCD
 
   #if ENABLED(REPRAPWORLD_GRAPHICAL_LCD)
     #define LCD_PINS_RS                     PD1   // 49  // CS chip select /SS chip slave select
@@ -183,7 +186,7 @@
 
     #elif ENABLED(LCD_I2C_VIKI)
 
-      #define BTN_EN1                       PB6   // 22   // http://files.panucatt.com/datasheets/viki_wiring_diagram.pdf explains 40/42.
+      #define BTN_EN1                       PB6   // 22   // https://files.panucatt.com/datasheets/viki_wiring_diagram.pdf explains 40/42.
       #define BTN_EN2                       PA7   //  7   // 22/7 are unused on RAMPS_14. 22 is unused and 7 the SERVO0_PIN on RAMPS_13.
 
       #define BTN_ENC                       -1
@@ -278,4 +281,4 @@
     #endif
   #endif // NEWPANEL
 
-#endif // HAS_SPI_LCD
+#endif // HAS_WIRED_LCD

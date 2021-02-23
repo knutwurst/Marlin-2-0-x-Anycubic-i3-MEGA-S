@@ -16,7 +16,7 @@
  * GNU General Public License for more details.
  *
  * You should have received a copy of the GNU General Public License
- * along with this program.  If not, see <http://www.gnu.org/licenses/>.
+ * along with this program.  If not, see <https://www.gnu.org/licenses/>.
  *
  */
 #pragma once
@@ -28,7 +28,7 @@
  * Use 4k7 thermistor tables
  */
 
-#ifndef __SAM3X8E__
+#if NOT_TARGET(__SAM3X8E__)
   #error "Oops! Select 'Arduino Due' in 'Tools > Board.'"
 #endif
 
@@ -139,7 +139,7 @@
 //
 // LCD / Controller
 //
-#if HAS_SPI_LCD
+#if HAS_WIRED_LCD
   // ramps-fd lcd adaptor
 
   #define BEEPER_PIN                          37
@@ -203,7 +203,7 @@
     #define DOGLCD_MISO                       74  // MISO_PIN
   #endif
 
-#endif // HAS_SPI_LCD
+#endif // HAS_WIRED_LCD
 
 #if HAS_TMC_UART
   /**

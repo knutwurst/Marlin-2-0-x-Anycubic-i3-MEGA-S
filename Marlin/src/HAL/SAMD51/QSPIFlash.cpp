@@ -16,7 +16,7 @@
  * GNU General Public License for more details.
  *
  * You should have received a copy of the GNU General Public License
- * along with this program.  If not, see <http://www.gnu.org/licenses/>.
+ * along with this program.  If not, see <https://www.gnu.org/licenses/>.
  *
  */
 
@@ -26,7 +26,7 @@
 
 #include "QSPIFlash.h"
 
-#define INVALID_ADDR    0xffffffff
+#define INVALID_ADDR    0xFFFFFFFF
 #define SECTOR_OF(a)    (a & ~(SFLASH_SECTOR_SIZE - 1))
 #define OFFSET_OF(a)    (a & (SFLASH_SECTOR_SIZE - 1))
 

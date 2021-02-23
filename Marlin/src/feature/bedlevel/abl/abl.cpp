@@ -16,7 +16,7 @@
  * GNU General Public License for more details.
  *
  * You should have received a copy of the GNU General Public License
- * along with this program.  If not, see <http://www.gnu.org/licenses/>.
+ * along with this program.  If not, see <https://www.gnu.org/licenses/>.
  *
  */
 
@@ -74,9 +74,7 @@ static void extrapolate_one_point(const uint8_t x, const uint8_t y, const int8_t
 
   // Take the average instead of the median
   z_values[x][y] = (a + b + c) / 3.0;
-  #if ENABLED(EXTENSIBLE_UI)
-    ExtUI::onMeshUpdate(x, y, z_values[x][y]);
-  #endif
+  TERN_(EXTENSIBLE_UI, ExtUI::onMeshUpdate(x, y, z_values[x][y]));
 
   // Median is robust (ignores outliers).
   // z_values[x][y] = (a < b) ? ((b < c) ? b : (c < a) ? a : c)
@@ -241,9 +239,7 @@ void print_bilinear_leveling_grid() {
 // Refresh after other values have been updated
 void refresh_bed_level() {
   bilinear_grid_factor = bilinear_grid_spacing.reciprocal();
-  #if ENABLED(ABL_BILINEAR_SUBDIVISION)
-    bed_level_virt_interpolate();
-  #endif
+  TERN_(ABL_BILINEAR_SUBDIVISION, bed_level_virt_interpolate());
 }
 
 #if ENABLED(ABL_BILINEAR_SUBDIVISION)
@@ -352,7 +348,7 @@ float bilinear_z_offset(const xy_pos_t &raw) {
    * Prepare a bilinear-leveled linear move on Cartesian,
    * splitting the move where it crosses grid borders.
    */
-  void bilinear_line_to_destination(const feedRate_t scaled_fr_mm_s, uint16_t x_splits, uint16_t y_splits) {
+  void bilinear_line_to_destination(const feedRate_t &scaled_fr_mm_s, uint16_t x_splits, uint16_t y_splits) {
     // Get current and destination cells for this line
     xy_int_t c1 { CELL_INDEX(x, current_position.x), CELL_INDEX(y, current_position.y) },
              c2 { CELL_INDEX(x, destination.x), CELL_INDEX(y, destination.y) };

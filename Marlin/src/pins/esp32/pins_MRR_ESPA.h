@@ -16,7 +16,7 @@
  * GNU General Public License for more details.
  *
  * You should have received a copy of the GNU General Public License
- * along with this program.  If not, see <http://www.gnu.org/licenses/>.
+ * along with this program.  If not, see <https://www.gnu.org/licenses/>.
  *
  */
 #pragma once
@@ -27,7 +27,7 @@
  * Supports 4 stepper drivers, heated bed, single hotend.
  */
 
-#ifndef ARDUINO_ARCH_ESP32
+#if NOT_TARGET(ARDUINO_ARCH_ESP32)
   #error "Oops! Select an ESP32 board in 'Tools > Board.'"
 #elif EXTRUDERS > 1 || E_STEPPERS > 1
   #error "MRR ESPA only supports one E Stepper. Comment out this line to continue."
