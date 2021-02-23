@@ -464,7 +464,7 @@ void AnycubicTouchscreenClass::ReheatNozzle()
 void AnycubicTouchscreenClass::ParkAfterStop()
 {
   // only park the nozzle if homing was done before
-  if (!axis_unhomed_error())
+  if (!homing_needed_error())
   {
     // raize nozzle by 25mm respecting Z_MAX_POS
     do_blocking_move_to_z(_MIN(current_position[Z_AXIS] + 25, Z_MAX_POS), 5);

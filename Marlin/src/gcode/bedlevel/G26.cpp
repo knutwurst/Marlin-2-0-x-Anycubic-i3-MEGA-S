@@ -399,10 +399,11 @@ TERN_(HAS_LCD_MENU, ui.capture());
 
     // Wait for the temperature to stabilize
     if (!thermalManager.wait_for_bed(true
-  #if G26_CLICK_CAN_CANCEL
-    , true
-  #endif
-  )) return G26_ERR;
+    #if G26_CLICK_CAN_CANCEL
+      , true
+    #endif
+    )) return G26_ERR;
+  }
 
 #endif // HAS_HEATED_BED
 
