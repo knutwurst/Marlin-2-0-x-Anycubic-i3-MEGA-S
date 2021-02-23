@@ -16,7 +16,7 @@
  * GNU General Public License for more details.
  *
  * You should have received a copy of the GNU General Public License
- * along with this program.  If not, see <http://www.gnu.org/licenses/>.
+ * along with this program.  If not, see <https://www.gnu.org/licenses/>.
  *
  */
 
@@ -34,8 +34,8 @@
 #include "../../../sd/cardreader.h"
 #endif
 
-#if EXTRUDERS > 1
-#include "../../../module/tool_change.h"
+#if HAS_MULTI_EXTRUDER
+  #include "../../../module/tool_change.h"
 #endif
 
 #if HAS_LCD_MENU
@@ -50,6 +50,10 @@
 #include "../../../feature/mixing.h"
 #endif
 
+#if HAS_FILAMENT_SENSOR
+  #include "../../../feature/runout.h"
+#endif
+
 /**
  * M600: Pause for filament change
  *
@@ -61,6 +65,7 @@
  *  L[distance] - Extrude distance for insertion (manual reload)
  *  B[count]    - Number of times to beep, -1 for indefinite (if equipped with a buzzer)
  *  T[toolhead] - Select extruder for filament change
+ *  R[temp]     - Resume temperature (in current units)
  *
  *  Default values are used for omitted arguments.
  */
@@ -92,68 +97,54 @@ void GcodeSuite::M600()
 
   xyz_pos_t park_point = NOZZLE_PARK_POINT;
 
-#if ENABLED(MIXING_EXTRUDER)
-  const int8_t target_e_stepper = get_target_e_stepper_from_command();
-  if (target_e_stepper < 0)
-    return;
+  #if ENABLED(MIXING_EXTRUDER)
+    const int8_t target_e_stepper = get_target_e_stepper_from_command();
+    if (target_e_stepper < 0) return;
 
-  const uint8_t old_mixing_tool = mixer.get_current_vtool();
-  mixer.T(MIXER_DIRECT_SET_TOOL);
+    const uint8_t old_mixing_tool = mixer.get_current_vtool();
+    mixer.T(MIXER_DIRECT_SET_TOOL);
 
-  MIXER_STEPPER_LOOP(i)
-  mixer.set_collector(i, i == uint8_t(target_e_stepper) ? 1.0 : 0.0);
-  mixer.normalize();
+    MIXER_STEPPER_LOOP(i) mixer.set_collector(i, i == uint8_t(target_e_stepper) ? 1.0 : 0.0);
+    mixer.normalize();
 
-  const int8_t target_extruder = active_extruder;
-#else
-  const int8_t target_extruder = get_target_extruder_from_command();
-  if (target_extruder < 0)
-    return;
-#endif
+    const int8_t target_extruder = active_extruder;
+  #else
+    const int8_t target_extruder = get_target_extruder_from_command();
+    if (target_extruder < 0) return;
+  #endif
 
-#if ENABLED(DUAL_X_CARRIAGE)
-  int8_t DXC_ext = target_extruder;
-  if (!parser.seen('T'))
-  { // If no tool index is specified, M600 was (probably) sent in response to filament runout.
-    // In this case, for duplicating modes set DXC_ext to the extruder that ran out.
-#if HAS_FILAMENT_SENSOR && NUM_RUNOUT_SENSORS > 1
-    if (dxc_is_duplicating())
-      DXC_ext = (READ(FIL_RUNOUT2_PIN) == FIL_RUNOUT_INVERTING) ? 1 : 0;
-#else
-    DXC_ext = active_extruder;
-#endif
-  }
-#endif
+  #if ENABLED(DUAL_X_CARRIAGE)
+    int8_t DXC_ext = target_extruder;
+    if (!parser.seen('T')) {  // If no tool index is specified, M600 was (probably) sent in response to filament runout.
+                              // In this case, for duplicating modes set DXC_ext to the extruder that ran out.
+      #if HAS_FILAMENT_SENSOR && NUM_RUNOUT_SENSORS > 1
+        if (dxc_is_duplicating())
+          DXC_ext = (READ(FIL_RUNOUT2_PIN) == FIL_RUNOUT_STATE) ? 1 : 0;
+      #else
+        DXC_ext = active_extruder;
+      #endif
+    }
+  #endif
 
-// Show initial "wait for start" message
-#if HAS_LCD_MENU && DISABLED(MMU2_MENUS)
-  lcd_pause_show_message(PAUSE_MESSAGE_CHANGING, PAUSE_MODE_PAUSE_PRINT, target_extruder);
-#endif
+  // Show initial "wait for start" message
+  #if HAS_LCD_MENU && DISABLED(MMU2_MENUS)
+    lcd_pause_show_message(PAUSE_MESSAGE_CHANGING, PAUSE_MODE_PAUSE_PRINT, target_extruder);
+  #endif
 
-#if ENABLED(HOME_BEFORE_FILAMENT_CHANGE)
-  // Don't allow filament change without homing first
-  if (axes_need_homing())
-    home_all_axes();
-#endif
+  #if ENABLED(HOME_BEFORE_FILAMENT_CHANGE)
+    // If needed, home before parking for filament change
+    if (!all_axes_known()) home_all_axes();
+  #endif
 
-#if EXTRUDERS > 1
-  // Change toolhead if specified
-  const uint8_t active_extruder_before_filament_change = active_extruder;
-  if (
-      active_extruder != target_extruder
-#if ENABLED(DUAL_X_CARRIAGE)
-      && dual_x_carriage_mode != DXC_DUPLICATION_MODE && dual_x_carriage_mode != DXC_MIRRORED_MODE
-#endif
-  )
-    tool_change(target_extruder, false);
-#endif
+  #if HAS_MULTI_EXTRUDER
+    // Change toolhead if specified
+    const uint8_t active_extruder_before_filament_change = active_extruder;
+    if (active_extruder != target_extruder && TERN1(DUAL_X_CARRIAGE, !dxc_is_duplicating()))
+      tool_change(target_extruder, false);
+  #endif
 
   // Initial retract before move to filament change position
-  const float retract = -ABS(parser.seen('E') ? parser.value_axis_units(E_AXIS) : 0
-#ifdef PAUSE_PARK_RETRACT_LENGTH
-                                                                                      + (PAUSE_PARK_RETRACT_LENGTH)
-#endif
-  );
+  const float retract = -ABS(parser.seen('E') ? parser.value_axis_units(E_AXIS) : (PAUSE_PARK_RETRACT_LENGTH));
 
   // Lift Z axis
   if (parser.seenval('Z'))
@@ -187,34 +178,30 @@ void GcodeSuite::M600()
                                                       : fc_settings[active_extruder].load_length);
 #endif
 
-  const int beep_count = parser.intval('B',
-#ifdef FILAMENT_CHANGE_ALERT_BEEPS
-                                       FILAMENT_CHANGE_ALERT_BEEPS
-#else
-                                       -1
-#endif
+  const int beep_count = parser.intval('B', -1
+    #ifdef FILAMENT_CHANGE_ALERT_BEEPS
+      + 1 + FILAMENT_CHANGE_ALERT_BEEPS
+    #endif
   );
 
-  if (pause_print(retract, park_point, unload_length, true DXC_PASS))
-  {
-#if ENABLED(MMU2_MENUS)
-    mmu2_M600();
-    resume_print(slow_load_length, fast_load_length, 0, beep_count DXC_PASS);
-#else
-    wait_for_confirmation(true, beep_count DXC_PASS);
-    resume_print(slow_load_length, fast_load_length, ADVANCED_PAUSE_PURGE_LENGTH, beep_count DXC_PASS);
-#endif
+  if (pause_print(retract, park_point, unload_length, true DXC_PASS)) {
+    #if ENABLED(MMU2_MENUS)
+      mmu2_M600();
+      resume_print(slow_load_length, fast_load_length, 0, beep_count DXC_PASS);
+    #else
+      wait_for_confirmation(true, beep_count DXC_PASS);
+      resume_print(slow_load_length, fast_load_length, ADVANCED_PAUSE_PURGE_LENGTH,
+                   beep_count, (parser.seenval('R') ? parser.value_celsius() : 0) DXC_PASS);
+    #endif
   }
 
-#if EXTRUDERS > 1
-  // Restore toolhead if it was changed
-  if (active_extruder_before_filament_change != active_extruder)
-    tool_change(active_extruder_before_filament_change, false);
-#endif
+  #if HAS_MULTI_EXTRUDER
+    // Restore toolhead if it was changed
+    if (active_extruder_before_filament_change != active_extruder)
+      tool_change(active_extruder_before_filament_change, false);
+  #endif
 
-#if ENABLED(MIXING_EXTRUDER)
-  mixer.T(old_mixing_tool); // Restore original mixing tool
-#endif
+  TERN_(MIXING_EXTRUDER, mixer.T(old_mixing_tool)); // Restore original mixing tool
 }
 
 #endif // ADVANCED_PAUSE_FEATURE

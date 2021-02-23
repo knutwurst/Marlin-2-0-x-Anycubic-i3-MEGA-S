@@ -16,7 +16,7 @@
  * GNU General Public License for more details.
  *
  * You should have received a copy of the GNU General Public License
- * along with this program.  If not, see <http://www.gnu.org/licenses/>.
+ * along with this program.  If not, see <https://www.gnu.org/licenses/>.
  *
  */
 
@@ -34,7 +34,6 @@
  *
  * Sending "M999 S1" will resume printing without flushing the
  * existing command buffer.
- *
  */
 void GcodeSuite::M999() {
   marlin_state = MF_RUNNING;
