@@ -162,7 +162,7 @@
  * 
  */
 //#if ENABLED(KNUTWURST_CHIRON)  // DO NOT UNCOMMENT! USE PLATFORMIO TO BUILD THE FW FOR YOUR PRINTER!
-  #define KNUTWURST_TFT_LEVELING
+  //#define KNUTWURST_TFT_LEVELING
 //#endif
 
 /*******************************************************************************************
