@@ -23,6 +23,7 @@
 
 #include <stdio.h>
 #include "../inc/MarlinConfig.h"
+#include "../module/configuration_store.h"
 
 char *itostr2(const uint8_t &x);
 

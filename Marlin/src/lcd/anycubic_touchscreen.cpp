@@ -1916,7 +1916,8 @@ void AnycubicTouchscreenClass::GetCommandFromTFT()
                     queue.enqueue_now_P(PSTR("G28\nG29"));
                   }
                   #else
-                  HARDWARE_SERIAL_PROTOCOLPGM("J24\r\n"));	// forbid auto leveling
+                  HARDWARE_SERIAL_PROTOCOLPGM("J24");	// forbid auto leveling
+                  HARDWARE_SERIAL_ENTER();
                 #endif
               break;
               case 31: // A31 zoffset set get or save

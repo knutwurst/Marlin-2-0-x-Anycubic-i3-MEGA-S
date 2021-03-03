@@ -78,11 +78,11 @@
  * PLEASE READ THE WARNING ABOVE!
  * 
  */
-//#define KNUTWURST_MEGA
-//#define KNUTWURST_MEGA_S
-//#define KNUTWURST_MEGA_X
-//#define KNUTWURST_MEGA_P
-//#define KNUTWURST_CHIRON
+//#define KNUTWURST_MEGA         //  DO
+//#define KNUTWURST_MEGA_S       //  NOT
+//#define KNUTWURST_MEGA_X       //  UNCOMMENT
+//#define KNUTWURST_MEGA_P       //  THESE
+//#define KNUTWURST_CHIRON       //  SETTINGS !
 
 /*
  * If you own the first generation i3 Mega
@@ -96,7 +96,7 @@
  * PLEASE READ THE WARNING ABOVE!
  * 
  */
-//#define KNUTWURST_ONE_Z_ENDSTOP
+//#define KNUTWURST_ONE_Z_ENDSTOP   // DO NOT UNCOMMENT! USE PLATFORMIO TO BUILD THE FW FOR YOUR PRINTER!
 
 /*
  * If you have defined the MEGA_X or if
@@ -107,7 +107,7 @@
  * PLEASE READ THE WARNING ABOVE!
  * 
  */
-//#define KNUTWURST_DGUS2_TFT
+//#define KNUTWURST_DGUS2_TFT // DO NOT UNCOMMENT! USE PLATFORMIO TO BUILD THE FW FOR YOUR PRINTER!
 
 /*
  * Enable Support for Trinamic Stepper drivers.
@@ -116,7 +116,7 @@
  * 
  * PLEASE READ THE WARNING ABOVE!
  */
-//#define KNUTWURST_TMC
+//#define KNUTWURST_TMC // DO NOT UNCOMMENT! USE PLATFORMIO TO BUILD THE FW FOR YOUR PRINTER!
 
 /*
  * Invert E0 Stepper driver for
@@ -127,7 +127,7 @@
  * default.
  * 
  */
-//#define KNUTWURST_BMG
+//#define KNUTWURST_BMG // DO NOT UNCOMMENT! USE PLATFORMIO TO BUILD THE FW FOR YOUR PRINTER!
 
 /*
  * This enables the BLTouch Support and also 
@@ -139,7 +139,7 @@
  * PLEASE READ THE WARNING ABOVE!
  * 
  */
-//#define KNUTWURST_BLTOUCH
+//#define KNUTWURST_BLTOUCH // DO NOT UNCOMMENT! USE PLATFORMIO TO BUILD THE FW FOR YOUR PRINTER!
 
 /*
  * This feature is for debugging purpose only.
@@ -150,7 +150,7 @@
  * PLEASE READ THE WARNING ABOVE!
  * 
  */
-//#define KNUTWURST_DEBUG
+//#define KNUTWURST_DEBUG  // DO NOT UNCOMMENT! USE PLATFORMIO TO BUILD THE FW FOR YOUR PRINTER!
 
 /*
  * This enabled the integrated leveling features
@@ -161,8 +161,8 @@
  * PLEASE READ THE WARNING ABOVE!
  * 
  */
-//#if ENABLED(KNUTWURST_CHIRON)
-  //#define KNUTWURST_TFT_LEVELING
+//#if ENABLED(KNUTWURST_CHIRON)  // DO NOT UNCOMMENT! USE PLATFORMIO TO BUILD THE FW FOR YOUR PRINTER!
+  #define KNUTWURST_TFT_LEVELING
 //#endif
 
 /*******************************************************************************************
