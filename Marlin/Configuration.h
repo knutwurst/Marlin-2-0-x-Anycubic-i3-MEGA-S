@@ -127,7 +127,7 @@
  * default.
  * 
  */
-//#define KNUTWURST_BMG // DO NOT UNCOMMENT! USE PLATFORMIO TO BUILD THE FW FOR YOUR PRINTER!
+//#define KNUTWURST_BMG
 
 /*
  * This enables the BLTouch Support and also 

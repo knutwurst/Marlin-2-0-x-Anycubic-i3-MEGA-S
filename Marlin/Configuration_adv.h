@@ -424,7 +424,7 @@
  * the fan will turn on when any selected extruder is above the threshold.
  */
 
-#if EITHER(KNUTWURST_MEGA, KNUTWURST_MEGA_S)
+#if ANY(KNUTWURST_MEGA, KNUTWURST_MEGA_S, KNUTWURST_MEGA_X)
     #define E0_AUTO_FAN_PIN FAN2_PIN
     #define E1_AUTO_FAN_PIN -1
     #define E2_AUTO_FAN_PIN -1
@@ -434,7 +434,7 @@
     #define CHAMBER_AUTO_FAN_PIN -1
 #endif
 
-#if EITHER(KNUTWURST_MEGA_X, KNUTWURST_CHIRON)
+#if ENABLED(KNUTWURST_CHIRON) // this might need some rework
     #define E0_AUTO_FAN_PIN -1
     #define E1_AUTO_FAN_PIN -1
     #define E2_AUTO_FAN_PIN -1
