@@ -18,7 +18,7 @@ Wenn Du Fragen hast, schaue gern in der offiziellen [Facebook-Gruppe](https://ww
 - [Downloads](#downloads)
 
 
-# Table of Contets (english)
+# Table of Contents (English)
 <b>WARNING:</b> The Mega Pro / Mega P support is still under development. The laser is currently not supported, nor is piezo leveling!
 
 - [Features](#features)
