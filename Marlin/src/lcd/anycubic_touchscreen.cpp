@@ -1408,8 +1408,8 @@ void AnycubicTouchscreenClass::GetCommandFromTFT()
                   }
                 } else {
                   HARDWARE_SERIAL_PROTOCOLPGM("A6V ---");
-                  HARDWARE_SERIAL_ENTER();
                 }
+                HARDWARE_SERIAL_ENTER();
               #endif
             break;
             case 7: //A7 GET PRINTING TIME
