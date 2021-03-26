@@ -44,7 +44,7 @@
  #define CUSTOM_BUILD_VERSION "1.2.0-Alpha.1"
 
 #ifndef STRING_DISTRIBUTION_DATE
-  #define STRING_DISTRIBUTION_DATE "2021-02-17"
+  #define STRING_DISTRIBUTION_DATE "2021-03-26"
 #endif
 
 /**
@@ -75,7 +75,7 @@
  * Define a generic printer name to be output to the LCD after booting Marlin.
  */
 #ifndef MACHINE_NAME
-  #define MACHINE_NAME "Knutwurst's Anycubic i3 MEGA"
+  #define MACHINE_NAME "Knutwurst's Anycubic Printer"
 #endif
 
 /**
