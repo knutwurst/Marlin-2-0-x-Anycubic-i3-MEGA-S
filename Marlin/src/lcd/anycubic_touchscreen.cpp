@@ -679,7 +679,7 @@ void AnycubicTouchscreenClass::HandleSpecialMenu()
   || (strcasestr(currentTouchscreenSelection, SM_FLOW_UP_S) != NULL))
   {
     SERIAL_ECHOLNPGM("Special Menu: Flow UP");
-    currentFlowRate = currentFlowRate + 5;
+    currentFlowRate = currentFlowRate + 1;
 
     if(currentFlowRate > 800)
        currentFlowRate = 800;
@@ -693,10 +693,10 @@ void AnycubicTouchscreenClass::HandleSpecialMenu()
   || (strcasestr(currentTouchscreenSelection, SM_FLOW_DN_S) != NULL))
   {
     SERIAL_ECHOLNPGM("Special Menu: Flow Down");
-    currentFlowRate = currentFlowRate - 5;
+    currentFlowRate = currentFlowRate - 1;
 
-    if(currentFlowRate < 5)
-       currentFlowRate = 5;
+    if(currentFlowRate < 1)
+       currentFlowRate = 1;
 
     char value[30];
     sprintf_P(value, PSTR("M221 S%i"), currentFlowRate);
@@ -1080,8 +1080,8 @@ void AnycubicTouchscreenClass::CheckHeaterError()
     if (HeaterCheckCount > 60000)
     {
       HeaterCheckCount = 0;
-      HARDWARE_SERIAL_PROTOCOLPGM("J10"); // J10 Hotend temperature abnormal
-      HARDWARE_SERIAL_ENTER();
+      //HARDWARE_SERIAL_PROTOCOLPGM("J10"); // J10 Hotend temperature abnormal
+      //HARDWARE_SERIAL_ENTER();
       #ifdef ANYCUBIC_TFT_DEBUG
             SERIAL_ECHOLNPGM("TFT Serial Debug: Hotend temperature abnormal... J20");
       #endif
