@@ -142,6 +142,16 @@
 //#define KNUTWURST_BLTOUCH // DO NOT UNCOMMENT! USE PLATFORMIO TO BUILD THE FW FOR YOUR PRINTER!
 
 /*
+ * This supports the BLTouch as an Z-Endstop.
+ * So the Hardware Endstops should be dismantled
+ * and the BLTouch should be properly configurated.
+ * 
+ * PLEASE READ THE WARNING ABOVE!
+ * 
+ */
+//#define KNUTWURST_ENDSTOP
+
+/*
  * This feature is for debugging purpose only.
  * It enabled more console output and should be
  * disabled in production. It can cause the
@@ -828,29 +838,47 @@
   //#define ENDSTOPPULLDOWN_XMIN
   //#define ENDSTOPPULLDOWN_YMIN
   //#define ENDSTOPPULLDOWN_ZMIN
-  //#define ENDSTOPPULLDOWN_ZMIN_PROBE
+#endif
+
+// BLTouch Endstop
+#if ENABLED(KNUTWURST_ENDSTOP)
+  #define ENDSTOPPULLDOWN_ZMIN_PROBE
 #endif
 
 #if ANY(KNUTWURST_MEGA, KNUTWURST_MEGA_S, KNUTWURST_MEGA_P)
     // Mechanical endstop with COM to ground and NC to Signal uses "false" here (most common setup).
     #define X_MIN_ENDSTOP_INVERTING true // set to true to invert the logic of the endstop.
     #define Y_MIN_ENDSTOP_INVERTING true // set to true to invert the logic of the endstop.
-    #define Z_MIN_ENDSTOP_INVERTING true // set to true to invert the logic of the endstop.
+    
+    // BLTouch Endstop
+    #if ENABLED(KNUTWURST_ENDSTOP)
+      #define Z_MIN_ENDSTOP_INVERTING false // set to true to invert the logic of the endstop.
+      #define Z_MIN_PROBE_ENDSTOP_INVERTING true // set to true to invert the logic of the endstop.
+    #else
+      #define Z_MIN_ENDSTOP_INVERTING true // set to true to invert the logic of the endstop.
+    #endif
+
     #define X_MAX_ENDSTOP_INVERTING true // set to true to invert the logic of the endstop.
     #define Y_MAX_ENDSTOP_INVERTING true // set to true to invert the logic of the endstop.
     #define Z_MAX_ENDSTOP_INVERTING false // set to true to invert the logic of the endstop.
-    //#define Z_MIN_PROBE_ENDSTOP_INVERTING true // set to true to invert the logic of the endstop.
 #endif
 
 #if ENABLED(KNUTWURST_MEGA_X)
     // Mechanical endstop with COM to ground and NC to Signal uses "false" here (most common setup).
     #define X_MIN_ENDSTOP_INVERTING true // set to true to invert the logic of the endstop.
     #define Y_MIN_ENDSTOP_INVERTING false // set to true to invert the logic of the endstop.
-    #define Z_MIN_ENDSTOP_INVERTING true // set to true to invert the logic of the endstop.
+    
+    // BLTouch Endstop
+    #if ENABLED(KNUTWURST_ENDSTOP)
+      #define Z_MIN_ENDSTOP_INVERTING false // set to true to invert the logic of the endstop.
+      #define Z_MIN_PROBE_ENDSTOP_INVERTING true // set to true to invert the logic of the endstop.
+    #else
+      #define Z_MIN_ENDSTOP_INVERTING true // set to true to invert the logic of the endstop.
+    #endif
+
     #define X_MAX_ENDSTOP_INVERTING true // set to true to invert the logic of the endstop.
     #define Y_MAX_ENDSTOP_INVERTING true // set to true to invert the logic of the endstop.
     #define Z_MAX_ENDSTOP_INVERTING true // set to true to invert the logic of the endstop.
-    //#define Z_MIN_PROBE_ENDSTOP_INVERTING true // set to true to invert the logic of the endstop.
 #endif
 
 #if ENABLED(KNUTWURST_CHIRON)
@@ -1168,7 +1196,9 @@
  *
  * Enable this option for a probe connected to the Z Min endstop pin.
  */
-//#define Z_MIN_PROBE_USES_Z_MIN_ENDSTOP_PIN
+#if ENABLED(KNUTWURST_ENDSTOP)
+  #define Z_MIN_PROBE_USES_Z_MIN_ENDSTOP_PIN
+#endif
 
 /**
  * Z_MIN_PROBE_PIN
@@ -1889,7 +1919,10 @@
 // - Move the Z probe (or nozzle) to a defined XY point before Z Homing when homing all axes (G28).
 // - Prevent Z homing when the Z probe is outside bed area.
 //
-//#define Z_SAFE_HOMING
+
+#if ENABLED(KNUTWURST_ENDSTOP)
+  #define Z_SAFE_HOMING
+#endif
 
 #if ENABLED(Z_SAFE_HOMING)
   #define Z_SAFE_HOMING_X_POINT ((X_BED_SIZE) / 2)    // X point for Z homing when homing all axes (G28).

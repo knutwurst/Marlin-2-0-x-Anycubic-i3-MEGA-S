@@ -36,6 +36,8 @@
 #define KNUTWURST_MEGAS_ADV
 #define KNUTWURST_TMC_ADV
 
+//#define KNUTWURST_ENDSTOP_ADV
+
 // @section temperature
 
 //===========================================================================
@@ -700,7 +702,12 @@
  * Z Steppers Auto-Alignment
  * Add the G34 command to align multiple Z steppers using a bed probe.
  */
-//#define Z_STEPPER_AUTO_ALIGN
+
+// Align the Z Steppers using BLTouch
+#if ENABLED(KNUTWURST_ENDSTOP_ADV)
+  #define Z_STEPPER_AUTO_ALIGN
+#endif
+
 #if ENABLED(Z_STEPPER_AUTO_ALIGN)
   // Define probe X and Y positions for Z1, Z2 [, Z3 [, Z4]]
   // If not defined, probe limits will be used.
