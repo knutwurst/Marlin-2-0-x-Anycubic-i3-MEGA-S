@@ -1034,7 +1034,11 @@
     #endif
 
     #if ENABLED(KNUTWURST_MEGA_X)
-        #define JUNCTION_DEVIATION_MM 0.16 // (mm) Distance from real junction edge
+        #define JUNCTION_DEVIATION_MM 0.016 // (mm) Distance from real junction edge
+    #endif
+
+    #if ENABLED(KNUTWURST_CHIRON)
+        #define JUNCTION_DEVIATION_MM 0.018 // (mm) Distance from real junction edge
     #endif
 #endif
 
