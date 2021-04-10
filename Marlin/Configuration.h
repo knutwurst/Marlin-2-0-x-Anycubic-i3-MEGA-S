@@ -161,9 +161,9 @@
  * PLEASE READ THE WARNING ABOVE!
  * 
  */
-//#if ENABLED(KNUTWURST_CHIRON)  // DO NOT UNCOMMENT! USE PLATFORMIO TO BUILD THE FW FOR YOUR PRINTER!
+#if ENABLED(KNUTWURST_CHIRON)
   //#define KNUTWURST_TFT_LEVELING
-//#endif
+#endif
 
 /*******************************************************************************************
  **                                                                                       **
@@ -1207,7 +1207,7 @@
  * or (with LCD_BED_LEVELING) the LCD controller.
  */
 #if DISABLED(KNUTWURST_BLTOUCH)
-    #if DISABLED(KNUTWURST_CHIRON)
+    #if DISABLED(KNUTWURST_TFT_LEVELING)
       #define PROBE_MANUALLY
     #endif
 #endif
@@ -1229,7 +1229,7 @@
 /**
  * Z Servo Probe, such as an endstop switch on a rotating arm.
  */
-#if ENABLED(KNUTWURST_CHIRON)
+#if ENABLED(KNUTWURST_TFT_LEVELING)
     #define Z_PROBE_SERVO_NR 0
     #define Z_SERVO_ANGLES {70,0} // Z Servo Deploy and Stow angles
 #endif
@@ -1723,7 +1723,7 @@
  *   leveling in steps so you can manually adjust the Z height at each grid-point.
  *   With an LCD controller the process is guided step-by-step.
  */
-#if ANY(KNUTWURST_BLTOUCH, KNUTWURST_CHIRON)
+#if ANY(KNUTWURST_BLTOUCH, KNUTWURST_TFT_LEVELING)
     //#define AUTO_BED_LEVELING_3POINT
     //#define AUTO_BED_LEVELING_LINEAR
     #define AUTO_BED_LEVELING_BILINEAR
@@ -1731,7 +1731,7 @@
     //#define MESH_BED_LEVELING
 #endif
 
-#if NONE(KNUTWURST_BLTOUCH, KNUTWURST_CHIRON)
+#if NONE(KNUTWURST_BLTOUCH, KNUTWURST_TFT_LEVELING)
     //#define AUTO_BED_LEVELING_3POINT
     //#define AUTO_BED_LEVELING_LINEAR
     //#define AUTO_BED_LEVELING_BILINEAR
@@ -2796,7 +2796,7 @@
  * Set this manually if there are extra servos needing manual control.
  * Leave undefined or set to 0 to entirely disable the servo subsystem.
  */
-#if ENABLED(KNUTWURST_CHIRON)
+#if ENABLED(KNUTWURST_TFT_LEVELING)
     #define NUM_SERVOS 1 // Servo index starts with 0 for M280 command
 #endif
 
