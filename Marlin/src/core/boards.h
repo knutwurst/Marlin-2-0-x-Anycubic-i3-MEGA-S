@@ -104,6 +104,7 @@
 #define BOARD_TANGO                   1148  // BIQU Tango V1
 #define BOARD_MKS_GEN_L_V2            1149  // MKS GEN L V2
 #define BOARD_COPYMASTER_3D           1150  // Copymaster 3D
+#define BOARD_TRIGORILLA_CHIRON       1151  // TriGorilla Anycubic version 1.4 based on RAMPS EFB for Chiron
 
 //
 // RAMBo and derivatives

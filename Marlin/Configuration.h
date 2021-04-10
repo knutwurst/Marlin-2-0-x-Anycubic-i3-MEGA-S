@@ -42,115 +42,29 @@
 #define ANYCUBIC_FILAMENT_RUNOUT_SENSOR
 #define KNUTWURST_SPECIAL_MENU
 #define KNUTWURST_SPECIAL_MENU_WO_SD
-//#define KNUTWURST_MEGA_P_LASER
 //#define ANYCUBIC_TFT_DEBUG
 //#define POWER_OUTAGE_TEST
-
-/*******************************************************************************************
- **                                                                                       **
- **                                                                                       **
- **   WARNING:                                                                            **
- **   THE FOLLOWING SETTINGS ARE NORMALLY SET BY PLATFORMIO!                              **
- **                                                                                       **
- **   IF YOU CHANGE THEM WITHIN THE SOURCECODE, DO NOT COMMIT                             **
- **   TO MASTER BRANCH OR BUILD WITH PLATFORMIO ENVIRONMENT!                              **
- **   OTHERWISE SOME SETTINGS MIGHT BE OVERWRITTEN AND YOU END                            **
- **   UP WITH A NON FUNCTIONING FIRMWARE!                                                 **
- **                                                                                       **
- **   If you want to select a specific configuration for your                             **
- **   printer, just open the PlatformIO tab on the left, select                           **
- **   PROJECT TASKS and then "env:i3_MEGA*" (your desired config)                         **
- **   From there you can build and upload your code.                                      **
- **                                                                                       **
- **                                                                                       **
- *******************************************************************************************/
- 
-
-/*
- * Select your printer.
- * DO NOT ENABLE MORE THAN ONE LINE!
- * 
- * MEGA is the normal i3 Version without spool holder and the cassic extruder
- * MEGA_S is the S version with Titan clone extruder
- * MEGA_X is the big version with 310x310mm Bed
- * MEGA_P is the "Pro" Version with BMG Extruder, 2 TMC Steppers and Laser
- * 
- * PLEASE READ THE WARNING ABOVE!
- * 
- */
-//#define KNUTWURST_MEGA         //  DO
-//#define KNUTWURST_MEGA_S       //  NOT
-//#define KNUTWURST_MEGA_X       //  UNCOMMENT
-//#define KNUTWURST_MEGA_P       //  THESE
-//#define KNUTWURST_CHIRON       //  SETTINGS !
-
-/*
- * If you own the first generation i3 Mega
- * with only one Z endstop, you need to activate
- * KNUTWURST_MEGA and also this to disable
- * the left endstop and switch the Z Motors.
- * 
- * If the option is disabled, two Z endstops
- * are used by default.
- * 
- * PLEASE READ THE WARNING ABOVE!
- * 
- */
-//#define KNUTWURST_ONE_Z_ENDSTOP   // DO NOT UNCOMMENT! USE PLATFORMIO TO BUILD THE FW FOR YOUR PRINTER!
-
-/*
- * If you have defined the MEGA_X or if
- * you have the "new" Mega S with the blue/yellow
- * Touchscreen display, you need to enable the
- * DGUS2 switch to get the special menu to work
- * 
- * PLEASE READ THE WARNING ABOVE!
- * 
- */
-//#define KNUTWURST_DGUS2_TFT // DO NOT UNCOMMENT! USE PLATFORMIO TO BUILD THE FW FOR YOUR PRINTER!
-
-/*
- * Enable Support for Trinamic Stepper drivers.
- * This also inverts the X,Y,Z and Extruder motor
- * outputs/directions.
- * 
- * PLEASE READ THE WARNING ABOVE!
- */
-//#define KNUTWURST_TMC // DO NOT UNCOMMENT! USE PLATFORMIO TO BUILD THE FW FOR YOUR PRINTER!
-
-/*
- * Invert E0 Stepper driver for
- * Bondtech Mini Geared (BMG) Extruders
- * 
- * This flag is mandatory if you own a
- * MEGA Pro, which has this Extruder by
- * default.
- * 
- */
-//#define KNUTWURST_BMG
-
-/*
- * This enables the BLTouch Support and also 
- * activates the BLTouch Menu item in the 
- * special menu. It also removes all manual 
- * leveling features because they are not 
- * neccessary at all.
- * 
- * PLEASE READ THE WARNING ABOVE!
- * 
- */
-//#define KNUTWURST_BLTOUCH // DO NOT UNCOMMENT! USE PLATFORMIO TO BUILD THE FW FOR YOUR PRINTER!
 
 /*
  * This feature is for debugging purpose only.
  * It enabled more console output and should be
  * disabled in production. It can cause the
  * printer to stutter.
- * 
- * PLEASE READ THE WARNING ABOVE!
+ */
+//#define KNUTWURST_DEBUG
+
+
+/*
+ * This enabled the integrated Laser engaving feature
+ * in the anycubic touchscreen. It's currently only
+ * supported by the Anycubic MEGA Pro and therefore it
+ * is automatically set if the MEGA_P is enabled.
  * 
  */
-//#define KNUTWURST_DEBUG  // DO NOT UNCOMMENT! USE PLATFORMIO TO BUILD THE FW FOR YOUR PRINTER!
+#if ENABLED(KNUTWURST_MEGA_P)
+  //#define KNUTWURST_MEGA_P_LASER
+#endif
+
 
 /*
  * This enabled the integrated leveling features
@@ -158,31 +72,10 @@
  * supported by the Anycubic Chiron and therefore it
  * is automatically set if the chiron is enabled.
  * 
- * PLEASE READ THE WARNING ABOVE!
- * 
  */
 #if ENABLED(KNUTWURST_CHIRON)
   //#define KNUTWURST_TFT_LEVELING
 #endif
-
-/*******************************************************************************************
- **                                                                                       **
- **                                                                                       **
- **   WARNING:                                                                            **
- **   THE SETTINGS ABOVE ARE NORMALLY SET BY PLATFORMIO!                                  **
- **                                                                                       **
- **   IF YOU CHANGE THEM WITHIN THE SOURCECODE, DO NOT COMMIT                             **
- **   TO MASTER BRANCH OR BUILD WITH PLATFORMIO ENVIRONMENT!                              **
- **   OTHERWISE SOME SETTINGS MIGHT BE OVERWRITTEN AND YOU END                            **
- **   UP WITH A NON FUNCTIONING FIRMWARE!                                                 **
- **                                                                                       **
- **   If you want to select a specific configuration for your                             **
- **   printer, just open the PlatformIO tab on the left, select                           **
- **   PROJECT TASKS and then "env:i3_MEGA*" (your desired config)                         **
- **   From there you can build and upload your code.                                      **
- **                                                                                       **
- **                                                                                       **
- *******************************************************************************************/
 
 
 /*
@@ -292,9 +185,10 @@
  *
  * BOARD_TRIGORILLA_14     = Default Trigorilla
  * BOARD_TRIGORILLA_14_11  = Newer Trigorilla v1.1 (first seen late 2018)
+ * BOARD_TRIGORILLA_CHIRON = EFB Version for Anycubic Chiron
  *
- * The only major difference is a slight change on the servo pin mapping.
- * This setting only is relevant if you want to use BLtouch or similar
+ * The only major difference between 14 and 14_11 is a slight change on the servo
+ * pin mapping. This setting only is relevant if you want to use BLtouch or similar
  * mods to be used via servo pins.
  * The new version is to be identified by a "TRIGORILLA1.1" lettering
  * on the upper left of the PCB silkscreen.
