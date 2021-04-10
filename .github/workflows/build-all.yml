@@ -59,12 +59,20 @@ jobs:
          - MEGA_X_BLT_11
          - MEGA_X_TMC_BLT_10
          - MEGA_X_TMC_BLT_11
+         - MEGA_X_DGUS
+         - MEGA_X_DGUS_TMC
+         - MEGA_X_DGUS_BLT_10
+         - MEGA_X_DGUS_BLT_11
+         - MEGA_X_DGUS_TMC_BLT_10
+         - MEGA_X_DGUS_TMC_BLT_11
          - MEGA_P
          - MEGA_P_TMC
          - MEGA_P_BLT_10
          - MEGA_P_BLT_11
          - MEGA_P_TMC_BLT_10
          - MEGA_P_TMC_BLT_11
+         - CHIRON
+         - CHIRON_TMC
 
     steps:
 
