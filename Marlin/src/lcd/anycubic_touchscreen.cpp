@@ -1301,6 +1301,7 @@ void AnycubicTouchscreenClass::GetCommandFromTFT()
 
       if(!TFTcomment_mode)
       {
+      /*
         // -------- START ERROR CORRECTION ----------
         TFTcomment_mode = false; //for new command
         if(strchr(TFTcmdbuffer[TFTbufindw], 'N') != NULL)
@@ -1338,7 +1339,7 @@ void AnycubicTouchscreenClass::GetCommandFromTFT()
             }
         }
         // -------- FINISH ERROR CORRECTION ----------
-      
+        */
       
         if((strchr(TFTcmdbuffer[TFTbufindw], 'A') != NULL))
         {
