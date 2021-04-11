@@ -73,6 +73,8 @@ jobs:
          - MEGA_P_TMC_BLT_11
          - CHIRON
          - CHIRON_TMC
+         - CHIRON_DGUS
+         - CHIRON_DGUS_TMC
 
     steps:
 
