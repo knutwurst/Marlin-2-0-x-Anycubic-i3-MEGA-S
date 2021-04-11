@@ -1216,8 +1216,12 @@
     //#define NOZZLE_TO_PROBE_OFFSET { 29, -15, 0 } //X-Carriage
 #endif
 
-#if DISABLED(KNUTWURST_BLTOUCH)
+#if ENABLED(KNUTWURST_TFT_LEVELING)
     #define NOZZLE_TO_PROBE_OFFSET { 0, 0, -17 } // Chiron Default Value!
+#endif
+
+#if NONE(KNUTWURST_BLTOUCH, KNUTWURST_TFT_LEVELING)
+    #define NOZZLE_TO_PROBE_OFFSET { 10, 10, 0 }
 #endif
 
 // Most probes should stay away from the edges of the bed, but
