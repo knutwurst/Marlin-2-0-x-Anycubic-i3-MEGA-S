@@ -38,6 +38,18 @@
  */
 #define CONFIGURATION_H_VERSION 020005
 
+
+/********************************************************************************************
+# **                                                                                       **
+# **   If you want to select a specific configuration for your                             **
+# **   printer, just open the PlatformIO tab on the left, select                           **
+# **   PROJECT TASKS and then "env:i3_MEGA*" (your desired config)                         **
+# **   From there you can build and upload your code.                                      **
+# **                                                                                       **
+# *******************************************************************************************/
+
+
+
 #define ANYCUBIC_TOUCHSCREEN
 #define ANYCUBIC_FILAMENT_RUNOUT_SENSOR
 #define KNUTWURST_SPECIAL_MENU
