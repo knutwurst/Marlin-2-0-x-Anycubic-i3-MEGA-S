@@ -35,6 +35,7 @@
 #include "../module/motion.h"
 #include "../module/configuration_store.h"
 #include "../sd/cardreader.h"
+#include "../module/probe.h"
 
 
 #ifdef ANYCUBIC_TOUCHSCREEN
@@ -47,8 +48,30 @@ char _conv[8];
   int z_values_index;
   int z_values_size;
   float SAVE_zprobe_zoffset;
-  // xyz_pos_t probe_offset; //configuration_store.cpp line 204
+
+  void restore_z_values() {
+    uint16_t size  = z_values_size;
+    int      pos   = z_values_index;
+    uint8_t* value = (uint8_t*)&z_values;
+    do {
+      uint8_t c = eeprom_read_byte((unsigned char*)pos);
+      *value = c;
+      pos++;
+      value++;		
+    } while (--size);
+  }
+
+  void setupMyZoffset() {
+    #if ENABLED(AUTO_BED_LEVELING_BILINEAR)
+      SERIAL_ECHOPAIR("MEANL_L:", 0x55);
+      SAVE_zprobe_zoffset = probe.offset.z;
+    #else
+    SERIAL_ECHOPAIR("MEANL_L:", 0xaa);
+      zprobe_zoffset     = Z_PROBE_OFFSET_FROM_EXTRUDER;
+    #endif
+  }
 #endif
+
 
 #if defined(POWER_OUTAGE_TEST)
 int PowerInt = 6;
@@ -57,6 +80,8 @@ int Temp_Buf_Extuder_Temperature = 0;
 int Temp_Buf_Bed_Temperature = 0;
 unsigned char ResumingFlag = 0;
 #endif
+
+
 
 void setup_OutageTestPin()
 {
@@ -1942,7 +1967,7 @@ void AnycubicTouchscreenClass::GetCommandFromTFT()
                   if(CodeSeen('S'))
                   {
                     float value = constrain(CodeValue(),-1.0,1.0);
-                    zprobe_zoffset += value;
+                    probe.offset.z += value;
                     for (x = 0; x < GRID_MAX_POINTS_X; x++) {
                       for (y = 0; y < GRID_MAX_POINTS_Y; y++) z_values[x][y] += value;
                     }
@@ -1950,20 +1975,20 @@ void AnycubicTouchscreenClass::GetCommandFromTFT()
                     refresh_bed_level();
 
                     HARDWARE_SERIAL_PROTOCOLPGM("A31V ");
-                    HARDWARE_SERIAL_PROTOCOL(ftostr32(zprobe_zoffset));
+                    HARDWARE_SERIAL_PROTOCOL(ftostr32(probe.offset.z));
                     HARDWARE_SERIAL_ENTER();
                   }
                   
                   if(CodeSeen('G'))
                   {
-                    SAVE_zprobe_zoffset = zprobe_zoffset;
+                    SAVE_zprobe_zoffset = probe.offset.z;
                     HARDWARE_SERIAL_PROTOCOLPGM("A31V ");
                     HARDWARE_SERIAL_PROTOCOL(ftostr32(SAVE_zprobe_zoffset));
                     HARDWARE_SERIAL_ENTER();
                   }
                   if(CodeSeen('D'))
                   {
-                    SAVE_zprobe_zoffset = zprobe_zoffset;
+                    SAVE_zprobe_zoffset = probe.offset.z;
                     settings.save();
                     set_bed_leveling_enabled(true);
                     refresh_bed_level();
@@ -1995,22 +2020,16 @@ void AnycubicTouchscreenClass::GetCommandFromTFT()
                   if(CodeSeen('C'))
                   {
                     restore_z_values();
-                    zprobe_zoffset = SAVE_zprobe_zoffset;
+                    probe.offset.z = SAVE_zprobe_zoffset;
                     set_bed_leveling_enabled(true);
                     refresh_bed_level();
                   }
                 #endif
               }
               break;  
-              case 35:
-              { 
-                //RESET AUTOBED DATE //M1000
-              }
+              case 35: //RESET AUTOBED DATE //M1000
               break;
-              case 36:
-              {   
-                // a36 M1001  
-              }
+              case 36: // a36 M1001
               break;        
             #endif
 
@@ -2294,31 +2313,6 @@ void PowerKill()
   }
 #endif
 }
-
-
-#if ENABLED(KNUTWURST_TFT_LEVELING)
-    void restore_z_values() {
-      uint16_t size  = z_values_size;
-      int      pos   = z_values_index;
-      uint8_t* value = (uint8_t*)&z_values;
-      do {
-        uint8_t c = eeprom_read_byte((unsigned char*)pos);
-        *value = c;
-        pos++;
-        value++;		
-      } while (--size);
-    }
-
-    void setupMyZoffset() {
-      #if ENABLED(AUTO_BED_LEVELING_BILINEAR)
-        SERIAL_ECHOPAIR("MEANL_L:", 0x55);
-        SAVE_zprobe_zoffset = zprobe_zoffset;
-      #else
-      SERIAL_ECHOPAIR("MEANL_L:", 0xaa);
-        zprobe_zoffset     = Z_PROBE_OFFSET_FROM_EXTRUDER;
-      #endif
-    }
-#endif
 
 AnycubicTouchscreenClass AnycubicTouchscreen;
 #endif

@@ -720,8 +720,8 @@ void MarlinSettings::postprocess() {
       EEPROM_WRITE(bilinear_start);
 
       #if ENABLED(KNUTWURST_TFT_LEVELING)
-        z_values_index = eeprom_index;
-        z_values_size = sizeof(z_values);
+        int z_values_index = eeprom_index;
+        int z_values_size = sizeof(z_values);
       #endif
 
       #if ENABLED(AUTO_BED_LEVELING_BILINEAR)

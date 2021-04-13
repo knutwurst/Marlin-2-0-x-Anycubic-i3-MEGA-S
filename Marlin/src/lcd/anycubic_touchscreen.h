@@ -197,8 +197,10 @@ char *ftostr32(const float &);
 #endif
 
 #if ENABLED(KNUTWURST_TFT_LEVELING)
+  // eeprom_index
   extern int z_values_index;
   extern int z_values_size;
+  // temp value which needs to be saved
   extern float SAVE_zprobe_zoffset;
 #endif
 
