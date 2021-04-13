@@ -196,6 +196,11 @@ char *ftostr32(const float &);
 #define SM_EZLVL_EXIT_S       "<EZLEXT1.GCO"
 #endif
 
+#if ENABLED(KNUTWURST_TFT_LEVELING)
+  extern int z_values_index;
+  extern int z_values_size;
+  extern float SAVE_zprobe_zoffset;
+#endif
 
 class AnycubicTouchscreenClass
 {
@@ -286,12 +291,6 @@ private:
   char FilamentTestLastStatus = false;
   bool FilamentSetMillis = true;
   int FilamentRunoutCounter = 0;
-#endif
-
-#if ENABLED(KNUTWURST_TFT_LEVELING)
-  extern int z_values_index;
-  extern int z_values_size;
-  extern float SAVE_zprobe_zoffset;
 #endif
 
 

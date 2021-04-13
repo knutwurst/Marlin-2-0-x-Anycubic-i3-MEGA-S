@@ -56,6 +56,7 @@
 #define KNUTWURST_SPECIAL_MENU_WO_SD
 //#define ANYCUBIC_TFT_DEBUG
 //#define POWER_OUTAGE_TEST
+#define EXT_LEVEL_HIGH 0.1
 
 /*
  * This feature is for debugging purpose only.
@@ -88,7 +89,6 @@
 #if ENABLED(KNUTWURST_CHIRON)
   //#define KNUTWURST_TFT_LEVELING
 #endif
-
 
 /*
  * Here you can set the default preheat-Temperatures

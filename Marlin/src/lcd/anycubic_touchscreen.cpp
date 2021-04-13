@@ -27,6 +27,7 @@
 #include "../gcode/queue.h"
 #include "../feature/e_parser.h"
 #include "../feature/pause.h"
+#include "../feature/bedlevel/bedlevel.h"
 #include "../libs/buzzer.h"
 #include "../module/planner.h"
 #include "../module/printcounter.h"
@@ -46,6 +47,7 @@ char _conv[8];
   int z_values_index;
   int z_values_size;
   float SAVE_zprobe_zoffset;
+  // xyz_pos_t probe_offset; //configuration_store.cpp line 204
 #endif
 
 #if defined(POWER_OUTAGE_TEST)
@@ -1298,6 +1300,11 @@ static boolean TFTcomment_mode = false;
 void AnycubicTouchscreenClass::GetCommandFromTFT()
 {
   char *starpos = NULL;
+  #if ENABLED(KNUTWURST_TFT_LEVELING)
+    uint8_t x;
+    uint8_t y;
+  #endif
+
   while( HardwareSerial.available() > 0  && TFTbuflen < TFTBUFSIZE)
   {
     serial3_char = HardwareSerial.read();   
@@ -1869,13 +1876,10 @@ void AnycubicTouchscreenClass::GetCommandFromTFT()
 
 /*
  * The following section is completely untested and
- * does not work at this time. I's only used to help
+ * does not work at this time. It's only used to help
  * me adding the leveling features for the Anycubic
  * Chiron printer.
  */
-
-//#define AUTO_BED_LEVELING_BILINEAR
-
             #if ENABLED(KNUTWURST_TFT_LEVELING)
               case 29: // A29 bed grid read
               {
@@ -1884,11 +1888,11 @@ void AnycubicTouchscreenClass::GetCommandFromTFT()
                   if(CodeSeen('Y')) y = CodeValue();
                   float Zvalue = z_values[x][y];
                   Zvalue = Zvalue * 100;
-                        
+
                   refresh_bed_level();
                   set_bed_leveling_enabled(true);
 
-                  if(!!card.isPrinting() && sdcardstartprintingflag == 0)
+                  if ((!planner.movesplanned()) && (TFTstate != ANYCUBIC_TFT_STATE_SDPAUSE) && (TFTstate != ANYCUBIC_TFT_STATE_SDOUTAGE))
                   {
                     if (!all_axes_known())
                     {
@@ -1911,14 +1915,14 @@ void AnycubicTouchscreenClass::GetCommandFromTFT()
                     }
                   }
                   HARDWARE_SERIAL_PROTOCOLPGM("A29V ");
-                  HARDWARE_SERIAL_PROTOCOL(ftostr32(Zvalue)); // or better HARDWARE_SERIAL_PROTOCOLLN?
+                  HARDWARE_SERIAL_PROTOCOL(ftostr32(Zvalue));
                   HARDWARE_SERIAL_ENTER();
                 #endif
               }
               break;   
               case 30: // A30 auto leveling
                 #ifdef AUTO_BED_LEVELING_BILINEAR
-                  if( (planner.movesplanned()) || (!card.isPrinting()) ) {
+                  if( (planner.movesplanned()) || (card.isPrinting()) ) {
                     HARDWARE_SERIAL_PROTOCOLPGM("J24");	// forbid auto leveling
                     HARDWARE_SERIAL_ENTER();
                     } else {
@@ -1946,14 +1950,16 @@ void AnycubicTouchscreenClass::GetCommandFromTFT()
                     refresh_bed_level();
 
                     HARDWARE_SERIAL_PROTOCOLPGM("A31V ");
-                    write_to_lcd_f(zprobe_zoffset);
+                    HARDWARE_SERIAL_PROTOCOL(ftostr32(zprobe_zoffset));
+                    HARDWARE_SERIAL_ENTER();
                   }
                   
                   if(CodeSeen('G'))
                   {
                     SAVE_zprobe_zoffset = zprobe_zoffset;
                     HARDWARE_SERIAL_PROTOCOLPGM("A31V ");
-                    write_to_lcd_f(SAVE_zprobe_zoffset);
+                    HARDWARE_SERIAL_PROTOCOL(ftostr32(SAVE_zprobe_zoffset));
+                    HARDWARE_SERIAL_ENTER();
                   }
                   if(CodeSeen('D'))
                   {
@@ -1997,66 +2003,13 @@ void AnycubicTouchscreenClass::GetCommandFromTFT()
               }
               break;  
               case 35:
-              { //RESET AUTOBED DATE //M1000
-                /*                   
-                      float temp;
-                      if(code_seen('S')) temp=code_value_float();
-                      else temp=-3.5;
-                      for (uint8_t x = 0; x < ABL_GRID_POINTS_X; x++)
-                      {
-                        for (uint8_t y = 0; y < ABL_GRID_POINTS_Y; y++)
-                          bed_level_grid[x][y] =temp; 
-                      };
-                      bilinear_grid_spacing[0]=int((RIGHT_PROBE_BED_POSITION-LEFT_PROBE_BED_POSITION)/(ABL_GRID_POINTS_X-1));
-                      bilinear_grid_spacing[1]=int((BACK_PROBE_BED_POSITION-FRONT_PROBE_BED_POSITION)/(ABL_GRID_POINTS_Y-1));
-                      bilinear_start[0]=LEFT_PROBE_BED_POSITION;
-                      bilinear_start[1]=FRONT_PROBE_BED_POSITION;
-                      zprobe_zoffset = Z_PROBE_OFFSET_FROM_EXTRUDER;
-                      NEW_zprobe_zoffset=Z_PROBE_OFFSET_FROM_EXTRUDER;
-                      Manual_Leveling=0xaa;
-                      SaveWay2Leveling();
-                      SaveAutoBedGridData();
-                      SERIAL_ECHOPGM("Done, Manual Leveling was actived!");
-                HARDWARE_SERIAL_ENTER();
-                */
+              { 
+                //RESET AUTOBED DATE //M1000
               }
               break;
-              case 36:// a36 M1001  
-              {   /*     
-                  if((planner.movesplanned())||(!card.isPrinting())) //forbit auto leveling when the printer is moving
-                            {
-                              HARDWARE_SERIAL_PROTOCOLPGM("J24");// forbid auto leveling
-                              HARDWARE_SERIAL_ENTER(); 
-                              HARDWARE_SERIAL_PROTOCOLLN("J24");
-                    break;
-                            }
-
-                          do_blocking_move_to_z(50.0,30); 
-                    if(Manual_Leveling!=0x55)
-                    {
-                          for (uint8_t x = 0; x < ABL_GRID_POINTS_X; x++)
-                          {
-                            for (uint8_t y = 0; y < ABL_GRID_POINTS_Y; y++)
-                              bed_level_grid[x][y] =-0.1; 
-                          };
-                        bilinear_grid_spacing[0]=int((RIGHT_PROBE_BED_POSITION-LEFT_PROBE_BED_POSITION)/(ABL_GRID_POINTS_X-1));
-                        bilinear_grid_spacing[1]=int((BACK_PROBE_BED_POSITION-FRONT_PROBE_BED_POSITION)/(ABL_GRID_POINTS_Y-1));
-                        bilinear_start[0]=LEFT_PROBE_BED_POSITION;
-                        bilinear_start[1]=FRONT_PROBE_BED_POSITION;
-                        zprobe_zoffset = Z_PROBE_OFFSET_FROM_EXTRUDER;
-                        NEW_zprobe_zoffset=Z_PROBE_OFFSET_FROM_EXTRUDER;
-                        Manual_Leveling=0x55;
-                        SaveWay2Leveling();
-                        SaveAutoBedGridData();  
-                        SERIAL_ECHOPGM("Done, Auto Leveling was actived!");  
-                  HARDWARE_SERIAL_ENTER();
-                    }
-
-                                          
-                  HARDWARE_SERIAL_PROTOCOLPGM("J26");//start auto leveling
-                  HARDWARE_SERIAL_ENTER();  
-                  HARDWARE_SERIAL_PROTOCOLLN("J26");
-                  */
+              case 36:
+              {   
+                // a36 M1001  
               }
               break;        
             #endif
