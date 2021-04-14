@@ -59,45 +59,43 @@ char _conv[8];
       value++;		
     } while (--size);
   }
+#endif
 
-  void setupMyZoffset() {
-    #if ENABLED(AUTO_BED_LEVELING_BILINEAR)
-      SERIAL_ECHOPAIR("MEANL_L:", 0x55);
-      SAVE_zprobe_zoffset = probe.offset.z;
-    #else
+void setupMyZoffset() {
+  #if ENABLED(AUTO_BED_LEVELING_BILINEAR)
+    SERIAL_ECHOPAIR("MEANL_L:", 0x55);
+    SAVE_zprobe_zoffset = probe.offset.z;
+  #else
     SERIAL_ECHOPAIR("MEANL_L:", 0xaa);
-      zprobe_zoffset     = Z_PROBE_OFFSET_FROM_EXTRUDER;
-    #endif
-  }
+    probe.offset = NOZZLE_TO_PROBE_OFFSET;
+  #endif
+}
+
+#if ENABLED(POWER_OUTAGE_TEST)
+  int PowerInt = 6;
+  unsigned char PowerTestFlag = false;
+  int Temp_Buf_Extuder_Temperature = 0;
+  int Temp_Buf_Bed_Temperature = 0;
+  unsigned char ResumingFlag = 0;
 #endif
-
-
-#if defined(POWER_OUTAGE_TEST)
-int PowerInt = 6;
-unsigned char PowerTestFlag = false;
-int Temp_Buf_Extuder_Temperature = 0;
-int Temp_Buf_Bed_Temperature = 0;
-unsigned char ResumingFlag = 0;
-#endif
-
 
 
 void setup_OutageTestPin()
 {
-#ifdef POWER_OUTAGE_TEST
-  pinMode(OUTAGETEST_PIN, INPUT);
-  pinMode(OUTAGECON_PIN, OUTPUT);
-  WRITE(OUTAGECON_PIN, LOW);
-#endif
+  #ifdef POWER_OUTAGE_TEST
+    pinMode(OUTAGETEST_PIN, INPUT);
+    pinMode(OUTAGECON_PIN, OUTPUT);
+    WRITE(OUTAGECON_PIN, LOW);
+  #endif
 }
 
 char *itostr2(const uint8_t &x)
 {
-  int xx = x;
-  _conv[0] = (xx / 10) % 10 + '0';
-  _conv[1] = (xx) % 10 + '0';
-  _conv[2] = 0;
-  return _conv;
+    int xx = x;
+    _conv[0] = (xx / 10) % 10 + '0';
+    _conv[1] = (xx) % 10 + '0';
+    _conv[2] = 0;
+    return _conv;
 }
 
 #ifndef ULTRA_LCD
@@ -137,6 +135,12 @@ AnycubicTouchscreenClass::AnycubicTouchscreenClass()
 void AnycubicTouchscreenClass::Setup()
 {
   HardwareSerial.begin(115200);
+
+  #if ENABLED(KNUTWURST_CHIRON)
+		setupMyZoffset();
+		delay(10);
+	#endif
+
   HARDWARE_SERIAL_ENTER();
   HARDWARE_SERIAL_PROTOCOLPGM("J17"); // J17 Main board reset
   HARDWARE_SERIAL_ENTER();
@@ -144,23 +148,24 @@ void AnycubicTouchscreenClass::Setup()
   HARDWARE_SERIAL_PROTOCOLPGM("J12"); // J12 Ready
   HARDWARE_SERIAL_ENTER();
 
-#if ENABLED(SDSUPPORT) && PIN_EXISTS(SD_DETECT)
-  pinMode(SD_DETECT_PIN, INPUT);
-  WRITE(SD_DETECT_PIN, HIGH);
-#endif
+  #if ENABLED(SDSUPPORT) && PIN_EXISTS(SD_DETECT)
+    pinMode(SD_DETECT_PIN, INPUT);
+    WRITE(SD_DETECT_PIN, HIGH);
+  #endif
+  
   pinMode(FILAMENT_RUNOUT_PIN, INPUT);
   WRITE(FILAMENT_RUNOUT_PIN, HIGH);
 
-#if ENABLED(ANYCUBIC_FILAMENT_RUNOUT_SENSOR)
-  if ((READ(FILAMENT_RUNOUT_PIN) == true) && FilamentSensorEnabled)
-  {
-    HARDWARE_SERIAL_PROTOCOLPGM("J15"); //J15 FILAMENT LACK
-    HARDWARE_SERIAL_ENTER();
-#ifdef ANYCUBIC_TFT_DEBUG
-    SERIAL_ECHOLNPGM("TFT Serial Debug: Filament runout... J15");
-#endif
-  }
-#endif
+  #if ENABLED(ANYCUBIC_FILAMENT_RUNOUT_SENSOR)
+    if ((READ(FILAMENT_RUNOUT_PIN) == true) && FilamentSensorEnabled)
+    {
+      HARDWARE_SERIAL_PROTOCOLPGM("J15"); //J15 FILAMENT LACK
+      HARDWARE_SERIAL_ENTER();
+      #ifdef ANYCUBIC_TFT_DEBUG
+          SERIAL_ECHOLNPGM("TFT Serial Debug: Filament runout... J15");
+      #endif
+    }
+  #endif
 
   currentTouchscreenSelection[0] = 0;
   currentFileOrDirectory[0] = '\0';
@@ -173,14 +178,14 @@ void AnycubicTouchscreenClass::Setup()
   currentFlowRate = 100;
   flowRateBuffer = SM_FLOW_DISP_L;
 
-#ifdef STARTUP_CHIME
-  buzzer.tone(100, 554);
-  buzzer.tone(100, 740);
-  buzzer.tone(100, 831);
-#endif
+  #ifdef STARTUP_CHIME
+    buzzer.tone(100, 554);
+    buzzer.tone(100, 740);
+    buzzer.tone(100, 831);
+  #endif
 
 
-setup_OutageTestPin();
+  setup_OutageTestPin();
 }
 
 #if ENABLED(KNUTWURST_MEGA_P_LASER)
@@ -601,7 +606,7 @@ void AnycubicTouchscreenClass::HandleSpecialMenu()
     queue.inject_P(PSTR("M140 S60"));
   }
 
-  #if DISABLED(KNUTWURST_BLTOUCH)
+  #if NONE(KNUTWURST_BLTOUCH, KNUTWURST_TFT_LEVELING)
     else if ((strcasestr_P(currentTouchscreenSelection, PSTR(SM_MESH_MENU_L)) != NULL)
     || (strcasestr_P(currentTouchscreenSelection, PSTR(SM_MESH_MENU_S)) != NULL))
     {
@@ -657,7 +662,7 @@ void AnycubicTouchscreenClass::HandleSpecialMenu()
     }
   #endif
 
-  #if ENABLED(KNUTWURST_BLTOUCH)
+  #if ANY(KNUTWURST_BLTOUCH, KNUTWURST_TFT_LEVELING)
     else if ((strcasestr_P(currentTouchscreenSelection, PSTR(SM_BLTOUCH_L)) != NULL)
     || (strcasestr_P(currentTouchscreenSelection, PSTR(SM_BLTOUCH_S)) != NULL))
     {
@@ -919,7 +924,7 @@ void AnycubicTouchscreenClass::PrintList()
       HARDWARE_SERIAL_PROTOCOLLNPGM(SM_RESUME_L);
       break;
 
-      #if DISABLED(KNUTWURST_BLTOUCH)
+      #if NONE(KNUTWURST_BLTOUCH, KNUTWURST_TFT_LEVELING)
           case 4: // Page 2
             HARDWARE_SERIAL_PROTOCOLLNPGM(SM_EZLVL_MENU_S);
             HARDWARE_SERIAL_PROTOCOLLNPGM(SM_EZLVL_MENU_L);
@@ -932,7 +937,7 @@ void AnycubicTouchscreenClass::PrintList()
             break;
       #endif
 
-      #if ENABLED(KNUTWURST_BLTOUCH)
+      #if ANY(KNUTWURST_BLTOUCH, KNUTWURST_TFT_LEVELING)
           case 4: // Page 2
             HARDWARE_SERIAL_PROTOCOLLNPGM(SM_EZLVL_MENU_S);
             HARDWARE_SERIAL_PROTOCOLLNPGM(SM_EZLVL_MENU_L);
@@ -1901,21 +1906,16 @@ void AnycubicTouchscreenClass::GetCommandFromTFT()
             HARDWARE_SERIAL_ENTER();
             break;
             
-            case 33: // A33 get version info
-            {
-              HARDWARE_SERIAL_PROTOCOLPGM("J33 ");
-              HARDWARE_SERIAL_PROTOCOLPGM("KW-");
-              HARDWARE_SERIAL_PROTOCOLPGM(MSG_MY_VERSION);
-              HARDWARE_SERIAL_ENTER();				
-            }              
-            break;
-
-/*
- * The following section is completely untested and
- * does not work at this time. It's only used to help
- * me adding the leveling features for the Anycubic
- * Chiron printer.
- */
+            #if DISABLED(KNUTWURST_TFT_LEVELING)
+              case 33: // A33 get version info
+              {
+                HARDWARE_SERIAL_PROTOCOLPGM("J33 ");
+                HARDWARE_SERIAL_PROTOCOLPGM("KW-");
+                HARDWARE_SERIAL_PROTOCOLPGM(MSG_MY_VERSION);
+                HARDWARE_SERIAL_ENTER();				
+              }              
+              break;
+            #endif
             #if ENABLED(KNUTWURST_TFT_LEVELING)
               case 29: // A29 bed grid read
               {
@@ -1969,8 +1969,8 @@ void AnycubicTouchscreenClass::GetCommandFromTFT()
                     queue.enqueue_now_P(PSTR("G28\nG29"));
                   }
                   #else
-                  HARDWARE_SERIAL_PROTOCOLPGM("J24");	// forbid auto leveling
-                  HARDWARE_SERIAL_ENTER();
+                    HARDWARE_SERIAL_PROTOCOLPGM("J24");	// forbid auto leveling
+                    HARDWARE_SERIAL_ENTER();
                 #endif
               break;
               case 31: // A31 zoffset set get or save
@@ -2008,7 +2008,15 @@ void AnycubicTouchscreenClass::GetCommandFromTFT()
                 #endif
               break;
               case 32:  //a32 clean leveling beep flag
-              break;          
+              break;
+              case 33: // A33 get version info
+              {
+                HARDWARE_SERIAL_PROTOCOLPGM("J33 ");
+                HARDWARE_SERIAL_PROTOCOLPGM("KW-");
+                HARDWARE_SERIAL_PROTOCOLPGM(MSG_MY_VERSION);
+                HARDWARE_SERIAL_ENTER();				
+              }              
+              break;      
               case 34: //a34 bed grid write
               {
                 #ifdef AUTO_BED_LEVELING_BILINEAR
