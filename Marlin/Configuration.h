@@ -563,25 +563,23 @@
 
   // If you are using a pre-configured hotend then you can use one of the value sets by uncommenting it
 
-  // i3 Mega stock v5 hotend, 40W heater cartridge (3.6Ω @ 22°C)
-  #define  DEFAULT_Kp 15.94
-  #define  DEFAULT_Ki 1.17
-  #define  DEFAULT_Kd 54.19
+  #if ANY(KNUTWURST_MEGA, KNUTWURST_MEGA_S, KNUTWURST_MEGA_P)
+    #define  DEFAULT_Kp 15.94
+    #define  DEFAULT_Ki 1.17
+    #define  DEFAULT_Kd 54.19
+  #endif
 
-  // Ultimaker
-  // #define DEFAULT_Kp 22.2
-  // #define DEFAULT_Ki 1.08
-  // #define DEFAULT_Kd 114
+  #if ENABLED(KNUTWURST_MEGA_X)
+    #define  DEFAULT_Kp 15.94
+    #define  DEFAULT_Ki 1.17
+    #define  DEFAULT_Kd 54.19
+  #endif
 
-  // MakerGear
-  //#define DEFAULT_Kp 7.0
-  //#define DEFAULT_Ki 0.1
-  //#define DEFAULT_Kd 12
-
-  // Mendel Parts V9 on 12V
-  //#define DEFAULT_Kp 63.0
-  //#define DEFAULT_Ki 2.25
-  //#define DEFAULT_Kd 440
+  #if ENABLED(KNUTWURST_CHIRON)
+    #define DEFAULT_Kp 20
+    #define DEFAULT_Ki 0.5
+    #define DEFAULT_Kd 106.55
+  #endif
 
 #endif // PIDTEMP
 
@@ -618,10 +616,24 @@
   //#define MIN_BED_POWER 0
   //#define PID_BED_DEBUG // Sends debug data to the serial port.
 
-  //Anycubic i3 Mega Ultrabase (0.9Ω @ 22°C)
-  #define DEFAULT_bedKp 251.78
-  #define DEFAULT_bedKi 49.57
-  #define DEFAULT_bedKd 319.73
+  #if ANY(KNUTWURST_MEGA, KNUTWURST_MEGA_S, KNUTWURST_MEGA_P)
+    #define DEFAULT_bedKp 251.78
+    #define DEFAULT_bedKi 49.57
+    #define DEFAULT_bedKd 319.73
+  #endif
+
+  #if ENABLED(KNUTWURST_MEGA_X)
+    #define DEFAULT_bedKp 251.78
+    #define DEFAULT_bedKi 49.57
+    #define DEFAULT_bedKd 319.73
+  #endif
+
+  #if ENABLED(KNUTWURST_CHIRON)
+    #define DEFAULT_bedKp 97.10
+    #define DEFAULT_bedKi 1.41
+    #define DEFAULT_bedKd 1675.16
+  #endif
+
 
   //120V 250W silicone heater into 4mm borosilicate (MendelMax 1.5+)
   //from pidautotune
@@ -1231,7 +1243,8 @@
 #endif
 
 #if ENABLED(KNUTWURST_TFT_LEVELING)
-    #define NOZZLE_TO_PROBE_OFFSET { 0, 0, -17 } // Chiron Default Value!
+    //#define NOZZLE_TO_PROBE_OFFSET { 0, 0, -17 } // Chiron Default Value!
+    #define NOZZLE_TO_PROBE_OFFSET { 0, 0, -14 } // Chiron Default Value!
 #endif
 
 #if NONE(KNUTWURST_BLTOUCH, KNUTWURST_TFT_LEVELING)
