@@ -34,9 +34,8 @@
 #include "../module/temperature.h"
 #include "../module/motion.h"
 #include "../module/configuration_store.h"
-#include "../sd/cardreader.h"
 #include "../module/probe.h"
-
+#include "../sd/cardreader.h"
 
 #ifdef ANYCUBIC_TOUCHSCREEN
 #include "anycubic_touchscreen.h"
