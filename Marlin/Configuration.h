@@ -87,7 +87,10 @@
  * is automatically set if the chiron is enabled.
  * 
  */
-//#define KNUTWURST_TFT_LEVELING
+#if ENABLED(KNUTWURST_CHIRON)
+  //#define KNUTWURST_TFT_LEVELING
+#endif
+
 
 /*
  * Here you can set the default preheat-Temperatures
