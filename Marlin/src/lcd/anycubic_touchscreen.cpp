@@ -136,7 +136,7 @@ void AnycubicTouchscreenClass::Setup()
 {
   HardwareSerial.begin(115200);
 
-  #if ENABLED(KNUTWURST_CHIRON)
+  #if ENABLED(KNUTWURST_TFT_LEVELING)
 		setupMyZoffset();
 		delay(10);
 	#endif
