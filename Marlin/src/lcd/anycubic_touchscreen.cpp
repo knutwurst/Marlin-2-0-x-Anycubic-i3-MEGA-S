@@ -59,9 +59,8 @@ char _conv[8];
       value++;		
     } while (--size);
   }
-#endif
 
-void setupMyZoffset() {
+  void setupMyZoffset() {
   #if ENABLED(AUTO_BED_LEVELING_BILINEAR)
     SERIAL_ECHOPAIR("MEANL_L:", 0x55);
     SAVE_zprobe_zoffset = probe.offset.z;
@@ -70,6 +69,7 @@ void setupMyZoffset() {
     probe.offset = NOZZLE_TO_PROBE_OFFSET;
   #endif
 }
+#endif
 
 #if ENABLED(POWER_OUTAGE_TEST)
   int PowerInt = 6;
