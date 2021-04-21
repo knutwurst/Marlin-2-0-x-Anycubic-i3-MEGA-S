@@ -1130,10 +1130,8 @@
  * Use G29 repeatedly, adjusting the Z height at each point with movement commands
  * or (with LCD_BED_LEVELING) the LCD controller.
  */
-#if DISABLED(KNUTWURST_BLTOUCH)
-    #if DISABLED(KNUTWURST_TFT_LEVELING)
-      #define PROBE_MANUALLY
-    #endif
+#if NONE(KNUTWURST_BLTOUCH, KNUTWURST_TFT_LEVELING)
+  #define PROBE_MANUALLY
 #endif
 
 //#define MANUAL_PROBE_START_Z 0.2
@@ -1652,7 +1650,7 @@
  *   leveling in steps so you can manually adjust the Z height at each grid-point.
  *   With an LCD controller the process is guided step-by-step.
  */
-#if ANY(KNUTWURST_BLTOUCH, KNUTWURST_TFT_LEVELING)
+#if EITHER(KNUTWURST_BLTOUCH, KNUTWURST_TFT_LEVELING)
     //#define AUTO_BED_LEVELING_3POINT
     //#define AUTO_BED_LEVELING_LINEAR
     #define AUTO_BED_LEVELING_BILINEAR
@@ -1831,7 +1829,7 @@
     #define HOMING_FEEDRATE_Z  (4*60)
 #endif
 
-#if ANY(KNUTWURST_MEGA_X, KNUTWURST_CHIRON)
+#if EITHER(KNUTWURST_MEGA_X, KNUTWURST_CHIRON)
     // Homing speeds (mm/m)
     #define HOMING_FEEDRATE_XY (40*60)
     #define HOMING_FEEDRATE_Z  (6*60)

@@ -662,7 +662,7 @@ void AnycubicTouchscreenClass::HandleSpecialMenu()
     }
   #endif
 
-  #if ANY(KNUTWURST_BLTOUCH, KNUTWURST_TFT_LEVELING)
+  #if EITHER(KNUTWURST_BLTOUCH, KNUTWURST_TFT_LEVELING)
     else if ((strcasestr_P(currentTouchscreenSelection, PSTR(SM_BLTOUCH_L)) != NULL)
     || (strcasestr_P(currentTouchscreenSelection, PSTR(SM_BLTOUCH_S)) != NULL))
     {
@@ -937,7 +937,7 @@ void AnycubicTouchscreenClass::PrintList()
             break;
       #endif
 
-      #if ANY(KNUTWURST_BLTOUCH, KNUTWURST_TFT_LEVELING)
+      #if EITHER(KNUTWURST_BLTOUCH, KNUTWURST_TFT_LEVELING)
           case 4: // Page 2
             HARDWARE_SERIAL_PROTOCOLLNPGM(SM_EZLVL_MENU_S);
             HARDWARE_SERIAL_PROTOCOLLNPGM(SM_EZLVL_MENU_L);
