@@ -1919,62 +1919,54 @@ void AnycubicTouchscreenClass::GetCommandFromTFT()
             #if ENABLED(KNUTWURST_TFT_LEVELING)
               case 29: // A29 bed grid read
               {
-                #ifdef AUTO_BED_LEVELING_BILINEAR
-                  if(CodeSeen('X')) x = CodeValue();
-                  if(CodeSeen('Y')) y = CodeValue();
-                  float Zvalue = z_values[x][y];
-                  Zvalue = Zvalue * 100;
+                if(CodeSeen('X')) x = CodeValue();
+                if(CodeSeen('Y')) y = CodeValue();
+                float Zvalue = z_values[x][y];
+                Zvalue = Zvalue * 100;
 
-                  refresh_bed_level();
-                  set_bed_leveling_enabled(true);
+                refresh_bed_level();
+                set_bed_leveling_enabled(true);
 
-                  if ((!planner.movesplanned()) && (TFTstate != ANYCUBIC_TFT_STATE_SDPAUSE) && (TFTstate != ANYCUBIC_TFT_STATE_SDOUTAGE))
+                if ((!planner.movesplanned()) && (TFTstate != ANYCUBIC_TFT_STATE_SDPAUSE) && (TFTstate != ANYCUBIC_TFT_STATE_SDOUTAGE))
+                {
+                  if (!all_axes_known())
                   {
-                    if (!all_axes_known())
-                    {
-                        queue.enqueue_now_P(PSTR("G28"));
-                    } else {
-                        destination[Z_AXIS] = (float)(5.0);
-                        prepare_line_to_destination();
+                      queue.enqueue_now_P(PSTR("G28"));
+                  } else {
+                      destination[Z_AXIS] = (float)(5.0);
+                      prepare_line_to_destination();
 
-                        feedrate_mm_s = MMM_TO_MMS(3600.0f);
-                      
-                        destination[X_AXIS] = _GET_MESH_X(x);
-                        destination[Y_AXIS] = _GET_MESH_Y(y);					
-                      
-                        prepare_line_to_destination();
+                      feedrate_mm_s = MMM_TO_MMS(3600.0f);
+                    
+                      destination[X_AXIS] = _GET_MESH_X(x);
+                      destination[Y_AXIS] = _GET_MESH_Y(y);					
+                    
+                      prepare_line_to_destination();
 
-                        destination[Z_AXIS] = (float)(EXT_LEVEL_HIGH);
-                        prepare_line_to_destination();
+                      destination[Z_AXIS] = (float)(EXT_LEVEL_HIGH);
+                      prepare_line_to_destination();
 
-                        report_current_position();
-                    }
+                      report_current_position();
                   }
-                  HARDWARE_SERIAL_PROTOCOLPGM("A29V ");
-                  HARDWARE_SERIAL_PROTOCOL(ftostr32(Zvalue));
-                  HARDWARE_SERIAL_ENTER();
-                #endif
+                }
+                HARDWARE_SERIAL_PROTOCOLPGM("A29V ");
+                HARDWARE_SERIAL_PROTOCOL(ftostr32(Zvalue));
+                HARDWARE_SERIAL_ENTER();
               }
               break;   
               case 30: // A30 auto leveling
-                #ifdef AUTO_BED_LEVELING_BILINEAR
-                  if( (planner.movesplanned()) || (card.isPrinting()) ) {
-                    HARDWARE_SERIAL_PROTOCOLPGM("J24");	// forbid auto leveling
-                    HARDWARE_SERIAL_ENTER();
-                    } else {
-                    HARDWARE_SERIAL_PROTOCOLPGM("J26");	// start auto leveling
-                    HARDWARE_SERIAL_ENTER();
-                  }
-                  if(CodeSeen('S') ) {
-                    queue.enqueue_now_P(PSTR("G28\nG29"));
-                  }
-                  #else
-                    HARDWARE_SERIAL_PROTOCOLPGM("J24");	// forbid auto leveling
-                    HARDWARE_SERIAL_ENTER();
-                #endif
+                if( (planner.movesplanned()) || (card.isPrinting()) ) {
+                  HARDWARE_SERIAL_PROTOCOLPGM("J24");	// forbid auto leveling
+                  HARDWARE_SERIAL_ENTER();
+                  } else {
+                  HARDWARE_SERIAL_PROTOCOLPGM("J26");	// start auto leveling
+                  HARDWARE_SERIAL_ENTER();
+                }
+                if(CodeSeen('S') ) {
+                  queue.enqueue_now_P(PSTR("G28\nG29"));
+                }
               break;
               case 31: // A31 zoffset set get or save
-                #ifdef AUTO_BED_LEVELING_BILINEAR
                   if(CodeSeen('S'))
                   {
                     float value = constrain(CodeValue(),-1.0,1.0);
@@ -2005,7 +1997,6 @@ void AnycubicTouchscreenClass::GetCommandFromTFT()
                     refresh_bed_level();
                   }
                   HARDWARE_SERIAL_ENTER();
-                #endif
               break;
               case 32:  //a32 clean leveling beep flag
               break;
@@ -2019,31 +2010,29 @@ void AnycubicTouchscreenClass::GetCommandFromTFT()
               break;      
               case 34: //a34 bed grid write
               {
-                #ifdef AUTO_BED_LEVELING_BILINEAR
-                  if(CodeSeen('X')) x = constrain(CodeValue(),0,GRID_MAX_POINTS_X);
-                  if(CodeSeen('Y')) y = constrain(CodeValue(),0,GRID_MAX_POINTS_Y);
-                  if(CodeSeen('V'))
-                  {
-                    //z_values[x][y] = (float)constrain(CodeValue()/100,-10,10);
-                    float new_z_value = (float)constrain(CodeValue()/100,-10,10);
-                    z_values[x][y] = new_z_value;
-                    set_bed_leveling_enabled(true);
-                    refresh_bed_level();
-                  }
-                  if(CodeSeen('S'))
-                  {
-                    refresh_bed_level();
-                    set_bed_leveling_enabled(true);
-                    settings.save();
-                  }
-                  if(CodeSeen('C'))
-                  {
-                    restore_z_values();
-                    probe.offset.z = SAVE_zprobe_zoffset;
-                    set_bed_leveling_enabled(true);
-                    refresh_bed_level();
-                  }
-                #endif
+                if(CodeSeen('X')) x = constrain(CodeValue(),0,GRID_MAX_POINTS_X);
+                if(CodeSeen('Y')) y = constrain(CodeValue(),0,GRID_MAX_POINTS_Y);
+                if(CodeSeen('V'))
+                {
+                  //z_values[x][y] = (float)constrain(CodeValue()/100,-10,10);
+                  float new_z_value = (float)constrain(CodeValue()/100,-10,10);
+                  z_values[x][y] = new_z_value;
+                  set_bed_leveling_enabled(true);
+                  refresh_bed_level();
+                }
+                if(CodeSeen('S'))
+                {
+                  refresh_bed_level();
+                  set_bed_leveling_enabled(true);
+                  settings.save();
+                }
+                if(CodeSeen('C'))
+                {
+                  restore_z_values();
+                  probe.offset.z = SAVE_zprobe_zoffset;
+                  set_bed_leveling_enabled(true);
+                  refresh_bed_level();
+                }
               }
               break;  
               case 35: //RESET AUTOBED DATE //M1000
