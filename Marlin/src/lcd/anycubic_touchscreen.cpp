@@ -1914,7 +1914,7 @@ void AnycubicTouchscreenClass::GetCommandFromTFT()
                 HARDWARE_SERIAL_ENTER();
               }
               break;   
-              case 30: // A30 auto leveling
+              case 30: // A30 auto leveling (Old Anycubic TFT)
                 if( (planner.movesplanned()) || (card.isPrinting()) ) {
                   HARDWARE_SERIAL_PROTOCOLPGM("J24");	// forbid auto leveling
                   HARDWARE_SERIAL_ENTER();
@@ -1997,8 +1997,17 @@ void AnycubicTouchscreenClass::GetCommandFromTFT()
               break;  
               case 35: //RESET AUTOBED DATE //M1000
               break;
-              case 36: // a36 M1001
-              break;        
+              case 36: // A36 auto leveling (Old Anycubic TFT)
+                if( (planner.movesplanned()) || (card.isPrinting()) ) {
+                  HARDWARE_SERIAL_PROTOCOLPGM("J24");	// forbid auto leveling
+                  HARDWARE_SERIAL_ENTER();
+                  } else {
+                  HARDWARE_SERIAL_PROTOCOLPGM("J26");	// start auto leveling
+                  HARDWARE_SERIAL_ENTER();
+                }
+                if(CodeSeen('S') ) {
+                  queue.enqueue_now_P(PSTR("G28\nG29"));
+                }
             #endif
 
             #if ENABLED(KNUTWURST_MEGA_P_LASER)

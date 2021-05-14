@@ -877,7 +877,7 @@
 #endif
 
 #if ENABLED(KNUTWURST_CHIRON)
-    #define DEFAULT_AXIS_STEPS_PER_UNIT   { 80, 100, 400, 405 }
+    #define DEFAULT_AXIS_STEPS_PER_UNIT   { 80, 100, 400, 415 }
 #endif
 
 
