@@ -66,9 +66,29 @@ char _conv[8];
     SAVE_zprobe_zoffset = probe.offset.z;
   #else
     SERIAL_ECHOPAIR("MEANL_L:", 0xaa);
-    probe.offset = NOZZLE_TO_PROBE_OFFSET;
+    constexpr float dpo[] = NOZZLE_TO_PROBE_OFFSET;
+    probe.offset.z = dpo[Z_AXIS];
   #endif
-}
+  }
+
+  void initializeGrid() {
+    reset_bed_level();
+
+    // Initialize a grid with the given dimensions
+    bilinear_grid_spacing[X_AXIS] = (MIN_PROBE_EDGE_RIGHT - MIN_PROBE_EDGE_LEFT) / (GRID_MAX_POINTS_X - 1);
+    bilinear_grid_spacing[Y_AXIS] = (MIN_PROBE_EDGE_BACK - MIN_PROBE_EDGE_FRONT) / (GRID_MAX_POINTS_Y - 1);
+    bilinear_start[X_AXIS] = MIN_PROBE_EDGE_LEFT;
+    bilinear_start[Y_AXIS] = MIN_PROBE_EDGE_FRONT;
+
+    constexpr float dpo[] = NOZZLE_TO_PROBE_OFFSET;
+    probe.offset.z = dpo[Z_AXIS];
+
+    for (uint8_t x = 0; x < GRID_MAX_POINTS_X; x++) {
+      for (uint8_t y = 0; y < GRID_MAX_POINTS_Y; y++) {
+        z_values[x][y] = (float)-2.0;
+      }
+    }
+  }
 #endif
 
 #if ENABLED(POWER_OUTAGE_TEST)
@@ -596,6 +616,9 @@ void AnycubicTouchscreenClass::HandleSpecialMenu()
   {
     SERIAL_ECHOLNPGM("Special Menu: Load FW Defaults");
     queue.inject_P(PSTR("M502"));
+    #if ENABLED(KNUTWURST_TFT_LEVELING)
+        initializeGrid();
+    #endif
     buzzer.tone(105, 1661);
     buzzer.tone(210, 1108);
   }
@@ -1996,6 +2019,7 @@ void AnycubicTouchscreenClass::GetCommandFromTFT()
               }
               break;  
               case 35: //RESET AUTOBED DATE //M1000
+                  initializeGrid();
               break;
               case 36: // A36 auto leveling (Old Anycubic TFT)
                 if( (planner.movesplanned()) || (card.isPrinting()) ) {

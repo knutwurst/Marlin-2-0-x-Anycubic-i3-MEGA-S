@@ -88,7 +88,7 @@
  * 
  */
 #if ENABLED(KNUTWURST_CHIRON)
-  #define KNUTWURST_TFT_LEVELING
+  //#define KNUTWURST_TFT_LEVELING
 #endif
 
 
@@ -1716,6 +1716,14 @@
 
   // Probe along the Y axis, advancing X after each column
   //#define PROBE_Y_FIRST
+  /*
+  #if ENABLED(KNUTWURST_TFT_LEVELING)
+    #define MIN_PROBE_EDGE_LEFT MIN_PROBE_EDGE
+    #define MIN_PROBE_EDGE_RIGHT (MIN_PROBE_EDGE_LEFT + 380)
+    #define MIN_PROBE_EDGE_FRONT (MIN_PROBE_EDGE + 9)
+    #define MIN_PROBE_EDGE_BACK  (MIN_PROBE_EDGE_FRONT + 380)
+  #endif
+  */
 
   #if ENABLED(AUTO_BED_LEVELING_BILINEAR)
 
