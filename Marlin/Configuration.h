@@ -717,8 +717,6 @@
 #endif
 
 #if ENABLED(KNUTWURST_CHIRON)
-  #define X_MAX_PIN 2
-  #define Z_MAX_PIN 43
   #define USE_ZMAX_PLUG
 #endif
 
@@ -1110,12 +1108,8 @@
  *      - normally-open switches to 5V and D32.
  *
  */
-#if ENABLED(KNUTWURST_BLTOUCH)
+#if ENABLED(KNUTWURST_BLTOUCH, KNUTWURST_CHIRON)
     #define Z_MIN_PROBE_PIN 2 // Pin 32 is the RAMPS default
-#endif
-
-#if ENABLED(KNUTWURST_CHIRON)
-    #define Z_MIN_PROBE_PIN 32
 #endif
 
 /**
@@ -1288,7 +1282,7 @@
  * Example: `M851 Z-5` with a CLEARANCE of 4  =>  9mm from bed to nozzle.
  *     But: `M851 Z+1` with a CLEARANCE of 2  =>  2mm from bed to nozzle.
  */
-#define Z_CLEARANCE_DEPLOY_PROBE   10 // Z Clearance for Deploy/Stow
+#define Z_CLEARANCE_DEPLOY_PROBE   20 // Z Clearance for Deploy/Stow
 #define Z_CLEARANCE_BETWEEN_PROBES  5 // Z Clearance between probe points
 #define Z_CLEARANCE_MULTI_PROBE     5 // Z Clearance between multiple probes
 //#define Z_AFTER_PROBING           5 // Z position after probing is done
@@ -1298,7 +1292,7 @@
 #endif
 
 #if DISABLED(KNUTWURST_BLTOUCH)
-    #define Z_PROBE_LOW_POINT          -2 // Farthest distance below the trigger-point to go before stopping
+    #define Z_PROBE_LOW_POINT          -8 // Farthest distance below the trigger-point to go before stopping
 #endif
 
 
@@ -1526,30 +1520,35 @@
 */
 
 #if ANY(KNUTWURST_MEGA, KNUTWURST_MEGA_S, KNUTWURST_MEGA_P)
+    #define X_MIN_POS 0
+    #define Y_MIN_POS 0
+    #define Z_MIN_POS 0
     #define X_BED_SIZE 225
     #define Y_BED_SIZE 220
-    #define Z_BED_HEIGHT 210
+    #define Z_MAX_POS 210
 #endif
 
 #if ENABLED(KNUTWURST_MEGA_X)
+    #define X_MIN_POS 0
+    #define Y_MIN_POS 0
+    #define Z_MIN_POS 0
     #define X_BED_SIZE 310
     #define Y_BED_SIZE 310
-    #define Z_BED_HEIGHT 305
+    #define Z_MAX_POS 305
 #endif
 
 #if ENABLED(KNUTWURST_CHIRON)
+    #define X_MIN_POS -10
+    #define Y_MIN_POS 0
+    #define Z_MIN_POS 0
     #define X_BED_SIZE 410
     #define Y_BED_SIZE 410
-    #define Z_BED_HEIGHT 455
+    #define Z_MAX_POS 453
 #endif
 
 // Travel limits (mm) after homing, corresponding to endstop positions.
-#define X_MIN_POS 0
-#define Y_MIN_POS 0
-#define Z_MIN_POS 0
 #define X_MAX_POS X_BED_SIZE
 #define Y_MAX_POS Y_BED_SIZE
-#define Z_MAX_POS Z_BED_HEIGHT
 
 /**
  * Software Endstops
@@ -1767,9 +1766,15 @@
   //=================================== Mesh ==================================
   //===========================================================================
 
-  #define MESH_INSET 10          // Set Mesh bounds as an inset region of the bed
-  #define GRID_MAX_POINTS_X 5    // Don't use more than 7 points per axis, implementation limited.
-  #define GRID_MAX_POINTS_Y GRID_MAX_POINTS_X
+  #if ENABLED(KNUTWURST_CHIRON)
+      #define MESH_INSET 10          // Set Mesh bounds as an inset region of the bed
+      #define GRID_MAX_POINTS_X 3    // Don't use more than 7 points per axis, implementation limited.
+      #define GRID_MAX_POINTS_Y GRID_MAX_POINTS_X
+  #else
+      #define MESH_INSET 10          // Set Mesh bounds as an inset region of the bed
+      #define GRID_MAX_POINTS_X 5    // Don't use more than 7 points per axis, implementation limited.
+      #define GRID_MAX_POINTS_Y GRID_MAX_POINTS_X
+  #endif
 
   //#define MESH_G28_REST_ORIGIN // After homing all axes ('G28' or 'G28 XYZ') rest Z at Z_MIN_POS
 
