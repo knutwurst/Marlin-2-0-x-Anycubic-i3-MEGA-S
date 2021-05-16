@@ -88,7 +88,7 @@
  * 
  */
 #if ENABLED(KNUTWURST_CHIRON)
-  //#define KNUTWURST_TFT_LEVELING
+  #define KNUTWURST_TFT_LEVELING
 #endif
 
 
