@@ -25,10 +25,9 @@
 #include <string.h>
 
 #include "../gcode/queue.h"
-#include "../gcode/parser.h"
 #include "../feature/e_parser.h"
 #include "../feature/pause.h"
-//#include "../feature/bedlevel/mbl/mesh_bed_leveling.h"
+#include "../feature/bedlevel/bedlevel.h"
 #include "../libs/buzzer.h"
 #include "../module/planner.h"
 #include "../module/printcounter.h"
@@ -38,14 +37,9 @@
 #include "../module/probe.h"
 #include "../sd/cardreader.h"
 
-
 #ifdef ANYCUBIC_TOUCHSCREEN
 #include "anycubic_touchscreen.h"
 #include "HardwareSerial.h"
-
-#if HAS_LEVELING
-  #include "../feature/bedlevel/bedlevel.h"
-#endif
 
 char _conv[8];
 
@@ -53,10 +47,7 @@ char _conv[8];
   int z_values_index;
   int z_values_size;
   float SAVE_zprobe_zoffset;
-  float tempZ = 0.0;
-  bed_mesh_t temp_z_values;
 
-/*
   void restore_z_values() {
     uint16_t size  = z_values_size;
     int      pos   = z_values_index;
@@ -69,7 +60,6 @@ char _conv[8];
     } while (--size);
   }
 
-
   void setupMyZoffset() {
   #if ENABLED(AUTO_BED_LEVELING_BILINEAR)
     SERIAL_ECHOPAIR("MEANL_L:", 0x55);
@@ -80,7 +70,6 @@ char _conv[8];
     probe.offset.z = dpo[Z_AXIS];
   #endif
   }
-
 
   void initializeGrid() {
     reset_bed_level();
@@ -100,7 +89,6 @@ char _conv[8];
       }
     }
   }
-  */
 #endif
 
 #if ENABLED(POWER_OUTAGE_TEST)
@@ -168,12 +156,10 @@ void AnycubicTouchscreenClass::Setup()
 {
   HardwareSerial.begin(115200);
 
-/*
   #if ENABLED(KNUTWURST_TFT_LEVELING)
 		setupMyZoffset();
 		delay(10);
 	#endif
-*/
 
   HARDWARE_SERIAL_ENTER();
   HARDWARE_SERIAL_PROTOCOLPGM("J17"); // J17 Main board reset
@@ -630,6 +616,9 @@ void AnycubicTouchscreenClass::HandleSpecialMenu()
   {
     SERIAL_ECHOLNPGM("Special Menu: Load FW Defaults");
     queue.inject_P(PSTR("M502"));
+    #if ENABLED(KNUTWURST_TFT_LEVELING)
+        initializeGrid();
+    #endif
     buzzer.tone(105, 1661);
     buzzer.tone(210, 1108);
   }
@@ -1885,11 +1874,11 @@ void AnycubicTouchscreenClass::GetCommandFromTFT()
               }
               currentTouchscreenSelection[0] = 0;
             #endif
+          break;
+          #ifdef SERVO_ENDSTOPS
+            case 27: // A27 servos angles  adjust
             break;
-            #ifdef SERVO_ENDSTOPS
-              case 27: // A27 servos angles  adjust
-              break;
-            #endif
+          #endif
             case 28: // A28 filament test
             {
               if (CodeSeen('O'))
@@ -1912,235 +1901,136 @@ void AnycubicTouchscreenClass::GetCommandFromTFT()
             #endif
             #if ENABLED(KNUTWURST_TFT_LEVELING)
               case 29: // A29 bed grid read
-                if((!planner.movesplanned())&&(TFTstate!=ANYCUBIC_TFT_STATE_SDPAUSE) && (TFTstate!=ANYCUBIC_TFT_STATE_SDOUTAGE))
-                {
-                  #if HAS_BED_PROBE
-                    uint16_t x = 0;
-                    uint16_t y = 0;
-                    if(CodeSeen('X')) { x = CodeValue(); }
-                    if(CodeSeen('Y')) { y = CodeValue(); }
-
-                    HARDWARE_SERIAL_PROTOCOLPGM("A29V ");
-                    HARDWARE_SERIAL_PROTOCOL_F( LINEAR_UNIT(z_values[x][y]) * 100, 3 );
-                    HARDWARE_SERIAL_ENTER();
-                    #ifdef ANYCUBIC_TFT_DEBUG
-                      
-                      SERIAL_ECHOPGM("A29V ");
-                      SERIAL_ECHO_F( LINEAR_UNIT(mbl.z_values[x][y]), 5 );
-                      SERIAL_ECHOLNPGM(">");
-                    #endif
-                  #endif
-                }
-              break;
-              case 30: // A30 auto leveling (Old Anycubic TFT) - see A36 for new
-                if( (planner.movesplanned()) || (card.isPrinting()) )
-                {
-                    HARDWARE_SERIAL_PROTOCOLPGM("J24");	// forbid auto leveling
-                    HARDWARE_SERIAL_ENTER();
-                }
-                else
-                {
-                    HARDWARE_SERIAL_PROTOCOLPGM("J26");	// start auto leveling
-                    HARDWARE_SERIAL_ENTER();
-                }
-                if(CodeSeen('S'))
-                {
-                    //queue.enqueue_now_P(PSTR("G28\nG29"));
-                    queue.enqueue_now_P(PSTR("G91\nG1 Z10 F240\nG90"));
-                    queue.enqueue_now_P(PSTR("\nG28"));
-                    queue.enqueue_now_P(PSTR("\nG29"));
-                }
-                /*
-                else if(CodeSeen('O')) 
-                {
-                    #ifdef ANYCUBIC_TFT_DEBUG
-                      SERIAL_ECHOLNPGM("TFT Leveling starting at front left");
-                    #endif
-                    queue.enqueue_now_P(PSTR("G91\nG1 Z10 F240\nG90\nG28\nG29\nG1 X20 Y20 F6000\nG1 Z0 F240"));
-                } 
-                else if(CodeSeen('T'))
-                {
-                    #ifdef ANYCUBIC_TFT_DEBUG
-                      SERIAL_ECHOLNPGM("TFT Level checkpoint front right...");
-                    #endif
-                    queue.enqueue_now_P(PSTR("G1 Z5 F240\nG1 X190 Y20 F6000\nG1 Z0 F240"));
-                }
-                else if(CodeSeen('C'))
-                {
-                    #ifdef ANYCUBIC_TFT_DEBUG
-                      SERIAL_ECHOLNPGM("TFT Level checkpoint back right...");
-                    #endif
-                    queue.enqueue_now_P(PSTR("G1 Z5 F240\nG1 X190 Y190 F6000\nG1 Z0 F240"));
-                }
-                else if(CodeSeen('Q'))
-                {
-                    #ifdef ANYCUBIC_TFT_DEBUG
-                      SERIAL_ECHOLNPGM("TFT Level checkpoint back left...");
-                    #endif
-                    queue.enqueue_now_P(PSTR("G1 Z5 F240\nG1 X190 Y20 F6000\nG1 Z0 F240"));
-                }
-                else if(CodeSeen('H'))
-                {
-                    #ifdef ANYCUBIC_TFT_DEBUG
-                      SERIAL_ECHOLNPGM("TFT Level check no heating...");
-                    #endif
-                    //queue.enqueue_now_P(PSTR("... i don't know  ..."));
-                    HARDWARE_SERIAL_PROTOCOLPGM("J22"); // J22 Test print done
-                    HARDWARE_SERIAL_ENTER();
-                    #ifdef ANYCUBIC_TFT_DEBUG
-                      SERIAL_ECHOLNPGM("TFT Serial Debug: Leveling print test done... J22");
-                    #endif
-                }
-                else if(CodeSeen('L'))
-                {
-                    #ifdef ANYCUBIC_TFT_DEBUG
-                      SERIAL_ECHOLNPGM("TFT Level check heating...");
-                    #endif
-                    //queue.enqueue_now_P(PSTR("... something else ..."));
-                    HARDWARE_SERIAL_PROTOCOLPGM("J22"); // J22 Test print done
-                    HARDWARE_SERIAL_ENTER();
-                    #ifdef ANYCUBIC_TFT_DEBUG
-                      SERIAL_ECHOLNPGM("TFT Serial Debug: Leveling print test with heating done... J22");
-                    #endif
-               }
-              */
-              break;
-              case 31: // A31 zoffset set get or save
-                if((!planner.movesplanned())&&(TFTstate!=ANYCUBIC_TFT_STATE_SDPAUSE) && (TFTstate!=ANYCUBIC_TFT_STATE_SDOUTAGE))
-                {
-                  #if HAS_BED_PROBE
-                    if(CodeSeen('S'))
-                    {
-                      float value = constrain(CodeValue(), -1.0, 1.0);
-                      tempZ += value;
-                      for (uint8_t x = 0; x < GRID_MAX_POINTS_X; x++)
-                      {
-                        for (uint8_t y = 0; y < GRID_MAX_POINTS_Y; y++)
-                        {
-                          z_values[x][y] += value;
-                        }
-                      }
-                      
-                      HARDWARE_SERIAL_PROTOCOLPGM("A31V ");
-                      HARDWARE_SERIAL_PROTOCOL(tempZ);
-                      HARDWARE_SERIAL_ENTER();
-
-                      #ifdef ANYCUBIC_TFT_DEBUG
-                        SERIAL_ECHOPGM("TFT sending current z-probe offset data... <");
-                        SERIAL_ECHOPGM("A31V ");
-                        SERIAL_ECHO(tempZ);
-                        SERIAL_ECHOLNPGM(">");
-                      #endif
-                      reset_bed_level();
-                    }
-                    
-                    if(CodeSeen('G'))
-                    {
-                      tempZ = probe.offset.z;
-                      HARDWARE_SERIAL_PROTOCOLPGM("A31V ");
-                      HARDWARE_SERIAL_PROTOCOL(tempZ);
-                      HARDWARE_SERIAL_ENTER();
-                      #ifdef ANYCUBIC_TFT_DEBUG
-                        SERIAL_ECHOPGM("A31V ");
-                        SERIAL_ECHO(tempZ);
-                        SERIAL_ECHOLNPGM(">");
-                      #endif
-                      for (uint8_t x = 0; x < GRID_MAX_POINTS_X; x++)
-                      {
-                        for (uint8_t y = 0; y < GRID_MAX_POINTS_Y; y++)
-                        {
-                          temp_z_values[x][y] = z_values[x][y];
-                        }
-                      }
-                    }
-
-                    if(CodeSeen('D'))
-                    {
-                      SERIAL_ECHOPGM("M851 Z ");
-                      SERIAL_ECHO(probe.offset.z);
-                      SERIAL_ECHOLNPGM(">");
-                      
-                      for (uint8_t x = 0; x < GRID_MAX_POINTS_X; x++)
-                      {
-                        for (uint8_t y = 0; y < GRID_MAX_POINTS_Y; y++)
-                        {
-                          z_values[x][y] = temp_z_values[x][y];
-                        }
-                      }
-
-                      probe.offset.z = tempZ;
-                      queue.enqueue_now_P(PSTR("M420 S1"));
-                      settings.save();
-                    }
-                  #endif
-                }
-                HARDWARE_SERIAL_ENTER();
-              break;
-              case 32:  //a32 clean leveling beep flag
-                if(CodeSeen('S'))
-                {
-                  #ifdef ANYCUBIC_TFT_DEBUG
-                    SERIAL_ECHOLNPGM("TFT Level saving data...");
-                  #endif
-                  queue.enqueue_now_P(PSTR("M500\nM420 S1\nG1 Z10 F240\nG1 X0 Y0 F6000"));
-                  HARDWARE_SERIAL_SUCC_START;
-                  HARDWARE_SERIAL_ENTER();
-                }
-              break;
-              case 33: // A33 get version info
-                {
-                  HARDWARE_SERIAL_PROTOCOLPGM("J33 ");
-                  HARDWARE_SERIAL_PROTOCOLPGM("KW-");
-                  HARDWARE_SERIAL_PROTOCOLPGM(MSG_MY_VERSION);
-                  HARDWARE_SERIAL_ENTER();				
-                }              
-              break;      
-              case 34: //a34 bed grid write
               {
-                uint16_t x = 0;
-                uint16_t y = 0;
-                if(CodeSeen('X')) { x = constrain(CodeValue(), 0, GRID_MAX_POINTS_X); }
-                if(CodeSeen('Y')) { y = constrain(CodeValue(), 0, GRID_MAX_POINTS_Y); }
-                if(CodeSeen('V'))
+                if(CodeSeen('X')) x = CodeValue();
+                if(CodeSeen('Y')) y = CodeValue();
+                float Zvalue = z_values[x][y];
+                Zvalue = Zvalue * 100;
+
+                refresh_bed_level();
+                set_bed_leveling_enabled(true);
+
+                if ((!planner.movesplanned()) && (TFTstate != ANYCUBIC_TFT_STATE_SDPAUSE) && (TFTstate != ANYCUBIC_TFT_STATE_SDOUTAGE))
                 {
-                  temp_z_values[x][y] = (float)constrain(CodeValue()/100,-10,10);
-                  reset_bed_level();
-                }
-                if(CodeSeen('S'))
-                {
-                  reset_bed_level();
-                  queue.enqueue_now_P(PSTR("M420 S1"));
-                  settings.save();
-                }
-                if(CodeSeen('C'))
-                {
-                  for (uint8_t x = 0; x < GRID_MAX_POINTS_X; x++) {
-                    for (uint8_t y = 0; y < GRID_MAX_POINTS_Y; y++) {
-                      temp_z_values[x][y] = NAN;
-                    }
+                  if (!all_axes_known())
+                  {
+                      queue.enqueue_now_P(PSTR("G28"));
+                  } else {
+                      destination[Z_AXIS] = (float)(5.0);
+                      prepare_line_to_destination();
+
+                      feedrate_mm_s = MMM_TO_MMS(3600.0f);
+                    
+                      destination[X_AXIS] = _GET_MESH_X(x);
+                      destination[Y_AXIS] = _GET_MESH_Y(y);					
+                    
+                      prepare_line_to_destination();
+
+                      destination[Z_AXIS] = (float)(EXT_LEVEL_HIGH);
+                      prepare_line_to_destination();
+
+                      report_current_position();
                   }
-                  reset_bed_level();
-                  set_bed_leveling_enabled(true);
                 }
+                HARDWARE_SERIAL_PROTOCOLPGM("A29V ");
+                HARDWARE_SERIAL_PROTOCOL(ftostr32(Zvalue));
+                HARDWARE_SERIAL_ENTER();
               }
-              break; 
-              case 35: //RESET AUTOBED DATE //M1000
-              break;
-              case 36: // A36 auto leveling (New Anycubic TFT) - see A30 for old
-                if( (planner.movesplanned()) || (card.isPrinting()) )
-                {
+              break;   
+              case 30: // A30 auto leveling (Old Anycubic TFT)
+                if( (planner.movesplanned()) || (card.isPrinting()) ) {
                   HARDWARE_SERIAL_PROTOCOLPGM("J24");	// forbid auto leveling
                   HARDWARE_SERIAL_ENTER();
                   } else {
                   HARDWARE_SERIAL_PROTOCOLPGM("J26");	// start auto leveling
                   HARDWARE_SERIAL_ENTER();
                 }
-                if(CodeSeen('S') )
+                if(CodeSeen('S') ) {
+                  queue.enqueue_now_P(PSTR("G28\nG29"));
+                }
+              break;
+              case 31: // A31 zoffset set get or save
+                  if(CodeSeen('S'))
+                  {
+                    float value = constrain(CodeValue(),-1.0,1.0);
+                    probe.offset.z += value;
+                    for (x = 0; x < GRID_MAX_POINTS_X; x++) {
+                      for (y = 0; y < GRID_MAX_POINTS_Y; y++) z_values[x][y] += value;
+                    }
+                    set_bed_leveling_enabled(true);
+                    refresh_bed_level();
+
+                    HARDWARE_SERIAL_PROTOCOLPGM("A31V ");
+                    HARDWARE_SERIAL_PROTOCOL(ftostr32(probe.offset.z));
+                    HARDWARE_SERIAL_ENTER();
+                  }
+                  
+                  if(CodeSeen('G'))
+                  {
+                    SAVE_zprobe_zoffset = probe.offset.z;
+                    HARDWARE_SERIAL_PROTOCOLPGM("A31V ");
+                    HARDWARE_SERIAL_PROTOCOL(ftostr32(SAVE_zprobe_zoffset));
+                    HARDWARE_SERIAL_ENTER();
+                  }
+                  if(CodeSeen('D'))
+                  {
+                    SAVE_zprobe_zoffset = probe.offset.z;
+                    settings.save();
+                    set_bed_leveling_enabled(true);
+                    refresh_bed_level();
+                  }
+                  HARDWARE_SERIAL_ENTER();
+              break;
+              case 32:  //a32 clean leveling beep flag
+              break;
+              case 33: // A33 get version info
+              {
+                HARDWARE_SERIAL_PROTOCOLPGM("J33 ");
+                HARDWARE_SERIAL_PROTOCOLPGM("KW-");
+                HARDWARE_SERIAL_PROTOCOLPGM(MSG_MY_VERSION);
+                HARDWARE_SERIAL_ENTER();				
+              }              
+              break;      
+              case 34: //a34 bed grid write
+              {
+                if(CodeSeen('X')) x = constrain(CodeValue(),0,GRID_MAX_POINTS_X);
+                if(CodeSeen('Y')) y = constrain(CodeValue(),0,GRID_MAX_POINTS_Y);
+                if(CodeSeen('V'))
                 {
-                  //queue.enqueue_now_P(PSTR("G28\nG29"));
-                  queue.enqueue_now_P(PSTR("G91\nG1 Z10 F240\nG90"));
-                  queue.enqueue_now_P(PSTR("\nG28"));
-                  queue.enqueue_now_P(PSTR("\nG29"));
+                  //z_values[x][y] = (float)constrain(CodeValue()/100,-10,10);
+                  float new_z_value = (float)constrain(CodeValue()/100,-10,10);
+                  z_values[x][y] = new_z_value;
+                  set_bed_leveling_enabled(true);
+                  refresh_bed_level();
+                }
+                if(CodeSeen('S'))
+                {
+                  refresh_bed_level();
+                  set_bed_leveling_enabled(true);
+                  settings.save();
+                }
+                if(CodeSeen('C'))
+                {
+                  restore_z_values();
+                  probe.offset.z = SAVE_zprobe_zoffset;
+                  set_bed_leveling_enabled(true);
+                  refresh_bed_level();
+                }
+              }
+              break;  
+              case 35: //RESET AUTOBED DATE //M1000
+                  initializeGrid();
+              break;
+              case 36: // A36 auto leveling (Old Anycubic TFT)
+                if( (planner.movesplanned()) || (card.isPrinting()) ) {
+                  HARDWARE_SERIAL_PROTOCOLPGM("J24");	// forbid auto leveling
+                  HARDWARE_SERIAL_ENTER();
+                  } else {
+                  HARDWARE_SERIAL_PROTOCOLPGM("J26");	// start auto leveling
+                  HARDWARE_SERIAL_ENTER();
+                }
+                if(CodeSeen('S') ) {
+                  queue.enqueue_now_P(PSTR("G28\nG29"));
                 }
             #endif
 
