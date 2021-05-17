@@ -47,7 +47,9 @@ char _conv[8];
   int z_values_index;
   int z_values_size;
   float SAVE_zprobe_zoffset;
-
+  uint8_t x;
+  uint8_t y;
+  
   void restore_z_values() {
     uint16_t size  = z_values_size;
     int      pos   = z_values_index;
@@ -1364,11 +1366,6 @@ static boolean TFTcomment_mode = false;
 void AnycubicTouchscreenClass::GetCommandFromTFT()
 {
   char *starpos = NULL;
-  #if ENABLED(KNUTWURST_TFT_LEVELING)
-    uint8_t x;
-    uint8_t y;
-  #endif
-
   while( HardwareSerial.available() > 0  && TFTbuflen < TFTBUFSIZE)
   {
     serial3_char = HardwareSerial.read();   
@@ -1902,8 +1899,16 @@ void AnycubicTouchscreenClass::GetCommandFromTFT()
             #if ENABLED(KNUTWURST_TFT_LEVELING)
               case 29: // A29 bed grid read
               {
-                if(CodeSeen('X')) x = CodeValue();
-                if(CodeSeen('Y')) y = CodeValue();
+                if(CodeSeen('X'))
+                {
+                  x = CodeValue();
+                }
+                
+                if(CodeSeen('Y'))
+                {
+                  y = CodeValue();
+                }
+                
                 float Zvalue = z_values[x][y];
                 Zvalue = Zvalue * 100;
 
@@ -1949,8 +1954,8 @@ void AnycubicTouchscreenClass::GetCommandFromTFT()
                   queue.enqueue_now_P(PSTR("G28\nG29"));
                 }
               break;
-              case 31: // A31 zoffset set get or save
-                  if(CodeSeen('S'))
+              case 31: // A31 z-offset
+                  if(CodeSeen('S'))  // set
                   {
                     float value = constrain(CodeValue(),-1.0,1.0);
                     probe.offset.z += value;
@@ -1965,7 +1970,7 @@ void AnycubicTouchscreenClass::GetCommandFromTFT()
                     HARDWARE_SERIAL_ENTER();
                   }
                   
-                  if(CodeSeen('G'))
+                  if(CodeSeen('G'))  // get
                   {
                     SAVE_zprobe_zoffset = probe.offset.z;
                     HARDWARE_SERIAL_PROTOCOLPGM("A31V ");
@@ -1973,7 +1978,7 @@ void AnycubicTouchscreenClass::GetCommandFromTFT()
                     HARDWARE_SERIAL_ENTER();
                   }
                   
-                  if(CodeSeen('D'))
+                  if(CodeSeen('D')) // save
                   {
                     SAVE_zprobe_zoffset = probe.offset.z;
                     settings.save();
@@ -1994,8 +1999,14 @@ void AnycubicTouchscreenClass::GetCommandFromTFT()
               break;      
               case 34: //a34 bed grid write
               {
-                if(CodeSeen('X')) x = constrain(CodeValue(),0,GRID_MAX_POINTS_X);
-                if(CodeSeen('Y')) y = constrain(CodeValue(),0,GRID_MAX_POINTS_Y);
+                if(CodeSeen('X'))
+                {
+                  x = constrain(CodeValue(),0,GRID_MAX_POINTS_X);
+                }
+                if(CodeSeen('Y'))
+                {
+                  y = constrain(CodeValue(),0,GRID_MAX_POINTS_Y);
+                }
                 if(CodeSeen('V'))
                 {
                   //z_values[x][y] = (float)constrain(CodeValue()/100,-10,10);
@@ -2022,7 +2033,7 @@ void AnycubicTouchscreenClass::GetCommandFromTFT()
               case 35: //RESET AUTOBED DATE //M1000
                   initializeGrid();
               break;
-              case 36: // A36 auto leveling (Old Anycubic TFT)
+              case 36: // A36 auto leveling (New Anycubic TFT)
                 if( (planner.movesplanned()) || (card.isPrinting()) ) {
                   HARDWARE_SERIAL_PROTOCOLPGM("J24");	// forbid auto leveling
                   HARDWARE_SERIAL_ENTER();

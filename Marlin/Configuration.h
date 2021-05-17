@@ -91,7 +91,7 @@
   #define KNUTWURST_TFT_LEVELING
 #endif
 
-
+#define KNUTWURST_TFT_LEVELING
 /*
  * Here you can set the default preheat-Temperatures
  * which are set when you use the builtin preheat
@@ -1715,15 +1715,14 @@
 
   // Probe along the Y axis, advancing X after each column
   //#define PROBE_Y_FIRST
-  /*
+  
   #if ENABLED(KNUTWURST_TFT_LEVELING)
     #define MIN_PROBE_EDGE_LEFT MIN_PROBE_EDGE
     #define MIN_PROBE_EDGE_RIGHT (MIN_PROBE_EDGE_LEFT + 380)
     #define MIN_PROBE_EDGE_FRONT (MIN_PROBE_EDGE + 9)
     #define MIN_PROBE_EDGE_BACK  (MIN_PROBE_EDGE_FRONT + 380)
   #endif
-  */
-
+  
   #if ENABLED(AUTO_BED_LEVELING_BILINEAR)
 
     // Beyond the probed grid, continue the implied tilt?
