@@ -91,7 +91,6 @@
   #define KNUTWURST_TFT_LEVELING
 #endif
 
-#define KNUTWURST_TFT_LEVELING
 /*
  * Here you can set the default preheat-Temperatures
  * which are set when you use the builtin preheat
