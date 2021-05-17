@@ -1933,7 +1933,7 @@ void AnycubicTouchscreenClass::GetCommandFromTFT()
                   }
                 }
                 HARDWARE_SERIAL_PROTOCOLPGM("A29V ");
-                HARDWARE_SERIAL_PROTOCOL(ftostr32(Zvalue));
+                HARDWARE_SERIAL_PROTOCOL_F((float)(Zvalue), 2);
                 HARDWARE_SERIAL_ENTER();
               }
               break;   
@@ -1961,7 +1961,7 @@ void AnycubicTouchscreenClass::GetCommandFromTFT()
                     refresh_bed_level();
 
                     HARDWARE_SERIAL_PROTOCOLPGM("A31V ");
-                    HARDWARE_SERIAL_PROTOCOL(ftostr32(probe.offset.z));
+                    HARDWARE_SERIAL_PROTOCOL_F((float)(probe.offset.z), 2);
                     HARDWARE_SERIAL_ENTER();
                   }
                   
@@ -1969,9 +1969,10 @@ void AnycubicTouchscreenClass::GetCommandFromTFT()
                   {
                     SAVE_zprobe_zoffset = probe.offset.z;
                     HARDWARE_SERIAL_PROTOCOLPGM("A31V ");
-                    HARDWARE_SERIAL_PROTOCOL(ftostr32(SAVE_zprobe_zoffset));
+                    HARDWARE_SERIAL_PROTOCOL_F((float)(SAVE_zprobe_zoffset), 2);
                     HARDWARE_SERIAL_ENTER();
                   }
+                  
                   if(CodeSeen('D'))
                   {
                     SAVE_zprobe_zoffset = probe.offset.z;
