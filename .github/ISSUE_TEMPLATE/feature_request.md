@@ -9,6 +9,8 @@ assignees: ''
 
 <!--
 
+------ PLEASE USE THIS TEMPLATE! --------
+
 Have you read all Wiki articles in cluding the FAQ?
 https://github.com/knutwurst/Marlin-2-0-x-Anycubic-i3-MEGA-S/wiki
 
