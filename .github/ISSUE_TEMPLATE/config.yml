@@ -1,17 +1,14 @@
 blank_issues_enabled: false
 contact_links:
-  - name: Marlin Documentation
-    url: http://marlinfw.org/
-    about: Lots of documentation on installing and using Marlin.
-  - name: MarlinFirmware Facebook group
-    url: https://www.facebook.com/groups/1049718498464482
-    about: Please ask and answer questions here.
-  - name: Marlin on Discord
-    url: https://discord.gg/n5NJ59y
-    about: Join the Discord server for support and discussion.
-  - name: Marlin Discussion Forum
-    url: http://forums.reprap.org/list.php?415
-    about: A searchable web forum hosted by RepRap dot org.
-  - name: Marlin Videos on YouTube
-    url: https://www.youtube.com/results?search_query=marlin+firmware
-    about: Tutorials and more from Marlin users all around the world. Great for new users!
+  - name: Knutwurst Wiki
+    url: https://github.com/knutwurst/Marlin-2-0-x-Anycubic-i3-MEGA-S/wiki
+    about: Lots of documentation on installing and using Knutwurst Firmware.
+  - name: FAQ
+    url: https://github.com/knutwurst/Marlin-2-0-x-Anycubic-i3-MEGA-S/wiki/FAQ-(english)
+    about: Please look for your question here
+  - name: Official Facebook Group (german)
+    url: https://www.facebook.com/groups/3094090037303577
+    about: If you need general help (english/german), please ask your question here
+  - name: Knuwturst Videos on YouTube
+    url: https://www.youtube.com/results?search_query=knutwurst
+    about: Tutorials and more from Knutwurst users all around the world. Great for new users!
