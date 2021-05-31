@@ -1380,7 +1380,47 @@ void AnycubicTouchscreenClass::GetCommandFromTFT()
       TFTcmdbuffer[TFTbufindw][serial3_count] = 0; //terminate string
 
       if(!TFTcomment_mode)
-      {      
+      {
+      /*
+        // -------- START ERROR CORRECTION ----------
+        TFTcomment_mode = false; //for new command
+        if(strchr(TFTcmdbuffer[TFTbufindw], 'N') != NULL)
+        {
+          if(strchr(TFTcmdbuffer[TFTbufindw], '*') != NULL)
+          {
+              byte checksum = 0;
+              byte count = 0;
+              while(TFTcmdbuffer[TFTbufindw][count] != '*') checksum = checksum^TFTcmdbuffer[TFTbufindw][count++];
+              TFTstrchr_pointer = strchr(TFTcmdbuffer[TFTbufindw], '*');
+        
+              if( (int)(strtod(&TFTcmdbuffer[TFTbufindw][TFTstrchr_pointer - TFTcmdbuffer[TFTbufindw] + 1], NULL)) != checksum)
+              {
+                  HARDWARE_SERIAL_ERROR_START;
+                  HardwareSerial.flush();
+                  HARDWARE_SERIAL_ERROR_START;
+                  HardwareSerial.flush();
+                  serial3_count = 0;
+                  return;
+              }
+              //if no errors, continue parsing
+          } else {
+            HARDWARE_SERIAL_ERROR_START;
+            HardwareSerial.flush();
+            serial3_count = 0;
+            return;
+          }
+          //if no errors, continue parsing
+        } else { // if we don't receive 'N' but still see '*'
+            if((strchr(TFTcmdbuffer[TFTbufindw], '*') != NULL))
+            {
+                HARDWARE_SERIAL_ERROR_START;
+                serial3_count = 0;
+                return;
+            }
+        }
+        // -------- FINISH ERROR CORRECTION ----------
+        */
+      
         if((strchr(TFTcmdbuffer[TFTbufindw], 'A') != NULL))
         {
           TFTstrchr_pointer = strchr(TFTcmdbuffer[TFTbufindw], 'A');
@@ -1634,18 +1674,18 @@ void AnycubicTouchscreenClass::GetCommandFromTFT()
               unsigned int tempvalue;
               if (CodeSeen('S'))
               {
-                tempvalue = constrain(CodeValue(), 0, 400);
+                tempvalue = constrain(CodeValue(), 0, 275);
                 thermalManager.setTargetHotend(tempvalue, 0);
               }
-              /*else if ((CodeSeen('C')) && (!planner.movesplanned()))
+              else if ((CodeSeen('C')) && (!planner.movesplanned()))
               {
                 if ((current_position[Z_AXIS] < 10))
                 {
                   queue.inject_P(PSTR("G1 Z10")); //RASE Z AXIS
                 }
-                tempvalue = constrain(CodeValue(), 0, 400);
+                tempvalue = constrain(CodeValue(), 0, 275);
                 thermalManager.setTargetHotend(tempvalue, 0);
-              }*/
+              }
             }
             break;
             case 17: // A17 set heated bed temp
