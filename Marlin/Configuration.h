@@ -1518,7 +1518,16 @@
 #endif
 */
 
-#if ANY(KNUTWURST_MEGA, KNUTWURST_MEGA_S, KNUTWURST_MEGA_P)
+#if ENABLED(KNUTWURST_MEGA)
+    #define X_MIN_POS 0
+    #define Y_MIN_POS 0
+    #define Z_MIN_POS 0
+    #define X_BED_SIZE 215
+    #define Y_BED_SIZE 215
+    #define Z_MAX_POS 206
+#endif
+
+#if ANY(KNUTWURST_MEGA_S, KNUTWURST_MEGA_P)
     #define X_MIN_POS 0
     #define Y_MIN_POS 0
     #define Z_MIN_POS 0
