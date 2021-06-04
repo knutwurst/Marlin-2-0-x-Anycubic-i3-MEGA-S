@@ -1244,7 +1244,13 @@
 
 // Most probes should stay away from the edges of the bed, but
 // with NOZZLE_AS_PROBE this can be negative for a wider probing area.
-#define MIN_PROBE_EDGE 30
+
+
+#if ENABLED(KNUTWURST_CHIRON)
+    #define MIN_PROBE_EDGE 15
+#else
+    #define MIN_PROBE_EDGE 30
+#endif
 
 // X and Y axis travel speed (mm/m) between probes
 #define XY_PROBE_SPEED 8000
@@ -1723,13 +1729,7 @@
 
   // Probe along the Y axis, advancing X after each column
   //#define PROBE_Y_FIRST
-  
-  #if ENABLED(KNUTWURST_TFT_LEVELING)
-    #define MIN_PROBE_EDGE_LEFT MIN_PROBE_EDGE
-    #define MIN_PROBE_EDGE_RIGHT (MIN_PROBE_EDGE_LEFT + 380)
-    #define MIN_PROBE_EDGE_FRONT (MIN_PROBE_EDGE + 9)
-    #define MIN_PROBE_EDGE_BACK  (MIN_PROBE_EDGE_FRONT + 380)
-  #endif
+
   
   #if ENABLED(AUTO_BED_LEVELING_BILINEAR)
 

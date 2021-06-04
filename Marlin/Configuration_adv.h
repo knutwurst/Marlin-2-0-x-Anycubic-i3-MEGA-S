@@ -1577,6 +1577,13 @@
   #endif
 #endif
 
+#if ENABLED(KNUTWURST_TFT_LEVELING)
+  #define MIN_PROBE_EDGE_LEFT MIN_PROBE_EDGE
+  #define MIN_PROBE_EDGE_RIGHT (MIN_PROBE_EDGE_LEFT + 380)
+  #define MIN_PROBE_EDGE_FRONT (MIN_PROBE_EDGE + 9)
+  #define MIN_PROBE_EDGE_BACK  (MIN_PROBE_EDGE_FRONT + 380)
+#endif
+
 #if EITHER(MESH_BED_LEVELING, AUTO_BED_LEVELING_UBL)
   // Override the mesh area if the automatic (max) area is too large
   #define MESH_MIN_X MESH_INSET
