@@ -25,6 +25,7 @@
 #include <string.h>
 
 #include "../gcode/queue.h"
+#include "../gcode/parser.h"
 #include "../feature/e_parser.h"
 #include "../feature/pause.h"
 #include "../feature/bedlevel/bedlevel.h"
@@ -74,13 +75,39 @@ char _conv[8];
   }
 
   void initializeGrid() {
+    #if ENABLED(PROBE_MANUALLY)
+      #define ABL_VAR static
+    #else
+      #define ABL_VAR
+    #endif
+
+    ABL_VAR xy_pos_t probe_position_lf, probe_position_rb;
+    ABL_VAR xy_float_t gridSpacing = { 0, 0 };
+
+    const float x_min = probe.min_x(), x_max = probe.max_x(),
+                y_min = probe.min_y(), y_max = probe.max_y();
+
+    constexpr xy_uint8_t abl_grid_points = { GRID_MAX_POINTS_X, GRID_MAX_POINTS_Y };
+    GCodeParser parser;
+    
+    // Reset grid to 0.0 or "not probed". (Also disables ABL)
     reset_bed_level();
 
     // Initialize a grid with the given dimensions
-    bilinear_grid_spacing[X_AXIS] = (MIN_PROBE_EDGE_RIGHT - MIN_PROBE_EDGE_LEFT) / (GRID_MAX_POINTS_X - 1);
-    bilinear_grid_spacing[Y_AXIS] = (MIN_PROBE_EDGE_BACK - MIN_PROBE_EDGE_FRONT) / (GRID_MAX_POINTS_Y - 1);
-    bilinear_start[X_AXIS] = MIN_PROBE_EDGE_LEFT;
-    bilinear_start[Y_AXIS] = MIN_PROBE_EDGE_FRONT;
+    probe_position_lf.set(
+      parser.seenval('L') ? RAW_X_POSITION(parser.value_linear_units()) : x_min,
+      parser.seenval('F') ? RAW_Y_POSITION(parser.value_linear_units()) : y_min
+    );
+    probe_position_rb.set(
+      parser.seenval('R') ? RAW_X_POSITION(parser.value_linear_units()) : x_max,
+      parser.seenval('B') ? RAW_Y_POSITION(parser.value_linear_units()) : y_max
+    );
+    bilinear_grid_spacing.set((probe_position_rb.x - probe_position_lf.x) / (abl_grid_points.x - 1),
+                              (probe_position_rb.y - probe_position_lf.y) / (abl_grid_points.y - 1));
+
+    bilinear_start = probe_position_lf;
+    // Can't re-enable (on error) until the new grid is written
+    set_bed_leveling_enabled(false);
 
     constexpr float dpo[] = NOZZLE_TO_PROBE_OFFSET;
     probe.offset.z = dpo[Z_AXIS];
@@ -90,6 +117,8 @@ char _conv[8];
         z_values[x][y] = (float)-2.0;
       }
     }
+    refresh_bed_level();
+    set_bed_leveling_enabled(true);
   }
 #endif
 
@@ -1961,17 +1990,16 @@ void AnycubicTouchscreenClass::GetCommandFromTFT()
                   {
                       queue.enqueue_now_P(PSTR("G28"));
                   } else {
-                      destination[Z_AXIS] = (float)(5.0);
+                      destination.z = (float)(5.0);
                       prepare_line_to_destination();
 
                       feedrate_mm_s = MMM_TO_MMS(3600.0f);
                     
-                      destination[X_AXIS] = _GET_MESH_X(x);
-                      destination[Y_AXIS] = _GET_MESH_Y(y);					
-                    
+                      destination.x = _GET_MESH_X(x);
+                      destination.y = _GET_MESH_Y(y);
                       prepare_line_to_destination();
 
-                      destination[Z_AXIS] = (float)(EXT_LEVEL_HIGH);
+                      destination.z = (float)(EXT_LEVEL_HIGH);
                       prepare_line_to_destination();
 
                       report_current_position();
