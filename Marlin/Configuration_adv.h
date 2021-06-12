@@ -152,42 +152,61 @@
  * THERMAL_PROTECTION_HYSTERESIS and/or THERMAL_PROTECTION_PERIOD
  */
 #if ENABLED(THERMAL_PROTECTION_HOTENDS)
-  #define THERMAL_PROTECTION_PERIOD 10        // Seconds
-  #define THERMAL_PROTECTION_HYSTERESIS 15     // Degrees Celsius
+	#if ENABLED(KNUTWURST_CHIRON)
+	  #define THERMAL_PROTECTION_PERIOD     60     // Seconds
+	  #define THERMAL_PROTECTION_HYSTERESIS 20     // Degrees Celsius		
+	  
+	  #define WATCH_TEMP_PERIOD   60               // Seconds
+	  #define WATCH_TEMP_INCREASE 10               // Degrees Celsius
+	#else
+	  #define THERMAL_PROTECTION_PERIOD 10        // Seconds
+	  #define THERMAL_PROTECTION_HYSTERESIS 15     // Degrees Celsius
 
-  //#define ADAPTIVE_FAN_SLOWING              // Slow part cooling fan if temperature drops
-  #if BOTH(ADAPTIVE_FAN_SLOWING, PIDTEMP)
-    //#define NO_FAN_SLOWING_IN_PID_TUNING    // Don't slow fan speed during M303
-  #endif
+	  //#define ADAPTIVE_FAN_SLOWING              // Slow part cooling fan if temperature drops
+	  #if BOTH(ADAPTIVE_FAN_SLOWING, PIDTEMP)
+		//#define NO_FAN_SLOWING_IN_PID_TUNING    // Don't slow fan speed during M303
+	  #endif
 
-  /**
-   * Whenever an M104, M109, or M303 increases the target temperature, the
-   * firmware will wait for the WATCH_TEMP_PERIOD to expire. If the temperature
-   * hasn't increased by WATCH_TEMP_INCREASE degrees, the machine is halted and
-   * requires a hard reset. This test restarts with any M104/M109/M303, but only
-   * if the current temperature is far enough below the target for a reliable
-   * test.
-   *
-   * If you get false positives for "Heating failed", increase WATCH_TEMP_PERIOD
-   * and/or decrease WATCH_TEMP_INCREASE. WATCH_TEMP_INCREASE should not be set
-   * below 2.
-   */
-  #define WATCH_TEMP_PERIOD 30                // Seconds
-  #define WATCH_TEMP_INCREASE 3               // Degrees Celsius
+	  /**
+	   * Whenever an M104, M109, or M303 increases the target temperature, the
+	   * firmware will wait for the WATCH_TEMP_PERIOD to expire. If the temperature
+	   * hasn't increased by WATCH_TEMP_INCREASE degrees, the machine is halted and
+	   * requires a hard reset. This test restarts with any M104/M109/M303, but only
+	   * if the current temperature is far enough below the target for a reliable
+	   * test.
+	   *
+	   * If you get false positives for "Heating failed", increase WATCH_TEMP_PERIOD
+	   * and/or decrease WATCH_TEMP_INCREASE. WATCH_TEMP_INCREASE should not be set
+	   * below 2.
+	   */
+	  #define WATCH_TEMP_PERIOD 30                // Seconds
+	  #define WATCH_TEMP_INCREASE 3               // Degrees Celsius
+	#endif
 #endif
 
 /**
  * Thermal Protection parameters for the bed are just as above for hotends.
  */
 #if ENABLED(THERMAL_PROTECTION_BED)
-  #define THERMAL_PROTECTION_BED_PERIOD        20 // Seconds
-  #define THERMAL_PROTECTION_BED_HYSTERESIS     2 // Degrees Celsius
+	#if ENABLED(KNUTWURST_CHIRON)
+	  #define THERMAL_PROTECTION_BED_PERIOD         40 // Seconds
+	  #define THERMAL_PROTECTION_BED_HYSTERESIS     10 // Degrees Celsius
 
-  /**
-   * As described above, except for the bed (M140/M190/M303).
-   */
-  #define WATCH_BED_TEMP_PERIOD                60 // Seconds
-  #define WATCH_BED_TEMP_INCREASE               2 // Degrees Celsius
+	  /**
+	   * As described above, except for the bed (M140/M190/M303).
+	   */
+	  #define WATCH_BED_TEMP_PERIOD                120 // Seconds
+	  #define WATCH_BED_TEMP_INCREASE               10 // Degrees Celsius
+	#else
+	  #define THERMAL_PROTECTION_BED_PERIOD        20 // Seconds
+	  #define THERMAL_PROTECTION_BED_HYSTERESIS     2 // Degrees Celsius
+
+	  /**
+	   * As described above, except for the bed (M140/M190/M303).
+	   */
+	  #define WATCH_BED_TEMP_PERIOD                60 // Seconds
+	  #define WATCH_BED_TEMP_INCREASE               2 // Degrees Celsius
+	#endif
 #endif
 
 /**
@@ -306,7 +325,13 @@
 
 // The number of consecutive low temperature errors that can occur
 // before a min_temp_error is triggered. (Shouldn't be more than 10.)
-//#define MAX_CONSECUTIVE_LOW_TEMPERATURE_ERROR_ALLOWED 0
+
+
+#if ENABLED(KNUTWURST_CHIRON)
+	#define MAX_CONSECUTIVE_LOW_TEMPERATURE_ERROR_ALLOWED 3
+#else
+	//#define MAX_CONSECUTIVE_LOW_TEMPERATURE_ERROR_ALLOWED 0
+#endif
 
 // The number of milliseconds a hotend will preheat before starting to check
 // the temperature. This value should NOT be set to the time it takes the
@@ -1532,7 +1557,7 @@
 #define LIN_ADVANCE
 #if ENABLED(LIN_ADVANCE)
   //#define EXTRA_LIN_ADVANCE_K // Enable for second linear advance constants
-  #define LIN_ADVANCE_K 0	  // Unit: mm compression per 1mm/s extruder speed
+  #define LIN_ADVANCE_K 0.0	  // Unit: mm compression per 1mm/s extruder speed
   //#define LA_DEBUG          // If enabled, this will generate debug information output over USB.
 #endif
 
@@ -1575,13 +1600,6 @@
     #define MIN_PROBE_EDGE_FRONT 10
     #define MIN_PROBE_EDGE_BACK 10
   #endif
-#endif
-
-#if ENABLED(KNUTWURST_TFT_LEVELING)
-  #define MIN_PROBE_EDGE_LEFT MIN_PROBE_EDGE
-  #define MIN_PROBE_EDGE_RIGHT (MIN_PROBE_EDGE_LEFT + 380)
-  #define MIN_PROBE_EDGE_FRONT (MIN_PROBE_EDGE + 9)
-  #define MIN_PROBE_EDGE_BACK  (MIN_PROBE_EDGE_FRONT + 380)
 #endif
 
 #if EITHER(MESH_BED_LEVELING, AUTO_BED_LEVELING_UBL)
@@ -1736,34 +1754,48 @@
 
 // @section hidden
 
-// The number of linear motions that can be in the plan at any give time.
-// THE BLOCK_BUFFER_SIZE NEEDS TO BE A POWER OF 2 (e.g. 8, 16, 32) because shifts and ors are used to do the ring-buffering.
-#if ENABLED(SDSUPPORT)
-  #define BLOCK_BUFFER_SIZE 16 // SD,LCD,Buttons take more memory, block buffer needs to be smaller
+
+#if ENABLED(KNUTWURST_CHIRON)
+    #if ENABLED(SDSUPPORT)
+      #define BLOCK_BUFFER_SIZE 8 // SD,LCD,Buttons take more memory, block buffer needs to be smaller
+    #else
+      #define BLOCK_BUFFER_SIZE 16 // maximize block buffer
+    #endif
+
+    #define MAX_CMD_SIZE 96
+    #define BUFSIZE 4
+    #define TX_BUFFER_SIZE 0
+    #define RX_BUFFER_SIZE 64
 #else
-  #define BLOCK_BUFFER_SIZE 16 // maximize block buffer
+    // The number of linear motions that can be in the plan at any give time.
+    // THE BLOCK_BUFFER_SIZE NEEDS TO BE A POWER OF 2 (e.g. 8, 16, 32) because shifts and ors are used to do the ring-buffering.
+    #if ENABLED(SDSUPPORT)
+      #define BLOCK_BUFFER_SIZE 16 // SD,LCD,Buttons take more memory, block buffer needs to be smaller
+    #else
+      #define BLOCK_BUFFER_SIZE 16 // maximize block buffer
+    #endif
+
+    // @section serial
+
+    // The ASCII buffer for serial input
+    #define MAX_CMD_SIZE 128
+    #define BUFSIZE 8
+
+    // Transmission to Host Buffer Size
+    // To save 386 bytes of PROGMEM (and TX_BUFFER_SIZE+3 bytes of RAM) set to 0.
+    // To buffer a simple "ok" you need 4 bytes.
+    // For ADVANCED_OK (M105) you need 32 bytes.
+    // For debug-echo: 128 bytes for the optimal speed.
+    // Other output doesn't need to be that speedy.
+    // :[0, 2, 4, 8, 16, 32, 64, 128, 256]
+    #define TX_BUFFER_SIZE 0
+
+    // Host Receive Buffer Size
+    // Without XON/XOFF flow control (see SERIAL_XON_XOFF below) 32 bytes should be enough.
+    // To use flow control, set this buffer size to at least 1024 bytes.
+    // :[0, 2, 4, 8, 16, 32, 64, 128, 256, 512, 1024, 2048]
+    #define RX_BUFFER_SIZE 256
 #endif
-
-// @section serial
-
-// The ASCII buffer for serial input
-#define MAX_CMD_SIZE 128
-#define BUFSIZE 8
-
-// Transmission to Host Buffer Size
-// To save 386 bytes of PROGMEM (and TX_BUFFER_SIZE+3 bytes of RAM) set to 0.
-// To buffer a simple "ok" you need 4 bytes.
-// For ADVANCED_OK (M105) you need 32 bytes.
-// For debug-echo: 128 bytes for the optimal speed.
-// Other output doesn't need to be that speedy.
-// :[0, 2, 4, 8, 16, 32, 64, 128, 256]
-#define TX_BUFFER_SIZE 4
-
-// Host Receive Buffer Size
-// Without XON/XOFF flow control (see SERIAL_XON_XOFF below) 32 bytes should be enough.
-// To use flow control, set this buffer size to at least 1024 bytes.
-// :[0, 2, 4, 8, 16, 32, 64, 128, 256, 512, 1024, 2048]
-#define RX_BUFFER_SIZE 256
 
 #if RX_BUFFER_SIZE >= 1024
   // Enable to have the controller send XON/XOFF control characters to
