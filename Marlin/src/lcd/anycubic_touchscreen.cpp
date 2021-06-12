@@ -114,7 +114,7 @@ char _conv[8];
 
     for (uint8_t x = 0; x < GRID_MAX_POINTS_X; x++) {
       for (uint8_t y = 0; y < GRID_MAX_POINTS_Y; y++) {
-        z_values[x][y] = (float)-2.0;
+        z_values[x][y] = float(-2.0);
       }
     }
     refresh_bed_level();
@@ -1990,7 +1990,7 @@ void AnycubicTouchscreenClass::GetCommandFromTFT()
                   {
                       queue.enqueue_now_P(PSTR("G28"));
                   } else {
-                      destination.z = (float)(5.0);
+                      destination.z = float(5.0);
                       prepare_line_to_destination();
 
                       feedrate_mm_s = MMM_TO_MMS(3600.0f);
@@ -1999,14 +1999,14 @@ void AnycubicTouchscreenClass::GetCommandFromTFT()
                       destination.y = _GET_MESH_Y(y);
                       prepare_line_to_destination();
 
-                      destination.z = (float)(EXT_LEVEL_HIGH);
+                      destination.z = float(EXT_LEVEL_HIGH);
                       prepare_line_to_destination();
 
                       report_current_position();
                   }
                 }
                 HARDWARE_SERIAL_PROTOCOLPGM("A29V ");
-                HARDWARE_SERIAL_PROTOCOL_F((float)(Zvalue), 2);
+                HARDWARE_SERIAL_PROTOCOL_F(float(Zvalue), 2);
                 HARDWARE_SERIAL_ENTER();
               }
               break;   
@@ -2034,7 +2034,7 @@ void AnycubicTouchscreenClass::GetCommandFromTFT()
                     refresh_bed_level();
 
                     HARDWARE_SERIAL_PROTOCOLPGM("A31V ");
-                    HARDWARE_SERIAL_PROTOCOL_F((float)(probe.offset.z), 2);
+                    HARDWARE_SERIAL_PROTOCOL_F(float(probe.offset.z), 2);
                     HARDWARE_SERIAL_ENTER();
                   }
                   
@@ -2042,7 +2042,7 @@ void AnycubicTouchscreenClass::GetCommandFromTFT()
                   {
                     SAVE_zprobe_zoffset = probe.offset.z;
                     HARDWARE_SERIAL_PROTOCOLPGM("A31V ");
-                    HARDWARE_SERIAL_PROTOCOL_F((float)(SAVE_zprobe_zoffset), 2);
+                    HARDWARE_SERIAL_PROTOCOL_F(float(SAVE_zprobe_zoffset), 2);
                     HARDWARE_SERIAL_ENTER();
                   }
                   
@@ -2078,7 +2078,7 @@ void AnycubicTouchscreenClass::GetCommandFromTFT()
                 if(CodeSeen('V'))
                 {
                   //z_values[x][y] = (float)constrain(CodeValue()/100,-10,10);
-                  float new_z_value = (float)constrain(CodeValue()/100,-10,10);
+                  float new_z_value = float(constrain(CodeValue()/100,-10,10));
                   z_values[x][y] = new_z_value;
                   set_bed_leveling_enabled(true);
                   refresh_bed_level();
