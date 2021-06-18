@@ -24,22 +24,23 @@
 #include <stdlib.h>
 #include <string.h>
 
+#include "../module/configuration_store.h"
 #include "../gcode/queue.h"
 #include "../gcode/parser.h"
 #include "../feature/e_parser.h"
 #include "../feature/pause.h"
 #include "../feature/bedlevel/bedlevel.h"
+#include "../feature/bedlevel/abl/abl.h"
 #include "../libs/buzzer.h"
 #include "../module/planner.h"
 #include "../module/printcounter.h"
 #include "../module/temperature.h"
 #include "../module/motion.h"
-#include "../module/configuration_store.h"
 #include "../module/probe.h"
 #include "../sd/cardreader.h"
 
 #ifdef ANYCUBIC_TOUCHSCREEN
-#include "anycubic_touchscreen.h"
+#include "./anycubic_touchscreen.h"
 #include "HardwareSerial.h"
 
 char _conv[8];
@@ -72,6 +73,16 @@ char _conv[8];
     constexpr float dpo[] = NOZZLE_TO_PROBE_OFFSET;
     probe.offset.z = dpo[Z_AXIS];
   #endif
+  }
+
+  void setAxisPosition_mm(const float position, const axis_t axis, const feedRate_t feedrate/*=0*/) {
+    // Get motion limit from software endstops, if any
+    float min, max;
+    max = soft_endstop.max[axis];
+    min = soft_endstop.min[axis];
+  
+    current_position[axis] = constrain(position, min, max);
+    line_to_current_position(feedrate ?: 60);
   }
 
   void initializeGrid() {
@@ -114,7 +125,7 @@ char _conv[8];
 
     for (uint8_t x = 0; x < GRID_MAX_POINTS_X; x++) {
       for (uint8_t y = 0; y < GRID_MAX_POINTS_Y; y++) {
-        z_values[x][y] = float(-2.0);
+        z_values[x][y] = float(-1.0);
       }
     }
     refresh_bed_level();
@@ -1968,45 +1979,39 @@ void AnycubicTouchscreenClass::GetCommandFromTFT()
             #if ENABLED(KNUTWURST_TFT_LEVELING)
               case 29: // A29 bed grid read
               {
+                int mx, my;
+
                 if(CodeSeen('X'))
                 {
-                  x = CodeValue();
+                  mx = CodeValueInt();
                 }
                 
                 if(CodeSeen('Y'))
                 {
-                  y = CodeValue();
+                  my = CodeValueInt();
                 }
                 
-                float Zvalue = z_values[x][y];
+                float Zvalue = z_values[mx][my];
                 Zvalue = Zvalue * 100;
-
-                refresh_bed_level();
-                set_bed_leveling_enabled(true);
 
                 if ((!planner.movesplanned()) && (TFTstate != ANYCUBIC_TFT_STATE_SDPAUSE) && (TFTstate != ANYCUBIC_TFT_STATE_SDOUTAGE))
                 {
                   if (!all_axes_known())
                   {
-                      queue.enqueue_now_P(PSTR("G28"));
+                      queue.inject_P(PSTR("G28\n"));
                   } else {
-                      destination.z = float(5.0);
-                      prepare_line_to_destination();
-
-                      feedrate_mm_s = MMM_TO_MMS(3600.0f);
-                    
-                      destination.x = _GET_MESH_X(x);
-                      destination.y = _GET_MESH_Y(y);
-                      prepare_line_to_destination();
-
-                      destination.z = float(EXT_LEVEL_HIGH);
-                      prepare_line_to_destination();
+                      // Go up before moving
+                      setAxisPosition_mm(5.0,Z);
+                      
+                      setAxisPosition_mm(_GET_MESH_X(mx),X);
+                      setAxisPosition_mm(_GET_MESH_Y(my),Y);
+                      setAxisPosition_mm(EXT_LEVEL_HIGH,Z);
 
                       report_current_position();
                   }
                 }
                 HARDWARE_SERIAL_PROTOCOLPGM("A29V ");
-                HARDWARE_SERIAL_PROTOCOL_F(float(Zvalue), 2);
+                HARDWARE_SERIAL_PROTOCOL_F(Zvalue, 2);
                 HARDWARE_SERIAL_ENTER();
               }
               break;   
@@ -2025,6 +2030,7 @@ void AnycubicTouchscreenClass::GetCommandFromTFT()
               case 31: // A31 z-offset
                   if(CodeSeen('S'))  // set
                   {
+                    //soft_endstops_enabled = false;  // disable endstops
                     float value = constrain(CodeValue(),-1.0,1.0);
                     probe.offset.z += value;
                     for (x = 0; x < GRID_MAX_POINTS_X; x++) {
@@ -2069,11 +2075,11 @@ void AnycubicTouchscreenClass::GetCommandFromTFT()
               {
                 if(CodeSeen('X'))
                 {
-                  x = constrain(CodeValue(),0,GRID_MAX_POINTS_X);
+                  x = constrain(CodeValueInt(),0,GRID_MAX_POINTS_X);
                 }
                 if(CodeSeen('Y'))
                 {
-                  y = constrain(CodeValue(),0,GRID_MAX_POINTS_Y);
+                  y = constrain(CodeValueInt(),0,GRID_MAX_POINTS_Y);
                 }
                 if(CodeSeen('V'))
                 {

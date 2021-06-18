@@ -21,9 +21,20 @@
 #ifndef anycubic_touchscreen_h
 #define anycubic_touchscreen_h
 
-#include <stdio.h>
-#include "../inc/MarlinConfig.h"
-#include "../module/configuration_store.h"
+//#include <stdio.h>
+//#include "../inc/MarlinConfig.h"
+//#include "../module/configuration_store.h"
+
+#include "./src/inc/MarlinConfigPre.h"
+#include "./src/feature/bedlevel/bedlevel.h"
+#include "./src/feature/bedlevel/abl/abl.h"
+#include "src/module/probe.h"
+
+
+enum axis_t     : uint8_t { X, Y, Z, X2, Y2, Z2, Z3, Z4 };
+enum extruder_t : uint8_t { E0, E1, E2, E3, E4, E5, E6, E7 };
+void setAxisPosition_mm(const float, const axis_t, const feedRate_t=0);
+
 
 char *itostr2(const uint8_t &x);
 
