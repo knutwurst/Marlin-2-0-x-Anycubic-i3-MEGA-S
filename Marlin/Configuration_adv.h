@@ -1713,8 +1713,10 @@
  *
  * Override the default value based on the driver type set in Configuration.h.
  */
-#define MINIMUM_STEPPER_POST_DIR_DELAY 200
-#define MINIMUM_STEPPER_PRE_DIR_DELAY 200
+#if NONE(KNUTWURST_MEGA_P, KNUTWURST_TMC)
+  #define MINIMUM_STEPPER_POST_DIR_DELAY 200
+  #define MINIMUM_STEPPER_PRE_DIR_DELAY 200
+#endif
 
 /**
  * Minimum stepper driver pulse width (in µs)
