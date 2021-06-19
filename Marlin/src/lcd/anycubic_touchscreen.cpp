@@ -649,7 +649,7 @@ void AnycubicTouchscreenClass::HandleSpecialMenu()
   || (strcasestr_P(currentTouchscreenSelection, PSTR(SM_SAVE_EEPROM_S)) != NULL))
   {
     SERIAL_ECHOLNPGM("Special Menu: Save EEPROM");
-    queue.inject_P(PSTR("M500"));
+    settings.save(); // M500
     buzzer.tone(105, 1108);
     buzzer.tone(210, 1661);
   }
@@ -657,9 +657,9 @@ void AnycubicTouchscreenClass::HandleSpecialMenu()
   || (strcasestr_P(currentTouchscreenSelection, PSTR(SM_LOAD_DEFAULTS_S)) != NULL))
   {
     SERIAL_ECHOLNPGM("Special Menu: Load FW Defaults");
-    queue.inject_P(PSTR("M502"));
+    settings.reset(); // M502
     #if ENABLED(KNUTWURST_TFT_LEVELING)
-        initializeGrid();
+      initializeGrid();
     #endif
     buzzer.tone(105, 1661);
     buzzer.tone(210, 1108);
@@ -1999,12 +1999,28 @@ void AnycubicTouchscreenClass::GetCommandFromTFT()
                   if (!all_axes_known())
                   {
                       queue.inject_P(PSTR("G28\n"));
-                  } else {
+                      /*
+                         set_axis_is_at_home(X_AXIS);
+                         sync_plan_position();
+                         set_axis_is_at_home(Y_AXIS);
+                         sync_plan_position(); 
+                         set_axis_is_at_home(Z_AXIS);
+                         sync_plan_position();
+                         report_current_position();
+                      */
+                    } else {
                       // Go up before moving
+                      //SERIAL_ECHOLNPGM("Z Up");
                       setAxisPosition_mm(5.0,Z);
+                      //report_current_position();
                       
+                      //SERIAL_ECHOLNPGM("Move X");
                       setAxisPosition_mm(_GET_MESH_X(mx),X);
+                      //report_current_position();
+                      //SERIAL_ECHOLNPGM("Move Y");
                       setAxisPosition_mm(_GET_MESH_Y(my),Y);
+                      //report_current_position();
+                      //SERIAL_ECHOLNPGM("Z Down");
                       setAxisPosition_mm(EXT_LEVEL_HIGH,Z);
 
                       report_current_position();

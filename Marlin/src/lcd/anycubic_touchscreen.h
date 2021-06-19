@@ -34,7 +34,7 @@
 enum axis_t     : uint8_t { X, Y, Z, X2, Y2, Z2, Z3, Z4 };
 enum extruder_t : uint8_t { E0, E1, E2, E3, E4, E5, E6, E7 };
 void setAxisPosition_mm(const float, const axis_t, const feedRate_t=0);
-
+void initializeGrid();
 
 char *itostr2(const uint8_t &x);
 
