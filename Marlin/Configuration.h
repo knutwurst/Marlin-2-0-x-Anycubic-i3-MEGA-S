@@ -1235,7 +1235,7 @@
 
 #if ENABLED(KNUTWURST_TFT_LEVELING)
     //#define NOZZLE_TO_PROBE_OFFSET { 0, 0, -17 } // Chiron Default Value!
-    #define NOZZLE_TO_PROBE_OFFSET { 0, 0, -14 } // Chiron Default Value!
+    #define NOZZLE_TO_PROBE_OFFSET { 0, 0, -15 } // Chiron Default Value!
 #endif
 
 #if NONE(KNUTWURST_BLTOUCH, KNUTWURST_TFT_LEVELING)
@@ -1297,7 +1297,7 @@
 #endif
 
 #if DISABLED(KNUTWURST_BLTOUCH)
-    #define Z_PROBE_LOW_POINT          -8 // Farthest distance below the trigger-point to go before stopping
+    #define Z_PROBE_LOW_POINT          -12 // Farthest distance below the trigger-point to go before stopping
 #endif
 
 
