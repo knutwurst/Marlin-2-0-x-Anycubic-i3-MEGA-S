@@ -727,12 +727,24 @@ void AnycubicTouchscreenClass::HandleSpecialMenu()
     }
   #endif
 
-  #if EITHER(KNUTWURST_BLTOUCH, KNUTWURST_TFT_LEVELING)
+  #if ENABLED(KNUTWURST_BLTOUCH)
     else if ((strcasestr_P(currentTouchscreenSelection, PSTR(SM_BLTOUCH_L)) != NULL)
     || (strcasestr_P(currentTouchscreenSelection, PSTR(SM_BLTOUCH_S)) != NULL))
     {
       SERIAL_ECHOLNPGM("Special Menu: BLTouch Leveling");
       queue.inject_P(PSTR("G28\nG29\nM500\nG90\nM300 S440 P200\nM300 S660 P250\nM300 S880 P300\nG1 Z30 F4000\nG1 X0 F4000\nG91\nM84"));
+      buzzer.tone(105, 1108);
+      buzzer.tone(210, 1661);
+    }
+  #endif
+
+  #if ENABLED(KNUTWURST_TFT_LEVELING)
+    else if ((strcasestr_P(currentTouchscreenSelection, PSTR(SM_RESETLV_L)) != NULL)
+    || (strcasestr_P(currentTouchscreenSelection, PSTR(SM_RESETLV_S)) != NULL))
+    {
+      SERIAL_ECHOLNPGM("Special Menu: initializeGrid()");
+      initializeGrid();
+      settings.save();
       buzzer.tone(105, 1108);
       buzzer.tone(210, 1661);
     }
@@ -990,7 +1002,7 @@ void AnycubicTouchscreenClass::PrintList()
       break;
 
       #if NONE(KNUTWURST_BLTOUCH, KNUTWURST_TFT_LEVELING)
-          case 4: // Page 2
+          case 4: // Page 2 for Manual Mesh Bed Level
             HARDWARE_SERIAL_PROTOCOLLNPGM(SM_EZLVL_MENU_S);
             HARDWARE_SERIAL_PROTOCOLLNPGM(SM_EZLVL_MENU_L);
             HARDWARE_SERIAL_PROTOCOLLNPGM(SM_MESH_MENU_S);
@@ -1002,12 +1014,25 @@ void AnycubicTouchscreenClass::PrintList()
             break;
       #endif
 
-      #if EITHER(KNUTWURST_BLTOUCH, KNUTWURST_TFT_LEVELING)
-          case 4: // Page 2
+      #if ENABLED(KNUTWURST_BLTOUCH)
+          case 4: // Page 2 for BLTouch
             HARDWARE_SERIAL_PROTOCOLLNPGM(SM_EZLVL_MENU_S);
             HARDWARE_SERIAL_PROTOCOLLNPGM(SM_EZLVL_MENU_L);
             HARDWARE_SERIAL_PROTOCOLLNPGM(SM_BLTOUCH_S);
             HARDWARE_SERIAL_PROTOCOLLNPGM(SM_BLTOUCH_L);
+            HARDWARE_SERIAL_PROTOCOLLNPGM(SM_PID_HOTEND_S);
+            HARDWARE_SERIAL_PROTOCOLLNPGM(SM_PID_HOTEND_L);
+            HARDWARE_SERIAL_PROTOCOLLNPGM(SM_PID_BED_S);
+            HARDWARE_SERIAL_PROTOCOLLNPGM(SM_PID_BED_L);
+          break;
+      #endif
+
+      #if ENABLED(KNUTWURST_TFT_LEVELING)
+          case 4: // Page 2 for Chiron ABL
+            HARDWARE_SERIAL_PROTOCOLLNPGM(SM_EZLVL_MENU_S);
+            HARDWARE_SERIAL_PROTOCOLLNPGM(SM_EZLVL_MENU_L);
+            HARDWARE_SERIAL_PROTOCOLLNPGM(SM_RESETLV_S);
+            HARDWARE_SERIAL_PROTOCOLLNPGM(SM_RESETLV_L);
             HARDWARE_SERIAL_PROTOCOLLNPGM(SM_PID_HOTEND_S);
             HARDWARE_SERIAL_PROTOCOLLNPGM(SM_PID_HOTEND_L);
             HARDWARE_SERIAL_PROTOCOLLNPGM(SM_PID_BED_S);
@@ -1981,15 +2006,8 @@ void AnycubicTouchscreenClass::GetCommandFromTFT()
               {
                 int mx, my;
 
-                if(CodeSeen('X'))
-                {
-                  mx = CodeValueInt();
-                }
-                
-                if(CodeSeen('Y'))
-                {
-                  my = CodeValueInt();
-                }
+                if(CodeSeen('X')) { mx = CodeValueInt(); }
+                if(CodeSeen('Y')) { my = CodeValueInt(); }
                 
                 float Zvalue = z_values[mx][my];
                 Zvalue = Zvalue * 100;
@@ -2089,14 +2107,9 @@ void AnycubicTouchscreenClass::GetCommandFromTFT()
               break;      
               case 34: //a34 bed grid write
               {
-                if(CodeSeen('X'))
-                {
-                  x = constrain(CodeValueInt(),0,GRID_MAX_POINTS_X);
-                }
-                if(CodeSeen('Y'))
-                {
-                  y = constrain(CodeValueInt(),0,GRID_MAX_POINTS_Y);
-                }
+                if(CodeSeen('X')) { x = constrain(CodeValueInt(),0,GRID_MAX_POINTS_X); }
+                if(CodeSeen('Y')) { y = constrain(CodeValueInt(),0,GRID_MAX_POINTS_Y); }
+                
                 if(CodeSeen('V'))
                 {
                   //z_values[x][y] = (float)constrain(CodeValue()/100,-10,10);
