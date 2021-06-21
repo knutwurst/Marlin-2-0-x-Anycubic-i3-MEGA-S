@@ -2031,14 +2031,10 @@ void AnycubicTouchscreenClass::GetCommandFromTFT()
                       //SERIAL_ECHOLNPGM("Z Up");
                       setAxisPosition_mm(5.0,Z);
                       //report_current_position();
-                      
-                      //SERIAL_ECHOLNPGM("Move X");
                       setAxisPosition_mm(_GET_MESH_X(mx),X);
                       //report_current_position();
-                      //SERIAL_ECHOLNPGM("Move Y");
                       setAxisPosition_mm(_GET_MESH_Y(my),Y);
                       //report_current_position();
-                      //SERIAL_ECHOLNPGM("Z Down");
                       setAxisPosition_mm(EXT_LEVEL_HIGH,Z);
 
                       report_current_position();
@@ -2058,7 +2054,7 @@ void AnycubicTouchscreenClass::GetCommandFromTFT()
                   HARDWARE_SERIAL_ENTER();
                 }
                 if(CodeSeen('S') ) {
-                  queue.enqueue_now_P(PSTR("G28\nG29"));
+                  queue.enqueue_now_P(PSTR("G28\nG29\nG28"));
                 }
               break;
               case 31: // A31 z-offset
@@ -2144,7 +2140,7 @@ void AnycubicTouchscreenClass::GetCommandFromTFT()
                   HARDWARE_SERIAL_ENTER();
                 }
                 if(CodeSeen('S') ) {
-                  queue.enqueue_now_P(PSTR("G28\nG29"));
+                  queue.enqueue_now_P(PSTR("G28\nG29\nG28"));
                 }
             #endif
 
