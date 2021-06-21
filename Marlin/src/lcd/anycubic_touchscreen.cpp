@@ -24,13 +24,17 @@
 #include <stdlib.h>
 #include <string.h>
 
-#include "../module/configuration_store.h"
 #include "../gcode/queue.h"
 #include "../gcode/parser.h"
 #include "../feature/e_parser.h"
 #include "../feature/pause.h"
-#include "../feature/bedlevel/bedlevel.h"
-#include "../feature/bedlevel/abl/abl.h"
+#include "../module/configuration_store.h"
+
+#if ENABLED(KNUTWURST_TFT_LEVELING)
+    #include "../feature/bedlevel/bedlevel.h"
+    #include "../feature/bedlevel/abl/abl.h"
+#endif
+
 #include "../libs/buzzer.h"
 #include "../module/planner.h"
 #include "../module/printcounter.h"
@@ -2054,7 +2058,7 @@ void AnycubicTouchscreenClass::GetCommandFromTFT()
                   HARDWARE_SERIAL_ENTER();
                 }
                 if(CodeSeen('S') ) {
-                  queue.enqueue_now_P(PSTR("G28\nG29\nG28"));
+                  queue.enqueue_now_P(PSTR("G28\nG29\nM500\nG90\nM300 S440 P200\nM300 S660 P250\nM300 S880 P300\nG1 Z30 F4000\nG1 X0 F4000\nG91\nM84"));
                 }
               break;
               case 31: // A31 z-offset
@@ -2140,7 +2144,7 @@ void AnycubicTouchscreenClass::GetCommandFromTFT()
                   HARDWARE_SERIAL_ENTER();
                 }
                 if(CodeSeen('S') ) {
-                  queue.enqueue_now_P(PSTR("G28\nG29\nG28"));
+                  queue.enqueue_now_P(PSTR("G28\nG29\nM500\nG90\nM300 S440 P200\nM300 S660 P250\nM300 S880 P300\nG1 Z30 F4000\nG1 X0 F4000\nG91\nM84"));
                 }
             #endif
 

@@ -36,7 +36,7 @@
 #include "../../../module/probe.h"
 #include "../../queue.h"
 
-#ifdef KNUTWURST_TFT_LEVELING
+#if ENABLED(KNUTWURST_TFT_LEVELING)
     #include "../../../lcd/HardwareSerial.h"
 #endif
 
