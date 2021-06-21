@@ -1224,7 +1224,7 @@ void AnycubicTouchscreenClass::CheckSDCardChange()
 
 void AnycubicTouchscreenClass::CheckHeaterError()
 {
-  if ((thermalManager.degHotend(0) < 5) || (thermalManager.degHotend(0) > 290))
+  if ((thermalManager.degHotend(0) < 5) || (thermalManager.degHotend(0) > 300))
   {
     if (HeaterCheckCount > 60000)
     {
@@ -1743,8 +1743,10 @@ void AnycubicTouchscreenClass::GetCommandFromTFT()
               unsigned int tempvalue;
               if (CodeSeen('S'))
               {
-                tempvalue = constrain(CodeValue(), 0, 275);
-                thermalManager.setTargetHotend(tempvalue, 0);
+                tempvalue = constrain(CodeValue(), 0, 260);
+                if(thermalManager.degTargetHotend(0) <= 260) {
+                    thermalManager.setTargetHotend(tempvalue, 0); // do not set Temp from TFT if it is set via gcode
+                }
               }
               else if ((CodeSeen('C')) && (!planner.movesplanned()))
               {
@@ -1752,7 +1754,7 @@ void AnycubicTouchscreenClass::GetCommandFromTFT()
                 {
                   queue.inject_P(PSTR("G1 Z10")); //RASE Z AXIS
                 }
-                tempvalue = constrain(CodeValue(), 0, 275);
+                tempvalue = constrain(CodeValue(), 0, 260);
                 thermalManager.setTargetHotend(tempvalue, 0);
               }
             }
