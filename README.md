@@ -1,4 +1,4 @@
-# Knutwurst's i3 MEGA (M/S/P/X) Firmware <br>(based on Marlin 2.0.x)
+# Knutwurst's i3 MEGA M/S/P/X und Chiron Firmware <br>(based on Marlin 2.0.x)
 
 <span style="color: red;">(BITTE GENAU DURCHLESEN! / PLEASE READ CAREFULLY!)</span>
 
