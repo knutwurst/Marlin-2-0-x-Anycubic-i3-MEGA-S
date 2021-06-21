@@ -716,7 +716,7 @@
 #endif
 
 #if ENABLED(KNUTWURST_CHIRON)
-  #define USE_ZMAX_PLUG
+  //#define USE_ZMAX_PLUG
 #endif
 
 //#define USE_YMAX_PLUG
@@ -775,8 +775,8 @@
     #define X_MIN_ENDSTOP_INVERTING true // set to true to invert the logic of the endstop.
     #define Y_MIN_ENDSTOP_INVERTING true // set to true to invert the logic of the endstop.
     #define Z_MIN_ENDSTOP_INVERTING false // set to true to invert the logic of the endstop.
-    #define X_MAX_ENDSTOP_INVERTING true // set to true to invert the logic of the endstop.
-    #define Y_MAX_ENDSTOP_INVERTING true // set to true to invert the logic of the endstop.
+    #define X_MAX_ENDSTOP_INVERTING false // set to true to invert the logic of the endstop.
+    #define Y_MAX_ENDSTOP_INVERTING false // set to true to invert the logic of the endstop.
     #define Z_MAX_ENDSTOP_INVERTING false // set to true to invert the logic of the endstop.
     #define Z_MIN_PROBE_ENDSTOP_INVERTING false // set to true to invert the logic of the endstop.
 #endif
@@ -1235,7 +1235,7 @@
 
 #if ENABLED(KNUTWURST_TFT_LEVELING)
     //#define NOZZLE_TO_PROBE_OFFSET { 0, 0, -17 } // Chiron Default Value!
-    #define NOZZLE_TO_PROBE_OFFSET { 0, 0, -16.8 } // Chiron Default Value!
+    #define NOZZLE_TO_PROBE_OFFSET { 0, 0, -16.8 }
 #endif
 
 #if NONE(KNUTWURST_BLTOUCH, KNUTWURST_TFT_LEVELING)
@@ -1531,6 +1531,8 @@
     #define X_BED_SIZE 215
     #define Y_BED_SIZE 215
     #define Z_MAX_POS 206
+    #define X_MAX_POS X_BED_SIZE
+    #define Y_MAX_POS Y_BED_SIZE
 #endif
 
 #if ANY(KNUTWURST_MEGA_S, KNUTWURST_MEGA_P)
@@ -1540,6 +1542,8 @@
     #define X_BED_SIZE 225
     #define Y_BED_SIZE 220
     #define Z_MAX_POS 210
+    #define X_MAX_POS X_BED_SIZE
+    #define Y_MAX_POS Y_BED_SIZE
 #endif
 
 #if ENABLED(KNUTWURST_MEGA_X)
@@ -1549,20 +1553,21 @@
     #define X_BED_SIZE 310
     #define Y_BED_SIZE 310
     #define Z_MAX_POS 305
+    #define X_MAX_POS X_BED_SIZE
+    #define Y_MAX_POS Y_BED_SIZE
 #endif
 
 #if ENABLED(KNUTWURST_CHIRON)
     #define X_MIN_POS -10
     #define Y_MIN_POS 0
     #define Z_MIN_POS 0
-    #define X_BED_SIZE 410
-    #define Y_BED_SIZE 410
-    #define Z_MAX_POS 453
+    #define X_BED_SIZE 400
+    #define Y_BED_SIZE 400
+    #define Z_MAX_POS 455
+    #define X_MAX_POS X_BED_SIZE +10
+    #define Y_MAX_POS Y_BED_SIZE +10
 #endif
 
-// Travel limits (mm) after homing, corresponding to endstop positions.
-#define X_MAX_POS X_BED_SIZE
-#define Y_MAX_POS Y_BED_SIZE
 
 /**
  * Software Endstops

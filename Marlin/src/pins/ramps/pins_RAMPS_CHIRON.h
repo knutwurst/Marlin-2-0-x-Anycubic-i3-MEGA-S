@@ -89,7 +89,7 @@
     #define X_MIN_PIN                          3
   #endif
   #ifndef X_MAX_PIN
-    #define X_MAX_PIN                          2
+    #define X_MAX_PIN                         43
   #endif
 #endif
 #ifndef Y_STOP_PIN
@@ -113,7 +113,7 @@
 // Z Probe (when not Z_MIN_PIN)
 //
 #ifndef Z_MIN_PROBE_PIN
-  #define Z_MIN_PROBE_PIN                     32
+  #define Z_MIN_PROBE_PIN                      2
 #endif
 
 //
