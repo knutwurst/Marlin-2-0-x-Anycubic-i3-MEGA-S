@@ -2112,7 +2112,6 @@ void AnycubicTouchscreenClass::GetCommandFromTFT()
                 
                 if(CodeSeen('V'))
                 {
-                  //z_values[x][y] = (float)constrain(CodeValue()/100,-10,10);
                   float new_z_value = float(constrain(CodeValue()/100,-10,10));
                   z_values[x][y] = new_z_value;
                   set_bed_leveling_enabled(true);
@@ -2134,7 +2133,7 @@ void AnycubicTouchscreenClass::GetCommandFromTFT()
               }
               break;  
               case 35: //RESET AUTOBED DATE //M1000
-                  initializeGrid();
+                  //initializeGrid();  //done via special menu
               break;
               case 36: // A36 auto leveling (New Anycubic TFT)
                 if( (planner.movesplanned()) || (card.isPrinting()) ) {
