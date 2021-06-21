@@ -1715,8 +1715,8 @@
  * Override the default value based on the driver type set in Configuration.h.
  */
 #if NONE(KNUTWURST_MEGA_P, KNUTWURST_TMC)
-  #define MINIMUM_STEPPER_POST_DIR_DELAY 200
-  #define MINIMUM_STEPPER_PRE_DIR_DELAY 200
+  //#define MINIMUM_STEPPER_POST_DIR_DELAY 200
+  //#define MINIMUM_STEPPER_PRE_DIR_DELAY 200
 #endif
 
 /**
@@ -1730,8 +1730,9 @@
  *
  * Override the default value based on the driver type set in Configuration.h.
  */
-#define MINIMUM_STEPPER_PULSE 1
-
+#if NONE(KNUTWURST_MEGA_P, KNUTWURST_TMC)
+    //#define MINIMUM_STEPPER_PULSE 1
+#endif
 /**
  * Maximum stepping rate (in Hz) the stepper driver allows
  *  If undefined, defaults to 1MHz / (2 * MINIMUM_STEPPER_PULSE)
