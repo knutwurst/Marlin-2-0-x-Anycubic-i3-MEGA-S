@@ -1856,9 +1856,15 @@
     #define HOMING_FEEDRATE_Z  (4*60)
 #endif
 
-#if EITHER(KNUTWURST_MEGA_X, KNUTWURST_CHIRON)
+#if ENABLED(KNUTWURST_MEGA_X)
     // Homing speeds (mm/m)
     #define HOMING_FEEDRATE_XY (40*60)
+    #define HOMING_FEEDRATE_Z  (6*60)
+#endif
+
+#if ENABLED(KNUTWURST_CHIRON)
+    // Homing speeds (mm/m)
+    #define HOMING_FEEDRATE_XY (30*60)
     #define HOMING_FEEDRATE_Z  (6*60)
 #endif
 
