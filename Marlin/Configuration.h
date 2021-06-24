@@ -960,7 +960,7 @@
  */
 
 #if ENABLED(KNUTWURST_MEGA)
-    #define DEFAULT_ACCELERATION          1600    // X, Y, Z and E acceleration for printing moves
+    #define DEFAULT_ACCELERATION          1500    // X, Y, Z and E acceleration for printing moves
     #if ENABLED(KNUTWURST_BMG)
         #define DEFAULT_RETRACT_ACCELERATION  1500    // E acceleration for retracts
     #else
@@ -971,7 +971,7 @@
 #endif
 
 #if ENABLED(KNUTWURST_MEGA_S)
-    #define DEFAULT_ACCELERATION          1600    // X, Y, Z and E acceleration for printing moves
+    #define DEFAULT_ACCELERATION          1500    // X, Y, Z and E acceleration for printing moves
     #define DEFAULT_RETRACT_ACCELERATION  1500    // E acceleration for retracts
     #define DEFAULT_TRAVEL_ACCELERATION   3000    // X, Y, Z acceleration for travel (non printing) moves
 #endif
@@ -983,7 +983,7 @@
 #endif
 
 #if ENABLED(KNUTWURST_MEGA_P)
-    #define DEFAULT_ACCELERATION          1600    // X, Y, Z and E acceleration for printing moves
+    #define DEFAULT_ACCELERATION          1500    // X, Y, Z and E acceleration for printing moves
     #define DEFAULT_RETRACT_ACCELERATION  1500    // E acceleration for retracts
     #define DEFAULT_TRAVEL_ACCELERATION   3000    // X, Y, Z acceleration for travel (non printing) moves
 #endif
