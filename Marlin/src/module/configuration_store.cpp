@@ -719,11 +719,6 @@ void MarlinSettings::postprocess() {
       EEPROM_WRITE(bilinear_grid_spacing);
       EEPROM_WRITE(bilinear_start);
 
-      #if ENABLED(KNUTWURST_TFT_LEVELING)
-        z_values_index = eeprom_index;
-        z_values_size = sizeof(z_values);
-      #endif
-
       #if ENABLED(AUTO_BED_LEVELING_BILINEAR)
         EEPROM_WRITE(z_values);              // 9-256 floats
       #else
@@ -1568,6 +1563,12 @@ void MarlinSettings::postprocess() {
             if (!validating) set_bed_leveling_enabled(false);
             EEPROM_READ(bilinear_grid_spacing);        // 2 ints
             EEPROM_READ(bilinear_start);               // 2 ints
+
+            #if ENABLED(KNUTWURST_TFT_LEVELING)
+              z_values_index = eeprom_index;
+              z_values_size = sizeof(z_values);
+            #endif
+
             EEPROM_READ(z_values);                     // 9 to 256 floats
           }
           else // EEPROM data is stale
