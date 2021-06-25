@@ -2070,7 +2070,9 @@ void AnycubicTouchscreenClass::GetCommandFromTFT()
                     float value = constrain(CodeValue(),-1.0,1.0);
                     probe.offset.z += value;
                     for (x = 0; x < GRID_MAX_POINTS_X; x++) {
-                      for (y = 0; y < GRID_MAX_POINTS_Y; y++) z_values[x][y] += value;
+                      for (y = 0; y < GRID_MAX_POINTS_Y; y++) {
+                          z_values[x][y] += value;
+                      }
                     }
                     set_bed_leveling_enabled(true);
                     refresh_bed_level();
