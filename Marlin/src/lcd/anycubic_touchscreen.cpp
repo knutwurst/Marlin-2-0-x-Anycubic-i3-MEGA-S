@@ -1584,7 +1584,9 @@ void AnycubicTouchscreenClass::GetCommandFromTFT()
             break;
             case 8: // A8 GET SD LIST
               #ifdef SDSUPPORT
-                currentTouchscreenSelection[0] = 0;
+                if(SpecialMenu == false) {
+                    currentTouchscreenSelection[0] = 0;
+                }
                 #if DISABLED(KNUTWURST_SPECIAL_MENU_WO_SD)
                   if (!IS_SD_INSERTED())
                   {
@@ -1676,8 +1678,10 @@ void AnycubicTouchscreenClass::GetCommandFromTFT()
                   {
                     strcpy(currentTouchscreenSelection, TFTstrchr_pointer + 4);
                   } else {
-                    currentTouchscreenSelection[0] = 0;
-
+                    if(SpecialMenu == false) {
+                        currentTouchscreenSelection[0] = 0;
+                    }
+                    
                     #ifdef ANYCUBIC_TFT_DEBUG
                         SERIAL_ECHOLNPGM("TFT Serial Debug: Normal file open path");
                     #endif
@@ -1980,7 +1984,9 @@ void AnycubicTouchscreenClass::GetCommandFromTFT()
                   }
                 }
               }
-              currentTouchscreenSelection[0] = 0;
+              if(SpecialMenu == false) {
+                  currentTouchscreenSelection[0] = 0;
+              }
             #endif
           break;
           #ifdef SERVO_ENDSTOPS
