@@ -1107,11 +1107,12 @@
  *    - For simple switches connect...
  *      - normally-closed switches to GND and D32.
  *      - normally-open switches to 5V and D32.
+ * 
+ * If you need to change the Z_MIN_PROBE_PIN, please do this
+ * in the file pins_RAMPS.h or pins_RAMPS_CHIRON.h !
  *
  */
-#if ENABLED(KNUTWURST_BLTOUCH, KNUTWURST_CHIRON)
-    #define Z_MIN_PROBE_PIN 2 // Pin 32 is the RAMPS default
-#endif
+
 
 /**
  * Probe Type
