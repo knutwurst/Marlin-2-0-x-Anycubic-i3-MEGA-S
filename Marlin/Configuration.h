@@ -1043,7 +1043,7 @@
 #endif
 
 #if ENABLED(KNUTWURST_CHIRON)
-    #define DEFAULT_EJERK    15.0  // May be used by Linear Advance
+    #define DEFAULT_EJERK    8.0  // May be used by Linear Advance
 #endif
 
 /**
