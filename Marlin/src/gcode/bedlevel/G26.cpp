@@ -67,7 +67,7 @@
 #define G26_ERR true
 
 #if ENABLED(ARC_SUPPORT)
-void plan_arc(const xyze_pos_t &cart, const ab_float_t &offset, const uint8_t clockwise);
+void plan_arc(const xyze_pos_t &cart, const ab_float_t &offset, const bool clockwise, const uint8_t);
 #endif
 
 /**
@@ -886,7 +886,7 @@ void GcodeSuite::G26()
 
       const feedRate_t old_feedrate = feedrate_mm_s;
       feedrate_mm_s = PLANNER_XY_FEEDRATE() * 0.1f;
-      plan_arc(endpoint, arc_offset, false); // Draw a counter-clockwise arc
+      plan_arc(endpoint, arc_offset, false, 0); // Draw a counter-clockwise arc
       feedrate_mm_s = old_feedrate;
       destination = current_position;
 
