@@ -3206,3 +3206,5 @@
 
 //#define KNUTWURST_MEGAS_ADV
 //#define KNUTWURST_TMC_ADV
+
+#define MEATPACK         // Support for MeatPack G-code compression (https://github.com/scottmudge/OctoPrint-MeatPack)
