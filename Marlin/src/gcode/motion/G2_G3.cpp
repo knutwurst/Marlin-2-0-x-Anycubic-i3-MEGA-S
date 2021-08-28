@@ -108,7 +108,6 @@ void plan_arc(
     abs_angular_travel = ABS(angular_travel);
 
     #ifdef MIN_ARC_SEGMENTS
-    min_segments = CEIL(min_segments * ABS(angular_travel) / RADIANS(360));
     min_segments = CEIL(min_segments * abs_angular_travel / RADIANS(360));
     NOLESS(min_segments, 1U);
     #endif
