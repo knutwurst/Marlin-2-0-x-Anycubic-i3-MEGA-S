@@ -121,19 +121,8 @@ char *ftostr32(const float &);
 #define SM_FLOW_UP_S          "<UP>"
 #define SM_FLOW_DN_L          "<Down>"
 #define SM_FLOW_DN_S          "<DOWN>"
-#define SM_FLOW_EXIT_L        "<Exit>"
+#define SM_FLOW_EXIT_L        "<Exit Flow Settings>"
 #define SM_FLOW_EXIT_S        "<EXTFLW>"
-
-#define SM_BLTZMENU_L         "<BLTouch>"
-#define SM_BLTZMENU_S         "<SETOFZ>"
-#define SM_BLTZ_DISP_L        "<Z Offset XXXX>"
-#define SM_BLTZ_DISP_S        "<OFZDSP>"
-#define SM_BLTZ_UP_L          "<Up>"
-#define SM_BLTZ_UP_S          "<UP>"
-#define SM_BLTZ_DN_L          "<Down>"
-#define SM_BLTZ_DN_S          "<DOWN>"
-#define SM_BLTZ_EXIT_L        "<SAVE and EXIT>"
-#define SM_BLTZ_EXIT_S        "<EXTFLW>"
 
 #define SM_EZLVL_MENU_L       "<Easy 4 Point Level>"
 #define SM_EZLVL_MENU_S       "<EZLVLM>"
@@ -145,8 +134,19 @@ char *ftostr32(const float &);
 #define SM_EZLVL_P3_S         "<EZLPC>"
 #define SM_EZLVL_P4_L         "<Point D>"
 #define SM_EZLVL_P4_S         "<EZLPD>"
-#define SM_EZLVL_EXIT_L       "<Exit>"
+#define SM_EZLVL_EXIT_L       "<Exit Easy Level>"
 #define SM_EZLVL_EXIT_S       "<EZLEXT>"
+
+#define SM_BLTZMENU_L         "<Auto Leveling>"
+#define SM_BLTZMENU_S         "<SETOFZ>"
+#define SM_BLTZ_DISP_L        "<Z Offset: XXXX>"
+#define SM_BLTZ_DISP_S        "<OFZDSP>"
+#define SM_BLTZ_UP_L          "<Up>"
+#define SM_BLTZ_UP_S          "<UP>"
+#define SM_BLTZ_DN_L          "<Down>"
+#define SM_BLTZ_DN_S          "<DOWN>"
+#define SM_BLTZ_EXIT_L        "<SAVE and EXIT>"
+#define SM_BLTZ_EXIT_S        "<EXTFLW>"
 
 #endif
 
@@ -209,20 +209,8 @@ char *ftostr32(const float &);
 #define SM_FLOW_UP_S          "<UPFLOW1.GCO"
 #define SM_FLOW_DN_L          "<Down>              .gcode"
 #define SM_FLOW_DN_S          "<DWNFLOW.GCO"
-#define SM_FLOW_EXIT_L        "<End Flow Settings> .gcode"
+#define SM_FLOW_EXIT_L        "<Exit Flow Settings>.gcode"
 #define SM_FLOW_EXIT_S        "<EXTFLW1.GCO"
-
-#define SM_BLTZMENU_L         "<BLTouch>           .gcode"
-#define SM_BLTZMENU_S         "<SETOFZ0.GCO"
-#define SM_BLTZ_DISP_L        "<Z Offset XXXX>     .gcode"
-#define SM_BLTZ_DISP_S        "<OFZDSP0.GCO"
-#define SM_BLTZ_UP_L          "<Up>                .gcode"
-#define SM_BLTZ_UP_S          "<UPOFFZ0.GCO"
-#define SM_BLTZ_DN_L          "<Down>              .gcode"
-#define SM_BLTZ_DN_S          "<DOWNOFZ.GCO"
-#define SM_BLTZ_EXIT_L        "<SAVE and EXIT>     .gcode"
-#define SM_BLTZ_EXIT_S        "<EXTFLW2.GCO"
-
 
 #define SM_EZLVL_MENU_L       "<Easy 4 Point Level>.gcode"
 #define SM_EZLVL_MENU_S       "<EZLVLM1.GCO"
@@ -234,8 +222,20 @@ char *ftostr32(const float &);
 #define SM_EZLVL_P3_S         "<EZLPC01.GCO"
 #define SM_EZLVL_P4_L         "<Point D>           .gcode"
 #define SM_EZLVL_P4_S         "<EZLPD01.GCO"
-#define SM_EZLVL_EXIT_L       "<End Easy Leveling> .gcode"
+#define SM_EZLVL_EXIT_L       "<Exit Easy Leveling>.gcode"
 #define SM_EZLVL_EXIT_S       "<EZLEXT1.GCO"
+
+#define SM_BLTZMENU_L         "<Auto Leveling>     .gcode"
+#define SM_BLTZMENU_S         "<SETOFZ0.GCO"
+#define SM_BLTZ_DISP_L        "<Z Offset: XXXXX>   .gcode"
+#define SM_BLTZ_DISP_S        "<OFZDSP0.GCO"
+#define SM_BLTZ_UP_L          "<Up>                .gcode"
+#define SM_BLTZ_UP_S          "<UPOFFZ0.GCO"
+#define SM_BLTZ_DN_L          "<Down>              .gcode"
+#define SM_BLTZ_DN_S          "<DOWNOFZ.GCO"
+#define SM_BLTZ_EXIT_L        "<SAVE and EXIT>     .gcode"
+#define SM_BLTZ_EXIT_S        "<EXTFLW2.GCO"
+
 #endif
 
 #if ENABLED(KNUTWURST_TFT_LEVELING)

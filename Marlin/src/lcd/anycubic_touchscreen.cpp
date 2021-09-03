@@ -254,7 +254,6 @@ void AnycubicTouchscreenClass::Setup()
     buzzer.tone(100, 831);
   #endif
 
-
   setup_OutageTestPin();
 }
 
@@ -846,22 +845,23 @@ void AnycubicTouchscreenClass::HandleSpecialMenu()
   || (strcasestr_P(currentTouchscreenSelection, PSTR(SM_BLTZ_UP_S)) != NULL))
   {
     SERIAL_ECHOLNPGM("Special Menu: Offset UP");
-    currentZOffset = currentZOffset + 0.01;
+    currentZOffset = currentZOffset + 0.01F;
 
     char value[30];
     sprintf_P(value, PSTR("M851 Z%i"), currentZOffset);
-    queue.enqueue_one_now(value);
-
+    //queue.enqueue_one_now(value);
+    queue.inject_P(value);
   } 
   else if ((strcasestr_P(currentTouchscreenSelection, PSTR(SM_BLTZ_DN_L)) != NULL)
   || (strcasestr_P(currentTouchscreenSelection, PSTR(SM_BLTZ_DN_S)) != NULL))
   {
     SERIAL_ECHOLNPGM("Special Menu: Offset Down");
-    currentZOffset = currentZOffset - 0.01;
+    currentZOffset = currentZOffset - 0.01F;
 
     char value[30];
     sprintf_P(value, PSTR("M851 Z%i"), currentZOffset);
-    queue.enqueue_one_now(value);
+    //queue.enqueue_one_now(value);
+    queue.inject_P(value);
   }  
   else if ((strcasestr_P(currentTouchscreenSelection, PSTR(SM_BLTZ_EXIT_L)) != NULL)
   || (strcasestr_P(currentTouchscreenSelection, PSTR(SM_BLTZ_EXIT_S)) != NULL))
@@ -1009,6 +1009,13 @@ void AnycubicTouchscreenClass::PrintList()
   else if(BLTouchMenu)
   {
     zOffsetBuffer = SM_BLTZ_DISP_L;
+    currentZOffset = float(probe.offset.z);
+    
+    #ifdef ANYCUBIC_TFT_DEBUG
+      SERIAL_ECHOPAIR(" DEBUG: Current probe.offset.z: ", currentZOffset);
+      SERIAL_EOL();
+    #endif
+    
     zOffsetBuffer.replace("XXXXX", String(currentZOffset));
     
     switch (filenumber)
@@ -1475,8 +1482,11 @@ void AnycubicTouchscreenClass::FilamentRunout()
             }
             else if (!card.isPrinting())
             {
-              HARDWARE_SERIAL_PROTOCOLPGM("J15"); //J15 FILAMENT LACK
-              HARDWARE_SERIAL_ENTER();
+               #ifndef ANYCUBIC_TFT_DEBUG
+                  HARDWARE_SERIAL_PROTOCOLPGM("J15"); //J15 FILAMENT LACK
+                  HARDWARE_SERIAL_ENTER();
+              #endif
+
               #ifdef ANYCUBIC_TFT_DEBUG
                   SERIAL_ECHOLNPGM("TFT Serial Debug: Filament runout... J15");
               #endif
