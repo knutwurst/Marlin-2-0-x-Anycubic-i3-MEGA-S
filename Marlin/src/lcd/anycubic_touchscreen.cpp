@@ -29,12 +29,8 @@
 #include "../feature/e_parser.h"
 #include "../feature/pause.h"
 #include "../module/configuration_store.h"
-
-#if ENABLED(KNUTWURST_TFT_LEVELING)
-    #include "../feature/bedlevel/bedlevel.h"
-    #include "../feature/bedlevel/abl/abl.h"
-#endif
-
+#include "../feature/bedlevel/bedlevel.h"
+#include "../feature/bedlevel/abl/abl.h"
 #include "../libs/buzzer.h"
 #include "../module/planner.h"
 #include "../module/printcounter.h"
@@ -2169,7 +2165,7 @@ void AnycubicTouchscreenClass::GetCommandFromTFT()
                     SAVE_zprobe_zoffset = probe.offset.z;
                     settings.save();
                     set_bed_leveling_enabled(true);
-                    refresh_bed_level();
+                    //refresh_bed_level();
                   }
                   
                   if(CodeSeen('X'))  // set
@@ -2183,7 +2179,7 @@ void AnycubicTouchscreenClass::GetCommandFromTFT()
                       }
                     }
                     set_bed_leveling_enabled(true);
-                    refresh_bed_level();
+                    //refresh_bed_level();
 
                     HARDWARE_SERIAL_PROTOCOLPGM("A31V ");
                     HARDWARE_SERIAL_PROTOCOL_F(float(probe.offset.z), 2);
@@ -2203,7 +2199,7 @@ void AnycubicTouchscreenClass::GetCommandFromTFT()
                     SAVE_zprobe_zoffset = probe.offset.z;
                     settings.save();
                     set_bed_leveling_enabled(true);
-                    refresh_bed_level();
+                    //refresh_bed_level();
                   }
                   HARDWARE_SERIAL_ENTER();
               break;
@@ -2227,11 +2223,11 @@ void AnycubicTouchscreenClass::GetCommandFromTFT()
                   float new_z_value = float(constrain(CodeValue()/100,-10,10));
                   z_values[x][y] = new_z_value;
                   set_bed_leveling_enabled(true);
-                  refresh_bed_level();
+                  //refresh_bed_level();
                 }
                 if(CodeSeen('S'))
                 {
-                  refresh_bed_level();
+                  //refresh_bed_level();
                   set_bed_leveling_enabled(true);
                   settings.save();
                 }
@@ -2240,7 +2236,7 @@ void AnycubicTouchscreenClass::GetCommandFromTFT()
                   restore_z_values();
                   probe.offset.z = SAVE_zprobe_zoffset;
                   set_bed_leveling_enabled(true);
-                  refresh_bed_level();
+                  //refresh_bed_level();
                 }
               }
               break;  
