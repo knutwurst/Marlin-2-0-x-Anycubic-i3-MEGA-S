@@ -121,8 +121,19 @@ char *ftostr32(const float &);
 #define SM_FLOW_UP_S          "<UP>"
 #define SM_FLOW_DN_L          "<Down>"
 #define SM_FLOW_DN_S          "<DOWN>"
-#define SM_FLOW_EXIT_L        "<End Flow Settings>"
+#define SM_FLOW_EXIT_L        "<Exit>"
 #define SM_FLOW_EXIT_S        "<EXTFLW>"
+
+#define SM_BLTZMENU_L         "<BLTouch>"
+#define SM_BLTZMENU_S         "<SETOFZ>"
+#define SM_BLTZ_DISP_L        "<Z Offset XXXX>"
+#define SM_BLTZ_DISP_S        "<OFZDSP>"
+#define SM_BLTZ_UP_L          "<Up>"
+#define SM_BLTZ_UP_S          "<UP>"
+#define SM_BLTZ_DN_L          "<Down>"
+#define SM_BLTZ_DN_S          "<DOWN>"
+#define SM_BLTZ_EXIT_L        "<SAVE and EXIT>"
+#define SM_BLTZ_EXIT_S        "<EXTFLW>"
 
 #define SM_EZLVL_MENU_L       "<Easy 4 Point Level>"
 #define SM_EZLVL_MENU_S       "<EZLVLM>"
@@ -134,7 +145,7 @@ char *ftostr32(const float &);
 #define SM_EZLVL_P3_S         "<EZLPC>"
 #define SM_EZLVL_P4_L         "<Point D>"
 #define SM_EZLVL_P4_S         "<EZLPD>"
-#define SM_EZLVL_EXIT_L       "<End Easy Leveling>"
+#define SM_EZLVL_EXIT_L       "<Exit>"
 #define SM_EZLVL_EXIT_S       "<EZLEXT>"
 
 #endif
@@ -201,6 +212,18 @@ char *ftostr32(const float &);
 #define SM_FLOW_EXIT_L        "<End Flow Settings> .gcode"
 #define SM_FLOW_EXIT_S        "<EXTFLW1.GCO"
 
+#define SM_BLTZMENU_L         "<BLTouch>           .gcode"
+#define SM_BLTZMENU_S         "<SETOFZ0.GCO"
+#define SM_BLTZ_DISP_L        "<Z Offset XXXX>     .gcode"
+#define SM_BLTZ_DISP_S        "<OFZDSP0.GCO"
+#define SM_BLTZ_UP_L          "<Up>                .gcode"
+#define SM_BLTZ_UP_S          "<UPOFFZ0.GCO"
+#define SM_BLTZ_DN_L          "<Down>              .gcode"
+#define SM_BLTZ_DN_S          "<DOWNOFZ.GCO"
+#define SM_BLTZ_EXIT_L        "<SAVE and EXIT>     .gcode"
+#define SM_BLTZ_EXIT_S        "<EXTFLW2.GCO"
+
+
 #define SM_EZLVL_MENU_L       "<Easy 4 Point Level>.gcode"
 #define SM_EZLVL_MENU_S       "<EZLVLM1.GCO"
 #define SM_EZLVL_P1_L         "<Point A>           .gcode"
@@ -266,6 +289,7 @@ private:
   uint16_t HeaterCheckCount = 0;
   bool IsParked = false;
   int currentFlowRate = 0;
+  float currentZOffset = 0.0;
 
 #if defined(POWER_OUTAGE_TEST)
   struct OutageDataStruct
@@ -299,12 +323,14 @@ private:
   char currentTouchscreenSelection[64];
   char currentFileOrDirectory[64];
   String flowRateBuffer;
+  String zOffsetBuffer;
   uint16_t MyFileNrCnt = 0;
   uint8_t FilamentSensorEnabled = true;
 
   uint8_t SpecialMenu = false;
   uint8_t MMLMenu = false;
   uint8_t FlowMenu = false;
+  uint8_t BLTouchMenu = false;
   uint8_t LevelMenu = false;  
 
 #if ENABLED(ANYCUBIC_FILAMENT_RUNOUT_SENSOR)

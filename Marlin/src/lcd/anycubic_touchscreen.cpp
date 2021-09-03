@@ -225,8 +225,10 @@ void AnycubicTouchscreenClass::Setup()
   #if ENABLED(ANYCUBIC_FILAMENT_RUNOUT_SENSOR)
     if ((READ(FILAMENT_RUNOUT_PIN) == true) && FilamentSensorEnabled)
     {
-      HARDWARE_SERIAL_PROTOCOLPGM("J15"); //J15 FILAMENT LACK
-      HARDWARE_SERIAL_ENTER();
+      #ifndef ANYCUBIC_TFT_DEBUG
+          HARDWARE_SERIAL_PROTOCOLPGM("J15"); //J15 FILAMENT LACK
+          HARDWARE_SERIAL_ENTER();
+      #endif
       #ifdef ANYCUBIC_TFT_DEBUG
           SERIAL_ECHOLNPGM("TFT Serial Debug: Filament runout... J15");
       #endif
@@ -238,10 +240,12 @@ void AnycubicTouchscreenClass::Setup()
   SpecialMenu = false;
   MMLMenu = false;
   FlowMenu = false;
+  BLTouchMenu = false;
   LevelMenu = false;
   FilamentSensorEnabled = true;
   MyFileNrCnt = 0;
   currentFlowRate = 100;
+  currentZOffset = 0.0;
   flowRateBuffer = SM_FLOW_DISP_L;
 
   #ifdef STARTUP_CHIME
@@ -832,6 +836,42 @@ void AnycubicTouchscreenClass::HandleSpecialMenu()
     SERIAL_ECHOLNPGM("Special Menu: Exit Flow Menu");
     FlowMenu = false;
   }
+  else if ((strcasestr_P(currentTouchscreenSelection, PSTR(SM_BLTZMENU_L)) != NULL)
+  || (strcasestr_P(currentTouchscreenSelection, PSTR(SM_BLTZMENU_S)) != NULL))
+  {
+    SERIAL_ECHOLNPGM("Special Menu: Enter BLTouch Menu");
+    BLTouchMenu = true;
+  } 
+  else if ((strcasestr_P(currentTouchscreenSelection, PSTR(SM_BLTZ_UP_L)) != NULL)
+  || (strcasestr_P(currentTouchscreenSelection, PSTR(SM_BLTZ_UP_S)) != NULL))
+  {
+    SERIAL_ECHOLNPGM("Special Menu: Offset UP");
+    currentZOffset = currentZOffset + 0.01;
+
+    char value[30];
+    sprintf_P(value, PSTR("M851 Z%i"), currentZOffset);
+    queue.enqueue_one_now(value);
+
+  } 
+  else if ((strcasestr_P(currentTouchscreenSelection, PSTR(SM_BLTZ_DN_L)) != NULL)
+  || (strcasestr_P(currentTouchscreenSelection, PSTR(SM_BLTZ_DN_S)) != NULL))
+  {
+    SERIAL_ECHOLNPGM("Special Menu: Offset Down");
+    currentZOffset = currentZOffset - 0.01;
+
+    char value[30];
+    sprintf_P(value, PSTR("M851 Z%i"), currentZOffset);
+    queue.enqueue_one_now(value);
+  }  
+  else if ((strcasestr_P(currentTouchscreenSelection, PSTR(SM_BLTZ_EXIT_L)) != NULL)
+  || (strcasestr_P(currentTouchscreenSelection, PSTR(SM_BLTZ_EXIT_S)) != NULL))
+  {
+    SERIAL_ECHOLNPGM("Special Menu: Exit BLTouch Menu & Save EEPROM");
+    settings.save(); // M500
+    buzzer.tone(105, 1108);
+    buzzer.tone(210, 1661);
+    BLTouchMenu = false;
+  }
   else if ((strcasestr_P(currentTouchscreenSelection, PSTR(SM_EZLVL_MENU_L)) != NULL)
   || (strcasestr_P(currentTouchscreenSelection, PSTR(SM_EZLVL_MENU_S)) != NULL))
   {
@@ -966,6 +1006,33 @@ void AnycubicTouchscreenClass::PrintList()
         break;
       }
   }
+  else if(BLTouchMenu)
+  {
+    zOffsetBuffer = SM_BLTZ_DISP_L;
+    zOffsetBuffer.replace("XXXXX", String(currentZOffset));
+    
+    switch (filenumber)
+    {
+        case 0: // Page 1
+          HARDWARE_SERIAL_PROTOCOLLNPGM(SM_BLTZ_DISP_S);
+          HARDWARE_SERIAL_PROTOCOLLN(zOffsetBuffer);
+          HARDWARE_SERIAL_PROTOCOLLNPGM(SM_BLTZ_UP_S);
+          HARDWARE_SERIAL_PROTOCOLLNPGM(SM_BLTZ_UP_L);
+          HARDWARE_SERIAL_PROTOCOLLNPGM(SM_BLTZ_DN_S);
+          HARDWARE_SERIAL_PROTOCOLLNPGM(SM_BLTZ_DN_L);
+          HARDWARE_SERIAL_PROTOCOLLNPGM(SM_BLTOUCH_S);
+          HARDWARE_SERIAL_PROTOCOLLNPGM(SM_BLTOUCH_L);
+        break;
+
+        case 4: // Page 2
+          HARDWARE_SERIAL_PROTOCOLLNPGM(SM_BLTZ_EXIT_S);
+          HARDWARE_SERIAL_PROTOCOLLNPGM(SM_BLTZ_EXIT_L);
+        break;
+
+        default:
+        break;
+      }
+  }
   else if(LevelMenu)
   {
     switch (filenumber)
@@ -1003,46 +1070,46 @@ void AnycubicTouchscreenClass::PrintList()
       HARDWARE_SERIAL_PROTOCOLLNPGM(SM_PAUSE_L);
       HARDWARE_SERIAL_PROTOCOLLNPGM(SM_RESUME_S);
       HARDWARE_SERIAL_PROTOCOLLNPGM(SM_RESUME_L);
-      break;
+    break;
 
-      #if NONE(KNUTWURST_BLTOUCH, KNUTWURST_TFT_LEVELING)
-          case 4: // Page 2 for Manual Mesh Bed Level
-            HARDWARE_SERIAL_PROTOCOLLNPGM(SM_EZLVL_MENU_S);
-            HARDWARE_SERIAL_PROTOCOLLNPGM(SM_EZLVL_MENU_L);
-            HARDWARE_SERIAL_PROTOCOLLNPGM(SM_MESH_MENU_S);
-            HARDWARE_SERIAL_PROTOCOLLNPGM(SM_MESH_MENU_L);
-            HARDWARE_SERIAL_PROTOCOLLNPGM(SM_PID_HOTEND_S);
-            HARDWARE_SERIAL_PROTOCOLLNPGM(SM_PID_HOTEND_L);
-            HARDWARE_SERIAL_PROTOCOLLNPGM(SM_PID_BED_S);
-            HARDWARE_SERIAL_PROTOCOLLNPGM(SM_PID_BED_L);
-            break;
-      #endif
-
-      #if ENABLED(KNUTWURST_BLTOUCH)
-          case 4: // Page 2 for BLTouch
-            HARDWARE_SERIAL_PROTOCOLLNPGM(SM_EZLVL_MENU_S);
-            HARDWARE_SERIAL_PROTOCOLLNPGM(SM_EZLVL_MENU_L);
-            HARDWARE_SERIAL_PROTOCOLLNPGM(SM_BLTOUCH_S);
-            HARDWARE_SERIAL_PROTOCOLLNPGM(SM_BLTOUCH_L);
-            HARDWARE_SERIAL_PROTOCOLLNPGM(SM_PID_HOTEND_S);
-            HARDWARE_SERIAL_PROTOCOLLNPGM(SM_PID_HOTEND_L);
-            HARDWARE_SERIAL_PROTOCOLLNPGM(SM_PID_BED_S);
-            HARDWARE_SERIAL_PROTOCOLLNPGM(SM_PID_BED_L);
+    #if NONE(KNUTWURST_BLTOUCH, KNUTWURST_TFT_LEVELING)
+        case 4: // Page 2 for Manual Mesh Bed Level
+          HARDWARE_SERIAL_PROTOCOLLNPGM(SM_EZLVL_MENU_S);
+          HARDWARE_SERIAL_PROTOCOLLNPGM(SM_EZLVL_MENU_L);
+          HARDWARE_SERIAL_PROTOCOLLNPGM(SM_MESH_MENU_S);
+          HARDWARE_SERIAL_PROTOCOLLNPGM(SM_MESH_MENU_L);
+          HARDWARE_SERIAL_PROTOCOLLNPGM(SM_PID_HOTEND_S);
+          HARDWARE_SERIAL_PROTOCOLLNPGM(SM_PID_HOTEND_L);
+          HARDWARE_SERIAL_PROTOCOLLNPGM(SM_PID_BED_S);
+          HARDWARE_SERIAL_PROTOCOLLNPGM(SM_PID_BED_L);
           break;
-      #endif
+    #endif
 
-      #if ENABLED(KNUTWURST_TFT_LEVELING)
-          case 4: // Page 2 for Chiron ABL
-            HARDWARE_SERIAL_PROTOCOLLNPGM(SM_EZLVL_MENU_S);
-            HARDWARE_SERIAL_PROTOCOLLNPGM(SM_EZLVL_MENU_L);
-            HARDWARE_SERIAL_PROTOCOLLNPGM(SM_RESETLV_S);
-            HARDWARE_SERIAL_PROTOCOLLNPGM(SM_RESETLV_L);
-            HARDWARE_SERIAL_PROTOCOLLNPGM(SM_PID_HOTEND_S);
-            HARDWARE_SERIAL_PROTOCOLLNPGM(SM_PID_HOTEND_L);
-            HARDWARE_SERIAL_PROTOCOLLNPGM(SM_PID_BED_S);
-            HARDWARE_SERIAL_PROTOCOLLNPGM(SM_PID_BED_L);
-          break;
-      #endif
+    #if ENABLED(KNUTWURST_BLTOUCH)
+        case 4: // Page 2 for BLTouch
+          HARDWARE_SERIAL_PROTOCOLLNPGM(SM_EZLVL_MENU_S);
+          HARDWARE_SERIAL_PROTOCOLLNPGM(SM_EZLVL_MENU_L);
+          HARDWARE_SERIAL_PROTOCOLLNPGM(SM_BLTZMENU_S);
+          HARDWARE_SERIAL_PROTOCOLLNPGM(SM_BLTZMENU_L);
+          HARDWARE_SERIAL_PROTOCOLLNPGM(SM_PID_HOTEND_S);
+          HARDWARE_SERIAL_PROTOCOLLNPGM(SM_PID_HOTEND_L);
+          HARDWARE_SERIAL_PROTOCOLLNPGM(SM_PID_BED_S);
+          HARDWARE_SERIAL_PROTOCOLLNPGM(SM_PID_BED_L);
+        break;
+    #endif
+
+    #if ENABLED(KNUTWURST_TFT_LEVELING)
+        case 4: // Page 2 for Chiron ABL
+          HARDWARE_SERIAL_PROTOCOLLNPGM(SM_EZLVL_MENU_S);
+          HARDWARE_SERIAL_PROTOCOLLNPGM(SM_EZLVL_MENU_L);
+          HARDWARE_SERIAL_PROTOCOLLNPGM(SM_RESETLV_S);
+          HARDWARE_SERIAL_PROTOCOLLNPGM(SM_RESETLV_L);
+          HARDWARE_SERIAL_PROTOCOLLNPGM(SM_PID_HOTEND_S);
+          HARDWARE_SERIAL_PROTOCOLLNPGM(SM_PID_HOTEND_L);
+          HARDWARE_SERIAL_PROTOCOLLNPGM(SM_PID_BED_S);
+          HARDWARE_SERIAL_PROTOCOLLNPGM(SM_PID_BED_L);
+        break;
+    #endif
 
     case 8: // Page 3
       HARDWARE_SERIAL_PROTOCOLLNPGM(SM_LOAD_DEFAULTS_S);
@@ -1053,12 +1120,12 @@ void AnycubicTouchscreenClass::PrintList()
       HARDWARE_SERIAL_PROTOCOLLNPGM(SM_DIS_FILSENS_L);
       HARDWARE_SERIAL_PROTOCOLLNPGM(SM_EN_FILSENS_S);
       HARDWARE_SERIAL_PROTOCOLLNPGM(SM_EN_FILSENS_L);
-      break;
+    break;
 
     case 12: // Page 3
       HARDWARE_SERIAL_PROTOCOLLNPGM(SM_EXIT_S);
       HARDWARE_SERIAL_PROTOCOLLNPGM(SM_EXIT_L);
-      break;
+    break;
 
     default:
       break;
@@ -1229,8 +1296,10 @@ void AnycubicTouchscreenClass::CheckHeaterError()
     if (HeaterCheckCount > 60000)
     {
       HeaterCheckCount = 0;
-      HARDWARE_SERIAL_PROTOCOLPGM("J10"); // J10 Hotend temperature abnormal
-      HARDWARE_SERIAL_ENTER();
+      #ifndef ANYCUBIC_TFT_DEBUG
+          HARDWARE_SERIAL_PROTOCOLPGM("J10"); // J10 Hotend temperature abnormal
+          HARDWARE_SERIAL_ENTER();
+      #endif
       #ifdef ANYCUBIC_TFT_DEBUG
             SERIAL_ECHOLNPGM("TFT Serial Debug: Hotend temperature abnormal... J20");
       #endif
@@ -2070,7 +2139,30 @@ void AnycubicTouchscreenClass::GetCommandFromTFT()
                 }
               break;
               case 31: // A31 z-offset
-                  if(CodeSeen('S'))  // set
+                  
+                  if(CodeSeen('C'))  // restore
+                  {
+                    SAVE_zprobe_zoffset = probe.offset.z;
+                    queue.inject_P(PSTR("M501\nM420 S1"));
+                  }
+
+                  if(CodeSeen('G'))  // get
+                  {
+                    SAVE_zprobe_zoffset = probe.offset.z;
+                    HARDWARE_SERIAL_PROTOCOLPGM("A31V ");
+                    HARDWARE_SERIAL_PROTOCOL_F(float(SAVE_zprobe_zoffset), 2);
+                    HARDWARE_SERIAL_ENTER();
+                  }
+                  
+                  if(CodeSeen('D')) // save
+                  {
+                    SAVE_zprobe_zoffset = probe.offset.z;
+                    settings.save();
+                    set_bed_leveling_enabled(true);
+                    refresh_bed_level();
+                  }
+                  
+                  if(CodeSeen('X'))  // set
                   {
                     //soft_endstops_enabled = false;  // disable endstops
                     float value = constrain(CodeValue(),-1.0,1.0);
