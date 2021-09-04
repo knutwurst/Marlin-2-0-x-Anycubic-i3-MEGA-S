@@ -830,41 +830,36 @@ void AnycubicTouchscreenClass::HandleSpecialMenu()
     SERIAL_ECHOLNPGM("Special Menu: Exit Flow Menu");
     FlowMenu = false;
   }
-  else if ((strcasestr_P(currentTouchscreenSelection, PSTR(SM_BLTZMENU_L)) != NULL)
-  || (strcasestr_P(currentTouchscreenSelection, PSTR(SM_BLTZMENU_S)) != NULL))
-  {
-    SERIAL_ECHOLNPGM("Special Menu: Enter BLTouch Menu");
-    BLTouchMenu = true;
-  } 
-  else if ((strcasestr_P(currentTouchscreenSelection, PSTR(SM_BLTZ_UP_L)) != NULL)
-  || (strcasestr_P(currentTouchscreenSelection, PSTR(SM_BLTZ_UP_S)) != NULL))
-  {
-    SERIAL_ECHOLNPGM("Special Menu: Offset UP");
-    probe.offset.z += 0.01F;
 
-    //char value[30];
-    //sprintf_P(value, PSTR("M851 Z%i"), float(probe.offset.z));
-    //queue.enqueue_one_now(value);
-  } 
-  else if ((strcasestr_P(currentTouchscreenSelection, PSTR(SM_BLTZ_DN_L)) != NULL)
-  || (strcasestr_P(currentTouchscreenSelection, PSTR(SM_BLTZ_DN_S)) != NULL))
-  {
-    SERIAL_ECHOLNPGM("Special Menu: Offset Down");
-    probe.offset.z -= 0.01F;
-
-    //char value[30];
-    //sprintf_P(value, PSTR("M851 Z%i"), float(probe.offset.z));
-    //queue.enqueue_one_now(value);
-  }  
-  else if ((strcasestr_P(currentTouchscreenSelection, PSTR(SM_BLTZ_EXIT_L)) != NULL)
-  || (strcasestr_P(currentTouchscreenSelection, PSTR(SM_BLTZ_EXIT_S)) != NULL))
-  {
-    SERIAL_ECHOLNPGM("Special Menu: Exit BLTouch Menu & Save EEPROM");
-    settings.save(); // M500
-    buzzer.tone(105, 1108);
-    buzzer.tone(210, 1661);
-    BLTouchMenu = false;
-  }
+  #if ENABLED(KNUTWURST_BLTOUCH)
+      else if ((strcasestr_P(currentTouchscreenSelection, PSTR(SM_BLTZMENU_L)) != NULL)
+      || (strcasestr_P(currentTouchscreenSelection, PSTR(SM_BLTZMENU_S)) != NULL))
+      {
+        SERIAL_ECHOLNPGM("Special Menu: Enter BLTouch Menu");
+        BLTouchMenu = true;
+      } 
+      else if ((strcasestr_P(currentTouchscreenSelection, PSTR(SM_BLTZ_UP_L)) != NULL)
+      || (strcasestr_P(currentTouchscreenSelection, PSTR(SM_BLTZ_UP_S)) != NULL))
+      {
+        SERIAL_ECHOLNPGM("Special Menu: Offset UP");
+        probe.offset.z += 0.01F;
+      } 
+      else if ((strcasestr_P(currentTouchscreenSelection, PSTR(SM_BLTZ_DN_L)) != NULL)
+      || (strcasestr_P(currentTouchscreenSelection, PSTR(SM_BLTZ_DN_S)) != NULL))
+      {
+        SERIAL_ECHOLNPGM("Special Menu: Offset Down");
+        probe.offset.z -= 0.01F;
+      }  
+      else if ((strcasestr_P(currentTouchscreenSelection, PSTR(SM_BLTZ_EXIT_L)) != NULL)
+      || (strcasestr_P(currentTouchscreenSelection, PSTR(SM_BLTZ_EXIT_S)) != NULL))
+      {
+        SERIAL_ECHOLNPGM("Special Menu: Exit BLTouch Menu & Save EEPROM");
+        settings.save(); // M500
+        buzzer.tone(105, 1108);
+        buzzer.tone(210, 1661);
+        BLTouchMenu = false;
+      }
+  #endif
   else if ((strcasestr_P(currentTouchscreenSelection, PSTR(SM_EZLVL_MENU_L)) != NULL)
   || (strcasestr_P(currentTouchscreenSelection, PSTR(SM_EZLVL_MENU_S)) != NULL))
   {
@@ -881,18 +876,18 @@ void AnycubicTouchscreenClass::HandleSpecialMenu()
   else if ((strcasestr_P(currentTouchscreenSelection, PSTR(SM_EZLVL_P2_L)) != NULL)
   || (strcasestr_P(currentTouchscreenSelection, PSTR(SM_EZLVL_P2_S)) != NULL))
   {
-    SERIAL_ECHOLNPGM("Special Menu: Easy Level POINT 2");
-    #if ANY(KNUTWURST_MEGA, KNUTWURST_MEGA_S, KNUTWURST_MEGA_P)
-        queue.inject_P(PSTR("G90\nG1 Z5\nG1 X205 Y15 F4000\nG1 Z0"));
-    #endif
+      SERIAL_ECHOLNPGM("Special Menu: Easy Level POINT 2");
+      #if ANY(KNUTWURST_MEGA, KNUTWURST_MEGA_S, KNUTWURST_MEGA_P)
+          queue.inject_P(PSTR("G90\nG1 Z5\nG1 X205 Y15 F4000\nG1 Z0"));
+      #endif
 
-    #if ENABLED(KNUTWURST_MEGA_X)
-        queue.inject_P(PSTR("G90\nG1 Z5\nG1 X295 Y15 F4000\nG1 Z0"));
-    #endif
+      #if ENABLED(KNUTWURST_MEGA_X)
+          queue.inject_P(PSTR("G90\nG1 Z5\nG1 X295 Y15 F4000\nG1 Z0"));
+      #endif
 
-    #if ENABLED(KNUTWURST_CHIRON)
-        queue.inject_P(PSTR("G90\nG1 Z5\nG1 X395 Y15 F4000\nG1 Z0"));
-    #endif
+      #if ENABLED(KNUTWURST_CHIRON)
+          queue.inject_P(PSTR("G90\nG1 Z5\nG1 X395 Y15 F4000\nG1 Z0"));
+      #endif
   }
   else if ((strcasestr_P(currentTouchscreenSelection, PSTR(SM_EZLVL_P3_L)) != NULL)
   || (strcasestr_P(currentTouchscreenSelection, PSTR(SM_EZLVL_P3_S)) != NULL))
@@ -913,25 +908,25 @@ void AnycubicTouchscreenClass::HandleSpecialMenu()
   else if ((strcasestr_P(currentTouchscreenSelection, PSTR(SM_EZLVL_P4_L)) != NULL)
   || (strcasestr_P(currentTouchscreenSelection, PSTR(SM_EZLVL_P4_S)) != NULL))
   {
-    SERIAL_ECHOLNPGM("Special Menu: Easy Level POINT 4");
-    #if ANY(KNUTWURST_MEGA, KNUTWURST_MEGA_S, KNUTWURST_MEGA_P)
-        queue.inject_P(PSTR("G90\nG1 Z5\nG1 X15 Y200 F4000\nG1 Z0"));
-    #endif
+      SERIAL_ECHOLNPGM("Special Menu: Easy Level POINT 4");
+      #if ANY(KNUTWURST_MEGA, KNUTWURST_MEGA_S, KNUTWURST_MEGA_P)
+          queue.inject_P(PSTR("G90\nG1 Z5\nG1 X15 Y200 F4000\nG1 Z0"));
+      #endif
 
-    #if ENABLED(KNUTWURST_MEGA_X)
-        queue.inject_P(PSTR("G90\nG1 Z5\nG1 X15 Y295 F4000\nG1 Z0"));
-    #endif
+      #if ENABLED(KNUTWURST_MEGA_X)
+          queue.inject_P(PSTR("G90\nG1 Z5\nG1 X15 Y295 F4000\nG1 Z0"));
+      #endif
 
-    #if ENABLED(KNUTWURST_CHIRON)
-        queue.inject_P(PSTR("G90\nG1 Z5\nG1 X15 Y395 F4000\nG1 Z0"));
-    #endif
+      #if ENABLED(KNUTWURST_CHIRON)
+          queue.inject_P(PSTR("G90\nG1 Z5\nG1 X15 Y395 F4000\nG1 Z0"));
+      #endif
   }
   else if ((strcasestr_P(currentTouchscreenSelection, PSTR(SM_EZLVL_EXIT_L)) != NULL)
   || (strcasestr_P(currentTouchscreenSelection, PSTR(SM_EZLVL_EXIT_S)) != NULL))
   {
-    SERIAL_ECHOLNPGM("Special Menu: Exit Easy Level Menu");
-    LevelMenu = false;
-    queue.inject_P(PSTR("G90\nG1 Z10\nG1 X15 Y15 F4000"));
+      SERIAL_ECHOLNPGM("Special Menu: Exit Easy Level Menu");
+      LevelMenu = false;
+      queue.inject_P(PSTR("G90\nG1 Z10\nG1 X15 Y15 F4000"));
   }
 #endif
 }
