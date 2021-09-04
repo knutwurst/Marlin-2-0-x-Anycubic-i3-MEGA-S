@@ -198,17 +198,24 @@ void AnycubicTouchscreenClass::Setup()
 {
   HardwareSerial.begin(115200);
 
-  #if ENABLED(KNUTWURST_TFT_LEVELING)
-		setupMyZoffset();
-		delay(10);
-	#endif
-
   HARDWARE_SERIAL_ENTER();
   HARDWARE_SERIAL_PROTOCOLPGM("J17"); // J17 Main board reset
   HARDWARE_SERIAL_ENTER();
   delay(10);
   HARDWARE_SERIAL_PROTOCOLPGM("J12"); // J12 Ready
   HARDWARE_SERIAL_ENTER();
+
+  currentTouchscreenSelection[0] = 0;
+  currentFileOrDirectory[0] = '\0';
+  SpecialMenu = false;
+  MMLMenu = false;
+  FlowMenu = false;
+  BLTouchMenu = false;
+  LevelMenu = false;
+  FilamentSensorEnabled = true;
+  MyFileNrCnt = 0;
+  currentFlowRate = 100;
+  flowRateBuffer = SM_FLOW_DISP_L;
 
   #if ENABLED(SDSUPPORT) && PIN_EXISTS(SD_DETECT)
     pinMode(SD_DETECT_PIN, INPUT);
@@ -231,18 +238,10 @@ void AnycubicTouchscreenClass::Setup()
     }
   #endif
 
-  currentTouchscreenSelection[0] = 0;
-  currentFileOrDirectory[0] = '\0';
-  SpecialMenu = false;
-  MMLMenu = false;
-  FlowMenu = false;
-  BLTouchMenu = false;
-  LevelMenu = false;
-  FilamentSensorEnabled = true;
-  MyFileNrCnt = 0;
-  currentFlowRate = 100;
-  currentZOffset = 0.0;
-  flowRateBuffer = SM_FLOW_DISP_L;
+  #if ENABLED(KNUTWURST_TFT_LEVELING)
+		setupMyZoffset();
+		delay(10);
+	#endif
 
   #ifdef STARTUP_CHIME
     buzzer.tone(100, 554);
@@ -841,23 +840,21 @@ void AnycubicTouchscreenClass::HandleSpecialMenu()
   || (strcasestr_P(currentTouchscreenSelection, PSTR(SM_BLTZ_UP_S)) != NULL))
   {
     SERIAL_ECHOLNPGM("Special Menu: Offset UP");
-    currentZOffset = currentZOffset + 0.01F;
+    probe.offset.z += 0.01F;
 
-    char value[30];
-    sprintf_P(value, PSTR("M851 Z%i"), currentZOffset);
+    //char value[30];
+    //sprintf_P(value, PSTR("M851 Z%i"), float(probe.offset.z));
     //queue.enqueue_one_now(value);
-    queue.inject_P(value);
   } 
   else if ((strcasestr_P(currentTouchscreenSelection, PSTR(SM_BLTZ_DN_L)) != NULL)
   || (strcasestr_P(currentTouchscreenSelection, PSTR(SM_BLTZ_DN_S)) != NULL))
   {
     SERIAL_ECHOLNPGM("Special Menu: Offset Down");
-    currentZOffset = currentZOffset - 0.01F;
+    probe.offset.z -= 0.01F;
 
-    char value[30];
-    sprintf_P(value, PSTR("M851 Z%i"), currentZOffset);
+    //char value[30];
+    //sprintf_P(value, PSTR("M851 Z%i"), float(probe.offset.z));
     //queue.enqueue_one_now(value);
-    queue.inject_P(value);
   }  
   else if ((strcasestr_P(currentTouchscreenSelection, PSTR(SM_BLTZ_EXIT_L)) != NULL)
   || (strcasestr_P(currentTouchscreenSelection, PSTR(SM_BLTZ_EXIT_S)) != NULL))
@@ -1005,14 +1002,13 @@ void AnycubicTouchscreenClass::PrintList()
   else if(BLTouchMenu)
   {
     zOffsetBuffer = SM_BLTZ_DISP_L;
-    currentZOffset = float(probe.offset.z);
-    
+
     #ifdef ANYCUBIC_TFT_DEBUG
-      SERIAL_ECHOPAIR(" DEBUG: Current probe.offset.z: ", currentZOffset);
+      SERIAL_ECHOPAIR(" DEBUG: Current probe.offset.z: ", float(probe.offset.z));
       SERIAL_EOL();
     #endif
     
-    zOffsetBuffer.replace("XXXXX", String(currentZOffset));
+    zOffsetBuffer.replace("XXXXX", String(float(probe.offset.z)));
     
     switch (filenumber)
     {
