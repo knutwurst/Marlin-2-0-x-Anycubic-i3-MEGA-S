@@ -108,7 +108,7 @@ char *ftostr32(const float &);
 #define SM_EN_FILSENS_L       "<Enable Fil. Sensor>"
 #define SM_EN_FILSENS_S       "<ENSEN>"
 #define SM_EXIT_L             "<Exit>"
-#define SM_EXIT_S             "<EXIT>"
+#define SM_EXIT_S             "<SMEXIT>"
 
 #define SM_BACK_L             "<End Mesh Leveling>"
 #define SM_BACK_S             "<BACK>"
@@ -118,9 +118,9 @@ char *ftostr32(const float &);
 #define SM_FLOW_DISP_L        "<Flow is XXX>"
 #define SM_FLOW_DISP_S        "<FLDISP>"
 #define SM_FLOW_UP_L          "<Up>"
-#define SM_FLOW_UP_S          "<UP>"
+#define SM_FLOW_UP_S          "<FLUP>"
 #define SM_FLOW_DN_L          "<Down>"
-#define SM_FLOW_DN_S          "<DOWN>"
+#define SM_FLOW_DN_S          "<FLDN>"
 #define SM_FLOW_EXIT_L        "<Exit Flow Settings>"
 #define SM_FLOW_EXIT_S        "<EXTFLW>"
 
@@ -139,14 +139,14 @@ char *ftostr32(const float &);
 
 #define SM_BLTZMENU_L         "<Auto Leveling>"
 #define SM_BLTZMENU_S         "<SETOFZ>"
-#define SM_BLTZ_DISP_L        "<Z Offset: XXXX>"
+#define SM_BLTZ_DISP_L        "<Z Offset: XXXXX>"
 #define SM_BLTZ_DISP_S        "<OFZDSP>"
 #define SM_BLTZ_UP_L          "<Up>"
-#define SM_BLTZ_UP_S          "<UP>"
+#define SM_BLTZ_UP_S          "<UPOFFZ0>"
 #define SM_BLTZ_DN_L          "<Down>"
-#define SM_BLTZ_DN_S          "<DOWN>"
+#define SM_BLTZ_DN_S          "<DNOFFZ0>"
 #define SM_BLTZ_EXIT_L        "<SAVE and EXIT>"
-#define SM_BLTZ_EXIT_S        "<EXTFLW>"
+#define SM_BLTZ_EXIT_S        "<EXTABLM>"
 
 #endif
 
@@ -234,7 +234,7 @@ char *ftostr32(const float &);
 #define SM_BLTZ_DN_L          "<Down>              .gcode"
 #define SM_BLTZ_DN_S          "<DOWNOFZ.GCO"
 #define SM_BLTZ_EXIT_L        "<SAVE and EXIT>     .gcode"
-#define SM_BLTZ_EXIT_S        "<EXTFLW2.GCO"
+#define SM_BLTZ_EXIT_S        "<EXTABLM.GCO"
 
 #endif
 
