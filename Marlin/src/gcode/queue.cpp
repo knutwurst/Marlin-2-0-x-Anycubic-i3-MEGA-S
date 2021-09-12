@@ -260,7 +260,7 @@ void GCodeQueue::enqueue_now_P(PGM_P const pgcode) {
  */
 void GCodeQueue::ok_to_send() {
   #if NUM_SERIAL > 1
-    const serial_index_t serial_ind = command_port();
+    const serial_index_t serial_ind = port[index_r];
     if (serial_ind < 0) return;                   // Never mind. Command came from SD or Flash Drive
     PORT_REDIRECT(serial_ind);                    // Reply to the serial port that sent the command
   #endif

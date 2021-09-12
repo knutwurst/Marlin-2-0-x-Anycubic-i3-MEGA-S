@@ -54,7 +54,7 @@
 #define ANYCUBIC_FILAMENT_RUNOUT_SENSOR
 #define KNUTWURST_SPECIAL_MENU
 #define KNUTWURST_SPECIAL_MENU_WO_SD
-//#define ANYCUBIC_TFT_DEBUG
+#define ANYCUBIC_TFT_DEBUG
 //#define POWER_OUTAGE_TEST
 
 #define EXT_LEVEL_HIGH 0.1
@@ -176,7 +176,23 @@
  * Select a secondary serial port on the board to use for communication with the host.
  * :[-1, 0, 1, 2, 3, 4, 5, 6, 7]
  */
-//#define SERIAL_PORT_2 -1
+//#define SERIAL_PORT_2 2 // D16(RX) + D17(TX)
+
+/* EXP1 Header
+    
+     ---------------
+    ||  D37   D35  ||
+    ||             ||
+    || [D17] [D16] ||   <---- Connect your ESP82866 here (TX/RX)
+  /||              ||
+  |||    D23   D25 ||
+  \||              ||
+    ||  D27   D29  ||
+    ||             ||
+    ||  GND    5V  ||
+     ---------------
+*/
+
 
 /**
  * This setting determines the communication speed of the printer.
@@ -1232,7 +1248,7 @@
  * Specify a Probe position as { X, Y, Z }
  */
 #if ENABLED(KNUTWURST_BLTOUCH)
-    #define NOZZLE_TO_PROBE_OFFSET { -2, -25, 0 } //https://www.thingiverse.com/thing:2824005
+    #define NOZZLE_TO_PROBE_OFFSET { -2, -25, -0.4 } //https://www.thingiverse.com/thing:2824005
     //#define NOZZLE_TO_PROBE_OFFSET { 29, -15, 0 } //X-Carriage
 #endif
 
