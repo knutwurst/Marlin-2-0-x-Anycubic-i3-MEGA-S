@@ -183,7 +183,7 @@
      ---------------
     ||  D37   D35  ||
     ||             ||
-    || [D17] [D16] ||   <---- Connect your ESP82866 here (TX/RX)
+    || [D17] [D16] ||   <---- Connect your ESP8266 here (TX/RX)
   /||              ||
   |||   D23   D25  ||
   \||              ||
