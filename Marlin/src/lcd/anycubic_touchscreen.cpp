@@ -250,6 +250,7 @@ void AnycubicTouchscreenClass::Setup()
   #endif
 
   setup_OutageTestPin();
+  CheckHeaterError();
 }
 
 #if ENABLED(KNUTWURST_MEGA_P_LASER)
@@ -1287,21 +1288,13 @@ void AnycubicTouchscreenClass::CheckHeaterError()
 {
   if ((thermalManager.degHotend(0) < 5) || (thermalManager.degHotend(0) > 300))
   {
-    if (HeaterCheckCount > 60000)
-    {
-      HeaterCheckCount = 0;
-      #ifndef ANYCUBIC_TFT_DEBUG
-          HARDWARE_SERIAL_PROTOCOLPGM("J10"); // J10 Hotend temperature abnormal
-          HARDWARE_SERIAL_ENTER();
-      #endif
-      #ifdef ANYCUBIC_TFT_DEBUG
-            SERIAL_ECHOLNPGM("TFT Serial Debug: Hotend temperature abnormal... J20");
-      #endif
-    } else {
-      HeaterCheckCount++;
-    }
-  } else {
-    HeaterCheckCount = 0;
+    #ifndef ANYCUBIC_TFT_DEBUG
+        HARDWARE_SERIAL_PROTOCOLPGM("J10"); // J10 Hotend temperature abnormal
+        HARDWARE_SERIAL_ENTER();
+    #endif
+    #ifdef ANYCUBIC_TFT_DEBUG
+          SERIAL_ECHOLNPGM("TFT Serial Debug: Hotend temperature abnormal... J20");
+    #endif
   }
 }
 
@@ -2445,7 +2438,6 @@ SERIAL_PROTOCOLLN(cvalue);
 
 void AnycubicTouchscreenClass::CommandScan()
 {
-  CheckHeaterError();
   CheckSDCardChange();
   StateHandler();
 
