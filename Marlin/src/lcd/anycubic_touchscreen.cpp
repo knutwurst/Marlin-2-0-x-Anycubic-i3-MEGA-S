@@ -1287,7 +1287,7 @@ void AnycubicTouchscreenClass::CheckHeaterError()
 {
   if ((thermalManager.degHotend(0) < 5) || (thermalManager.degHotend(0) > 300))
   {
-    if (HeaterCheckCount > 60000)
+    if (HeaterCheckCount > 600000)
     {
       HeaterCheckCount = 0;
       #ifndef ANYCUBIC_TFT_DEBUG
