@@ -281,7 +281,7 @@ private:
   int serial3_count = 0;
   char *TFTstrchr_pointer;
   char FlagResumFromOutage = 0;
-  uint16_t filenumber = 0;
+  int filenumber = 0;
   unsigned long starttime = 0;
   unsigned long stoptime = 0;
   uint8_t tmp_extruder = 0;

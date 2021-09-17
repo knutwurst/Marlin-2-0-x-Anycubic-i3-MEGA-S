@@ -1134,24 +1134,33 @@ void AnycubicTouchscreenClass::PrintList()
     if (card.isMounted())
   #endif
   {
-    uint16_t count = filenumber;
-    uint16_t max_files;
-    uint16_t MyFileNrCnt = card.countFilesInWorkDir();
+    int count = filenumber;
+    int max_files;
+    int filesOnSDCard = card.countFilesInWorkDir();
 
     // What is this shit? What if there are exactely 3 files+folders?
     // TODO: find something better than this crap.
-    if ((MyFileNrCnt - filenumber) < 4)
+    
+    if ((filesOnSDCard - filenumber) < 4)
     {
-      max_files = MyFileNrCnt;
+      max_files = filesOnSDCard;
+      #ifdef ANYCUBIC_TFT_DEBUG
+        SERIAL_ECHOLN("max_files = filesOnSDCard;");
+      #endif
     }
     else
     {
       max_files = filenumber + 3;
+      #ifdef ANYCUBIC_TFT_DEBUG
+        SERIAL_ECHOLN("max_files = filenumber + 3;");
+      #endif
     }
 
-    for (count = filenumber; count <= max_files; count++)
-    {
+    //max_files = filesOnSDCard;
+
     #ifdef ANYCUBIC_TFT_DEBUG
+      SERIAL_ECHOPGM("filesOnSDCard: ");
+      SERIAL_ECHOLN(filesOnSDCard);
       SERIAL_ECHOPGM("filenumber: ");
       SERIAL_ECHOLN(filenumber);
       SERIAL_ECHOPGM("max_files: ");
@@ -1160,6 +1169,8 @@ void AnycubicTouchscreenClass::PrintList()
       SERIAL_ECHOLN(count);
     #endif
 
+    for (count = filenumber; count <= max_files; count++)
+    {
       if (count == 0) // Special Entry
       {
         if (strcmp(card.getWorkDirName(), "/") == 0)
@@ -1215,23 +1226,23 @@ void AnycubicTouchscreenClass::PrintList()
         if (card.flag.filenameIsDir)
         {
           #if ENABLED(KNUTWURST_DGUS2_TFT)
-          HARDWARE_SERIAL_PROTOCOLPGM("/");
-          HARDWARE_SERIAL_PROTOCOL(card.filename);
-          HARDWARE_SERIAL_PROTOCOLLNPGM(".GCO");
-          HARDWARE_SERIAL_PROTOCOLPGM("/");
-          HARDWARE_SERIAL_PROTOCOL(outputString);
-          HARDWARE_SERIAL_PROTOCOLLNPGM(".gcode");
-          SERIAL_ECHO(count);
-          SERIAL_ECHOPGM(": /");
-          SERIAL_ECHOLN(outputString);
+              HARDWARE_SERIAL_PROTOCOLPGM("/");
+              HARDWARE_SERIAL_PROTOCOL(card.filename);
+              HARDWARE_SERIAL_PROTOCOLLNPGM(".GCO");
+              HARDWARE_SERIAL_PROTOCOLPGM("/");
+              HARDWARE_SERIAL_PROTOCOL(outputString);
+              HARDWARE_SERIAL_PROTOCOLLNPGM(".gcode");
+              SERIAL_ECHO(count);
+              SERIAL_ECHOPGM(": /");
+              SERIAL_ECHOLN(outputString);
           #else
-          HARDWARE_SERIAL_PROTOCOL("/");
-          HARDWARE_SERIAL_PROTOCOLLN(card.filename);
-          HARDWARE_SERIAL_PROTOCOL("/");
-          HARDWARE_SERIAL_PROTOCOLLN(outputString);
-          SERIAL_ECHO(count);
-          SERIAL_ECHOPGM(": /");
-          SERIAL_ECHOLN(outputString);
+              HARDWARE_SERIAL_PROTOCOL("/");
+              HARDWARE_SERIAL_PROTOCOLLN(card.filename);
+              HARDWARE_SERIAL_PROTOCOL("/");
+              HARDWARE_SERIAL_PROTOCOLLN(outputString);
+              SERIAL_ECHO(count);
+              SERIAL_ECHOPGM(": /");
+              SERIAL_ECHOLN(outputString);
           #endif
         }
         else
