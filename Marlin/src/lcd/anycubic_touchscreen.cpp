@@ -1137,9 +1137,6 @@ void AnycubicTouchscreenClass::PrintList()
     int count = filenumber;
     int max_files;
     int filesOnSDCard = card.countFilesInWorkDir();
-
-    // What is this shit? What if there are exactely 3 files+folders?
-    // TODO: find something better than this crap.
     
     if ((filesOnSDCard - filenumber) < 4)
     {
@@ -1155,8 +1152,9 @@ void AnycubicTouchscreenClass::PrintList()
         SERIAL_ECHOLN("max_files = filenumber + 3;");
       #endif
     }
-
-    //max_files = filesOnSDCard;
+    
+    if(filesOnSDCard == 3)
+        filenumber = 0;
 
     #ifdef ANYCUBIC_TFT_DEBUG
       SERIAL_ECHOPGM("filesOnSDCard: ");
