@@ -362,7 +362,7 @@ void AnycubicTouchscreenClass::StartPrint()
     #endif
     break;
   case 2:
-// paused by M600
+    // paused by M600
     #ifdef ANYCUBIC_TFT_DEBUG
         SERIAL_ECHOPAIR(" DEBUG: AI3M Pause State: ", ai3m_pause_state);
         SERIAL_EOL();
@@ -1843,8 +1843,11 @@ void AnycubicTouchscreenClass::GetCommandFromTFT()
               unsigned int tempbed;
               if (CodeSeen('S'))
               {
-                tempbed = constrain(CodeValue(), 0, 150);
+                tempbed = constrain(CodeValue(), 0, 115);
                 thermalManager.setTargetBed(tempbed);
+                if(thermalManager.degTargetBed() <= 115) {
+                    thermalManager.setTargetBed(tempbed); // do not set Temp from TFT if it is set via gcode
+                }
               }
             }
             break;
