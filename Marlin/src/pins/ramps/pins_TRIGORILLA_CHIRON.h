@@ -89,8 +89,7 @@
 #if HOTENDS > 1 || TEMP_SENSOR_BED                // EEF, EEB, EFB
   #define FAN1_PIN                   TG_FAN1_PIN
 #endif
-#define FAN2_PIN                     TG_FAN2_PIN
-#define ORIG_E0_AUTO_FAN_PIN         TG_FAN2_PIN  // Used in Anycubic Kossel example config
+#define FAN2_PIN                TG_FAN2_PIN
 
 #ifdef POWER_OUTAGE_TEST
   #define OUTAGETEST_PIN       79

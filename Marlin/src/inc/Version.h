@@ -16,7 +16,7 @@
  * GNU General Public License for more details.
  *
  * You should have received a copy of the GNU General Public License
- * along with this program.  If not, see <http://www.gnu.org/licenses/>.
+ * along with this program.  If not, see <https://www.gnu.org/licenses/>.
  *
  */
 #pragma once
@@ -25,7 +25,7 @@
  * Release version. Leave the Marlin version or apply a custom scheme.
  */
 #ifndef SHORT_BUILD_VERSION
-  #define SHORT_BUILD_VERSION "2.0.x"
+  #define SHORT_BUILD_VERSION "2.0.x"   // PATCH: Knutwurst
 #endif
 
 /**
@@ -33,7 +33,7 @@
  * vendor name, download location, GitHub account, etc.
  */
 #ifndef DETAILED_BUILD_VERSION
-  #define DETAILED_BUILD_VERSION SHORT_BUILD_VERSION " (knutwurst, Github)"
+  #define DETAILED_BUILD_VERSION SHORT_BUILD_VERSION " (knutwurst, Github)" // PATCH: Knutwurst
 #endif
 
 /**
@@ -41,7 +41,7 @@
  * here we define this default string as the date where the latest release
  * version was tagged.
  */
- #define CUSTOM_BUILD_VERSION "1.3.2"
+ #define CUSTOM_BUILD_VERSION "1.3.2"   // PATCH: Knutwurst
 
 #ifndef STRING_DISTRIBUTION_DATE
   #define STRING_DISTRIBUTION_DATE "2021-09-23"
@@ -54,7 +54,7 @@
  * to alert users to major changes.
  */
 
-#define MARLIN_HEX_VERSION 020005
+#define MARLIN_HEX_VERSION 02000902
 #ifndef REQUIRED_CONFIGURATION_H_VERSION
   #define REQUIRED_CONFIGURATION_H_VERSION MARLIN_HEX_VERSION
 #endif
@@ -75,7 +75,7 @@
  * Define a generic printer name to be output to the LCD after booting Marlin.
  */
 #ifndef MACHINE_NAME
-  #define MACHINE_NAME "Knutwurst's Anycubic Printer"
+  #define MACHINE_NAME "Knutwurst's Anycubic Printer"   // PATCH: Knutwurst
 #endif
 
 /**
@@ -84,14 +84,14 @@
  * providing the source code to your customers.)
  */
 #ifndef SOURCE_CODE_URL
-  #define SOURCE_CODE_URL "https://github.com/knutwurst/Marlin-2-0-x-Anycubic-i3-MEGA-S"
+  #define SOURCE_CODE_URL "github.com/knutwurst/Marlin-2-0-x-Anycubic-i3-MEGA-S"    // PATCH: Knutwurst
 #endif
 
 /**
  * Default generic printer UUID.
  */
 #ifndef DEFAULT_MACHINE_UUID
-  #define DEFAULT_MACHINE_UUID "b6153152-86fb-4cd8-bda7-91c6a04c467d"
+  #define DEFAULT_MACHINE_UUID "b6153152-86fb-4cd8-bda7-91c6a04c467d"   // PATCH: Knutwurst
 #endif
 
   /**
@@ -99,7 +99,7 @@
    * documentation about a specific Marlin release. Displayed in the Info Menu.
    */
 #ifndef WEBSITE_URL
-  #define WEBSITE_URL "http://marlinfw.org"
+  #define WEBSITE_URL "marlinfw.org"
 #endif
 
 /**
@@ -107,18 +107,18 @@
  * Currently only supported by DUE platform
  */
 #ifndef USB_DEVICE_VENDOR_ID
-  #define  USB_DEVICE_VENDOR_ID           0x03EB /* ATMEL VID */
+  #define USB_DEVICE_VENDOR_ID            0x03EB /* ATMEL VID */
 #endif
 #ifndef USB_DEVICE_PRODUCT_ID
-  #define  USB_DEVICE_PRODUCT_ID          0x2424 /* MSC / CDC */
+  #define USB_DEVICE_PRODUCT_ID           0x2424 /* MSC / CDC */
 #endif
 //! USB Device string definitions (Optional)
 #ifndef USB_DEVICE_MANUFACTURE_NAME
-  #define  USB_DEVICE_MANUFACTURE_NAME    WEBSITE_URL
+  #define USB_DEVICE_MANUFACTURE_NAME     WEBSITE_URL
 #endif
 #ifdef CUSTOM_MACHINE_NAME
-  #define  USB_DEVICE_PRODUCT_NAME        CUSTOM_MACHINE_NAME
+  #define USB_DEVICE_PRODUCT_NAME         CUSTOM_MACHINE_NAME
 #else
-  #define  USB_DEVICE_PRODUCT_NAME        MACHINE_NAME
+  #define USB_DEVICE_PRODUCT_NAME         MACHINE_NAME
 #endif
-#define  USB_DEVICE_SERIAL_NAME           "123985739853"
+#define USB_DEVICE_SERIAL_NAME            "123985739853"

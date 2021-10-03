@@ -28,7 +28,6 @@
 #include "../gcode/parser.h"
 #include "../feature/e_parser.h"
 #include "../feature/pause.h"
-#include "../module/configuration_store.h"
 #include "../feature/bedlevel/bedlevel.h"
 #include "../feature/bedlevel/abl/abl.h"
 #include "../libs/buzzer.h"
@@ -37,6 +36,8 @@
 #include "../module/temperature.h"
 #include "../module/motion.h"
 #include "../module/probe.h"
+#include "../module/settings.h"
+#include "../module/stepper.h"
 #include "../sd/cardreader.h"
 
 #ifdef ANYCUBIC_TOUCHSCREEN
@@ -66,10 +67,10 @@ char _conv[8];
 
   void setupMyZoffset() {
   #if ENABLED(AUTO_BED_LEVELING_BILINEAR)
-    SERIAL_ECHOPAIR("MEANL_L:", 0x55);
+    SERIAL_ECHOPGM("MEANL_L:", 0x55);
     SAVE_zprobe_zoffset = probe.offset.z;
   #else
-    SERIAL_ECHOPAIR("MEANL_L:", 0xaa);
+    SERIAL_ECHOPGM("MEANL_L:", 0xaa);
     constexpr float dpo[] = NOZZLE_TO_PROBE_OFFSET;
     probe.offset.z = dpo[Z_AXIS];
   #endif
@@ -334,7 +335,7 @@ void AnycubicTouchscreenClass::StartPrint()
   case 0:
     // no pause, just a regular start
     starttime = millis();
-    card.startFileprint();
+    card.startOrResumeFilePrinting();
     TFTstate = ANYCUBIC_TFT_STATE_SDPRINT;
     #ifdef ANYCUBIC_TFT_DEBUG
         SERIAL_ECHOPAIR(" DEBUG: AI3M Pause State: ", ai3m_pause_state);
@@ -354,7 +355,7 @@ void AnycubicTouchscreenClass::StartPrint()
     wait_for_heatup = false;
     wait_for_user = false;
     starttime = millis();
-    card.startFileprint(); // resume regularly
+    card.startOrResumeFilePrinting(); // resume regularly
     TFTstate = ANYCUBIC_TFT_STATE_SDPRINT;
     ai3m_pause_state = 0;
     #ifdef ANYCUBIC_TFT_DEBUG
@@ -476,7 +477,7 @@ inline void AnycubicTouchscreenClass::StopPrint()
   wait_for_heatup = false;
   IsParked = false;
   if(card.isFileOpen) {
-    card.endFilePrint();
+    card.endFilePrintNow();
     card.closefile();
   }
   #ifdef ANYCUBIC_TFT_DEBUG
@@ -507,7 +508,7 @@ void AnycubicTouchscreenClass::FilamentChangeResume()
   wait_for_user = false;
   wait_for_heatup = false;
   // resume with proper progress state
-  card.startFileprint();
+  card.startOrResumeFilePrinting();
   #ifdef ANYCUBIC_TFT_DEBUG
     SERIAL_ECHOLNPGM("DEBUG: M108 Resume done");
   #endif
@@ -566,7 +567,7 @@ void AnycubicTouchscreenClass::ReheatNozzle()
 void AnycubicTouchscreenClass::ParkAfterStop()
 {
   // only park the nozzle if homing was done before
-  if (!axis_unhomed_error())
+  if (!homing_needed_error())
   {
       // raize nozzle by 25mm respecting Z_MAX_POS
       do_blocking_move_to_z(_MIN(current_position[Z_AXIS] + 25, Z_MAX_POS), 5);
@@ -1811,7 +1812,7 @@ void AnycubicTouchscreenClass::GetCommandFromTFT()
                     FlagResumFromOutage = true;
                   
                   ResumingFlag = 1;
-                  card.startFileprint();
+                  card.startOrResumeFilePrinting();
                   starttime = millis();
                   HARDWARE_SERIAL_SUCC_START;
                 }
@@ -1872,7 +1873,7 @@ void AnycubicTouchscreenClass::GetCommandFromTFT()
               )
               {
                 quickstop_stepper();
-                disable_all_steppers();
+                stepper.disable_all_steppers();
               }
               HARDWARE_SERIAL_ENTER();
             break;
@@ -2105,7 +2106,7 @@ void AnycubicTouchscreenClass::GetCommandFromTFT()
 
                 if ((!planner.movesplanned()) && (TFTstate != ANYCUBIC_TFT_STATE_SDPAUSE) && (TFTstate != ANYCUBIC_TFT_STATE_SDOUTAGE))
                 {
-                  if (!all_axes_known())
+                  if (!all_axes_trusted())
                   {
                       queue.inject_P(PSTR("G28\n"));
                       /*

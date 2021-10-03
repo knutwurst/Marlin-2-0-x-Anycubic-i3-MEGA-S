@@ -16,13 +16,13 @@
  * GNU General Public License for more details.
  *
  * You should have received a copy of the GNU General Public License
- * along with this program.  If not, see <http://www.gnu.org/licenses/>.
+ * along with this program.  If not, see <https://www.gnu.org/licenses/>.
  *
  */
 
 #include "../../inc/MarlinConfig.h"
 
-#if ENABLED(PRUSA_MMU2)
+#if HAS_PRUSA_MMU2
 
 #include "mmu2.h"
 #include "../../lcd/menu/menu_mmu2.h"
@@ -30,12 +30,12 @@
 MMU2 mmu2;
 
 #include "../../gcode/gcode.h"
-#include "../../lcd/ultralcd.h"
+#include "../../lcd/marlinui.h"
 #include "../../libs/buzzer.h"
 #include "../../libs/nozzle.h"
 #include "../../module/temperature.h"
 #include "../../module/planner.h"
-#include "../../module/stepper/indirection.h"
+#include "../../module/stepper.h"
 #include "../../MarlinCore.h"
 
 #if ENABLED(HOST_PROMPT_SUPPORT)
@@ -51,65 +51,55 @@ MMU2 mmu2;
 
 #define MMU_TODELAY 100
 #define MMU_TIMEOUT 10
-#define MMU_CMD_TIMEOUT 60000ul // 5min timeout for mmu commands (except P0)
-#define MMU_P0_TIMEOUT 3000ul   // Timeout for P0 command: 3seconds
+#define MMU_CMD_TIMEOUT 45000UL // 45s timeout for mmu commands (except P0)
+#define MMU_P0_TIMEOUT 3000UL   // Timeout for P0 command: 3seconds
+
+#define MMU2_COMMAND(S) tx_str_P(PSTR(S "\n"))
+
+#if ENABLED(MMU_EXTRUDER_SENSOR)
+  uint8_t mmu_idl_sens = 0;
+  static bool mmu_loading_flag = false;
+#endif
 
 #define MMU_CMD_NONE 0
-#define MMU_CMD_T0   0x10
-#define MMU_CMD_T1   0x11
-#define MMU_CMD_T2   0x12
-#define MMU_CMD_T3   0x13
-#define MMU_CMD_T4   0x14
-#define MMU_CMD_L0   0x20
-#define MMU_CMD_L1   0x21
-#define MMU_CMD_L2   0x22
-#define MMU_CMD_L3   0x23
-#define MMU_CMD_L4   0x24
+#define MMU_CMD_T0   0x10  // up to supported filaments
+#define MMU_CMD_L0   0x20  // up to supported filaments
 #define MMU_CMD_C0   0x30
 #define MMU_CMD_U0   0x40
-#define MMU_CMD_E0   0x50
-#define MMU_CMD_E1   0x51
-#define MMU_CMD_E2   0x52
-#define MMU_CMD_E3   0x53
-#define MMU_CMD_E4   0x54
+#define MMU_CMD_E0   0x50  // up to supported filaments
 #define MMU_CMD_R0   0x60
-#define MMU_CMD_F0   0x70
-#define MMU_CMD_F1   0x71
-#define MMU_CMD_F2   0x72
-#define MMU_CMD_F3   0x73
-#define MMU_CMD_F4   0x74
+#define MMU_CMD_F0   0x70  // up to supported filaments
 
-#if ENABLED(MMU2_MODE_12V)
-  #define MMU_REQUIRED_FW_BUILDNR 132
-#else
-  #define MMU_REQUIRED_FW_BUILDNR 126
-#endif
+#define MMU_REQUIRED_FW_BUILDNR TERN(MMU2_MODE_12V, 132, 126)
 
 #define MMU2_NO_TOOL 99
 #define MMU_BAUD    115200
 
-#define mmuSerial   MMU2_SERIAL
-
-bool MMU2::enabled, MMU2::ready, MMU2::mmu_print_saved;
+bool MMU2::_enabled, MMU2::ready, MMU2::mmu_print_saved;
+#if HAS_PRUSA_MMU2S
+  bool MMU2::mmu2s_triggered;
+#endif
 uint8_t MMU2::cmd, MMU2::cmd_arg, MMU2::last_cmd, MMU2::extruder;
 int8_t MMU2::state = 0;
 volatile int8_t MMU2::finda = 1;
 volatile bool MMU2::finda_runout_valid;
 int16_t MMU2::version = -1, MMU2::buildnr = -1;
-millis_t MMU2::last_request, MMU2::next_P0_request;
+millis_t MMU2::prev_request, MMU2::prev_P0_request;
 char MMU2::rx_buffer[MMU_RX_SIZE], MMU2::tx_buffer[MMU_TX_SIZE];
 
-#if HAS_LCD_MENU && ENABLED(MMU2_MENUS)
+struct E_Step {
+  float extrude;        //!< extrude distance in mm
+  feedRate_t feedRate;  //!< feed rate in mm/s
+};
 
-  struct E_Step {
-    float extrude;        //!< extrude distance in mm
-    feedRate_t feedRate;  //!< feed rate in mm/s
-  };
-
-  static constexpr E_Step ramming_sequence[] PROGMEM = { MMU2_RAMMING_SEQUENCE };
-  static constexpr E_Step load_to_nozzle_sequence[] PROGMEM = { MMU2_LOAD_TO_NOZZLE_SEQUENCE };
-
-#endif // MMU2_MENUS
+static constexpr E_Step
+    ramming_sequence[] PROGMEM = { MMU2_RAMMING_SEQUENCE }
+  , load_to_nozzle_sequence[] PROGMEM = { MMU2_LOAD_TO_NOZZLE_SEQUENCE }
+  #if HAS_PRUSA_MMU2S
+    , can_load_sequence[] PROGMEM = { MMU2_CAN_LOAD_SEQUENCE }
+    , can_load_increment_sequence[] PROGMEM = { MMU2_CAN_LOAD_INCREMENT_SEQUENCE }
+  #endif
+;
 
 MMU2::MMU2() {
   rx_buffer[0] = '\0';
@@ -120,12 +110,11 @@ void MMU2::init() {
   set_runout_valid(false);
 
   #if PIN_EXISTS(MMU2_RST)
-    // TODO use macros for this
     WRITE(MMU2_RST_PIN, HIGH);
     SET_OUTPUT(MMU2_RST_PIN);
   #endif
 
-  mmuSerial.begin(MMU_BAUD);
+  MMU2_SERIAL.begin(MMU_BAUD);
   extruder = MMU2_NO_TOOL;
 
   safe_delay(10);
@@ -142,13 +131,17 @@ void MMU2::reset() {
     safe_delay(20);
     WRITE(MMU2_RST_PIN, HIGH);
   #else
-    tx_str_P(PSTR("X0\n")); // Send soft reset
+    MMU2_COMMAND("X0"); // Send soft reset
   #endif
 }
 
 uint8_t MMU2::get_current_tool() {
   return extruder == MMU2_NO_TOOL ? -1 : extruder;
 }
+
+#if EITHER(HAS_PRUSA_MMU2S, MMU_EXTRUDER_SENSOR)
+  #define FILAMENT_PRESENT() (READ(FIL_RUNOUT1_PIN) != FIL_RUNOUT1_STATE)
+#endif
 
 void MMU2::mmu_loop() {
 
@@ -158,15 +151,15 @@ void MMU2::mmu_loop() {
 
     case -1:
       if (rx_start()) {
+        prev_P0_request = millis();   // Initialize finda sensor timeout
+
         DEBUG_ECHOLNPGM("MMU => 'start'");
         DEBUG_ECHOLNPGM("MMU <= 'S1'");
 
-        // send "read version" request
-        tx_str_P(PSTR("S1\n"));
-
+        MMU2_COMMAND("S1");   // Read Version
         state = -2;
       }
-      else if (millis() > 3000000) {
+      else if (millis() > 30000) { // 30sec after reset disable MMU
         SERIAL_ECHOLNPGM("MMU not responding - DISABLED");
         state = 0;
       }
@@ -174,33 +167,33 @@ void MMU2::mmu_loop() {
 
     case -2:
       if (rx_ok()) {
-        sscanf(rx_buffer, "%uok\n", &version);
+        sscanf(rx_buffer, "%huok\n", &version);
 
-        DEBUG_ECHOLNPAIR("MMU => ", version, "\nMMU <= 'S2'");
+        DEBUG_ECHOLNPGM("MMU => ", version, "\nMMU <= 'S2'");
 
-        tx_str_P(PSTR("S2\n")); // read build number
+        MMU2_COMMAND("S2");   // Read Build Number
         state = -3;
       }
       break;
 
     case -3:
       if (rx_ok()) {
-        sscanf(rx_buffer, "%uok\n", &buildnr);
+        sscanf(rx_buffer, "%huok\n", &buildnr);
 
-        DEBUG_ECHOLNPAIR("MMU => ", buildnr);
+        DEBUG_ECHOLNPGM("MMU => ", buildnr);
 
         check_version();
 
         #if ENABLED(MMU2_MODE_12V)
           DEBUG_ECHOLNPGM("MMU <= 'M1'");
 
-          tx_str_P(PSTR("M1\n")); // switch to stealth mode
+          MMU2_COMMAND("M1");   // Stealth Mode
           state = -5;
 
         #else
           DEBUG_ECHOLNPGM("MMU <= 'P0'");
 
-          tx_str_P(PSTR("P0\n")); // read finda
+          MMU2_COMMAND("P0");   // Read FINDA
           state = -4;
         #endif
       }
@@ -214,7 +207,7 @@ void MMU2::mmu_loop() {
 
         DEBUG_ECHOLNPGM("MMU <= 'P0'");
 
-        tx_str_P(PSTR("P0\n")); // read finda
+        MMU2_COMMAND("P0");   // Read FINDA
         state = -4;
       }
       break;
@@ -224,61 +217,61 @@ void MMU2::mmu_loop() {
       if (rx_ok()) {
         sscanf(rx_buffer, "%hhuok\n", &finda);
 
-        DEBUG_ECHOLNPAIR("MMU => ", finda, "\nMMU - ENABLED");
+        DEBUG_ECHOLNPGM("MMU => ", finda, "\nMMU - ENABLED");
 
-        enabled = true;
+        _enabled = true;
         state = 1;
+        TERN_(HAS_PRUSA_MMU2S, mmu2s_triggered = false);
       }
       break;
 
     case 1:
       if (cmd) {
-        if (WITHIN(cmd, MMU_CMD_T0, MMU_CMD_T4)) {
+        if (WITHIN(cmd, MMU_CMD_T0, MMU_CMD_T0 + EXTRUDERS - 1)) {
           // tool change
           int filament = cmd - MMU_CMD_T0;
-          DEBUG_ECHOLNPAIR("MMU <= T", filament);
+          DEBUG_ECHOLNPGM("MMU <= T", filament);
           tx_printf_P(PSTR("T%d\n"), filament);
+          TERN_(MMU_EXTRUDER_SENSOR, mmu_idl_sens = 1); // enable idler sensor, if any
           state = 3; // wait for response
         }
-        else if (WITHIN(cmd, MMU_CMD_L0, MMU_CMD_L4)) {
+        else if (WITHIN(cmd, MMU_CMD_L0, MMU_CMD_L0 + EXTRUDERS - 1)) {
           // load
           int filament = cmd - MMU_CMD_L0;
-          DEBUG_ECHOLNPAIR("MMU <= L", filament);
+          DEBUG_ECHOLNPGM("MMU <= L", filament);
           tx_printf_P(PSTR("L%d\n"), filament);
           state = 3; // wait for response
         }
         else if (cmd == MMU_CMD_C0) {
           // continue loading
           DEBUG_ECHOLNPGM("MMU <= 'C0'");
-          tx_str_P(PSTR("C0\n"));
+          MMU2_COMMAND("C0");
           state = 3; // wait for response
         }
         else if (cmd == MMU_CMD_U0) {
           // unload current
           DEBUG_ECHOLNPGM("MMU <= 'U0'");
 
-          tx_str_P(PSTR("U0\n"));
+          MMU2_COMMAND("U0");
           state = 3; // wait for response
         }
-        else if (WITHIN(cmd, MMU_CMD_E0, MMU_CMD_E4)) {
+        else if (WITHIN(cmd, MMU_CMD_E0, MMU_CMD_E0 + EXTRUDERS - 1)) {
           // eject filament
           int filament = cmd - MMU_CMD_E0;
-          DEBUG_ECHOLNPAIR("MMU <= E", filament);
+          DEBUG_ECHOLNPGM("MMU <= E", filament);
           tx_printf_P(PSTR("E%d\n"), filament);
           state = 3; // wait for response
         }
         else if (cmd == MMU_CMD_R0) {
           // recover after eject
           DEBUG_ECHOLNPGM("MMU <= 'R0'");
-          tx_str_P(PSTR("R0\n"));
+          MMU2_COMMAND("R0");
           state = 3; // wait for response
         }
-        else if (WITHIN(cmd, MMU_CMD_F0, MMU_CMD_F4)) {
+        else if (WITHIN(cmd, MMU_CMD_F0, MMU_CMD_F0 + EXTRUDERS - 1)) {
           // filament type
           int filament = cmd - MMU_CMD_F0;
-          DEBUG_ECHOPAIR("MMU <= F", filament, " ");
-          DEBUG_ECHO_F(cmd_arg, DEC);
-          DEBUG_EOL();
+          DEBUG_ECHOLNPGM("MMU <= F", filament, " ", cmd_arg);
           tx_printf_P(PSTR("F%d %d\n"), filament, cmd_arg);
           state = 3; // wait for response
         }
@@ -286,11 +279,12 @@ void MMU2::mmu_loop() {
         last_cmd = cmd;
         cmd = MMU_CMD_NONE;
       }
-      else if (ELAPSED(millis(), next_P0_request)) {
-        // read FINDA
-        tx_str_P(PSTR("P0\n"));
+      else if (ELAPSED(millis(), prev_P0_request + 300)) {
+        MMU2_COMMAND("P0"); // Read FINDA
         state = 2; // wait for response
       }
+
+      TERN_(HAS_PRUSA_MMU2S, check_filament());
       break;
 
     case 2:   // response to command P0
@@ -300,25 +294,50 @@ void MMU2::mmu_loop() {
         // This is super annoying. Only activate if necessary
         // if (finda_runout_valid) DEBUG_ECHOLNPAIR_F("MMU <= 'P0'\nMMU => ", finda, 6);
 
-        state = 1;
-
-        if (cmd == 0) ready = true;
-
         if (!finda && finda_runout_valid) filament_runout();
+        if (cmd == MMU_CMD_NONE) ready = true;
+        state = 1;
       }
-      else if (ELAPSED(millis(), last_request + MMU_P0_TIMEOUT)) // Resend request after timeout (3s)
+      else if (ELAPSED(millis(), prev_request + MMU_P0_TIMEOUT)) // Resend request after timeout (3s)
         state = 1;
 
+      TERN_(HAS_PRUSA_MMU2S, check_filament());
       break;
 
     case 3:   // response to mmu commands
+      #if ENABLED(MMU_EXTRUDER_SENSOR)
+        if (mmu_idl_sens) {
+          if (FILAMENT_PRESENT() && mmu_loading_flag) {
+            DEBUG_ECHOLNPGM("MMU <= 'A'");
+            MMU2_COMMAND("A"); // send 'abort' request
+            mmu_idl_sens = 0;
+            DEBUG_ECHOLNPGM("MMU IDLER_SENSOR = 0 - ABORT");
+          }
+        }
+      #endif
+
       if (rx_ok()) {
-        DEBUG_ECHOLNPGM("MMU => 'ok'");
-        ready = true;
-        state = 1;
-        last_cmd = MMU_CMD_NONE;
+        #if HAS_PRUSA_MMU2S
+          // Respond to C0 MMU command in MMU2S model
+          const bool keep_trying = !mmu2s_triggered && last_cmd == MMU_CMD_C0;
+          if (keep_trying) {
+            // MMU ok received but filament sensor not triggered, retrying...
+            DEBUG_ECHOLNPGM("MMU => 'ok' (filament not present in gears)");
+            DEBUG_ECHOLNPGM("MMU <= 'C0' (keep trying)");
+            MMU2_COMMAND("C0");
+          }
+        #else
+          constexpr bool keep_trying = false;
+        #endif
+
+        if (!keep_trying) {
+          DEBUG_ECHOLNPGM("MMU => 'ok'");
+          ready = true;
+          state = 1;
+          last_cmd = MMU_CMD_NONE;
+        }
       }
-      else if (ELAPSED(millis(), last_request + MMU_CMD_TIMEOUT)) {
+      else if (ELAPSED(millis(), prev_request + MMU_CMD_TIMEOUT)) {
         // resend request after timeout
         if (last_cmd) {
           DEBUG_ECHOLNPGM("MMU retry");
@@ -327,6 +346,7 @@ void MMU2::mmu_loop() {
         }
         state = 1;
       }
+      TERN_(HAS_PRUSA_MMU2S, check_filament());
       break;
   }
 }
@@ -336,28 +356,24 @@ void MMU2::mmu_loop() {
  */
 bool MMU2::rx_start() {
   // check for start message
-  if (rx_str_P(PSTR("start\n"))) {
-    next_P0_request = millis() + 300;
-    return true;
-  }
-  return false;
+  return rx_str_P(PSTR("start\n"));
 }
 
 /**
  * Check if the data received ends with the given string.
  */
-bool MMU2::rx_str_P(const char* str) {
+bool MMU2::rx_str_P(const char *str) {
   uint8_t i = strlen(rx_buffer);
 
-  while (mmuSerial.available()) {
-    rx_buffer[i++] = mmuSerial.read();
-    rx_buffer[i] = '\0';
+  while (MMU2_SERIAL.available()) {
+    rx_buffer[i++] = MMU2_SERIAL.read();
 
     if (i == sizeof(rx_buffer) - 1) {
       DEBUG_ECHOLNPGM("rx buffer overrun");
       break;
     }
   }
+  rx_buffer[i] = '\0';
 
   uint8_t len = strlen_P(str);
 
@@ -378,41 +394,38 @@ bool MMU2::rx_str_P(const char* str) {
 /**
  * Transfer data to MMU, no argument
  */
-void MMU2::tx_str_P(const char* str) {
+void MMU2::tx_str_P(const char *str) {
   clear_rx_buffer();
   uint8_t len = strlen_P(str);
-  LOOP_L_N(i, len) mmuSerial.write(pgm_read_byte(str++));
-  rx_buffer[0] = '\0';
-  last_request = millis();
+  LOOP_L_N(i, len) MMU2_SERIAL.write(pgm_read_byte(str++));
+  prev_request = millis();
 }
 
 /**
  * Transfer data to MMU, single argument
  */
-void MMU2::tx_printf_P(const char* format, int argument = -1) {
+void MMU2::tx_printf_P(const char *format, int argument = -1) {
   clear_rx_buffer();
   uint8_t len = sprintf_P(tx_buffer, format, argument);
-  LOOP_L_N(i, len) mmuSerial.write(tx_buffer[i]);
-  rx_buffer[0] = '\0';
-  last_request = millis();
+  LOOP_L_N(i, len) MMU2_SERIAL.write(tx_buffer[i]);
+  prev_request = millis();
 }
 
 /**
  * Transfer data to MMU, two arguments
  */
-void MMU2::tx_printf_P(const char* format, int argument1, int argument2) {
+void MMU2::tx_printf_P(const char *format, int argument1, int argument2) {
   clear_rx_buffer();
   uint8_t len = sprintf_P(tx_buffer, format, argument1, argument2);
-  LOOP_L_N(i, len) mmuSerial.write(tx_buffer[i]);
-  rx_buffer[0] = '\0';
-  last_request = millis();
+  LOOP_L_N(i, len) MMU2_SERIAL.write(tx_buffer[i]);
+  prev_request = millis();
 }
 
 /**
  * Empty the rx buffer
  */
 void MMU2::clear_rx_buffer() {
-  while (mmuSerial.available()) mmuSerial.read();
+  while (MMU2_SERIAL.available()) MMU2_SERIAL.read();
   rx_buffer[0] = '\0';
 }
 
@@ -421,7 +434,7 @@ void MMU2::clear_rx_buffer() {
  */
 bool MMU2::rx_ok() {
   if (rx_str_P(PSTR("ok\n"))) {
-    next_P0_request = millis() + 300;
+    prev_P0_request = millis();
     return true;
   }
   return false;
@@ -433,97 +446,305 @@ bool MMU2::rx_ok() {
 void MMU2::check_version() {
   if (buildnr < MMU_REQUIRED_FW_BUILDNR) {
     SERIAL_ERROR_MSG("Invalid MMU2 firmware. Version >= " STRINGIFY(MMU_REQUIRED_FW_BUILDNR) " required.");
-    kill(GET_TEXT(MSG_MMU2_WRONG_FIRMWARE));
+    kill(GET_TEXT(MSG_KILL_MMU2_FIRMWARE));
   }
 }
 
-/**
- * Handle tool change
- */
-void MMU2::tool_change(uint8_t index) {
+static void mmu2_not_responding() {
+  LCD_MESSAGEPGM(MSG_MMU2_NOT_RESPONDING);
+  BUZZ(100, 659);
+  BUZZ(200, 698);
+  BUZZ(100, 659);
+  BUZZ(300, 440);
+  BUZZ(100, 659);
+}
 
-  if (!enabled) return;
+#if HAS_PRUSA_MMU2S
 
-  set_runout_valid(false);
-
-  if (index != extruder) {
-
-    DISABLE_AXIS_E0();
-    ui.status_printf_P(0, GET_TEXT(MSG_MMU2_LOADING_FILAMENT), int(index + 1));
-
-    command(MMU_CMD_T0 + index);
-
-    manage_response(true, true);
-
+  bool MMU2::load_to_gears() {
     command(MMU_CMD_C0);
-    extruder = index; //filament change is finished
-    active_extruder = 0;
-
-    ENABLE_AXIS_E0();
-
-    SERIAL_ECHO_START();
-    SERIAL_ECHOLNPAIR(STR_ACTIVE_EXTRUDER, int(extruder));
-
-    ui.reset_status();
+    manage_response(true, true);
+    LOOP_L_N(i, MMU2_C0_RETRY) {  // Keep loading until filament reaches gears
+      if (mmu2s_triggered) break;
+      command(MMU_CMD_C0);
+      manage_response(true, true);
+      check_filament();
+    }
+    const bool success = mmu2s_triggered && can_load();
+    if (!success) mmu2_not_responding();
+    return success;
   }
 
-  set_runout_valid(true);
-}
+  /**
+   * Handle tool change
+   */
+  void MMU2::tool_change(const uint8_t index) {
 
-/**
- *
- * Handle special T?/Tx/Tc commands
- *
- * T? Gcode to extrude shouldn't have to follow, load to extruder wheels is done automatically
- * Tx Same as T?, except nozzle doesn't have to be preheated. Tc must be placed after extruder nozzle is preheated to finish filament load.
- * Tc Load to nozzle after filament was prepared by Tx and extruder nozzle is already heated.
- *
- */
-void MMU2::tool_change(const char* special) {
+    if (!_enabled) return;
 
-  if (!enabled) return;
+    set_runout_valid(false);
 
-  #if ENABLED(MMU2_MENUS)
+    if (index != extruder) {
+
+      stepper.disable_extruder();
+      ui.status_printf_P(0, GET_TEXT(MSG_MMU2_LOADING_FILAMENT), int(index + 1));
+
+      command(MMU_CMD_T0 + index);
+      manage_response(true, true);
+
+      if (load_to_gears()) {
+        extruder = index; // filament change is finished
+        active_extruder = 0;
+        stepper.enable_extruder();
+        SERIAL_ECHO_MSG(STR_ACTIVE_EXTRUDER, extruder);
+      }
+      ui.reset_status();
+    }
+
+    set_runout_valid(true);
+  }
+
+  /**
+   * Handle special T?/Tx/Tc commands
+   *
+   * T? Gcode to extrude shouldn't have to follow, load to extruder wheels is done automatically
+   * Tx Same as T?, except nozzle doesn't have to be preheated. Tc must be placed after extruder nozzle is preheated to finish filament load.
+   * Tc Load to nozzle after filament was prepared by Tx and extruder nozzle is already heated.
+   */
+  void MMU2::tool_change(const char *special) {
+      if (!_enabled) return;
+
+      set_runout_valid(false);
+
+      switch (*special) {
+        case '?': {
+          #if ENABLED(MMU2_MENUS)
+            const uint8_t index = mmu2_choose_filament();
+            while (!thermalManager.wait_for_hotend(active_extruder, false)) safe_delay(100);
+            load_filament_to_nozzle(index);
+          #else
+            BUZZ(400, 40);
+          #endif
+        } break;
+
+        case 'x': {
+          #if ENABLED(MMU2_MENUS)
+            planner.synchronize();
+            const uint8_t index = mmu2_choose_filament();
+            stepper.disable_extruder();
+            command(MMU_CMD_T0 + index);
+            manage_response(true, true);
+
+            if (load_to_gears()) {
+              mmu_loop();
+              stepper.enable_extruder();
+              extruder = index;
+              active_extruder = 0;
+            }
+          #else
+            BUZZ(400, 40);
+          #endif
+        } break;
+
+        case 'c': {
+          while (!thermalManager.wait_for_hotend(active_extruder, false)) safe_delay(100);
+          load_to_nozzle();
+        } break;
+      }
+
+      set_runout_valid(true);
+  }
+
+#elif ENABLED(MMU_EXTRUDER_SENSOR)
+
+  /**
+   * Handle tool change
+   */
+  void MMU2::tool_change(const uint8_t index) {
+    if (!_enabled) return;
+
+    set_runout_valid(false);
+
+    if (index != extruder) {
+      stepper.disable_extruder();
+      if (FILAMENT_PRESENT()) {
+        DEBUG_ECHOLNPGM("Unloading\n");
+        mmu_loading_flag = false;
+        command(MMU_CMD_U0);
+        manage_response(true, true);
+      }
+      ui.status_printf_P(0, GET_TEXT(MSG_MMU2_LOADING_FILAMENT), int(index + 1));
+      mmu_loading_flag = true;
+      command(MMU_CMD_T0 + index);
+      manage_response(true, true);
+      mmu_continue_loading();
+      command(MMU_CMD_C0);
+      extruder = index;
+      active_extruder = 0;
+
+      stepper.enable_extruder();
+      SERIAL_ECHO_MSG(STR_ACTIVE_EXTRUDER, extruder);
+
+      ui.reset_status();
+    }
+
+    set_runout_valid(true);
+  }
+
+  /**
+   * Handle special T?/Tx/Tc commands
+   *
+   * T? Gcode to extrude shouldn't have to follow, load to extruder wheels is done automatically
+   * Tx Same as T?, except nozzle doesn't have to be preheated. Tc must be placed after extruder nozzle is preheated to finish filament load.
+   * Tc Load to nozzle after filament was prepared by Tx and extruder nozzle is already heated.
+   */
+  void MMU2::tool_change(const char *special) {
+    if (!_enabled) return;
 
     set_runout_valid(false);
 
     switch (*special) {
       case '?': {
-        uint8_t index = mmu2_choose_filament();
-        while (!thermalManager.wait_for_hotend(active_extruder, false)) safe_delay(100);
-        load_filament_to_nozzle(index);
+        DEBUG_ECHOLNPGM("case ?\n");
+        #if ENABLED(MMU2_MENUS)
+          uint8_t index = mmu2_choose_filament();
+          while (!thermalManager.wait_for_hotend(active_extruder, false)) safe_delay(100);
+          load_filament_to_nozzle(index);
+        #else
+          BUZZ(400, 40);
+        #endif
       } break;
 
       case 'x': {
-        planner.synchronize();
-        uint8_t index = mmu2_choose_filament();
-        DISABLE_AXIS_E0();
-        command(MMU_CMD_T0 + index);
-        manage_response(true, true);
-        command(MMU_CMD_C0);
-        mmu_loop();
+        DEBUG_ECHOLNPGM("case x\n");
+        #if ENABLED(MMU2_MENUS)
+          planner.synchronize();
+          uint8_t index = mmu2_choose_filament();
+          stepper.disable_extruder();
+          command(MMU_CMD_T0 + index);
+          manage_response(true, true);
+          mmu_continue_loading();
+          command(MMU_CMD_C0);
+          mmu_loop();
 
-        ENABLE_AXIS_E0();
-        extruder = index;
-        active_extruder = 0;
+          stepper.enable_extruder();
+          extruder = index;
+          active_extruder = 0;
+        #else
+          BUZZ(400, 40);
+        #endif
       } break;
 
       case 'c': {
+        DEBUG_ECHOLNPGM("case c\n");
         while (!thermalManager.wait_for_hotend(active_extruder, false)) safe_delay(100);
         execute_extruder_sequence((const E_Step *)load_to_nozzle_sequence, COUNT(load_to_nozzle_sequence));
       } break;
     }
 
     set_runout_valid(true);
+  }
 
-  #endif
-}
+  void MMU2::mmu_continue_loading() {
+    for (uint8_t i = 0; i < MMU_LOADING_ATTEMPTS_NR; i++) {
+      DEBUG_ECHOLNPGM("Additional load attempt #", i);
+      if (FILAMENT_PRESENT()) break;
+      command(MMU_CMD_C0);
+      manage_response(true, true);
+    }
+    if (!FILAMENT_PRESENT()) {
+      DEBUG_ECHOLNPGM("Filament never reached sensor, runout");
+      filament_runout();
+    }
+    mmu_idl_sens = 0;
+  }
+
+#else // !HAS_PRUSA_MMU2S && !MMU_EXTRUDER_SENSOR
+
+  /**
+   * Handle tool change
+   */
+  void MMU2::tool_change(const uint8_t index) {
+    if (!_enabled) return;
+
+    set_runout_valid(false);
+
+    if (index != extruder) {
+      stepper.disable_extruder();
+      ui.status_printf_P(0, GET_TEXT(MSG_MMU2_LOADING_FILAMENT), int(index + 1));
+      command(MMU_CMD_T0 + index);
+      manage_response(true, true);
+      command(MMU_CMD_C0);
+      extruder = index; //filament change is finished
+      active_extruder = 0;
+      stepper.enable_extruder();
+      SERIAL_ECHO_MSG(STR_ACTIVE_EXTRUDER, extruder);
+      ui.reset_status();
+    }
+
+    set_runout_valid(true);
+  }
+
+  /**
+   * Handle special T?/Tx/Tc commands
+   *
+   * T? Gcode to extrude shouldn't have to follow, load to extruder wheels is done automatically
+   * Tx Same as T?, except nozzle doesn't have to be preheated. Tc must be placed after extruder nozzle is preheated to finish filament load.
+   * Tc Load to nozzle after filament was prepared by Tx and extruder nozzle is already heated.
+   */
+  void MMU2::tool_change(const char *special) {
+    if (!_enabled) return;
+
+    set_runout_valid(false);
+
+    switch (*special) {
+      case '?': {
+        DEBUG_ECHOLNPGM("case ?\n");
+        #if ENABLED(MMU2_MENUS)
+          uint8_t index = mmu2_choose_filament();
+          while (!thermalManager.wait_for_hotend(active_extruder, false)) safe_delay(100);
+          load_filament_to_nozzle(index);
+        #else
+          BUZZ(400, 40);
+        #endif
+      } break;
+
+      case 'x': {
+        DEBUG_ECHOLNPGM("case x\n");
+        #if ENABLED(MMU2_MENUS)
+          planner.synchronize();
+          uint8_t index = mmu2_choose_filament();
+          stepper.disable_extruder();
+          command(MMU_CMD_T0 + index);
+          manage_response(true, true);
+          command(MMU_CMD_C0);
+          mmu_loop();
+
+          stepper.enable_extruder();
+          extruder = index;
+          active_extruder = 0;
+        #else
+          BUZZ(400, 40);
+        #endif
+      } break;
+
+      case 'c': {
+        DEBUG_ECHOLNPGM("case c\n");
+        while (!thermalManager.wait_for_hotend(active_extruder, false)) safe_delay(100);
+        execute_extruder_sequence((const E_Step *)load_to_nozzle_sequence, COUNT(load_to_nozzle_sequence));
+      } break;
+    }
+
+    set_runout_valid(true);
+  }
+
+#endif // HAS_PRUSA_MMU2S
 
 /**
  * Set next command
  */
 void MMU2::command(const uint8_t mmu_cmd) {
-  if (!enabled) return;
+  if (!_enabled) return;
   cmd = mmu_cmd;
   ready = false;
 }
@@ -546,7 +767,7 @@ bool MMU2::get_response() {
 }
 
 /**
- * Wait for response and deal with timeout if nexcessary
+ * Wait for response and deal with timeout if necessary
  */
 void MMU2::manage_response(const bool move_axes, const bool turn_off_nozzle) {
 
@@ -554,7 +775,7 @@ void MMU2::manage_response(const bool move_axes, const bool turn_off_nozzle) {
   bool response = false;
   mmu_print_saved = false;
   xyz_pos_t resume_position;
-  int16_t resume_hotend_temp;
+  celsius_t resume_hotend_temp = thermalManager.degTargetHotend(active_extruder);
 
   KEEPALIVE_STATE(PAUSED_FOR_USER);
 
@@ -575,16 +796,11 @@ void MMU2::manage_response(const bool move_axes, const bool turn_off_nozzle) {
         resume_position = current_position;
 
         if (move_axes && all_axes_homed())
-          nozzle.park(2, park_point /*= NOZZLE_PARK_POINT*/);
+          nozzle.park(0, park_point /*= NOZZLE_PARK_POINT*/);
 
         if (turn_off_nozzle) thermalManager.setTargetHotend(0, active_extruder);
 
-        LCD_MESSAGEPGM(MSG_MMU2_NOT_RESPONDING);
-        BUZZ(100, 659);
-        BUZZ(200, 698);
-        BUZZ(100, 659);
-        BUZZ(300, 440);
-        BUZZ(100, 659);
+        mmu2_not_responding();
       }
     }
     else if (mmu_print_saved) {
@@ -600,8 +816,7 @@ void MMU2::manage_response(const bool move_axes, const bool turn_off_nozzle) {
 
       if (move_axes && all_axes_homed()) {
         LCD_MESSAGEPGM(MSG_MMU2_RESUMING);
-        BUZZ(200, 404);
-        BUZZ(200, 404);
+        BUZZ(198, 404); BUZZ(4, 0); BUZZ(198, 404);
 
         // Move XY to starting position, then Z
         do_blocking_move_to_xy(resume_position, feedRate_t(NOZZLE_PARK_XY_FEEDRATE));
@@ -610,16 +825,15 @@ void MMU2::manage_response(const bool move_axes, const bool turn_off_nozzle) {
         do_blocking_move_to_z(resume_position.z, feedRate_t(NOZZLE_PARK_Z_FEEDRATE));
       }
       else {
-        BUZZ(200, 404);
-        BUZZ(200, 404);
+        BUZZ(198, 404); BUZZ(4, 0); BUZZ(198, 404);
         LCD_MESSAGEPGM(MSG_MMU2_RESUMING);
       }
     }
   }
 }
 
-void MMU2::set_filament_type(uint8_t index, uint8_t filamentType) {
-  if (!enabled) return;
+void MMU2::set_filament_type(const uint8_t index, const uint8_t filamentType) {
+  if (!_enabled) return;
 
   cmd_arg = filamentType;
   command(MMU_CMD_F0 + index);
@@ -632,170 +846,195 @@ void MMU2::filament_runout() {
   planner.synchronize();
 }
 
-#if HAS_LCD_MENU && ENABLED(MMU2_MENUS)
+#if HAS_PRUSA_MMU2S
 
-  // Load filament into MMU2
-  void MMU2::load_filament(uint8_t index) {
-    if (!enabled) return;
-    command(MMU_CMD_L0 + index);
-    manage_response(false, false);
-    BUZZ(200, 404);
-  }
-
-  /**
-   *
-   * Switch material and load to nozzle
-   *
-   */
-  bool MMU2::load_filament_to_nozzle(uint8_t index) {
-
-    if (!enabled) return false;
-
-    if (thermalManager.tooColdToExtrude(active_extruder)) {
-      BUZZ(200, 404);
-      LCD_ALERTMESSAGEPGM(MSG_HOTEND_TOO_COLD);
-      return false;
+  void MMU2::check_filament() {
+    const bool present = FILAMENT_PRESENT();
+    if (cmd == MMU_CMD_NONE && last_cmd == MMU_CMD_C0) {
+      if (present && !mmu2s_triggered) {
+        DEBUG_ECHOLNPGM("MMU <= 'A'");
+        tx_str_P(PSTR("A\n"));
+      }
+      // Slowly spin the extruder during C0
+      else {
+        while (planner.movesplanned() < 3) {
+          current_position.e += 0.25;
+          line_to_current_position(MMM_TO_MMS(120));
+        }
+      }
     }
-    else {
-      command(MMU_CMD_T0 + index);
-      manage_response(true, true);
-      command(MMU_CMD_C0);
-      mmu_loop();
-
-      extruder = index;
-      active_extruder = 0;
-
-      load_to_nozzle();
-
-      BUZZ(200, 404);
-      return true;
-    }
+    mmu2s_triggered = present;
   }
 
-  /**
-   *
-   * Load filament to nozzle of multimaterial printer
-   *
-   * This function is used only only after T? (user select filament) and M600 (change filament).
-   * It is not used after T0 .. T4 command (select filament), in such case, gcode is responsible for loading
-   * filament to nozzle.
-   */
-  void MMU2::load_to_nozzle() {
-    if (!enabled) return;
-    execute_extruder_sequence((const E_Step *)load_to_nozzle_sequence, COUNT(load_to_nozzle_sequence));
-  }
+  bool MMU2::can_load() {
+    execute_extruder_sequence((const E_Step *)can_load_sequence, COUNT(can_load_sequence));
 
-  bool MMU2::eject_filament(uint8_t index, bool recover) {
-
-    if (!enabled) return false;
-
-    if (thermalManager.tooColdToExtrude(active_extruder)) {
-      BUZZ(200, 404);
-      LCD_ALERTMESSAGEPGM(MSG_HOTEND_TOO_COLD);
-      return false;
-    }
-
-    LCD_MESSAGEPGM(MSG_MMU2_EJECTING_FILAMENT);
-
-    ENABLE_AXIS_E0();
-    current_position.e -= MMU2_FILAMENTCHANGE_EJECT_FEED;
-    line_to_current_position(2500 / 60);
-    planner.synchronize();
-    command(MMU_CMD_E0 + index);
-    manage_response(false, false);
-
-    if (recover)  {
-      LCD_MESSAGEPGM(MSG_MMU2_EJECT_RECOVER);
-      BUZZ(200, 404);
-      #if ENABLED(HOST_PROMPT_SUPPORT)
-        host_prompt_do(PROMPT_USER_CONTINUE, PSTR("MMU2 Eject Recover"), CONTINUE_STR);
-      #endif
-      #if ENABLED(EXTENSIBLE_UI)
-        ExtUI::onUserConfirmRequired_P(PSTR("MMU2 Eject Recover"));
-      #endif
-      wait_for_user_response();
-      BUZZ(200, 404);
-      BUZZ(200, 404);
-
-      command(MMU_CMD_R0);
-      manage_response(false, false);
-    }
-
-    ui.reset_status();
-
-    // no active tool
-    extruder = MMU2_NO_TOOL;
-
-    set_runout_valid(false);
-
-    BUZZ(200, 404);
-
-    DISABLE_AXIS_E0();
-
-    return true;
-  }
-
-  /**
-   *
-   * unload from hotend and retract to MMU
-   *
-   */
-  bool MMU2::unload() {
-
-    if (!enabled) return false;
-
-    if (thermalManager.tooColdToExtrude(active_extruder)) {
-      BUZZ(200, 404);
-      LCD_ALERTMESSAGEPGM(MSG_HOTEND_TOO_COLD);
-      return false;
-    }
-
-    filament_ramming();
-
-    command(MMU_CMD_U0);
-    manage_response(false, true);
-
-    BUZZ(200, 404);
-
-    // no active tool
-    extruder = MMU2_NO_TOOL;
-
-    set_runout_valid(false);
-
-    return true;
-  }
-
-  /**
-   * Unload sequence to optimize shape of the tip of the unloaded filament
-   */
-  void MMU2::filament_ramming() {
-    execute_extruder_sequence((const E_Step *)ramming_sequence, sizeof(ramming_sequence) / sizeof(E_Step));
-  }
-
-  void MMU2::execute_extruder_sequence(const E_Step * sequence, int steps) {
-
-    planner.synchronize();
-    ENABLE_AXIS_E0();
-
-    const E_Step* step = sequence;
-
+    int filament_detected_count = 0;
+    const int steps = (MMU2_CAN_LOAD_RETRACT) / (MMU2_CAN_LOAD_INCREMENT);
+    DEBUG_ECHOLNPGM("MMU can_load:");
     LOOP_L_N(i, steps) {
-      const float es = pgm_read_float(&(step->extrude));
-      const feedRate_t fr_mm_m = pgm_read_float(&(step->feedRate));
-
-      DEBUG_ECHO_START();
-      DEBUG_ECHOLNPAIR("E step ", es, "/", fr_mm_m);
-
-      current_position.e += es;
-      line_to_current_position(MMM_TO_MMS(fr_mm_m));
-      planner.synchronize();
-
-      step++;
+      execute_extruder_sequence((const E_Step *)can_load_increment_sequence, COUNT(can_load_increment_sequence));
+      check_filament(); // Don't trust the idle function
+      DEBUG_CHAR(mmu2s_triggered ? 'O' : 'o');
+      if (mmu2s_triggered) ++filament_detected_count;
     }
 
-    DISABLE_AXIS_E0();
+    if (filament_detected_count <= steps - (MMU2_CAN_LOAD_DEVIATION) / (MMU2_CAN_LOAD_INCREMENT)) {
+      DEBUG_ECHOLNPGM(" failed.");
+      return false;
+    }
+
+    DEBUG_ECHOLNPGM(" succeeded.");
+    return true;
   }
 
-#endif // HAS_LCD_MENU && MMU2_MENUS
+#endif
 
-#endif // PRUSA_MMU2
+// Load filament into MMU2
+void MMU2::load_filament(const uint8_t index) {
+  if (!_enabled) return;
+
+  command(MMU_CMD_L0 + index);
+  manage_response(false, false);
+  BUZZ(200, 404);
+}
+
+/**
+ * Switch material and load to nozzle
+ */
+bool MMU2::load_filament_to_nozzle(const uint8_t index) {
+
+  if (!_enabled) return false;
+
+  if (thermalManager.tooColdToExtrude(active_extruder)) {
+    BUZZ(200, 404);
+    LCD_ALERTMESSAGEPGM(MSG_HOTEND_TOO_COLD);
+    return false;
+  }
+
+  stepper.disable_extruder();
+  command(MMU_CMD_T0 + index);
+  manage_response(true, true);
+
+  const bool success = load_to_gears();
+  if (success) {
+    mmu_loop();
+    extruder = index;
+    active_extruder = 0;
+    load_to_nozzle();
+    BUZZ(200, 404);
+  }
+  return success;
+}
+
+/**
+ * Load filament to nozzle of multimaterial printer
+ *
+ * This function is used only after T? (user select filament) and M600 (change filament).
+ * It is not used after T0 .. T4 command (select filament), in such case, gcode is responsible for loading
+ * filament to nozzle.
+ */
+void MMU2::load_to_nozzle() {
+  execute_extruder_sequence((const E_Step *)load_to_nozzle_sequence, COUNT(load_to_nozzle_sequence));
+}
+
+bool MMU2::eject_filament(const uint8_t index, const bool recover) {
+
+  if (!_enabled) return false;
+
+  if (thermalManager.tooColdToExtrude(active_extruder)) {
+    BUZZ(200, 404);
+    LCD_ALERTMESSAGEPGM(MSG_HOTEND_TOO_COLD);
+    return false;
+  }
+
+  LCD_MESSAGEPGM(MSG_MMU2_EJECTING_FILAMENT);
+
+  stepper.enable_extruder();
+  current_position.e -= MMU2_FILAMENTCHANGE_EJECT_FEED;
+  line_to_current_position(MMM_TO_MMS(2500));
+  planner.synchronize();
+  command(MMU_CMD_E0 + index);
+  manage_response(false, false);
+
+  if (recover)  {
+    LCD_MESSAGEPGM(MSG_MMU2_EJECT_RECOVER);
+    BUZZ(200, 404);
+    TERN_(HOST_PROMPT_SUPPORT, host_prompt_do(PROMPT_USER_CONTINUE, PSTR("MMU2 Eject Recover"), CONTINUE_STR));
+    TERN_(EXTENSIBLE_UI, ExtUI::onUserConfirmRequired_P(PSTR("MMU2 Eject Recover")));
+    TERN_(HAS_RESUME_CONTINUE, wait_for_user_response());
+    BUZZ(200, 404);
+    BUZZ(200, 404);
+
+    command(MMU_CMD_R0);
+    manage_response(false, false);
+  }
+
+  ui.reset_status();
+
+  // no active tool
+  extruder = MMU2_NO_TOOL;
+
+  set_runout_valid(false);
+
+  BUZZ(200, 404);
+
+  stepper.disable_extruder();
+
+  return true;
+}
+
+/**
+ * Unload from hotend and retract to MMU
+ */
+bool MMU2::unload() {
+
+  if (!_enabled) return false;
+
+  if (thermalManager.tooColdToExtrude(active_extruder)) {
+    BUZZ(200, 404);
+    LCD_ALERTMESSAGEPGM(MSG_HOTEND_TOO_COLD);
+    return false;
+  }
+
+  // Unload sequence to optimize shape of the tip of the unloaded filament
+  execute_extruder_sequence((const E_Step *)ramming_sequence, sizeof(ramming_sequence) / sizeof(E_Step));
+
+  command(MMU_CMD_U0);
+  manage_response(false, true);
+
+  BUZZ(200, 404);
+
+  // no active tool
+  extruder = MMU2_NO_TOOL;
+
+  set_runout_valid(false);
+
+  return true;
+}
+
+void MMU2::execute_extruder_sequence(const E_Step * sequence, int steps) {
+
+  planner.synchronize();
+  stepper.enable_extruder();
+
+  const E_Step* step = sequence;
+
+  LOOP_L_N(i, steps) {
+    const float es = pgm_read_float(&(step->extrude));
+    const feedRate_t fr_mm_m = pgm_read_float(&(step->feedRate));
+
+    DEBUG_ECHO_START();
+    DEBUG_ECHOLNPGM("E step ", es, "/", fr_mm_m);
+
+    current_position.e += es;
+    line_to_current_position(MMM_TO_MMS(fr_mm_m));
+    planner.synchronize();
+
+    step++;
+  }
+
+  stepper.disable_extruder();
+}
+
+#endif // HAS_PRUSA_MMU2
