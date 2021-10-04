@@ -3381,7 +3381,14 @@
  * See https://marlinfw.org/docs/configuration/laser_spindle.html for more config details.
  */
 //#define SPINDLE_FEATURE
-//#define LASER_FEATURE
+
+#if ENABLED(KNUTWURST_MEGA_P)
+  #define LASER_FEATURE
+
+  #define SPINDLE_LASER_ENA_PIN 40  // D40 should be unused. The laser is only connected to the PWM output.
+  #define SPINDLE_LASER_PWM_PIN HEATER_0_PIN
+#endif
+
 #if EITHER(SPINDLE_FEATURE, LASER_FEATURE)
   #define SPINDLE_LASER_ACTIVE_STATE    LOW    // Set to "HIGH" if SPINDLE_LASER_ENA_PIN is active HIGH
 
