@@ -51,7 +51,10 @@
 
 
 #define ANYCUBIC_TOUCHSCREEN
-#define ANYCUBIC_FILAMENT_RUNOUT_SENSOR
+#if DISABLED(KNUTWURST_4MAXP2)
+    #define ANYCUBIC_FILAMENT_RUNOUT_SENSOR
+#endif
+
 #define KNUTWURST_SPECIAL_MENU
 #define KNUTWURST_SPECIAL_MENU_WO_SD
 //#define ANYCUBIC_TFT_DEBUG
@@ -69,7 +72,7 @@
 
 
 /*
- * This enabled the integrated Laser engaving feature
+ * This enables the integrated Laser engaving feature
  * in the anycubic touchscreen. It's currently only
  * supported by the Anycubic MEGA Pro and therefore it
  * is automatically set if the MEGA_P is enabled.
@@ -81,7 +84,7 @@
 
 
 /*
- * This enabled the integrated leveling features
+ * This enables the integrated leveling features
  * in the anycubic touchscreen. It's currently only
  * supported by the Anycubic Chiron and therefore it
  * is automatically set if the chiron is enabled.
@@ -90,6 +93,16 @@
 #if ENABLED(KNUTWURST_CHIRON)
   #define KNUTWURST_TFT_LEVELING
 #endif
+
+/*
+ * To ensure the correct endstop configuration,
+ * this has to be enabled to alter the motherboard
+ * configuration for the 4MAX printer family
+ */
+#if ENABLED(KNUTWURST_4MAXP2)
+  #define ANYCUBIC_4_MAX_PRO_ENDSTOPS
+#endif
+
 
 /*
  * Here you can set the default preheat-Temperatures
@@ -502,7 +515,11 @@
  *   998 : Dummy Table that ALWAYS reads 25°C or the temperature defined below.
  *   999 : Dummy Table that ALWAYS reads 100°C or the temperature defined below.
  */
-#define TEMP_SENSOR_0 5
+#if ENABLED(KNUTWURST_4MAXP2)
+    #define TEMP_SENSOR_0 1
+#else
+    #define TEMP_SENSOR_0 5
+#endif
 #define TEMP_SENSOR_1 0
 #define TEMP_SENSOR_2 0
 #define TEMP_SENSOR_3 0
@@ -510,7 +527,14 @@
 #define TEMP_SENSOR_5 0
 #define TEMP_SENSOR_6 0
 #define TEMP_SENSOR_7 0
-#define TEMP_SENSOR_BED 1
+
+#if ENABLED(KNUTWURST_4MAXP2)
+    #define TEMP_SENSOR_BED 5
+#else
+    #define TEMP_SENSOR_BED 1
+#endif
+
+
 #define TEMP_SENSOR_PROBE 0
 #define TEMP_SENSOR_CHAMBER 0
 
@@ -597,6 +621,12 @@
     #define DEFAULT_Kd 106.55
   #endif
 
+  #if ENABLED(KNUTWURST_4MAXP2)
+    #define DEFAULT_Kp 17.13
+    #define DEFAULT_Ki 0.93
+    #define DEFAULT_Kd 78.58
+  #endif
+
 #endif // PIDTEMP
 
 //===========================================================================
@@ -650,6 +680,11 @@
     #define DEFAULT_bedKd 1675.16
   #endif
 
+  #if ENABLED(KNUTWURST_4MAXP2)
+    #define DEFAULT_bedKp 251.78
+    #define DEFAULT_bedKi 49.57
+    #define DEFAULT_bedKd 319.73
+  #endif
 
   //120V 250W silicone heater into 4mm borosilicate (MendelMax 1.5+)
   //from pidautotune
@@ -765,7 +800,7 @@
   //#define ENDSTOPPULLDOWN_ZMIN_PROBE
 #endif
 
-#if ANY(KNUTWURST_MEGA, KNUTWURST_MEGA_S, KNUTWURST_MEGA_P)
+#if ANY(KNUTWURST_MEGA, KNUTWURST_MEGA_S, KNUTWURST_MEGA_P, KNUTWURST_4MAXP2)
     // Mechanical endstop with COM to ground and NC to Signal uses "false" here (most common setup).
     #define X_MIN_ENDSTOP_INVERTING true // set to true to invert the logic of the endstop.
     #define Y_MIN_ENDSTOP_INVERTING true // set to true to invert the logic of the endstop.
@@ -877,7 +912,7 @@
  *                                      X, Y, Z, E0 [, E1[, E2...]]
  */
 #if ENABLED(KNUTWURST_MEGA)
-    #define DEFAULT_AXIS_STEPS_PER_UNIT   { 80, 80, 400, 96 }
+    #define DEFAULT_AXIS_STEPS_PER_UNIT   { 80, 80, 400, 98 }
 #endif
 
 #if ENABLED(KNUTWURST_MEGA_S)
@@ -896,6 +931,9 @@
     #define DEFAULT_AXIS_STEPS_PER_UNIT   { 80, 100, 400, 415 }
 #endif
 
+#if ENABLED(KNUTWURST_4MAXP2)
+    #define DEFAULT_AXIS_STEPS_PER_UNIT   { 100, 80, 800, 422 }
+#endif
 
 
 /**
@@ -936,6 +974,10 @@
     #endif
 #endif
 
+#if ENABLED(KNUTWURST_4MAXP2)
+    #define DEFAULT_MAX_FEEDRATE          { 150, 150, 25, 30 }
+#endif
+
 
 //#define LIMITED_MAX_FR_EDITING        // Limit edit via M203 or LCD to DEFAULT_MAX_FEEDRATE * 2
 #if ENABLED(LIMITED_MAX_FR_EDITING)
@@ -959,6 +1001,10 @@
 
 #if ENABLED(KNUTWURST_CHIRON)
    #define DEFAULT_MAX_ACCELERATION      { 350, 350, 50, 20000 }
+#endif
+
+#if ENABLED(KNUTWURST_4MAXP2)
+   #define DEFAULT_MAX_ACCELERATION      { 2000, 2000, 60, 10000 }
 #endif
 
 
@@ -1011,6 +1057,12 @@
     #define DEFAULT_TRAVEL_ACCELERATION   350    // X, Y, Z acceleration for travel (non printing) moves
 #endif
 
+#if ENABLED(KNUTWURST_4MAXP2)
+    #define DEFAULT_ACCELERATION          1500    // X, Y, Z and E acceleration for printing moves
+    #define DEFAULT_RETRACT_ACCELERATION  1500    // E acceleration for retracts
+    #define DEFAULT_TRAVEL_ACCELERATION   1500    // X, Y, Z acceleration for travel (non printing) moves
+#endif
+
 /**
  * Default Jerk limits (mm/s)
  * Override with M205 X Y Z E
@@ -1043,6 +1095,12 @@
       #define DEFAULT_ZJERK                 0.4
   #endif
 
+  #if ENABLED(KNUTWURST_4MAXP2)
+      #define DEFAULT_XJERK                 4
+      #define DEFAULT_YJERK                 4
+      #define DEFAULT_ZJERK                 0.4
+  #endif
+
   //#define TRAVEL_EXTRA_XYJERK 0.0     // Additional jerk allowance for all travel moves
 
   //#define LIMITED_JERK_EDITING        // Limit edit via M205 or LCD to DEFAULT_aJERK * 2
@@ -1063,6 +1121,10 @@
     #define DEFAULT_EJERK    8.0  // May be used by Linear Advance
 #endif
 
+#if ENABLED(KNUTWURST_4MAXP2)
+    #define DEFAULT_EJERK    6.0  // May be used by Linear Advance
+#endif
+
 /**
  * Junction Deviation Factor
  *
@@ -1081,6 +1143,10 @@
 
     #if ENABLED(KNUTWURST_CHIRON)
         #define JUNCTION_DEVIATION_MM 0.018 // (mm) Distance from real junction edge
+    #endif
+
+    #if ENABLED(KNUTWURST_4MAXP2)
+        #define JUNCTION_DEVIATION_MM 0.016 // (mm) Distance from real junction edge
     #endif
 #endif
 
@@ -1439,6 +1505,29 @@
         #define INVERT_E6_DIR false
         #define INVERT_E7_DIR false
     #endif
+
+    #if ENABLED(KNUTWURST_4MAXP2)
+        // Invert the stepper direction. Change (or reverse the motor connector) if an axis goes the wrong way.
+        #define INVERT_X_DIR true // set to true for stock drivers or TMC2208 with reversed connectors
+        #define INVERT_Y_DIR false // set to false for stock drivers or TMC2208 with reversed connectors
+        #define INVERT_Z_DIR true // set to false for stock drivers or TMC2208 with reversed connectors
+
+        // @section extruder
+
+        // For direct drive extruder v9 set to true, for geared extruder set to false.
+        #if ENABLED(KNUTWURST_BMG)
+            #define INVERT_E0_DIR true // set to false for stock drivers or TMC2208 with reversed connectors
+        #else
+            #define INVERT_E0_DIR false // set to false for stock drivers or TMC2208 with reversed connectors
+        #endif
+        #define INVERT_E1_DIR false // set to false for stock drivers or TMC2208 with reversed connectors
+        #define INVERT_E2_DIR false
+        #define INVERT_E3_DIR false
+        #define INVERT_E4_DIR false
+        #define INVERT_E5_DIR false
+        #define INVERT_E6_DIR false
+        #define INVERT_E7_DIR false
+    #endif
 #endif
 
 #if ENABLED(KNUTWURST_TMC)
@@ -1502,6 +1591,29 @@
             #define INVERT_E0_DIR true // set to false for stock drivers or TMC2208 with reversed connectors
         #endif
         #define INVERT_E1_DIR false // set to false for stock drivers or TMC2208 with reversed connectors
+        #define INVERT_E2_DIR false
+        #define INVERT_E3_DIR false
+        #define INVERT_E4_DIR false
+        #define INVERT_E5_DIR false
+        #define INVERT_E6_DIR false
+        #define INVERT_E7_DIR false
+    #endif
+
+    #if ENABLED(KNUTWURST_4MAXP2)
+        // Invert the stepper direction. Change (or reverse the motor connector) if an axis goes the wrong way.
+        #define INVERT_X_DIR false // set to true for stock drivers or TMC2208 with reversed connectors
+        #define INVERT_Y_DIR true // set to false for stock drivers or TMC2208 with reversed connectors
+        #define INVERT_Z_DIR false // set to false for stock drivers or TMC2208 with reversed connectors
+
+        // @section extruder
+
+        // For direct drive extruder v9 set to true, for geared extruder set to false.
+        #if ENABLED(KNUTWURST_BMG)
+            #define INVERT_E0_DIR false // set to false for stock drivers or TMC2208 with reversed connectors
+        #else
+            #define INVERT_E0_DIR true // set to false for stock drivers or TMC2208 with reversed connectors
+        #endif
+        #define INVERT_E1_DIR true // set to false for stock drivers or TMC2208 with reversed connectors
         #define INVERT_E2_DIR false
         #define INVERT_E3_DIR false
         #define INVERT_E4_DIR false
@@ -1583,6 +1695,16 @@
     #define Y_MAX_POS Y_BED_SIZE +10
 #endif
 
+#if ENABLED(KNUTWURST_4MAXP2)
+    #define X_MIN_POS -6
+    #define Y_MIN_POS 0
+    #define Z_MIN_POS 0
+    #define X_BED_SIZE 270
+    #define Y_BED_SIZE 210
+    #define Z_MAX_POS 190
+    #define X_MAX_POS X_BED_SIZE
+    #define Y_MAX_POS Y_BED_SIZE
+#endif
 
 /**
  * Software Endstops
@@ -1879,6 +2001,12 @@
     // Homing speeds (mm/m)
     #define HOMING_FEEDRATE_XY (30*60)
     #define HOMING_FEEDRATE_Z  (6*60)
+#endif
+
+#if ENABLED(KNUTWURST_4MAXP2)
+    // Homing speeds (mm/m)
+    #define HOMING_FEEDRATE_XY (40*60)
+    #define HOMING_FEEDRATE_Z  (4*60)
 #endif
 
 
