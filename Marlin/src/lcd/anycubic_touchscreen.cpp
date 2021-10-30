@@ -212,6 +212,7 @@ void AnycubicTouchscreenClass::Setup()
   FlowMenu = false;
   BLTouchMenu = false;
   LevelMenu = false;
+  CaseLight = false;
   FilamentSensorEnabled = true;
   MyFileNrCnt = 0;
   currentFlowRate = 100;
@@ -2233,6 +2234,20 @@ void AnycubicTouchscreenClass::GetCommandFromTFT()
                 }
                 if(CodeSeen('S') ) {
                   queue.enqueue_now_P(PSTR("G28\nG29\nM500\nG90\nM300 S440 P200\nM300 S660 P250\nM300 S880 P300\nG1 Z30 F4000\nG1 X0 F4000\nG91\nM84"));
+                }
+            #endif
+
+            #if EITHER(KNUTWURST_4MAX, KNUTWURST_4MAXP2)
+            case 42:
+                if(CaseLight == true)
+                {
+                    SERIAL_ECHOLNPGM("Case Light OFF");
+                    queue.inject_P(PSTR("M355 S1 P0"));
+                    CaseLight = false;
+                } else {
+                    SERIAL_ECHOLNPGM("Case Light ON");
+                    queue.inject_P(PSTR("M355 S1 P255"));
+                    CaseLight = true;
                 }
             #endif
 
