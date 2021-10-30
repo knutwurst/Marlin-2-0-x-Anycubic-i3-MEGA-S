@@ -75,6 +75,10 @@ jobs:
          - CHIRON_TMC
          - CHIRON_DGUS
          - CHIRON_DGUS_TMC
+         - 4MAX
+         - 4MAX_TMC
+         - 4MAXP2
+         - 4MAXP2_TMC
 
     steps:
 
