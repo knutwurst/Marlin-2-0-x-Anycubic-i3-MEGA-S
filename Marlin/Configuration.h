@@ -528,7 +528,7 @@
 #define TEMP_SENSOR_6 0
 #define TEMP_SENSOR_7 0
 
-#if EITHER(KNUTWURST_4MAXP2) // 4MAX has type 1
+#if ENABLED(KNUTWURST_4MAXP2) // 4MAX has type 1
     #define TEMP_SENSOR_BED 5
 #else
     #define TEMP_SENSOR_BED 1

@@ -330,7 +330,8 @@ private:
   uint8_t MMLMenu = false;
   uint8_t FlowMenu = false;
   uint8_t BLTouchMenu = false;
-  uint8_t LevelMenu = false;  
+  uint8_t LevelMenu = false;
+  uint8_t CaseLight = true;  
 
 #if ENABLED(ANYCUBIC_FILAMENT_RUNOUT_SENSOR)
   char FilamentTestStatus = false;
