@@ -1,6 +1,6 @@
-# Knutwurst's i3 MEGA M/S/P/X/Chiron/4M/4MP/2 Hybrid Firmware <br>(based on Marlin 2.0.x)
+## Knutwurst's i3 MEGA M/S/P/X/Chiron/4M/4MP/2 Hybrid Firmware <br>(based on Marlin 2.0.x)
 
-# Übersicht
+## Übersicht
 
 - [Funktionen](https://github.com/knutwurst/Marlin-2-0-x-Anycubic-i3-MEGA-S/wiki/Features-(Deutsch))
 - [Einsteiger-Leitfaden](https://github.com/knutwurst/Marlin-2-0-x-Anycubic-i3-MEGA-S/wiki/Beginner's-Guide-(Deutsch))
@@ -13,7 +13,7 @@
 <sub>*Es muss jetzt keine großzügige Spende sein. Ein paar Cent reichen um mir zu zeigen, wer überhaupt Interesse daran hat und wem die Weiterentwicklung wichtig ist. So bleibt die Motivation da und ich weiß einfach, dass ich nicht für die Tonne programmiere ;)<sub>
 
 
-# Overview
+## Overview
 
 - [Features](https://github.com/knutwurst/Marlin-2-0-x-Anycubic-i3-MEGA-S/wiki/Features-(English))
 - [Beginner's Guide](https://github.com/knutwurst/Marlin-2-0-x-Anycubic-i3-MEGA-S/wiki/Beginner's-Guide-(English))
