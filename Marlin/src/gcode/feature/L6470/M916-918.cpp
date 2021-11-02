@@ -16,7 +16,7 @@
  * GNU General Public License for more details.
  *
  * You should have received a copy of the GNU General Public License
- * along with this program.  If not, see <http://www.gnu.org/licenses/>.
+ * along with this program.  If not, see <https://www.gnu.org/licenses/>.
  *
  */
 
@@ -37,7 +37,6 @@
 #include "../../../core/debug_out.h"
 
 /**
- *
  * M916: increase KVAL_HOLD until get thermal warning
  *       NOTE - on L6474 it is TVAL that is used
  *
@@ -62,7 +61,6 @@
  *
  * D - time (in seconds) to run each setting of KVAL_HOLD/TVAL
  *     optional - defaults to zero (runs each setting once)
- *
  */
 
 /**
@@ -98,7 +96,7 @@ void GcodeSuite::M916() {
   if (L64xxManager.get_user_input(driver_count, axis_index, axis_mon, position_max, position_min, final_feedrate, kval_hold, over_current_flag, OCD_TH_val, STALL_TH_val, over_current_threshold))
     return;  // quit if invalid user input
 
-  DEBUG_ECHOLNPAIR("feedrate = ", final_feedrate);
+  DEBUG_ECHOLNPGM("feedrate = ", final_feedrate);
 
   planner.synchronize();                             // wait for all current movement commands to complete
 
@@ -121,7 +119,7 @@ void GcodeSuite::M916() {
     M91x_counter_max = 256;  // KVAL_HOLD is 8 bits
 
   uint8_t M91x_delay_s = parser.byteval('D');   // get delay in seconds
-  millis_t M91x_delay_ms = M91x_delay_s * 60 * 1000;
+  millis_t M91x_delay_ms = SEC_TO_MS(M91x_delay_s * 60);
   millis_t M91x_delay_end;
 
   DEBUG_ECHOLNPGM(".\n.");
@@ -129,9 +127,9 @@ void GcodeSuite::M916() {
   do {
 
     if (sh.STATUS_AXIS_LAYOUT == L6474_STATUS_LAYOUT)
-      DEBUG_ECHOLNPAIR("TVAL current (mA) = ", (M91x_counter + 1) * sh.AXIS_STALL_CURRENT_CONSTANT_INV);        // report TVAL current for this run
+      DEBUG_ECHOLNPGM("TVAL current (mA) = ", (M91x_counter + 1) * sh.AXIS_STALL_CURRENT_CONSTANT_INV);        // report TVAL current for this run
     else
-      DEBUG_ECHOLNPAIR("kval_hold = ", M91x_counter);                                   // report KVAL_HOLD for this run
+      DEBUG_ECHOLNPGM("kval_hold = ", M91x_counter);                                   // report KVAL_HOLD for this run
 
     for (j = 0; j < driver_count; j++)
       L64xxManager.set_param(axis_index[j], L6470_KVAL_HOLD, M91x_counter);  //set KVAL_HOLD or TVAL (same register address)
@@ -179,7 +177,7 @@ void GcodeSuite::M916() {
   if ((status_composite & (sh.STATUS_AXIS_TH_WRN | sh.STATUS_AXIS_TH_SD)))
     DEBUG_ECHOLNPGM(".\n.\nTest completed normally - Thermal warning/shutdown has occurred");
   else if (status_composite)
-    DEBUG_ECHOLNPGM(".\n.\nTest completed abnormally - non-thermal error has occured");
+    DEBUG_ECHOLNPGM(".\n.\nTest completed abnormally - non-thermal error has occurred");
   else
     DEBUG_ECHOLNPGM(".\n.\nTest completed normally - Unable to get to thermal warning/shutdown");
 
@@ -187,7 +185,6 @@ void GcodeSuite::M916() {
 }
 
 /**
- *
  * M917: Find minimum current thresholds
  *
  *   Decrease OCD current until overcurrent error
@@ -214,7 +211,6 @@ void GcodeSuite::M916() {
  *
  * K - value for KVAL_HOLD (0 - 255) (ignored for L6474)
  *     optional - will report current value from driver if not specified
- *
  */
 void GcodeSuite::M917() {
 
@@ -240,7 +236,7 @@ void GcodeSuite::M917() {
   if (L64xxManager.get_user_input(driver_count, axis_index, axis_mon, position_max, position_min, final_feedrate, kval_hold, over_current_flag, OCD_TH_val, STALL_TH_val, over_current_threshold))
     return;  // quit if invalid user input
 
-  DEBUG_ECHOLNPAIR("feedrate = ", final_feedrate);
+  DEBUG_ECHOLNPGM("feedrate = ", final_feedrate);
 
   planner.synchronize();                             // wait for all current movement commands to complete
 
@@ -256,18 +252,18 @@ void GcodeSuite::M917() {
                                           // 2 - OCD finalized - decreasing STALL - exit when STALL warning happens
                                           // 3 - OCD finalized - increasing STALL - exit when STALL warning stop
                                           // 4 - all testing completed
-  DEBUG_ECHOPAIR(".\n.\n.\nover_current threshold : ", (OCD_TH_val + 1) * 375);   // first status display
-  DEBUG_ECHOPAIR("  (OCD_TH:  : ", OCD_TH_val);
+  DEBUG_ECHOPGM(".\n.\n.\nover_current threshold : ", (OCD_TH_val + 1) * 375);   // first status display
+  DEBUG_ECHOPGM("  (OCD_TH:  : ", OCD_TH_val);
   if (sh.STATUS_AXIS_LAYOUT != L6474_STATUS_LAYOUT) {
-    DEBUG_ECHOPAIR(")   Stall threshold: ", (STALL_TH_val + 1) * 31.25);
-    DEBUG_ECHOPAIR("  (STALL_TH: ", STALL_TH_val);
+    DEBUG_ECHOPGM(")   Stall threshold: ", (STALL_TH_val + 1) * 31.25);
+    DEBUG_ECHOPGM("  (STALL_TH: ", STALL_TH_val);
   }
   DEBUG_ECHOLNPGM(")");
 
   do {
 
-    if (sh.STATUS_AXIS_LAYOUT != L6474_STATUS_LAYOUT) DEBUG_ECHOPAIR("STALL threshold : ", (STALL_TH_val + 1) * 31.25);
-    DEBUG_ECHOLNPAIR("   OCD threshold : ", (OCD_TH_val + 1) * 375);
+    if (sh.STATUS_AXIS_LAYOUT != L6474_STATUS_LAYOUT) DEBUG_ECHOPGM("STALL threshold : ", (STALL_TH_val + 1) * 31.25);
+    DEBUG_ECHOLNPGM("   OCD threshold : ", (OCD_TH_val + 1) * 375);
 
     sprintf_P(gcode_string, PSTR("G0 %s%03d F%03d"), temp_axis_string, uint16_t(position_min), uint16_t(final_feedrate));
     gcode.process_subcommands_now_P(gcode_string);
@@ -307,13 +303,13 @@ void GcodeSuite::M917() {
         if (!(k % 4)) {
           kval_hold *= 0.95;
           DEBUG_EOL();
-          DEBUG_ECHOLNPAIR("Lowering KVAL_HOLD by about 5% to ", kval_hold);
+          DEBUG_ECHOLNPGM("Lowering KVAL_HOLD by about 5% to ", kval_hold);
           for (j = 0; j < driver_count; j++)
             L64xxManager.set_param(axis_index[j], L6470_KVAL_HOLD, kval_hold);
         }
         DEBUG_ECHOLNPGM(".");
-        gcode.reset_stepper_timeout(); // reset_stepper_timeout to keep steppers powered
-        watchdog_refresh();;   // beat the dog
+        gcode.reset_stepper_timeout(); // keep steppers powered
+        watchdog_refresh();
         safe_delay(5000);
         status_composite_temp = 0;
         for (j = 0; j < driver_count; j++) {
@@ -522,7 +518,6 @@ void GcodeSuite::M917() {
 }
 
 /**
- *
  * M918: increase speed until error or max feedrate achieved (as shown in configuration.h))
  *
  * J - select which driver(s) to monitor on multi-driver axis
@@ -543,7 +538,6 @@ void GcodeSuite::M917() {
  *
  * M - value for microsteps (1 - 128) (optional)
  *     optional - will report current value from driver if not specified
- *
  */
 void GcodeSuite::M918() {
 
@@ -596,8 +590,8 @@ void GcodeSuite::M918() {
   }
   m_steps = L64xxManager.get_param(axis_index[0], L6470_STEP_MODE) & 0x07;   // get microsteps
 
-  DEBUG_ECHOLNPAIR("Microsteps = ", _BV(m_steps));
-  DEBUG_ECHOLNPAIR("target (maximum) feedrate = ", final_feedrate);
+  DEBUG_ECHOLNPGM("Microsteps = ", _BV(m_steps));
+  DEBUG_ECHOLNPGM("target (maximum) feedrate = ", final_feedrate);
 
   const float feedrate_inc = final_feedrate / 10,   // Start at 1/10 of max & go up by 1/10 per step
               fr_limit = final_feedrate * 0.99f;    // Rounding-safe comparison value
@@ -618,7 +612,7 @@ void GcodeSuite::M918() {
 
   do {
     current_feedrate += feedrate_inc;
-    DEBUG_ECHOLNPAIR("...feedrate = ", current_feedrate);
+    DEBUG_ECHOLNPGM("...feedrate = ", current_feedrate);
 
     sprintf_P(gcode_string, PSTR("G0 %s%03d F%03d"), temp_axis_string, uint16_t(position_min), uint16_t(current_feedrate));
     gcode.process_subcommands_now_P(gcode_string);
