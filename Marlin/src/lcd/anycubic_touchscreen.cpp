@@ -1273,6 +1273,7 @@ void AnycubicTouchscreenClass::StateHandler() {
             TFTstate = ANYCUBIC_TFT_STATE_IDLE;
             HARDWARE_SERIAL_PROTOCOLPGM("J14"); // J14 print done
             HARDWARE_SERIAL_ENTER();
+            powerOFFflag = 1;
             #ifdef ANYCUBIC_TFT_DEBUG
               SERIAL_ECHOLNPGM("TFT Serial Debug: SD print done... J14");
             #endif
@@ -1688,6 +1689,7 @@ void AnycubicTouchscreenClass::GetCommandFromTFT() {
               #ifdef SDSUPPORT
                 if ((!planner.movesplanned()) && (TFTstate != ANYCUBIC_TFT_STATE_SDPAUSE) && (TFTstate != ANYCUBIC_TFT_STATE_SDOUTAGE) && (card.isFileOpen())) {
                   ai3m_pause_state = 0;
+                  powerOFFflag = 0;
                   #ifdef ANYCUBIC_TFT_DEBUG
                     SERIAL_ECHOPAIR(" DEBUG: AI3M Pause State: ", ai3m_pause_state);
                     SERIAL_EOL();
@@ -2100,9 +2102,25 @@ void AnycubicTouchscreenClass::GetCommandFromTFT() {
             #endif
 
             #if EITHER(KNUTWURST_4MAX, KNUTWURST_4MAXP2)
+            case 41:
+                if(CodeSeen('O')) {
+                  PrintdoneAndPowerOFF = true;
+                  break;
+                } else if(CodeSeen('C')) {
+                  PrintdoneAndPowerOFF = false;
+                  break;
+                }
+                if(CodeSeen('S')) {                                             
+                  if(PrintdoneAndPowerOFF) {
+                    HARDWARE_SERIAL_PROTOCOLPGM("J35 ");                     
+                    HARDWARE_SERIAL_ENTER();                            
+                  } else {
+                    HARDWARE_SERIAL_PROTOCOLPGM("J34 ");                     
+                    HARDWARE_SERIAL_ENTER();                               
+                  }
+                }
             case 42:
-                if(CaseLight == true)
-                {
+                if(CaseLight == true) {
                     SERIAL_ECHOLNPGM("Case Light OFF");
                     queue.inject_P(PSTR("M355 S1 P0"));
                     CaseLight = false;
@@ -2284,10 +2302,28 @@ void AnycubicTouchscreenClass::GetCommandFromTFT() {
   }
 #endif
 
+void PowerDown()
+{
+  for(unsigned char i=0; i<3 ; i++)
+  {
+    WRITE(POWER_OFF_PIN,LOW);
+    delay(10);
+    WRITE(POWER_OFF_PIN,HIGH);
+    delay(10);
+  } 
+}
+
 void AnycubicTouchscreenClass::CommandScan(){
   CheckHeaterError();
   CheckSDCardChange();
   StateHandler();
+
+  #if ANY(KNUTWURST_4MAX, KNUTWURST_4MAXP2)
+    if(PrintdoneAndPowerOFF && powerOFFflag && (thermalManager.degHotend(0) < 50 )) {
+      powerOFFflag = 0;
+      PowerDown();
+    }
+  #endif
 
   if (TFTbuflen < (TFTBUFSIZE - 1)) {
     GetCommandFromTFT();

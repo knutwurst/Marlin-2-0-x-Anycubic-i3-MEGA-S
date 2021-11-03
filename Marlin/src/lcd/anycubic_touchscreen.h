@@ -286,6 +286,8 @@ class AnycubicTouchscreenClass {
     uint16_t HeaterCheckCount = 0;
     bool IsParked = false;
     int currentFlowRate = 0;
+    bool PrintdoneAndPowerOFF = true;
+    bool powerOFFflag = 0;
 
     #if defined(POWER_OUTAGE_TEST)
       struct OutageDataStruct {
