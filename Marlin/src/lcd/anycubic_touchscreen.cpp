@@ -2302,18 +2302,18 @@ void AnycubicTouchscreenClass::GetCommandFromTFT() {
   }
 #endif
 
-void PowerDown()
-{
-  for(unsigned char i=0; i<3 ; i++)
-  {
-    WRITE(POWER_OFF_PIN,LOW);
-    delay(10);
-    WRITE(POWER_OFF_PIN,HIGH);
-    delay(10);
-  } 
-}
+#if ANY(KNUTWURST_4MAX, KNUTWURST_4MAXP2)
+  void PowerDown() {
+    for(unsigned char i=0; i<3 ; i++) {
+      WRITE(POWER_OFF_PIN,LOW);
+      delay(10);
+      WRITE(POWER_OFF_PIN,HIGH);
+      delay(10);
+    } 
+  }
+#endif
 
-void AnycubicTouchscreenClass::CommandScan(){
+void AnycubicTouchscreenClass::CommandScan() {
   CheckHeaterError();
   CheckSDCardChange();
   StateHandler();
