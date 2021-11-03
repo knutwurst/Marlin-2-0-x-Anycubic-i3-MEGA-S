@@ -142,6 +142,13 @@ char _conv[8];
   unsigned char ResumingFlag = 0;
 #endif
 
+void setup_PowerOffPin()
+{
+  #if ANY(KNUTWURST_4MAX, KNUTWURST_4MAXP2)
+    SET_OUTPUT(POWER_OFF_PIN);
+    WRITE(POWER_OFF_PIN,HIGH);
+  #endif
+}
 
 void setup_OutageTestPin()
 {
@@ -239,13 +246,14 @@ void AnycubicTouchscreenClass::Setup() {
     delay(10);
   #endif
 
+  setup_OutageTestPin();
+  setup_PowerOffPin();
+
   #ifdef STARTUP_CHIME
     buzzer.tone(100, 554);
     buzzer.tone(100, 740);
     buzzer.tone(100, 831);
-  #endif
-
-  setup_OutageTestPin();
+  #endif  
 }
 
 #if ENABLED(KNUTWURST_MEGA_P_LASER)
@@ -2304,7 +2312,7 @@ void AnycubicTouchscreenClass::GetCommandFromTFT() {
 
 #if ANY(KNUTWURST_4MAX, KNUTWURST_4MAXP2)
   void PowerDown() {
-    for(unsigned char i=0; i<3 ; i++) {
+    for(unsigned char i=0; i<3; i++) {
       WRITE(POWER_OFF_PIN,LOW);
       delay(10);
       WRITE(POWER_OFF_PIN,HIGH);
