@@ -835,7 +835,15 @@ void AnycubicTouchscreenClass::HandleSpecialMenu() {
     #endif
 
     #if ENABLED(KNUTWURST_CHIRON)
-      queue.inject_P(PSTR("G90\nG1 Z5\nG1 X395 Y15 F4000\nG1 Z0"));
+      queue.inject_P(PSTR("G90\nG1 Z5\nG1 X385 Y15 F4000\nG1 Z0"));
+    #endif
+
+    #if ENABLED(KNUTWURST_4MAX)
+      queue.inject_P(PSTR("G90\nG1 Z5\nG1 X195 Y15 F4000\nG1 Z0"));
+    #endif
+
+    #if ENABLED(KNUTWURST_4MAXP2)
+      queue.inject_P(PSTR("G90\nG1 Z5\nG1 X255 Y15 F4000\nG1 Z0"));
     #endif
   }
   else if ((strcasestr_P(currentTouchscreenSelection, PSTR(SM_EZLVL_P3_L)) != NULL)
@@ -852,6 +860,14 @@ void AnycubicTouchscreenClass::HandleSpecialMenu() {
     #if ENABLED(KNUTWURST_CHIRON)
       queue.inject_P(PSTR("G90\nG1 Z5\nG1 X395 Y395 F4000\nG1 Z0"));
     #endif
+
+    #if ENABLED(KNUTWURST_4MAX)
+      queue.inject_P(PSTR("G90\nG1 Z5\nG1 X195 Y195 F4000\nG1 Z0"));
+    #endif
+
+    #if ENABLED(KNUTWURST_4MAXP2)
+      queue.inject_P(PSTR("G90\nG1 Z5\nG1 X255 Y195 F4000\nG1 Z0"));
+    #endif
   }
   else if ((strcasestr_P(currentTouchscreenSelection, PSTR(SM_EZLVL_P4_L)) != NULL)
         || (strcasestr_P(currentTouchscreenSelection, PSTR(SM_EZLVL_P4_S)) != NULL)) {
@@ -866,6 +882,14 @@ void AnycubicTouchscreenClass::HandleSpecialMenu() {
 
     #if ENABLED(KNUTWURST_CHIRON)
       queue.inject_P(PSTR("G90\nG1 Z5\nG1 X15 Y395 F4000\nG1 Z0"));
+    #endif
+
+    #if ENABLED(KNUTWURST_4MAX)
+      queue.inject_P(PSTR("G90\nG1 Z5\nG1 X15 Y195 F4000\nG1 Z0"));
+    #endif
+
+    #if ENABLED(KNUTWURST_4MAXP2)
+      queue.inject_P(PSTR("G90\nG1 Z5\nG1 X15 Y195 F4000\nG1 Z0"));
     #endif
   }
   else if ((strcasestr_P(currentTouchscreenSelection, PSTR(SM_EZLVL_EXIT_L)) != NULL)
