@@ -49,7 +49,7 @@
 #include "planner.h"
 #include "stepper.h"
 #include "temperature.h"
-
+#include "../lcd/anycubic_touchscreen.h"
 #include "../lcd/marlinui.h"
 #include "../libs/vector_3.h"   // for matrix_3x3
 #include "../gcode/gcode.h"
@@ -1672,6 +1672,12 @@ void MarlinSettings::postprocess() {
             if (!validating) set_bed_leveling_enabled(false);
             EEPROM_READ(bilinear_grid_spacing);        // 2 ints
             EEPROM_READ(bilinear_start);               // 2 ints
+
+            #if ENABLED(KNUTWURST_TFT_LEVELING)
+              z_values_index = eeprom_index;
+              z_values_size = sizeof(z_values);
+            #endif
+
             EEPROM_READ(z_values);                     // 9 to 256 floats
           }
           else // EEPROM data is stale
