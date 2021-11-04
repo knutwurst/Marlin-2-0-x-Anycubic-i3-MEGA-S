@@ -2,8 +2,8 @@
 
 ## Übersicht
 
-- [Funktionen](https://github.com/knutwurst/Marlin-2-0-x-Anycubic-i3-MEGA-S/wiki/Features-(Deutsch))
 - [Einsteiger-Leitfaden](https://github.com/knutwurst/Marlin-2-0-x-Anycubic-i3-MEGA-S/wiki/Beginner's-Guide-(Deutsch))
+- [Funktionen](https://github.com/knutwurst/Marlin-2-0-x-Anycubic-i3-MEGA-S/wiki/Features-(Deutsch))
 - [Häufig gestellte Fragen (FAQ)](https://github.com/knutwurst/Marlin-2-0-x-Anycubic-i3-MEGA-S/wiki/FAQ-(deutsch))
 - [Wiki/Umbau-Anleitungen](https://github.com/knutwurst/Marlin-2-0-x-Anycubic-i3-MEGA-S/wiki)
 - [Offiziell Facebook-Gruppe (deutsch)](https://www.facebook.com/groups/3094090037303577/)
@@ -15,8 +15,8 @@
 
 ## Overview
 
-- [Features](https://github.com/knutwurst/Marlin-2-0-x-Anycubic-i3-MEGA-S/wiki/Features-(English))
 - [Beginner's Guide](https://github.com/knutwurst/Marlin-2-0-x-Anycubic-i3-MEGA-S/wiki/Beginner's-Guide-(English))
+- [Features](https://github.com/knutwurst/Marlin-2-0-x-Anycubic-i3-MEGA-S/wiki/Features-(English))
 - [Frequently asked questions (FAQ)](https://github.com/knutwurst/Marlin-2-0-x-Anycubic-i3-MEGA-S/wiki/FAQ-(english))
 - [Wiki/Tutotrials](https://github.com/knutwurst/Marlin-2-0-x-Anycubic-i3-MEGA-S/wiki)
 - [Official Facebook-Group (german)](https://www.facebook.com/groups/3094090037303577/)
