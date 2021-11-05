@@ -1285,9 +1285,7 @@
  * value set here, it may happen instantaneously.
  */
 
-#if ANY(KNUTWURST_MEGA, KNUTWURST_MEGA_S, KNUTWURST_MEGA_P, KNUTWURST_MEGA_X, KNUTWURST_CHIRON)
-  #define CLASSIC_JERK
-#endif
+#define CLASSIC_JERK
 
 #if ENABLED(CLASSIC_JERK)
   #if ANY(KNUTWURST_MEGA, KNUTWURST_MEGA_S, KNUTWURST_MEGA_P)
@@ -1316,21 +1314,7 @@
   #endif
 #endif
 
-#if ANY(KNUTWURST_MEGA, KNUTWURST_MEGA_S, KNUTWURST_MEGA_P)
-    #define DEFAULT_EJERK    5.0  // May be used by Linear Advance
-#endif
-
-#if ENABLED(KNUTWURST_MEGA_X)
-    #define DEFAULT_EJERK    8.0  // May be used by Linear Advance
-#endif
-
-#if ENABLED(KNUTWURST_CHIRON)
-    #define DEFAULT_EJERK    8.0  // May be used by Linear Advance
-#endif
-
-#if EITHER(KNUTWURST_4MAX, KNUTWURST_4MAXP2)
-  #define DEFAULT_EJERK    6.0  // May be used by Linear Advance
-#endif
+#define DEFAULT_EJERK    10.0  // May be used by Linear Advance
 
 /**
  * Junction Deviation Factor
@@ -1356,7 +1340,7 @@
     #define JUNCTION_DEVIATION_MM 0.016 // (mm) Distance from real junction edge
   #endif
 
-  //#define JD_HANDLE_SMALL_SEGMENTS    // Use curvature estimation instead of just the junction angle
+  #define JD_HANDLE_SMALL_SEGMENTS    // Use curvature estimation instead of just the junction angle
                                       // for small segments (< 1mm) with large junction angles (> 135°).
 #endif
 
