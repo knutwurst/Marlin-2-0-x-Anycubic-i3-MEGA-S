@@ -145,7 +145,7 @@ char _conv[8];
 
 void setup_PowerOffPin()
 {
-  #if ANY(KNUTWURST_4MAX, KNUTWURST_4MAXP2)
+  #if EITHER(KNUTWURST_4MAX, KNUTWURST_4MAXP2)
     SET_OUTPUT(POWER_OFF_PIN);
     WRITE(POWER_OFF_PIN,HIGH);
   #endif
@@ -2319,7 +2319,7 @@ void AnycubicTouchscreenClass::GetCommandFromTFT() {
   }
 #endif
 
-#if ANY(KNUTWURST_4MAX, KNUTWURST_4MAXP2)
+#if EITHER(KNUTWURST_4MAX, KNUTWURST_4MAXP2)
   void PowerDown() {
     for(unsigned char i=0; i<3; i++) {
       WRITE(POWER_OFF_PIN,LOW);
@@ -2335,7 +2335,7 @@ void AnycubicTouchscreenClass::CommandScan() {
   CheckSDCardChange();
   StateHandler();
 
-  #if ANY(KNUTWURST_4MAX, KNUTWURST_4MAXP2)
+  #if EITHER(KNUTWURST_4MAX, KNUTWURST_4MAXP2)
     if(PrintdoneAndPowerOFF && powerOFFflag && (thermalManager.degHotend(0) < 50 )) {
       powerOFFflag = 0;
       PowerDown();
