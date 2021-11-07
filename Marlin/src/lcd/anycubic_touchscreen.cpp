@@ -79,8 +79,9 @@ char _conv[8];
   void setAxisPosition_mm(const float position, const axis_t axis, const feedRate_t feedrate/*=0*/) {
     // Get motion limit from software endstops, if any
     float min, max;
-    max = soft_endstop.max[axis];
-    min = soft_endstop.min[axis];
+    //max = soft_endstop.max[axis];
+    //min = soft_endstop.min[axis];
+    soft_endstop.get_manual_axis_limits((AxisEnum)axis, min, max);
 
     current_position[axis] = constrain(position, min, max);
     line_to_current_position(feedrate ?: 60);
@@ -94,7 +95,7 @@ char _conv[8];
     #endif
 
     ABL_VAR xy_pos_t probe_position_lf, probe_position_rb;
-    ABL_VAR xy_float_t gridSpacing = { 0, 0 };
+    //ABL_VAR xy_float_t gridSpacing = { 0, 0 };
 
     const float x_min = probe.min_x(), x_max = probe.max_x(),
                 y_min = probe.min_y(), y_max = probe.max_y();

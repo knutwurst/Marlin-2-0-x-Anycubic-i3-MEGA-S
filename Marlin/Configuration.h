@@ -1534,7 +1534,6 @@
 #endif
 
 #if ENABLED(KNUTWURST_TFT_LEVELING)
-  //#define NOZZLE_TO_PROBE_OFFSET { 0, 0, -17 } // Chiron Default Value!
   #define NOZZLE_TO_PROBE_OFFSET { 0, 0, -16.8 }
 #endif
 
