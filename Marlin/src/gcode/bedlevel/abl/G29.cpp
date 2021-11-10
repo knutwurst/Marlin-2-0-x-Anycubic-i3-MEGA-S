@@ -36,6 +36,10 @@
 #include "../../../module/probe.h"
 #include "../../queue.h"
 
+#if ENABLED(KNUTWURST_TFT_LEVELING)
+    #include "../../../lcd/HardwareSerial.h"
+#endif
+
 #if ENABLED(PROBE_TEMP_COMPENSATION)
   #include "../../../feature/probe_temp_comp.h"
   #include "../../../module/temperature.h"
@@ -737,6 +741,11 @@ G29_TYPE GcodeSuite::G29() {
 
       if (!abl.dryrun) extrapolate_unprobed_bed_level();
       print_bilinear_leveling_grid();
+
+      #if ENABLED(KNUTWURST_TFT_LEVELING)
+          HARDWARE_SERIAL_PROTOCOLPGM("J25"); // Autoleveling done!
+          HARDWARE_SERIAL_ENTER();
+      #endif
 
       refresh_bed_level();
 
