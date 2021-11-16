@@ -1373,7 +1373,7 @@
  * The probe replaces the Z-MIN endstop and is used for Z homing.
  * (Automatically enables USE_PROBE_FOR_Z_HOMING.)
  */
-#if ENABLED(KNUTWURST_4MAXP2)
+#if BOTH(KNUTWURST_BLTOUCH, KNUTWURST_4MAXP2)
   #define Z_MIN_PROBE_USES_Z_MIN_ENDSTOP_PIN
 #endif
 
