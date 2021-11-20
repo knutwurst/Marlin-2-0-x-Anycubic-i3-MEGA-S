@@ -1554,7 +1554,7 @@
 #if ENABLED(KNUTWURST_CHIRON)
   #define PROBING_MARGIN 15
 #else
-  #define PROBING_MARGIN 30
+  #define PROBING_MARGIN 35
 #endif
 
 // X and Y axis travel speed (mm/m) between probes

@@ -39,6 +39,15 @@
   #define SERVO3_PIN                           6
 #endif
 
+/*
+#if MB(TRIGORILLA_14_11)
+  #define SERVO0_PIN 11
+  #define SERVO1_PIN 6
+  #define SERVO2_PIN 5
+  #define SERVO3_PIN 4
+#endif
+*/
+
 //
 // Custom Limit Switches
 //
