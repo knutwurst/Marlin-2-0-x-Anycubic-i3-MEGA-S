@@ -6,7 +6,7 @@
 - [Funktionen](https://github.com/knutwurst/Marlin-2-0-x-Anycubic-i3-MEGA-S/wiki/Features-(Deutsch))
 - [Häufig gestellte Fragen (FAQ)](https://github.com/knutwurst/Marlin-2-0-x-Anycubic-i3-MEGA-S/wiki/FAQ-(deutsch))
 - [Wiki/Umbau-Anleitungen](https://github.com/knutwurst/Marlin-2-0-x-Anycubic-i3-MEGA-S/wiki)
-- [Offiziell Facebook-Gruppe (deutsch)](https://www.facebook.com/groups/knutwurst/)
+- [Offizielle Facebook-Gruppe (deutsch)](https://www.facebook.com/groups/knutwurst/)
 - [Downloads](https://github.com/knutwurst/Marlin-2-0-x-Anycubic-i3-MEGA-S/releases)
 
 ### Wenn dir gefällt, was ich mache, kannst du mir hier einen Kaffee spendieren*: [![Donate](https://img.shields.io/badge/Donate-PayPal-green.svg)](https://paypal.me/oliverkoester)
