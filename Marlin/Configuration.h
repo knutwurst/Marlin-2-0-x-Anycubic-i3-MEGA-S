@@ -582,7 +582,7 @@
  *
  */
 #if EITHER(KNUTWURST_4MAX, KNUTWURST_4MAXP2)
-  #define TEMP_SENSOR_0 1
+  #define TEMP_SENSOR_0 11
 #else
   #define TEMP_SENSOR_0 5
 #endif
@@ -720,9 +720,9 @@
   #endif
 
   #if ENABLED(KNUTWURST_4MAXP2)
-    #define DEFAULT_Kp 17.13
-    #define DEFAULT_Ki 0.93
-    #define DEFAULT_Kd 78.58
+    #define DEFAULT_Kp 21.61
+    #define DEFAULT_Ki 1.48
+    #define DEFAULT_Kd 78.77
   #endif
 
 #endif // PIDTEMP
@@ -779,9 +779,9 @@
   #endif
 
   #if ANY(KNUTWURST_4MAX, KNUTWURST_4MAXP2)
-    #define DEFAULT_bedKp 251.78
-    #define DEFAULT_bedKi 49.57
-    #define DEFAULT_bedKd 319.73
+    #define DEFAULT_bedKp 153.91
+    #define DEFAULT_bedKi 25.74
+    #define DEFAULT_bedKd 613.60
   #endif
 
   //120V 250W silicone heater into 4mm borosilicate (MendelMax 1.5+)
@@ -981,16 +981,16 @@
   #define X_MIN_ENDSTOP_INVERTING true  // Set to true to invert the logic of the endstop.
   #define Y_MIN_ENDSTOP_INVERTING true  // Set to true to invert the logic of the endstop.
   #if BOTH(KNUTWURST_BLTOUCH, KNUTWURST_4MAXP2)
-      #define Z_MIN_ENDSTOP_INVERTING false  // Set to true to invert the logic of the endstop.
-  #else
       #define Z_MIN_ENDSTOP_INVERTING true  // Set to true to invert the logic of the endstop.
+  #else
+      #define Z_MIN_ENDSTOP_INVERTING false  // Set to true to invert the logic of the endstop.
   #endif
   #define I_MIN_ENDSTOP_INVERTING false // Set to true to invert the logic of the endstop.
   #define J_MIN_ENDSTOP_INVERTING false // Set to true to invert the logic of the endstop.
   #define K_MIN_ENDSTOP_INVERTING false // Set to true to invert the logic of the endstop.
   #define X_MAX_ENDSTOP_INVERTING true  // Set to true to invert the logic of the endstop.
   #define Y_MAX_ENDSTOP_INVERTING true  // Set to true to invert the logic of the endstop.
-  #define Z_MAX_ENDSTOP_INVERTING false // Set to true to invert the logic of the endstop.
+  #define Z_MAX_ENDSTOP_INVERTING true // Set to true to invert the logic of the endstop.
   #define I_MAX_ENDSTOP_INVERTING false // Set to true to invert the logic of the endstop.
   #define J_MAX_ENDSTOP_INVERTING false // Set to true to invert the logic of the endstop.
   #define K_MAX_ENDSTOP_INVERTING false // Set to true to invert the logic of the endstop.
@@ -1181,7 +1181,7 @@
 #endif
 
 #if ENABLED(KNUTWURST_4MAXP2)
-  #define DEFAULT_MAX_FEEDRATE          { 150, 150, 25, 30 }
+  #define DEFAULT_MAX_FEEDRATE          { 150, 150, 20, 80 }
 #endif
 
 
@@ -1214,7 +1214,7 @@
 #endif
 
 #if ENABLED(KNUTWURST_4MAXP2)
- #define DEFAULT_MAX_ACCELERATION      { 1500, 1500, 70, 15000 }
+ #define DEFAULT_MAX_ACCELERATION      { 700, 700, 70, 15000 }
 #endif
 
 
@@ -1274,9 +1274,9 @@
 #endif
 
 #if ENABLED(KNUTWURST_4MAXP2)
-  #define DEFAULT_ACCELERATION          800    // X, Y, Z and E acceleration for printing moves
-  #define DEFAULT_RETRACT_ACCELERATION  1500    // E acceleration for retracts
-  #define DEFAULT_TRAVEL_ACCELERATION   1000    // X, Y, Z acceleration for travel (non printing) moves
+  #define DEFAULT_ACCELERATION          700    // X, Y, Z and E acceleration for printing moves
+  #define DEFAULT_RETRACT_ACCELERATION  700    // E acceleration for retracts
+  #define DEFAULT_TRAVEL_ACCELERATION   700    // X, Y, Z acceleration for travel (non printing) moves
 #endif
 
 /**
@@ -1310,8 +1310,8 @@
   #endif
 
   #if ANY(KNUTWURST_4MAX, KNUTWURST_4MAXP2)
-    #define DEFAULT_XJERK  8.0
-    #define DEFAULT_YJERK  8.0
+    #define DEFAULT_XJERK  8.2
+    #define DEFAULT_YJERK  8.2
     #define DEFAULT_ZJERK  0.2
   #endif
 
@@ -1378,7 +1378,7 @@
  * (Automatically enables USE_PROBE_FOR_Z_HOMING.)
  */
 #if BOTH(KNUTWURST_BLTOUCH, KNUTWURST_4MAXP2)
-  #define Z_MIN_PROBE_USES_Z_MIN_ENDSTOP_PIN
+  //#define Z_MIN_PROBE_USES_Z_MIN_ENDSTOP_PIN
 #endif
 
 // Force the use of the probe for Z-axis homing
@@ -1535,7 +1535,7 @@
  *     O-- FRONT --+
  */
 #if ENABLED(KNUTWURST_BLTOUCH)
-  #define NOZZLE_TO_PROBE_OFFSET { -2, -25, -0.4 } //https://www.thingiverse.com/thing:2824005
+  #define NOZZLE_TO_PROBE_OFFSET { 0, -43, -1.35 } //https://www.thingiverse.com/thing:2824005
   //#define NOZZLE_TO_PROBE_OFFSET { 29, -15, 0 } //X-Carriage
 #endif
 
@@ -1619,16 +1619,16 @@
  * Example: `M851 Z-5` with a CLEARANCE of 4  =>  9mm from bed to nozzle.
  *     But: `M851 Z+1` with a CLEARANCE of 2  =>  2mm from bed to nozzle.
  */
-#define Z_CLEARANCE_DEPLOY_PROBE   20 // Z Clearance for Deploy/Stow
+#define Z_CLEARANCE_DEPLOY_PROBE   10 // Z Clearance for Deploy/Stow
 #define Z_CLEARANCE_BETWEEN_PROBES  5 // Z Clearance between probe points
 #define Z_CLEARANCE_MULTI_PROBE     5 // Z Clearance between multiple probes
 //#define Z_AFTER_PROBING           5 // Z position after probing is done
 
-#define Z_PROBE_LOW_POINT          -12 // Farthest distance below the trigger-point to go before stopping
+#define Z_PROBE_LOW_POINT          -2 // Farthest distance below the trigger-point to go before stopping
 
 // For M851 give a range for adjusting the Z probe offset
-#define Z_PROBE_OFFSET_RANGE_MIN -50
-#define Z_PROBE_OFFSET_RANGE_MAX 50
+#define Z_PROBE_OFFSET_RANGE_MIN -30
+#define Z_PROBE_OFFSET_RANGE_MAX 30
 
 // Enable the M48 repeatability test to test probe accuracy
 #if ENABLED(KNUTWURST_BLTOUCH)
@@ -1653,10 +1653,10 @@
   //#define WAIT_FOR_BED_HEATER     // Wait for bed to heat back up between probes (to improve accuracy)
   //#define WAIT_FOR_HOTEND         // Wait for hotend to heat back up between probes (to improve accuracy & prevent cold extrude)
 #endif
-//#define PROBING_FANS_OFF          // Turn fans off when probing
+#define PROBING_FANS_OFF          // Turn fans off when probing
 //#define PROBING_ESTEPPERS_OFF     // Turn all extruder steppers off when probing
 //#define PROBING_STEPPERS_OFF      // Turn all steppers off (unless needed to hold position) when probing (including extruders)
-//#define DELAY_BEFORE_PROBING 200  // (ms) To prevent vibrations from triggering piezo sensors
+#define DELAY_BEFORE_PROBING 75  // (ms) To prevent vibrations from triggering piezo sensors
 
 // Require minimum nozzle and/or bed temperature for probing
 //#define PREHEAT_BEFORE_PROBING
@@ -2027,12 +2027,12 @@
 #endif
 
 #if ENABLED(KNUTWURST_4MAXP2)
-  #define X_MIN_POS -6
+  #define X_MIN_POS -8
   #define Y_MIN_POS 0
   #define Z_MIN_POS 0
   #define X_BED_SIZE 270
-  #define Y_BED_SIZE 210
-  #define Z_MAX_POS 190
+  #define Y_BED_SIZE 205
+  #define Z_MAX_POS 205
   #define X_MAX_POS X_BED_SIZE
   #define Y_MAX_POS Y_BED_SIZE
 #endif
@@ -2274,8 +2274,8 @@
 #if EITHER(AUTO_BED_LEVELING_LINEAR, AUTO_BED_LEVELING_BILINEAR)
 
   // Set the number of grid points per dimension.
-  #define GRID_MAX_POINTS_X 5
-  #define GRID_MAX_POINTS_Y GRID_MAX_POINTS_X
+  #define GRID_MAX_POINTS_X 7
+  #define GRID_MAX_POINTS_Y 5
 
   // Probe along the Y axis, advancing X after each column
   //#define PROBE_Y_FIRST
@@ -2415,7 +2415,7 @@
  * - If stepper drivers sleep, XY homing may be required again before Z homing.
  */
 #if BOTH(KNUTWURST_BLTOUCH, KNUTWURST_4MAXP2)
-  #define Z_SAFE_HOMING
+  //d#define Z_SAFE_HOMING
 #endif
 
 
