@@ -76,7 +76,7 @@ void GcodeSuite::M600() {
         if (AnycubicTouchscreen.ai3m_pause_state < 2) {
           AnycubicTouchscreen.ai3m_pause_state = 2;
           #ifdef ANYCUBIC_TFT_DEBUG
-            SERIAL_ECHOPAIR(" DEBUG: M600 - AI3M Pause State set to: ", AnycubicTouchscreen.ai3m_pause_state);
+            SERIAL_ECHOPGM(" DEBUG: M600 - AI3M Pause State set to: ", AnycubicTouchscreen.ai3m_pause_state);
             SERIAL_EOL();
           #endif
         }
