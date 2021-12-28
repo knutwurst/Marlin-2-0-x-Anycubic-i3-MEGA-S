@@ -202,10 +202,13 @@ AnycubicTouchscreenClass::AnycubicTouchscreenClass() {
 void AnycubicTouchscreenClass::Setup() {
   HardwareSerial.begin(115200);
 
-  HARDWARE_SERIAL_ENTER();
-  HARDWARE_SERIAL_PROTOCOLPGM("J17"); // J17 Main board reset
-  HARDWARE_SERIAL_ENTER();
-  delay(10);
+  #if DISABLED(KNUTWURST_4MAXP2)
+    HARDWARE_SERIAL_ENTER();
+    HARDWARE_SERIAL_PROTOCOLPGM("J17"); // J17 Main board reset
+    HARDWARE_SERIAL_ENTER();
+    delay(10);
+  #endif
+
   HARDWARE_SERIAL_PROTOCOLPGM("J12"); // J12 Ready
   HARDWARE_SERIAL_ENTER();
 
@@ -2146,6 +2149,12 @@ void AnycubicTouchscreenClass::GetCommandFromTFT() {
                     queue.inject_P(PSTR("M355 S1 P255"));
                     CaseLight = true;
                 }
+            #endif
+            #if ENABLED(KNUTWURST_4MAXP2_DGUS)
+            case 50:
+                HARDWARE_SERIAL_PROTOCOLPGM("J38 ");
+                HARDWARE_SERIAL_ENTER();
+                break;
             #endif
 
             #if ENABLED(KNUTWURST_MEGA_P_LASER)
