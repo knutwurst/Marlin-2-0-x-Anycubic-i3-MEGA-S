@@ -1351,11 +1351,13 @@ void AnycubicTouchscreenClass::StateHandler() {
       break;
     case ANYCUBIC_TFT_STATE_SDSTOP_REQ:
       #ifdef SDSUPPORT
-        HARDWARE_SERIAL_PROTOCOLPGM("J16"); // J16 stop print
-        HARDWARE_SERIAL_ENTER();
         if ((!card.isPrinting()) && (!planner.movesplanned())) {
           queue.clear();
           TFTstate = ANYCUBIC_TFT_STATE_IDLE;
+          #ifdef SDSUPPORT
+            HARDWARE_SERIAL_PROTOCOLPGM("J16"); // J16 stop print
+            HARDWARE_SERIAL_ENTER();
+          #endif
           #ifdef ANYCUBIC_TFT_DEBUG
             SERIAL_ECHOLNPGM("TFT Serial Debug: SD print stopped... J16");
           #endif
@@ -2150,7 +2152,7 @@ void AnycubicTouchscreenClass::GetCommandFromTFT() {
                     CaseLight = true;
                 }
             #endif
-            #if ENABLED(KNUTWURST_4MAXP2_DGUS)
+            #if ENABLED(KNUTWURST_DGUS2_TFT)
             case 50:
                 HARDWARE_SERIAL_PROTOCOLPGM("J38 ");
                 HARDWARE_SERIAL_ENTER();
