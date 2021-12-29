@@ -345,11 +345,11 @@ void AnycubicTouchscreenClass::StartPrint(){
     break;
   case 1:
     // regular sd pause
-    queue.inject_P(PSTR("M24")); // unpark nozzle
+    queue.inject_P(PSTR("M108")); // unpark nozzle
     #ifdef ANYCUBIC_TFT_DEBUG
       SERIAL_ECHOPGM(" DEBUG: AI3M Pause State: ", ai3m_pause_state);
       SERIAL_EOL();
-      SERIAL_ECHOLNPGM("DEBUG: M24 Resume from regular pause");
+      SERIAL_ECHOLNPGM("DEBUG: M108 Resume from regular pause");
     #endif
     IsParked = false; // remove parked flag
     wait_for_heatup = false;
