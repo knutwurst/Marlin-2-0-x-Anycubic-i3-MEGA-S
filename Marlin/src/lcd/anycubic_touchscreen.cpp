@@ -1317,10 +1317,10 @@ void AnycubicTouchscreenClass::StateHandler() {
       #endif
       break;
     case ANYCUBIC_TFT_STATE_SDPAUSE_REQ:
-      HARDWARE_SERIAL_PROTOCOLPGM("J18");
-      HARDWARE_SERIAL_ENTER();
       #ifdef SDSUPPORT
         if ((!card.isPrinting()) && (!planner.movesplanned())) {
+          HARDWARE_SERIAL_PROTOCOLPGM("J18");
+          HARDWARE_SERIAL_ENTER();
           if (ai3m_pause_state < 2) {
             // no flags, this is a regular pause.
             ai3m_pause_state = 1;
