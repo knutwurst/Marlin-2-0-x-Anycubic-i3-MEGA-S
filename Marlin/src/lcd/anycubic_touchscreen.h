@@ -255,6 +255,9 @@ class AnycubicTouchscreenClass {
     void HeatingStart();
     void FilamentRunout();
     void KillTFT();
+    #if BOTH(ANYCUBIC_TFT_DEBUG, KNUTWURST_DGUS2_TFT)
+      void Command(const char * const command);
+    #endif
     char TFTstate = ANYCUBIC_TFT_STATE_IDLE;
 
     /**

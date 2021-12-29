@@ -2408,6 +2408,17 @@ void AnycubicTouchscreenClass::BedHeatingDone() {
   }
 }
 
+#if BOTH(ANYCUBIC_TFT_DEBUG, KNUTWURST_DGUS2_TFT)
+    void AnycubicTouchscreenClass::Command(const char * const command) {
+      HARDWARE_SERIAL_PROTOCOL(command);
+      SERIAL_ECHOPGM("TFT Serial Debug: Sending ");
+      SERIAL_ECHO(strlen(command));
+      SERIAL_ECHOPGM(" ");
+      SERIAL_ECHOLN(command);
+      HARDWARE_SERIAL_ENTER();
+    }
+#endif
+
 void PowerKill() {
   #ifdef POWER_OUTAGE_TEST
     Temp_Buf_Extuder_Temperature = thermalManager.degTargetHotend(0);
