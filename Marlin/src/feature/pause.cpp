@@ -38,6 +38,7 @@
 #include "../module/stepper.h"
 #include "../module/printcounter.h"
 #include "../module/temperature.h"
+#include "../core/serial.h"
 
 #if ENABLED(FWRETRACT)
   #include "fwretract.h"
@@ -536,7 +537,7 @@ void wait_for_confirmation(const bool is_reload/*=false*/, const int8_t max_beep
         if (AnycubicTouchscreen.ai3m_pause_state < 3) {
           AnycubicTouchscreen.ai3m_pause_state += 2;
           #ifdef ANYCUBIC_TFT_DEBUG
-            SERIAL_ECHOPAIR(" DEBUG: NTO - AI3M Pause State set to: ", AnycubicTouchscreen.ai3m_pause_state);
+            SERIAL_ECHOPGM(" DEBUG: NTO - AI3M Pause State set to: ", AnycubicTouchscreen.ai3m_pause_state);
             SERIAL_EOL();
           #endif
           }
@@ -580,7 +581,7 @@ void wait_for_confirmation(const bool is_reload/*=false*/, const int8_t max_beep
         if (AnycubicTouchscreen.ai3m_pause_state > 3) {
           AnycubicTouchscreen.ai3m_pause_state -= 2;
           #ifdef ANYCUBIC_TFT_DEBUG
-            SERIAL_ECHOPAIR(" DEBUG: NTO - AI3M Pause State set to: ", AnycubicTouchscreen.ai3m_pause_state);
+            SERIAL_ECHOPGM(" DEBUG: NTO - AI3M Pause State set to: ", AnycubicTouchscreen.ai3m_pause_state);
             SERIAL_EOL();
           #endif
         }
@@ -636,7 +637,7 @@ void resume_print(const_float_t slow_load_length/*=0*/, const_float_t fast_load_
     if (AnycubicTouchscreen.ai3m_pause_state > 3) {
       AnycubicTouchscreen.ai3m_pause_state -= 2;
       #ifdef ANYCUBIC_TFT_DEBUG
-        SERIAL_ECHOPAIR(" DEBUG: NTO - AI3M Pause State set to: ", AnycubicTouchscreen.ai3m_pause_state);
+        SERIAL_ECHOPGM(" DEBUG: NTO - AI3M Pause State set to: ", AnycubicTouchscreen.ai3m_pause_state);
         SERIAL_EOL();
       #endif
       }
