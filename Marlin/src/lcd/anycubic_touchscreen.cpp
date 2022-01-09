@@ -145,7 +145,7 @@ char _conv[8];
 
 void setup_PowerOffPin()
 {
-  #if EITHER(KNUTWURST_4MAX, KNUTWURST_4MAXP2)
+  #if ENABLED(KNUTWURST_4MAXP2)
     SET_OUTPUT(POWER_OFF_PIN);
     WRITE(POWER_OFF_PIN,HIGH);
   #endif
@@ -616,10 +616,6 @@ void AnycubicTouchscreenClass::HandleSpecialMenu() {
       queue.inject_P(PSTR("G28\nG90\nG1 Z20\nG1 X205 Y205 F4000\nG1 Z5\nM106 S172\nG4 P500\nM303 E0 S215 C15 U1\nG4 P500\nM107\nG28\nG1 Z10\nM84\nM500\nM300 S440 P200\nM300 S660 P250\nM300 S880 P300"));
     #endif
 
-    #if ENABLED(KNUTWURST_4MAX)
-      queue.inject_P(PSTR("G28\nG90\nG1 Z20\nG1 X105 Y105 F4000\nG1 Z5\nM106 S172\nG4 P500\nM303 E0 S215 C15 U1\nG4 P500\nM107\nG28\nG1 Z10\nM84\nM500\nM300 S440 P200\nM300 S660 P250\nM300 S880 P300"));
-    #endif
-
     #if ENABLED(KNUTWURST_4MAXP2)
       queue.inject_P(PSTR("G28\nG90\nG1 Z20\nG1 X105 Y135 F4000\nG1 Z5\nM106 S172\nG4 P500\nM303 E0 S215 C15 U1\nG4 P500\nM107\nG28\nG1 Z10\nM84\nM500\nM300 S440 P200\nM300 S660 P250\nM300 S880 P300"));
     #endif
@@ -855,10 +851,6 @@ void AnycubicTouchscreenClass::HandleSpecialMenu() {
       queue.inject_P(PSTR("G90\nG1 Z5\nG1 X385 Y15 F4000\nG1 Z0"));
     #endif
 
-    #if ENABLED(KNUTWURST_4MAX)
-      queue.inject_P(PSTR("G90\nG1 Z5\nG1 X195 Y15 F4000\nG1 Z0"));
-    #endif
-
     #if ENABLED(KNUTWURST_4MAXP2)
       queue.inject_P(PSTR("G90\nG1 Z5\nG1 X255 Y15 F4000\nG1 Z0"));
     #endif
@@ -878,10 +870,6 @@ void AnycubicTouchscreenClass::HandleSpecialMenu() {
       queue.inject_P(PSTR("G90\nG1 Z5\nG1 X395 Y395 F4000\nG1 Z0"));
     #endif
 
-    #if ENABLED(KNUTWURST_4MAX)
-      queue.inject_P(PSTR("G90\nG1 Z5\nG1 X195 Y195 F4000\nG1 Z0"));
-    #endif
-
     #if ENABLED(KNUTWURST_4MAXP2)
       queue.inject_P(PSTR("G90\nG1 Z5\nG1 X255 Y195 F4000\nG1 Z0"));
     #endif
@@ -899,10 +887,6 @@ void AnycubicTouchscreenClass::HandleSpecialMenu() {
 
     #if ENABLED(KNUTWURST_CHIRON)
       queue.inject_P(PSTR("G90\nG1 Z5\nG1 X15 Y395 F4000\nG1 Z0"));
-    #endif
-
-    #if ENABLED(KNUTWURST_4MAX)
-      queue.inject_P(PSTR("G90\nG1 Z5\nG1 X15 Y195 F4000\nG1 Z0"));
     #endif
 
     #if ENABLED(KNUTWURST_4MAXP2)
@@ -1758,7 +1742,7 @@ void AnycubicTouchscreenClass::GetCommandFromTFT() {
               if (CodeSeen('S')) {
                 tempbed = constrain(CodeValue(), 0, 115);
                 thermalManager.setTargetBed(tempbed);
-                if (thermalManager.degTargetBed() <= 115) {
+                if (thermalManager.degTargetBed() <= 100) {
                   thermalManager.setTargetBed(tempbed); // do not set Temp from TFT if it is set via gcode
                 }
               }
@@ -2118,7 +2102,7 @@ void AnycubicTouchscreenClass::GetCommandFromTFT() {
                 }
             #endif
 
-            #if EITHER(KNUTWURST_4MAX, KNUTWURST_4MAXP2)
+            #if ENABLED(KNUTWURST_4MAXP2)
             case 41:
                 if(CodeSeen('O')) {
                   PrintdoneAndPowerOFF = true;
@@ -2319,7 +2303,7 @@ void AnycubicTouchscreenClass::GetCommandFromTFT() {
   }
 #endif
 
-#if EITHER(KNUTWURST_4MAX, KNUTWURST_4MAXP2)
+#if ENABLED(KNUTWURST_4MAXP2)
   void PowerDown() {
     for(unsigned char i=0; i<3; i++) {
       WRITE(POWER_OFF_PIN,LOW);
@@ -2335,7 +2319,7 @@ void AnycubicTouchscreenClass::CommandScan() {
   CheckSDCardChange();
   StateHandler();
 
-  #if EITHER(KNUTWURST_4MAX, KNUTWURST_4MAXP2)
+  #if ENABLED(KNUTWURST_4MAXP2)
     if(PrintdoneAndPowerOFF && powerOFFflag && (thermalManager.degHotend(0) < 50 )) {
       powerOFFflag = 0;
       PowerDown();
