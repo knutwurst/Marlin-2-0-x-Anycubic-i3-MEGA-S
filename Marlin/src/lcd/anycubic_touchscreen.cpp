@@ -1301,10 +1301,10 @@ void AnycubicTouchscreenClass::StateHandler() {
       #endif
       break;
     case ANYCUBIC_TFT_STATE_SDPAUSE_REQ:
-      HARDWARE_SERIAL_PROTOCOLPGM("J18");
-      HARDWARE_SERIAL_ENTER();
       #ifdef SDSUPPORT
         if ((!card.isPrinting()) && (!planner.movesplanned())) {
+          HARDWARE_SERIAL_PROTOCOLPGM("J18");
+          HARDWARE_SERIAL_ENTER();
           if (ai3m_pause_state < 2) {
             // no flags, this is a regular pause.
             ai3m_pause_state = 1;
@@ -1340,6 +1340,10 @@ void AnycubicTouchscreenClass::StateHandler() {
         if ((!card.isPrinting()) && (!planner.movesplanned())) {
           queue.clear();
           TFTstate = ANYCUBIC_TFT_STATE_IDLE;
+          #ifdef SDSUPPORT
+             HARDWARE_SERIAL_PROTOCOLPGM("J16"); // J16 stop print
+             HARDWARE_SERIAL_ENTER();
+          #endif
           #ifdef ANYCUBIC_TFT_DEBUG
             SERIAL_ECHOLNPGM("TFT Serial Debug: SD print stopped... J16");
           #endif
@@ -2134,6 +2138,12 @@ void AnycubicTouchscreenClass::GetCommandFromTFT() {
                     CaseLight = true;
                 }
             #endif
+            #if ENABLED(KNUTWURST_DGUS2_TFT)
+            case 50:
+                HARDWARE_SERIAL_PROTOCOLPGM("J38 ");
+                HARDWARE_SERIAL_ENTER();
+                break;
+            #endif
 
             #if ENABLED(KNUTWURST_MEGA_P_LASER)
               case 34:// Continuous printing
@@ -2385,6 +2395,17 @@ void AnycubicTouchscreenClass::BedHeatingDone() {
     #endif
   }
 }
+
+#if BOTH(ANYCUBIC_TFT_DEBUG, KNUTWURST_DGUS2_TFT)
+     void AnycubicTouchscreenClass::Command(const char * const command) {
+       HARDWARE_SERIAL_PROTOCOL(command);
+       SERIAL_ECHOPGM("TFT Serial Debug: Sending ");
+       SERIAL_ECHO(strlen(command));
+       SERIAL_ECHOPGM(" ");
+       SERIAL_ECHOLN(command);
+       HARDWARE_SERIAL_ENTER();
+     }
+ #endif
 
 void PowerKill() {
   #ifdef POWER_OUTAGE_TEST
