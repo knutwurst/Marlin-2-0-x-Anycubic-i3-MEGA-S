@@ -1187,6 +1187,10 @@ private:
     static void M710_report(const bool forReplay=true);
   #endif
 
+  #if BOTH(ANYCUBIC_TFT_DEBUG, KNUTWURST_DGUS2_TFT)
+     static void M9999();
+  #endif
+
   static void T(const int8_t tool_index);
 
 };
