@@ -51,9 +51,16 @@
 #define TG_HEATER_0_PIN                       10
 #define TG_HEATER_1_PIN                       45  // Anycubic Kossel: Unused
 
-#define TG_FAN0_PIN                            9  // Anycubic Kossel: Usually the part cooling fan
-#define TG_FAN1_PIN                            7  // Anycubic Kossel: Unused
-#define TG_FAN2_PIN                           44  // Anycubic Kossel: Hotend fan
+#if ENABLED(ERCAN_MODS)
+  #define TG_FAN0_PIN                            7  // Anycubic Kossel: Usually the part cooling fan
+  #define TG_FAN1_PIN                            9  // Anycubic Kossel: Unused
+  #define TG_FAN2_PIN                           44  // Anycubic Kossel: Hotend fan
+#else
+  #define TG_FAN0_PIN                            9  // Anycubic Kossel: Usually the part cooling fan
+  #define TG_FAN1_PIN                            7  // Anycubic Kossel: Unused
+  #define TG_FAN2_PIN                           44  // Anycubic Kossel: Hotend fan
+#endif
+
 #define CONTROLLER_FAN_PIN  		              TG_FAN1_PIN
 #define FIL_RUNOUT_PIN                        19
 #define BEEPER_PIN                            31

@@ -581,7 +581,9 @@
  *   999 : Dummy Table that ALWAYS reads 100°C or the temperature defined below.
  *
  */
-#if ENABLED(KNUTWURST_4MAXP2)
+#if ENABLED(ERCAN_MODS)
+  #define TEMP_SENSOR_0 5
+#elif ENABLED(KNUTWURST_4MAXP2)
   #define TEMP_SENSOR_0 1
 #else
   #define TEMP_SENSOR_0 5
@@ -1110,7 +1112,11 @@
 #endif
 
 #if ENABLED(KNUTWURST_MEGA_S)
-  #define DEFAULT_AXIS_STEPS_PER_UNIT   { 80, 80, 400, 393 }
+  #if ENABLED(ERCAN_MODS)
+    #define DEFAULT_AXIS_STEPS_PER_UNIT   { 80, 80, 400, 401 }
+  #else
+    #define DEFAULT_AXIS_STEPS_PER_UNIT   { 80, 80, 400, 393 }
+  #endif
 #endif
 
 #if ENABLED(KNUTWURST_MEGA_X)
@@ -1511,8 +1517,12 @@
  *     O-- FRONT --+
  */
 #if ENABLED(KNUTWURST_BLTOUCH)
-  #define NOZZLE_TO_PROBE_OFFSET { -2, -25, -0.4 } //https://www.thingiverse.com/thing:2824005
-  //#define NOZZLE_TO_PROBE_OFFSET { 29, -15, 0 } //X-Carriage
+  #if ENABLED(ERCAN_MODS)
+    #define NOZZLE_TO_PROBE_OFFSET { 29, -15, 0 }
+  #else
+    #define NOZZLE_TO_PROBE_OFFSET { -2, -25, -0.4 } //https://www.thingiverse.com/thing:2824005
+    //#define NOZZLE_TO_PROBE_OFFSET { 29, -15, 0 } //X-Carriage
+  #endif
 #endif
 
 #if ENABLED(KNUTWURST_TFT_LEVELING)
