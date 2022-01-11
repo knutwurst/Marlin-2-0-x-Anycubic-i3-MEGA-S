@@ -915,6 +915,7 @@
 #define Z_STEPPER_AUTO_ALIGN
 #else
 //#define Z_STEPPER_AUTO_ALIGN
+#endif
 #if ENABLED(Z_STEPPER_AUTO_ALIGN)
   // Define probe X and Y positions for Z1, Z2 [, Z3 [, Z4]]
   // If not defined, probe limits will be used.
