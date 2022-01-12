@@ -1364,7 +1364,11 @@
 #endif
 
 // Force the use of the probe for Z-axis homing
+#if ENABLED(ERCAN_MODS)
+  #define USE_PROBE_FOR_Z_HOMING
+#else
 //#define USE_PROBE_FOR_Z_HOMING
+#endif
 
 /**
  * Z_MIN_PROBE_PIN
@@ -2344,6 +2348,8 @@
  * - If stepper drivers sleep, XY homing may be required again before Z homing.
  */
 #if BOTH(KNUTWURST_BLTOUCH, KNUTWURST_4MAXP2)
+  #define Z_SAFE_HOMING
+#elif ENABLED(ERCAN_MODS)
   #define Z_SAFE_HOMING
 #endif
 
