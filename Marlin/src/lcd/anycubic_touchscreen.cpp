@@ -146,6 +146,7 @@ char _conv[8];
 void setup_PowerOffPin()
 {
   #if ENABLED(KNUTWURST_4MAXP2)
+    #define POWER_OFF_PIN 21
     SET_OUTPUT(POWER_OFF_PIN);
     WRITE(POWER_OFF_PIN,HIGH);
   #endif
