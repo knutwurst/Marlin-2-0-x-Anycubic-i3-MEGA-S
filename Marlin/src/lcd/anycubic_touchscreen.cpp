@@ -331,6 +331,13 @@ void AnycubicTouchscreenClass::KillTFT() {
 }
 
 void AnycubicTouchscreenClass::StartPrint(){
+
+  HARDWARE_SERIAL_PROTOCOLPGM("J04"); // J04 printing form sd card now
+  HARDWARE_SERIAL_ENTER();
+  #ifdef ANYCUBIC_TFT_DEBUG
+    SERIAL_ECHOLNPGM("TFT Serial Debug: SD print started... J04");
+  #endif
+
   // which kind of starting behaviour is needed?
   switch (ai3m_pause_state) {
   case 0:
@@ -339,7 +346,7 @@ void AnycubicTouchscreenClass::StartPrint(){
     card.startOrResumeFilePrinting();
     TFTstate = ANYCUBIC_TFT_STATE_SDPRINT;
     #ifdef ANYCUBIC_TFT_DEBUG
-      SERIAL_ECHOPGM(" DEBUG: AI3M Pause State: ", ai3m_pause_state);
+      SERIAL_ECHOPGM("DEBUG: AI3M Pause State: ", ai3m_pause_state);
       SERIAL_EOL();
       SERIAL_ECHOLNPGM("DEBUG: Regular Start");
     #endif
@@ -348,7 +355,7 @@ void AnycubicTouchscreenClass::StartPrint(){
     // regular sd pause
     queue.inject_P(PSTR("M108")); // unpark nozzle
     #ifdef ANYCUBIC_TFT_DEBUG
-      SERIAL_ECHOPGM(" DEBUG: AI3M Pause State: ", ai3m_pause_state);
+      SERIAL_ECHOPGM("DEBUG: AI3M Pause State: ", ai3m_pause_state);
       SERIAL_EOL();
       SERIAL_ECHOLNPGM("DEBUG: M108 Resume from regular pause");
     #endif
@@ -360,14 +367,14 @@ void AnycubicTouchscreenClass::StartPrint(){
     TFTstate = ANYCUBIC_TFT_STATE_SDPRINT;
     ai3m_pause_state = 0;
     #ifdef ANYCUBIC_TFT_DEBUG
-      SERIAL_ECHOPGM(" DEBUG: AI3M Pause State: ", ai3m_pause_state);
+      SERIAL_ECHOPGM("DEBUG: AI3M Pause State: ", ai3m_pause_state);
       SERIAL_EOL();
     #endif
     break;
   case 2:
     // paused by M600
     #ifdef ANYCUBIC_TFT_DEBUG
-      SERIAL_ECHOPGM(" DEBUG: AI3M Pause State: ", ai3m_pause_state);
+      SERIAL_ECHOPGM("DEBUG: AI3M Pause State: ", ai3m_pause_state);
       SERIAL_EOL();
       SERIAL_ECHOLNPGM("DEBUG: Start M108 routine");
     #endif
@@ -428,7 +435,7 @@ void AnycubicTouchscreenClass::PausePrint() {
     if (ai3m_pause_state < 2) { // is this a regular pause?
       card.pauseSDPrint(); // pause print regularly
       #ifdef ANYCUBIC_TFT_DEBUG
-        SERIAL_ECHOPGM(" DEBUG: AI3M Pause State: ", ai3m_pause_state);
+        SERIAL_ECHOPGM("DEBUG: AI3M Pause State: ", ai3m_pause_state);
         SERIAL_EOL();
         SERIAL_ECHOLNPGM("DEBUG: Regular Pause");
       #endif
@@ -449,11 +456,11 @@ void AnycubicTouchscreenClass::PausePrint() {
       #ifdef ANYCUBIC_TFT_DEBUG
         SERIAL_ECHOLNPGM("DEBUG: Filament runout - Retract, beep and park.");
       #endif
-      queue.inject_P(PSTR("M25")); // pause print and park nozzle
+      card.pauseSDPrint(); // pause print and park nozzle
       ai3m_pause_state = 3;
       #ifdef ANYCUBIC_TFT_DEBUG
         SERIAL_ECHOLNPGM("DEBUG: M25 sent, parking nozzle");
-        SERIAL_ECHOPGM(" DEBUG: AI3M Pause State: ", ai3m_pause_state);
+        SERIAL_ECHOPGM("DEBUG: AI3M Pause State: ", ai3m_pause_state);
         SERIAL_EOL();
       #endif
       IsParked = true;
@@ -485,7 +492,7 @@ inline void AnycubicTouchscreenClass::StopPrint()
   thermalManager.disable_all_heaters();
   ai3m_pause_state = 0;
   #ifdef ANYCUBIC_TFT_DEBUG
-    SERIAL_ECHOPGM(" DEBUG: AI3M Pause State: ", ai3m_pause_state);
+    SERIAL_ECHOPGM("DEBUG: AI3M Pause State: ", ai3m_pause_state);
     SERIAL_EOL();
   #endif
   #if FAN_COUNT > 0
@@ -516,7 +523,7 @@ void AnycubicTouchscreenClass::FilamentChangePause() {
   // gets used when the user hits CONTINUE
   ai3m_pause_state = 2;
   #ifdef ANYCUBIC_TFT_DEBUG
-    SERIAL_ECHOPGM(" DEBUG: AI3M Pause State: ", ai3m_pause_state);
+    SERIAL_ECHOPGM("DEBUG: AI3M Pause State: ", ai3m_pause_state);
     SERIAL_EOL();
   #endif
 
@@ -546,7 +553,7 @@ void AnycubicTouchscreenClass::ReheatNozzle() {
   if (ai3m_pause_state > 3) {
     ai3m_pause_state -= 2;
     #ifdef ANYCUBIC_TFT_DEBUG
-      SERIAL_ECHOPGM(" DEBUG: NTO done, AI3M Pause State: ", ai3m_pause_state);
+      SERIAL_ECHOPGM("DEBUG: NTO done, AI3M Pause State: ", ai3m_pause_state);
       SERIAL_EOL();
     #endif
   }
@@ -576,7 +583,7 @@ void AnycubicTouchscreenClass::ParkAfterStop(){
   queue.enqueue_now_P(PSTR("M27")); // force report of SD status
   ai3m_pause_state = 0;
   #ifdef ANYCUBIC_TFT_DEBUG
-    SERIAL_ECHOPGM(" DEBUG: AI3M Pause State: ", ai3m_pause_state);
+    SERIAL_ECHOPGM("DEBUG: AI3M Pause State: ", ai3m_pause_state);
     SERIAL_EOL();
   #endif
 }
@@ -597,7 +604,7 @@ bool AnycubicTouchscreenClass::CodeSeen(char code) {
 void AnycubicTouchscreenClass::HandleSpecialMenu() {
 #if ENABLED(KNUTWURST_SPECIAL_MENU)
   #ifdef ANYCUBIC_TFT_DEBUG
-    SERIAL_ECHOPGM(" DEBUG: Special Menu Selection: ", currentTouchscreenSelection);
+    SERIAL_ECHOPGM("DEBUG: Special Menu Selection: ", currentTouchscreenSelection);
     SERIAL_EOL();
   #endif
   if ((strcasestr_P(currentTouchscreenSelection, PSTR(SM_SPECIAL_MENU_L)) != NULL)
@@ -968,7 +975,7 @@ void AnycubicTouchscreenClass::PrintList() {
     zOffsetBuffer = SM_BLTZ_DISP_L;
 
     #ifdef ANYCUBIC_TFT_DEBUG
-      SERIAL_ECHOPGM(" DEBUG: Current probe.offset.z: ", float(probe.offset.z));
+      SERIAL_ECHOPGM("DEBUG: Current probe.offset.z: ", float(probe.offset.z));
       SERIAL_EOL();
     #endif
 
@@ -1284,7 +1291,7 @@ void AnycubicTouchscreenClass::StateHandler() {
             #endif
             ai3m_pause_state = 0;
             #ifdef ANYCUBIC_TFT_DEBUG
-              SERIAL_ECHOPGM(" DEBUG: AI3M Pause State: ", ai3m_pause_state);
+              SERIAL_ECHOPGM("DEBUG: AI3M Pause State: ", ai3m_pause_state);
               SERIAL_EOL();
             #endif
           }
@@ -1310,7 +1317,7 @@ void AnycubicTouchscreenClass::StateHandler() {
             // no flags, this is a regular pause.
             ai3m_pause_state = 1;
             #ifdef ANYCUBIC_TFT_DEBUG
-              SERIAL_ECHOPGM(" DEBUG: AI3M Pause State: ", ai3m_pause_state);
+              SERIAL_ECHOPGM("DEBUG: AI3M Pause State: ", ai3m_pause_state);
               SERIAL_EOL();
               SERIAL_ECHOLNPGM("DEBUG: Regular Pause requested");
             #endif
@@ -1350,7 +1357,7 @@ void AnycubicTouchscreenClass::StateHandler() {
           #endif
           ai3m_pause_state = 0;
           #ifdef ANYCUBIC_TFT_DEBUG
-            SERIAL_ECHOPGM(" DEBUG: AI3M Pause State: ", ai3m_pause_state);
+            SERIAL_ECHOPGM("DEBUG: AI3M Pause State: ", ai3m_pause_state);
             SERIAL_EOL();
           #endif
         }
@@ -1398,7 +1405,7 @@ void AnycubicTouchscreenClass::FilamentRunout() {
             if (card.isPrinting()) {
               ai3m_pause_state = 3; // set runout pause flag
               #ifdef ANYCUBIC_TFT_DEBUG
-                SERIAL_ECHOPGM(" DEBUG: AI3M Pause State: ", ai3m_pause_state);
+                SERIAL_ECHOPGM("DEBUG: AI3M Pause State: ", ai3m_pause_state);
                 SERIAL_EOL();
               #endif
               PausePrint();
@@ -1608,7 +1615,7 @@ void AnycubicTouchscreenClass::GetCommandFromTFT() {
                 else {
                   ai3m_pause_state = 0;
                   #ifdef ANYCUBIC_TFT_DEBUG
-                    SERIAL_ECHOPGM(" DEBUG: AI3M Pause State: ", ai3m_pause_state);
+                    SERIAL_ECHOPGM("DEBUG: AI3M Pause State: ", ai3m_pause_state);
                     SERIAL_EOL();
                   #endif
                   StopPrint();
@@ -1617,13 +1624,12 @@ void AnycubicTouchscreenClass::GetCommandFromTFT() {
               break;
             case 10: // A10 resume sd print
               #ifdef SDSUPPORT
+                #ifdef ANYCUBIC_TFT_DEBUG
+                  SERIAL_ECHOPGM("DEBUG: AI3M Pause State: ", ai3m_pause_state);
+                  SERIAL_EOL();
+                #endif
                 if ((TFTstate == ANYCUBIC_TFT_STATE_SDPAUSE) || (TFTstate == ANYCUBIC_TFT_STATE_SDOUTAGE)) {
                   StartPrint();
-                  HARDWARE_SERIAL_PROTOCOLPGM("J04"); // J04 printing form sd card now
-                  HARDWARE_SERIAL_ENTER();
-                  #ifdef ANYCUBIC_TFT_DEBUG
-                    SERIAL_ECHOLNPGM("TFT Serial Debug: SD print started... J04");
-                  #endif
                 }
                 if (ai3m_pause_state > 3) {
                   ReheatNozzle();
@@ -1641,7 +1647,7 @@ void AnycubicTouchscreenClass::GetCommandFromTFT() {
                   TFTstate = ANYCUBIC_TFT_STATE_IDLE;
                   ai3m_pause_state = 0;
                   #ifdef ANYCUBIC_TFT_DEBUG
-                    SERIAL_ECHOPGM(" DEBUG: AI3M Pause State: ", ai3m_pause_state);
+                    SERIAL_ECHOPGM("DEBUG: AI3M Pause State: ", ai3m_pause_state);
                     SERIAL_EOL();
                   #endif
                 }
@@ -1700,7 +1706,7 @@ void AnycubicTouchscreenClass::GetCommandFromTFT() {
                   ai3m_pause_state = 0;
                   powerOFFflag = 0;
                   #ifdef ANYCUBIC_TFT_DEBUG
-                    SERIAL_ECHOPGM(" DEBUG: AI3M Pause State: ", ai3m_pause_state);
+                    SERIAL_ECHOPGM("DEBUG: AI3M Pause State: ", ai3m_pause_state);
                     SERIAL_EOL();
                   #endif
                   StartPrint();
