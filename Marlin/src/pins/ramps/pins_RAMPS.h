@@ -266,7 +266,7 @@
   #define FILWIDTH_PIN                         5  // Analog Input on AUX2
 #endif
 
-#if ENABLED(DKNUTWURST_4MAXP2)
+#if ENABLED(KNUTWURST_4MAXP2)
   #ifndef POWER_OFF_PIN
     #define POWER_OFF_PIN                       21
   #endif

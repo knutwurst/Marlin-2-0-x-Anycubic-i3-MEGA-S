@@ -146,7 +146,6 @@ char _conv[8];
 void setup_PowerOffPin()
 {
   #if ENABLED(KNUTWURST_4MAXP2)
-    #define POWER_OFF_PIN 21
     SET_OUTPUT(POWER_OFF_PIN);
     WRITE(POWER_OFF_PIN,HIGH);
   #endif
@@ -437,6 +436,8 @@ void AnycubicTouchscreenClass::StartPrint(){
 }
 
 void AnycubicTouchscreenClass::PausePrint() {
+  HARDWARE_SERIAL_PROTOCOLPGM("J05");//j05 pausing
+  HARDWARE_SERIAL_ENTER();
   #ifdef SDSUPPORT
     if (ai3m_pause_state < 2) { // is this a regular pause?
       card.pauseSDPrint(); // pause print regularly
