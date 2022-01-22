@@ -266,8 +266,10 @@
   #define FILWIDTH_PIN                         5  // Analog Input on AUX2
 #endif
 
-#ifndef POWER_OFF_PIN
-  #define POWER_OFF_PIN                       21
+#if ENABLED(DKNUTWURST_4MAXP2)
+  #ifndef POWER_OFF_PIN
+    #define POWER_OFF_PIN                       21
+  #endif
 #endif
 
 // RAMPS 1.4 DIO 4 on the servos connector
