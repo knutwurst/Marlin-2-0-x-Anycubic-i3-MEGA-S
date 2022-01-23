@@ -496,14 +496,7 @@ void AnycubicTouchscreenClass::PausePrint() {
 
 inline void AnycubicTouchscreenClass::StopPrint()
 {
-  // stop print, disable heaters
-  
-  if (card.isFileOpen) {
-    card.endFilePrintNow();
-    card.closefile();
-  }
-
-  queue.clear();
+  card.abortFilePrintNow();
 
   #ifdef ANYCUBIC_TFT_DEBUG
     SERIAL_ECHOLNPGM("DEBUG: Stopped and cleared");
@@ -511,14 +504,14 @@ inline void AnycubicTouchscreenClass::StopPrint()
 
   print_job_timer.stop();
   thermalManager.disable_all_heaters();
+  thermalManager.zero_fan_speeds();
+
   ai3m_pause_state = 0;
   #ifdef ANYCUBIC_TFT_DEBUG
     SERIAL_ECHOPGM("DEBUG: AI3M Pause State: ", ai3m_pause_state);
     SERIAL_EOL();
   #endif
-  #if FAN_COUNT > 0
-    thermalManager.zero_fan_speeds();
-  #endif
+
   TFTstate = ANYCUBIC_TFT_STATE_SDSTOP_REQ;
 }
 
