@@ -479,13 +479,10 @@ void AnycubicTouchscreenClass::PausePrint() {
         SERIAL_ECHOLNPGM("DEBUG: Filament runout - Retract, beep and park.");
       #endif
       card.pauseSDPrint(); // pause print and park nozzle
-      ai3m_pause_state = 3;
+      ai3m_pause_state = 1;
       #ifdef ANYCUBIC_TFT_DEBUG
         SERIAL_ECHOLNPGM("DEBUG: M25 sent, parking nozzle");
-        SERIAL_ECHOPGM("DEBUG: AI3M Pause State: ", ai3m_pause_state);
-        SERIAL_EOL();
       #endif
-      //IsParked = true;
       // show filament runout prompt on screen
       HARDWARE_SERIAL_PROTOCOLPGM("J23");
       HARDWARE_SERIAL_ENTER();
@@ -530,7 +527,7 @@ void AnycubicTouchscreenClass::FilamentChangeResume() {
     SERIAL_ECHOLNPGM("DEBUG: M108 Resume called");
   #endif
   
-  IsParked = false; // remove parked flag
+  //IsParked = false; // remove parked flag
   starttime = millis();
   card.startOrResumeFilePrinting(); // resume regularly
 
