@@ -212,6 +212,8 @@ void AnycubicTouchscreenClass::Setup() {
   HARDWARE_SERIAL_PROTOCOLPGM("J12"); // J12 Ready
   HARDWARE_SERIAL_ENTER();
 
+  TFTstate = ANYCUBIC_TFT_STATE_IDLE;
+
   currentTouchscreenSelection[0] = 0;
   currentFileOrDirectory[0] = '\0';
   SpecialMenu = false;
@@ -403,6 +405,20 @@ void AnycubicTouchscreenClass::StartPrint(){
     #endif
     break;
   case 4:
+    // nozzle was timed out before, do not enter printing state yet
+    TFTstate = ANYCUBIC_TFT_STATE_SDPAUSE_REQ;
+    #ifdef ANYCUBIC_TFT_DEBUG
+      SERIAL_ECHOLNPGM("DEBUG: Set Pause again because of timeout");
+    #endif
+
+    // clear the timeout flag to ensure the print continues on the
+    // next push of CONTINUE
+    ai3m_pause_state = 1;
+    #ifdef ANYCUBIC_TFT_DEBUG
+      SERIAL_ECHOLNPGM("DEBUG: Nozzle timeout flag cleared");
+    #endif
+    break;
+  case 5:
     // nozzle was timed out before (M600), do not enter printing state yet
     TFTstate = ANYCUBIC_TFT_STATE_SDPAUSE_REQ;
     #ifdef ANYCUBIC_TFT_DEBUG
@@ -416,7 +432,7 @@ void AnycubicTouchscreenClass::StartPrint(){
       SERIAL_ECHOLNPGM("DEBUG: Nozzle timeout flag cleared");
     #endif
     break;
-  case 5:
+  case 6:
     // nozzle was timed out before (runout), do not enter printing state yet
     TFTstate = ANYCUBIC_TFT_STATE_SDPAUSE_REQ;
     #ifdef ANYCUBIC_TFT_DEBUG
@@ -451,9 +467,9 @@ void AnycubicTouchscreenClass::PausePrint() {
       SERIAL_ECHOLNPGM("DEBUG: Filament Runout Pause");
     #endif
       // filament runout, retract and beep
-      queue.inject_P(PSTR("G91"));          // relative mode
-      queue.inject_P(PSTR("G1 E-3 F1800")); // retract 3mm
-      queue.inject_P(PSTR("G90"));          // absolute mode
+      //queue.inject_P(PSTR("G91"));          // relative mode
+      //queue.inject_P(PSTR("G1 E-3 F1800")); // retract 3mm
+      //queue.inject_P(PSTR("G90"));          // absolute mode
       buzzer.tone(200, 1567);
       buzzer.tone(200, 1174);
       buzzer.tone(200, 1567);
@@ -469,7 +485,7 @@ void AnycubicTouchscreenClass::PausePrint() {
         SERIAL_ECHOPGM("DEBUG: AI3M Pause State: ", ai3m_pause_state);
         SERIAL_EOL();
       #endif
-      IsParked = true;
+      //IsParked = true;
       // show filament runout prompt on screen
       HARDWARE_SERIAL_PROTOCOLPGM("J23");
       HARDWARE_SERIAL_ENTER();
@@ -552,6 +568,7 @@ void AnycubicTouchscreenClass::ReheatNozzle() {
     SERIAL_ECHOLNPGM("DEBUG: Send reheat M108");
   #endif
 
+  // M108
   wait_for_heatup = false;
   wait_for_user = false;
 
@@ -565,13 +582,15 @@ void AnycubicTouchscreenClass::ReheatNozzle() {
   #ifdef ANYCUBIC_TFT_DEBUG
     SERIAL_ECHOLNPGM("DEBUG: Clear flags");
   #endif
+
   if (ai3m_pause_state > 3) {
-    ai3m_pause_state -= 2;
+    ai3m_pause_state -= 3;
     #ifdef ANYCUBIC_TFT_DEBUG
       SERIAL_ECHOPGM("DEBUG: NTO done, AI3M Pause State: ", ai3m_pause_state);
       SERIAL_EOL();
     #endif
   }
+
   // set pause state to show CONTINUE button again
   TFTstate = ANYCUBIC_TFT_STATE_SDPAUSE_REQ;
 }
@@ -1620,8 +1639,6 @@ void AnycubicTouchscreenClass::GetCommandFromTFT() {
               #ifdef SDSUPPORT
                 if (card.isPrinting()) {
                   PausePrint();
-                  HARDWARE_SERIAL_PROTOCOLPGM("J05");//j05 pausing
-                  HARDWARE_SERIAL_ENTER();
                 }
                 else {
                   ai3m_pause_state = 0;
@@ -1643,7 +1660,7 @@ void AnycubicTouchscreenClass::GetCommandFromTFT() {
                   StartPrint();
                 }
                 if (ai3m_pause_state > 3) {
-                  ReheatNozzle();
+                  ReheatNozzle();  // obsolete!
                 }
               #endif
               break;
