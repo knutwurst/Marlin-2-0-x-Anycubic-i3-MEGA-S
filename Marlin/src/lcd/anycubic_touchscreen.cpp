@@ -696,7 +696,7 @@ void AnycubicTouchscreenClass::HandleSpecialMenu() {
     else if ((strcasestr_P(currentTouchscreenSelection, PSTR(SM_MESH_START_L)) != NULL)
           || (strcasestr_P(currentTouchscreenSelection, PSTR(SM_MESH_START_S)) != NULL)) {
       SERIAL_ECHOLNPGM("Special Menu: Start Mesh Leveling");
-      queue.inject_P(PSTR("G29 S1"));
+      queue.inject_P(PSTR("G28\nG29 S1"));
     }
     else if ((strcasestr_P(currentTouchscreenSelection, PSTR(SM_MESH_NEXT_L)) != NULL)
           || (strcasestr_P(currentTouchscreenSelection, PSTR(SM_MESH_NEXT_S)) != NULL)) {
