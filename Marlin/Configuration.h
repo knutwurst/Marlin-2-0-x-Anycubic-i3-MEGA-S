@@ -1131,38 +1131,38 @@
  */
 #if ENABLED(KNUTWURST_MEGA)
   #if ENABLED(KNUTWURST_BMG)
-    #define DEFAULT_MAX_FEEDRATE          { 500, 500, 6, 30 }
+    #define DEFAULT_MAX_FEEDRATE          { 500, 500, 6, 40 }
   #else
     #define DEFAULT_MAX_FEEDRATE          { 500, 500, 6, 80 }
   #endif
 #endif
 
 #if ENABLED(KNUTWURST_MEGA_S)
-  #define DEFAULT_MAX_FEEDRATE          { 500, 500, 6, 30 } // same feedrate for BMG
+  #define DEFAULT_MAX_FEEDRATE          { 500, 500, 6, 40 } // same feedrate for BMG
 #endif
 
 #if ENABLED(KNUTWURST_MEGA_X)
   #if ENABLED(KNUTWURST_BMG)
-    #define DEFAULT_MAX_FEEDRATE            { 120, 120, 12, 30 } // correct for BMG?
+    #define DEFAULT_MAX_FEEDRATE            { 120, 120, 12, 40 } // correct for BMG?
   #else
-    #define DEFAULT_MAX_FEEDRATE            { 120, 120, 12, 80 } // thanks to Simon Geis
+    #define DEFAULT_MAX_FEEDRATE            { 120, 120, 12, 60 } // thanks to Simon Geis
   #endif
 #endif
 
 #if ENABLED(KNUTWURST_MEGA_P)
-  #define DEFAULT_MAX_FEEDRATE          { 500, 500, 6, 30 }
+  #define DEFAULT_MAX_FEEDRATE          { 500, 500, 6, 40 }
 #endif
 
 #if ENABLED(KNUTWURST_CHIRON)
   #if ENABLED(KNUTWURST_BMG)
-    #define DEFAULT_MAX_FEEDRATE          { 100, 100, 20, 30 }
+    #define DEFAULT_MAX_FEEDRATE          { 100, 100, 20, 40 }
   #else
-    #define DEFAULT_MAX_FEEDRATE          { 100, 100, 20, 80 }
+    #define DEFAULT_MAX_FEEDRATE          { 100, 100, 20, 60 }
   #endif
 #endif
 
 #if ENABLED(KNUTWURST_4MAXP2)
-  #define DEFAULT_MAX_FEEDRATE          { 150, 150, 18, 30 }
+  #define DEFAULT_MAX_FEEDRATE          { 150, 150, 18, 80 }
 #endif
 
 
