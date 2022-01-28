@@ -89,10 +89,6 @@ fil_change_settings_t fc_settings[EXTRUDERS];
   #include "../sd/cardreader.h"
 #endif
 
-#ifdef ANYCUBIC_TOUCHSCREEN
-  #include "../lcd/anycubic_touchscreen.h" //KNUTWURST
-#endif
-
 #if ENABLED(EMERGENCY_PARSER)
   #define _PMSG(L) L##_M108
 #else
@@ -286,8 +282,7 @@ bool load_filament(const_float_t slow_load_length/*=0*/, const_float_t fast_load
           #if EITHER(HAS_LCD_MENU, DWIN_CREALITY_LCD_ENHANCED)
             ui.pause_show_message(PAUSE_MESSAGE_OPTION); // Also sets PAUSE_RESPONSE_WAIT_FOR
           #else
-            //pause_menu_response = PAUSE_RESPONSE_WAIT_FOR;
-            pause_menu_response = PAUSE_RESPONSE_RESUME_PRINT;  // KNUTWURST
+            pause_menu_response = PAUSE_RESPONSE_WAIT_FOR;
           #endif
           while (pause_menu_response == PAUSE_RESPONSE_WAIT_FOR) idle_no_sleep();
         }
@@ -534,17 +529,6 @@ void wait_for_confirmation(const bool is_reload/*=false*/, const int8_t max_beep
       ui.pause_show_message(PAUSE_MESSAGE_HEAT);
       SERIAL_ECHO_MSG(_PMSG(STR_FILAMENT_CHANGE_HEAT));
 
-/*
-      #ifdef ANYCUBIC_TOUCHSCREEN  // KNUTWURST
-        if (AnycubicTouchscreen.ai3m_pause_state < 3) {
-          AnycubicTouchscreen.ai3m_pause_state += 3;
-          #ifdef ANYCUBIC_TFT_DEBUG
-            SERIAL_ECHOPGM(" DEBUG: NTO - AI3M Pause State set to: ", AnycubicTouchscreen.ai3m_pause_state);
-            SERIAL_EOL();
-          #endif
-          }
-      #endif
-*/
       TERN_(HOST_PROMPT_SUPPORT, host_prompt_do(PROMPT_USER_CONTINUE, GET_TEXT(MSG_HEATER_TIMEOUT), GET_TEXT(MSG_REHEAT)));
 
       TERN_(EXTENSIBLE_UI, ExtUI::onUserConfirmRequired_P(GET_TEXT(MSG_HEATER_TIMEOUT)));
@@ -635,17 +619,7 @@ void resume_print(const_float_t slow_load_length/*=0*/, const_float_t fast_load_
 
   // Re-enable the heaters if they timed out
   bool nozzle_timed_out = false;
-/*
-  #ifdef ANYCUBIC_TOUCHSCREEN  // KNUTWURST
-    if (AnycubicTouchscreen.ai3m_pause_state > 3) {
-      AnycubicTouchscreen.ai3m_pause_state -= 3;
-      #ifdef ANYCUBIC_TFT_DEBUG
-        SERIAL_ECHOPGM(" DEBUG: NTO - AI3M Pause State set to: ", AnycubicTouchscreen.ai3m_pause_state);
-        SERIAL_EOL();
-      #endif
-      }
-  #endif
-*/
+
   HOTEND_LOOP() {
     nozzle_timed_out |= thermalManager.heater_idle[e].timed_out;
     thermalManager.reset_hotend_idle_timer(e);
