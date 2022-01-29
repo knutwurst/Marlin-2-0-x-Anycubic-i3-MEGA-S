@@ -267,8 +267,9 @@ class AnycubicTouchscreenClass {
      * 1 - regular pause
      * 2 - M600 pause
      * 3 - filament runout pause
-     * 4 - nozzle timeout on M600
-     * 5 - nozzle timeout on filament runout
+     * 4 - nozzle timeout on regular pause   // OBSOLETE
+     * 5 - nozzle timeout on M600            // OBSOLETE
+     * 6 - nozzle timeout on filament runout // OBSOLETE
      */
      uint8_t ai3m_pause_state = 0;
 
