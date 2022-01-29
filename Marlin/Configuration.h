@@ -1916,7 +1916,7 @@
   #define X_MIN_POS 0
   #define Y_MIN_POS 0
   #define Z_MIN_POS 0
-  #define X_BED_SIZE 225
+  #define X_BED_SIZE 220
   #define Y_BED_SIZE 220
   #define Z_MAX_POS 210
   #define X_MAX_POS X_BED_SIZE
@@ -2165,7 +2165,7 @@
   // The height can be set with M420 Z<height>
   #define ENABLE_LEVELING_FADE_HEIGHT
   #if ENABLED(ENABLE_LEVELING_FADE_HEIGHT)
-    #define DEFAULT_LEVELING_FADE_HEIGHT 0.0 // (mm) Default fade height.
+    #define DEFAULT_LEVELING_FADE_HEIGHT 0.96 // (mm) Default fade height.
   #endif
 
   // For Cartesian machines, instead of dividing moves on mesh boundaries,
