@@ -759,6 +759,8 @@
 #endif
 #if NUM_Z_STEPPER_DRIVERS >= 2
   #ifndef Z2_STEP_PIN
+  /*if MEGA_S_MM begin*/
+  /*
     #define Z2_STEP_PIN   _EPIN(Z2_E_INDEX, STEP)
     #define Z2_DIR_PIN    _EPIN(Z2_E_INDEX, DIR)
     #define Z2_ENABLE_PIN _EPIN(Z2_E_INDEX, ENABLE)
@@ -767,6 +769,11 @@
     #else
       #define AUTO_ASSIGNED_Z2_STEPPER 1
     #endif
+    */
+    #define Z2_STEP_PIN   36   //edmunds: copied from E1 pins in RAMPS.h
+    #define Z2_DIR_PIN    34
+    #define Z2_ENABLE_PIN 30
+    /*end MEGA_S_MM*/
   #endif
   #ifndef Z2_MS1_PIN
     #define Z2_MS1_PIN    _EPIN(Z2_E_INDEX, MS1)
@@ -824,7 +831,12 @@
 #endif
 
 #ifndef Z2_CS_PIN
+/*if MEGA_S_MM begin*/
+  /*
   #define Z2_CS_PIN  -1
+  */
+  #define Z2_CS_PIN  44
+/*end MEGA_S_MM*/
 #endif
 #ifndef Z2_MS1_PIN
   #define Z2_MS1_PIN -1
