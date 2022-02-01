@@ -237,10 +237,12 @@ void AnycubicTouchscreenClass::Setup() {
 
   #if ENABLED(ANYCUBIC_FILAMENT_RUNOUT_SENSOR)
     if ((READ(FILAMENT_RUNOUT_PIN) == true) && FilamentSensorEnabled) {
+      /*
       #ifndef ANYCUBIC_TFT_DEBUG
         HARDWARE_SERIAL_PROTOCOLPGM("J15"); //J15 FILAMENT LACK
         HARDWARE_SERIAL_ENTER();
       #endif
+      */
       #ifdef ANYCUBIC_TFT_DEBUG
         SERIAL_ECHOLNPGM("TFT Serial Debug: Filament runout... J15");
       #endif
@@ -1393,6 +1395,15 @@ void AnycubicTouchscreenClass::StateHandler() {
       break;
   }
 }
+
+
+/*
+ * TODO: Refactoring of the filamentsensor-Stuff.
+ * 
+ * Every cycle a timer should be reset if the sensor reads "filament is present"
+ * If the timer is not reset within a period of time, the filament runout state
+ * should be triggered.
+ */
 
 void AnycubicTouchscreenClass::FilamentRunout() {
   if (FilamentSensorEnabled == true) {
