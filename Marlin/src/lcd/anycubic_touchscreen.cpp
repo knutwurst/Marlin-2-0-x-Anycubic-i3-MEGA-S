@@ -237,12 +237,11 @@ void AnycubicTouchscreenClass::Setup() {
 
   #if ENABLED(ANYCUBIC_FILAMENT_RUNOUT_SENSOR)
     if ((READ(FILAMENT_RUNOUT_PIN) == true) && FilamentSensorEnabled) {
-      /*
+
       #ifndef ANYCUBIC_TFT_DEBUG
         HARDWARE_SERIAL_PROTOCOLPGM("J15"); //J15 FILAMENT LACK
         HARDWARE_SERIAL_ENTER();
       #endif
-      */
       #ifdef ANYCUBIC_TFT_DEBUG
         SERIAL_ECHOLNPGM("TFT Serial Debug: Filament runout... J15");
       #endif
