@@ -497,7 +497,7 @@ void AnycubicTouchscreenClass::PausePrint() {
 
 inline void AnycubicTouchscreenClass::StopPrint()
 {
-  card.abortFilePrintNow();
+  card.abortFilePrintSoon();
 
   #ifdef ANYCUBIC_TFT_DEBUG
     SERIAL_ECHOLNPGM("DEBUG: Stopped and cleared");
@@ -513,6 +513,7 @@ inline void AnycubicTouchscreenClass::StopPrint()
     SERIAL_EOL();
   #endif
 
+  IsParked = true;
   TFTstate = ANYCUBIC_TFT_STATE_SDSTOP_REQ;
 }
 
@@ -1367,7 +1368,6 @@ void AnycubicTouchscreenClass::StateHandler() {
         HARDWARE_SERIAL_PROTOCOLPGM("J16"); // J16 stop print
         HARDWARE_SERIAL_ENTER();
         if ((!card.isPrinting()) && (!planner.movesplanned())) {
-          queue.clear();
           TFTstate = ANYCUBIC_TFT_STATE_IDLE;
           #ifdef SDSUPPORT
              HARDWARE_SERIAL_PROTOCOLPGM("J16"); // J16 stop print
