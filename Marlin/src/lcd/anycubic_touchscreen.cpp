@@ -1177,17 +1177,22 @@ void AnycubicTouchscreenClass::PrintList() {
       else {
         card.selectFileByIndex(count - 1);
 
-        // Bugfix for non-printable special characters
-        // which are now replaced by underscores.
         int fileNameLen = strlen(card.longFilename);
+        bool fileNameWasCut = false;
 
         // Cut off too long filenames.
-        // They don't fit on the screen anyways.
-        //if (fileNameLen > MAX_PRINTABLE_FILENAME_LEN)
-        //  fileNameLen = MAX_PRINTABLE_FILENAME_LEN;
+        // They don't fit on the screen anyway.
+        #if ENABLED(KNUTWURST_DGUS2_TFT)
+          if (fileNameLen >= MAX_PRINTABLE_FILENAME_LEN) {
+            fileNameWasCut = true;
+            fileNameLen = MAX_PRINTABLE_FILENAME_LEN;
+          } 
+        #endif
 
         char outputString[fileNameLen];
 
+        // Bugfix for non-printable special characters
+        // which are now replaced by underscores.
         for (unsigned char i = 0; i <= fileNameLen; i++) {
           if (i >= fileNameLen) {
             outputString[i] = ' ';
@@ -1200,6 +1205,17 @@ void AnycubicTouchscreenClass::PrintList() {
           }
         }
 
+        // I know, it's ugly, but it's faster than a string lib
+        if(fileNameWasCut) {
+            outputString[fileNameLen-7] = '~';
+            outputString[fileNameLen-6] = '.';
+            outputString[fileNameLen-5] = 'g';
+            outputString[fileNameLen-4] = 'c';
+            outputString[fileNameLen-3] = 'o';
+            outputString[fileNameLen-2] = 'd';
+            outputString[fileNameLen-1] = 'e';
+        }
+
         outputString[fileNameLen] = '\0';
 
         if (card.flag.filenameIsDir) {
@@ -1210,20 +1226,16 @@ void AnycubicTouchscreenClass::PrintList() {
             HARDWARE_SERIAL_PROTOCOLPGM("/");
             HARDWARE_SERIAL_PROTOCOL(outputString);
             HARDWARE_SERIAL_PROTOCOLLNPGM(".gcode");
-            SERIAL_ECHO(count);
-            SERIAL_ECHOPGM(": /");
-            SERIAL_ECHOLN(outputString);
           #else
             HARDWARE_SERIAL_PROTOCOL("/");
             HARDWARE_SERIAL_PROTOCOLLN(card.filename);
             HARDWARE_SERIAL_PROTOCOL("/");
             HARDWARE_SERIAL_PROTOCOLLN(outputString);
-            SERIAL_ECHO(count);
-            SERIAL_ECHOPGM(": /");
-            SERIAL_ECHOLN(outputString);
           #endif
-        }
-        else {
+          SERIAL_ECHO(count);
+          SERIAL_ECHOPGM(": /");
+          SERIAL_ECHOLN(outputString);
+        } else {
           HARDWARE_SERIAL_PROTOCOLLN(card.filename);
           HARDWARE_SERIAL_PROTOCOLLN(outputString);
           SERIAL_ECHO(count);
