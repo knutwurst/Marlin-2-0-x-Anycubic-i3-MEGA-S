@@ -498,6 +498,10 @@ void AnycubicTouchscreenClass::PausePrint() {
 inline void AnycubicTouchscreenClass::StopPrint()
 {
   card.abortFilePrintSoon();
+
+  print_job_timer.stop();
+  thermalManager.disable_all_heaters();
+  thermalManager.zero_fan_speeds();
   
   #ifdef ANYCUBIC_TFT_DEBUG
     SERIAL_ECHOLNPGM("DEBUG: Stopped and cleared");
@@ -583,10 +587,6 @@ void AnycubicTouchscreenClass::ReheatNozzle() {
 }
 
 void AnycubicTouchscreenClass::ParkAfterStop(){
-  
-  print_job_timer.stop();
-  thermalManager.disable_all_heaters();
-  thermalManager.zero_fan_speeds();
 
   queue.enqueue_now_P(PSTR("M84")); // disable stepper motors
   queue.enqueue_now_P(PSTR("M27")); // force report of SD status
