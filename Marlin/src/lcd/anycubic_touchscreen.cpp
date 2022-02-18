@@ -918,7 +918,7 @@ void AnycubicTouchscreenClass::HandleSpecialMenu() {
         || (strcasestr_P(currentTouchscreenSelection, PSTR(SM_EZLVL_EXIT_S)) != NULL)) {
     SERIAL_ECHOLNPGM("Special Menu: Exit Easy Level Menu");
     LevelMenu = false;
-    queue.inject_P(PSTR("G90\nG1 Z10\nG1 X15 Y15 F4000"));
+    queue.inject_P(PSTR("G90\nG1 Z10\nG1 X15 Y15 F4000\nM420 S1"));
   }
 #endif
 }
