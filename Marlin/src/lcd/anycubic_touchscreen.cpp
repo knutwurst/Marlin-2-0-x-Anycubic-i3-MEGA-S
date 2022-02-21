@@ -2145,6 +2145,11 @@ void AnycubicTouchscreenClass::GetCommandFromTFT() {
             #endif
 
             #if ENABLED(KNUTWURST_4MAXP2)
+            case 40:
+                HARDWARE_SERIAL_PROTOCOLPGM("J17"); // J17 Main board reset
+                HARDWARE_SERIAL_ENTER();
+                delay(10);
+                break;
             case 41:
                 if(CodeSeen('O')) {
                   PrintdoneAndPowerOFF = true;
