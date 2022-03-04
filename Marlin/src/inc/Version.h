@@ -33,7 +33,7 @@
  * vendor name, download location, GitHub account, etc.
  */
 #ifndef DETAILED_BUILD_VERSION
-  #define DETAILED_BUILD_VERSION SHORT_BUILD_VERSION " (knutwurst, Github)" // PATCH: Knutwurst
+  #define DETAILED_BUILD_VERSION "2.0.9.2 (knutwurst, Github)" // PATCH: Knutwurst
 #endif
 
 /**
