@@ -46,7 +46,7 @@ char *ftostr32(const float &);
 #define TFTBUFSIZE 4
 #define TFT_MAX_CMD_SIZE 96
 #define MSG_MY_VERSION CUSTOM_BUILD_VERSION
-#define MAX_PRINTABLE_FILENAME_LEN 30
+#define MAX_PRINTABLE_FILENAME_LEN 26
 
 #if ENABLED(KNUTWURST_CHIRON)
   #define FILAMENT_RUNOUT_PIN 33
@@ -267,8 +267,9 @@ class AnycubicTouchscreenClass {
      * 1 - regular pause
      * 2 - M600 pause
      * 3 - filament runout pause
-     * 4 - nozzle timeout on M600
-     * 5 - nozzle timeout on filament runout
+     * 4 - nozzle timeout on regular pause   // OBSOLETE
+     * 5 - nozzle timeout on M600            // OBSOLETE
+     * 6 - nozzle timeout on filament runout // OBSOLETE
      */
      uint8_t ai3m_pause_state = 0;
 

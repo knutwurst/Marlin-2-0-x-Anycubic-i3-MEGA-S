@@ -19,7 +19,7 @@
  * along with this program.  If not, see <https://www.gnu.org/licenses/>.
  *
  */
-
+// PATCH START: KNUTWURST
 #include "../../inc/MarlinConfig.h"
 
 #if BOTH(ANYCUBIC_TFT_DEBUG, KNUTWURST_DGUS2_TFT)
@@ -38,3 +38,4 @@ void GcodeSuite::M9999() {
 }
 
 #endif
+// PATCH END: KNUTWURST

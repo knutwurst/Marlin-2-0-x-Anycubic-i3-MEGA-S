@@ -204,8 +204,8 @@
  * Currently Ethernet (-2) is only supported on Teensy 4.1 boards.
  * :[-2, -1, 0, 1, 2, 3, 4, 5, 6, 7]
  */
-//#define SERIAL_PORT_2 2  // For ESP8266
-//#define BAUDRATE_2 500000  // For ESP8266
+//#define SERIAL_PORT_2 2  // For ESP8266 WIFI Module
+//#define BAUDRATE_2 500000  // For ESP8266 WIFI Module
 
 /**
  * Select a third serial port on the board to use for communication with the host.
@@ -584,9 +584,9 @@
 #if ENABLED(ERCAN_MODS)
   #define TEMP_SENSOR_0 5
 #elif ENABLED(KNUTWURST_4MAXP2)
-  #define TEMP_SENSOR_0 1
+  #define TEMP_SENSOR_0 11
 #else
-  #define TEMP_SENSOR_0 5
+  #define TEMP_SENSOR_0 1
 #endif
 #define TEMP_SENSOR_1 0
 #define TEMP_SENSOR_2 0
@@ -595,7 +595,7 @@
 #define TEMP_SENSOR_5 0
 #define TEMP_SENSOR_6 0
 #define TEMP_SENSOR_7 0
-#if ENABLED(KNUTWURST_4MAXP2) // 4MAX has type 1
+#if ENABLED(KNUTWURST_4MAXP2)
   #define TEMP_SENSOR_BED 5
 #else
   #define TEMP_SENSOR_BED 1
@@ -698,9 +698,9 @@
                                   // Set/get with gcode: M301 E[extruder number, 0-2]
 
   #if ANY(KNUTWURST_MEGA, KNUTWURST_MEGA_S, KNUTWURST_MEGA_P)
-    #define  DEFAULT_Kp 15.94
-    #define  DEFAULT_Ki  1.17
-    #define  DEFAULT_Kd 54.19
+    #define  DEFAULT_Kp 12.28
+    #define  DEFAULT_Ki  0.75
+    #define  DEFAULT_Kd 50.06
   #endif
 
   #if ENABLED(KNUTWURST_MEGA_X)
@@ -1049,13 +1049,8 @@
   #define E0_DRIVER_TYPE TMC2208_STANDALONE
   #define E1_DRIVER_TYPE TMC2208_STANDALONE
 #else
-  #if ENABLED(KNUTWURST_MEGA_P)
-    #define X_DRIVER_TYPE  TMC2208_STANDALONE
-    #define Y_DRIVER_TYPE  TMC2208_STANDALONE
-  #else
-    #define X_DRIVER_TYPE  A4988
-    #define Y_DRIVER_TYPE  A4988
-  #endif
+  #define X_DRIVER_TYPE  A4988
+  #define Y_DRIVER_TYPE  A4988
   #define Z_DRIVER_TYPE  A4988
   #define E0_DRIVER_TYPE A4988
   #define E1_DRIVER_TYPE A4988
@@ -1142,38 +1137,38 @@
  */
 #if ENABLED(KNUTWURST_MEGA)
   #if ENABLED(KNUTWURST_BMG)
-    #define DEFAULT_MAX_FEEDRATE          { 500, 500, 6, 30 }
+    #define DEFAULT_MAX_FEEDRATE          { 500, 500, 6, 40 }
   #else
     #define DEFAULT_MAX_FEEDRATE          { 500, 500, 6, 80 }
   #endif
 #endif
 
 #if ENABLED(KNUTWURST_MEGA_S)
-  #define DEFAULT_MAX_FEEDRATE          { 500, 500, 6, 30 } // same feedrate for BMG
+  #define DEFAULT_MAX_FEEDRATE          { 500, 500, 6, 40 } // same feedrate for BMG
 #endif
 
 #if ENABLED(KNUTWURST_MEGA_X)
   #if ENABLED(KNUTWURST_BMG)
-    #define DEFAULT_MAX_FEEDRATE            { 120, 120, 12, 30 } // correct for BMG?
+    #define DEFAULT_MAX_FEEDRATE            { 120, 120, 12, 40 } // correct for BMG?
   #else
-    #define DEFAULT_MAX_FEEDRATE            { 120, 120, 12, 80 } // thanks to Simon Geis
+    #define DEFAULT_MAX_FEEDRATE            { 120, 120, 12, 60 } // thanks to Simon Geis
   #endif
 #endif
 
 #if ENABLED(KNUTWURST_MEGA_P)
-  #define DEFAULT_MAX_FEEDRATE          { 500, 500, 6, 30 }
+  #define DEFAULT_MAX_FEEDRATE          { 500, 500, 6, 40 }
 #endif
 
 #if ENABLED(KNUTWURST_CHIRON)
   #if ENABLED(KNUTWURST_BMG)
-    #define DEFAULT_MAX_FEEDRATE          { 100, 100, 20, 30 }
+    #define DEFAULT_MAX_FEEDRATE          { 100, 100, 20, 40 }
   #else
-    #define DEFAULT_MAX_FEEDRATE          { 100, 100, 20, 80 }
+    #define DEFAULT_MAX_FEEDRATE          { 100, 100, 20, 60 }
   #endif
 #endif
 
 #if ENABLED(KNUTWURST_4MAXP2)
-  #define DEFAULT_MAX_FEEDRATE          { 150, 150, 18, 30 }
+  #define DEFAULT_MAX_FEEDRATE          { 150, 150, 18, 80 }
 #endif
 
 
@@ -3490,7 +3485,7 @@
 // However, control resolution will be halved for each increment;
 // at zero value, there are 128 effective control positions.
 // :[0,1,2,3,4,5,6,7]
-#define SOFT_PWM_SCALE 0
+//#define SOFT_PWM_SCALE 2
 
 // If SOFT_PWM_SCALE is set to a value higher than 0, dithering can
 // be used to mitigate the associated resolution loss. If enabled,
