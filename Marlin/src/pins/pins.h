@@ -164,7 +164,7 @@
 #elif MB(TRIGORILLA_13)
   #include "ramps/pins_TRIGORILLA_13.h"         // ATmega2560                             env:mega2560
 #elif MB(TRIGORILLA_14, TRIGORILLA_14_11)
-  #include "ramps/pins_TRIGORILLA_14.h"         // ATmega2560                             env:mega2560
+  #include "ramps/pins_TRIGORILLA_14.h"         // ATmega2560                             env:mega2560 env:MEGA_1G env:MEGA_1G_TMC env:MEGA_1G_BLT_10 env:MEGA_1G_BLT_11 env:MEGA_1G_TMC_BLT_10 env:MEGA_1G_TMC_BLT_11 env:MEGA env:MEGA_TMC env:MEGA_BLT_10 env:MEGA_BLT_11 env:MEGA_TMC_BLT_10 env:MEGA_TMC_BLT_11 env:MEGA_S env:MEGA_S_TMC env:MEGA_S_BLT_10 env:MEGA_S_BLT_11 env:MEGA_S_TMC_BLT_10 env:MEGA_S_TMC_BLT_11 env:MEGA_S_DGUS env:MEGA_S_DGUS_TMC env:MEGA_S_DGUS_BLT_10 env:MEGA_S_DGUS_BLT_11 env:MEGA_S_DGUS_TMC_BLT_10 env:MEGA_S_DGUS_TMC_BLT_11 env:MEGA_X env:MEGA_X_TMC env:MEGA_X_BLT_10 env:MEGA_X_BLT_11 env:MEGA_X_TMC_BLT_10 env:MEGA_X_TMC_BLT_11 env:MEGA_X_DGUS env:MEGA_X_DGUS_TMC env:MEGA_X_DGUS_BLT_10 env:MEGA_X_DGUS_BLT_11 env:MEGA_X_DGUS_TMC_BLT_10 env:MEGA_X_DGUS_TMC_BLT_11 env:MEGA_P_DGUS env:MEGA_P_DGUS_TMC env:MEGA_P_DGUS_BLT_10 env:MEGA_P_DGUS_BLT_11 env:MEGA_P_DGUS_TMC_BLT_10 env:MEGA_P_DGUS_TMC_BLT_11 env:4MAXP2 env:4MAXP2_TMC env:4MAXP2_BLT_10 env:4MAXP2_BLT_11 env:4MAXP2_TMC_BLT_10 env:4MAXP2_TMC_BLT_11 env:4MAXP2_DGUS env:4MAXP2_DGUS_TMC env:4MAXP2_DGUS_BLT_10 env:4MAXP2_DGUS_BLT_11 env:4MAXP2_DGUS_TMC_BLT_10 env:4MAXP2_DGUS_TMC_BLT_11
 #elif MB(RAMPS_ENDER_4)
   #include "ramps/pins_RAMPS_ENDER_4.h"         // ATmega2560                             env:mega2560
 #elif MB(RAMPS_CREALITY)

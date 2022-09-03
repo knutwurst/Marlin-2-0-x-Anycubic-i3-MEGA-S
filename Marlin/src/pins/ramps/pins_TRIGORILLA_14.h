@@ -68,13 +68,13 @@
 // Heaters / Fans
 //
 #if ANY(FET_ORDER_EEF, FET_ORDER_EEB, FET_ORDER_EFB)
-#define FAN1_PIN                             7
+  #define FAN1_PIN                             7
 #endif
 #define FAN2_PIN                              44
 #ifndef E0_AUTO_FAN_PIN
   #define E0_AUTO_FAN_PIN                     44  // Used in Anycubic Kossel example config
 #endif
-#if ENABLED(ANYCUBIC_LCD_I3MEGA)
+#if ANY(ANYCUBIC_LCD_I3MEGA, KNUTWURST_MEGA, KNUTWURST_MEGA_S, KNUTWURST_MEGA_P, KNUTWURST_MEGA_X, KNUTWURST_4MAXP2, KNUTWURST_CHIRON)
   #define CONTROLLER_FAN_PIN                   7
 #endif
 
@@ -95,14 +95,14 @@
 #if ENABLED(ANYCUBIC_4_MAX_PRO_ENDSTOPS)
   #define X_MAX_PIN                           43
   #define Y_STOP_PIN                          19
-#elif EITHER(ANYCUBIC_LCD_CHIRON, ANYCUBIC_LCD_I3MEGA)
+#elif ANY(ANYCUBIC_LCD_CHIRON, ANYCUBIC_LCD_I3MEGA, KNUTWURST_MEGA, KNUTWURST_MEGA_S, KNUTWURST_MEGA_P, KNUTWURST_MEGA_X, KNUTWURST_4MAXP2, KNUTWURST_CHIRON)   // PATCH: Knutwurst
   #define Y_STOP_PIN                          42
   #define Z2_MIN_PIN                          43
   #ifndef Z_MIN_PROBE_PIN
     #define Z_MIN_PROBE_PIN                    2
   #endif
   #ifndef FIL_RUNOUT_PIN
-    #if ENABLED(ANYCUBIC_LCD_CHIRON)
+    #if EITHER(ANYCUBIC_LCD_CHIRON, KNUTWURST_CHIRON)   // PATCH: Knutwurst
       #define FIL_RUNOUT_PIN                  33
     #else
       #define FIL_RUNOUT_PIN                  19
