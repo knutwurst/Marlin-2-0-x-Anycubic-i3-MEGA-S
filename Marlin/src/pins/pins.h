@@ -67,9 +67,9 @@
 
 // Test the target within the included pins file
 #ifdef __MARLIN_DEPS__
-  #define NOT_TARGET(V...) 0
+  #define NOT_TARGET(V ...) 0
 #else
-  #define NOT_TARGET(V...) NONE(V)
+  #define NOT_TARGET(V ...) NONE(V)
 #endif
 
 //
@@ -205,7 +205,7 @@
   #include "ramps/pins_PXMALION_CORE_I3.h"      // ATmega2560                             env:mega2560
 // PATCH START: Knutwurst
 #elif MB(TRIGORILLA_CHIRON)
-  #include "ramps/pins_TRIGORILLA_CHIRON.h"     // ATmega2560                             env:mega2560
+  #include "ramps/pins_TRIGORILLA_CHIRON.h"     // ATmega2560                             env:mega2560 env:CHIRON env:CHIRON_TMC env:CHIRON_DGUS env:CHIRON_DGUS_TMC
 // PATCH END: Knutwurst
 
 //
@@ -263,7 +263,7 @@
   #include "mega/pins_GT2560_REV_B.h"           // ATmega2560                             env:mega2560
 #elif MB(GT2560_V4)
   #include "mega/pins_GT2560_V4.h"              // ATmega2560                             env:mega2560
-  #elif MB(GT2560_V4_A20)
+#elif MB(GT2560_V4_A20)
   #include "mega/pins_GT2560_V4_A20.h"          // ATmega2560                             env:mega2560
 #elif MB(GT2560_V3_MC2)
   #include "mega/pins_GT2560_V3_MC2.h"          // ATmega2560                             env:mega2560
@@ -777,7 +777,7 @@
 #elif MB(LINUX_RAMPS)
   #include "linux/pins_RAMPS_LINUX.h"           // Native or Simulation                   lin:linux_native mac:simulator_macos_debug mac:simulator_macos_release win:simulator_windows lin:simulator_linux_debug lin:simulator_linux_release
 
-#else
+#else // if MB(RAMPS_OLD)
 
   //
   // Obsolete or unknown board
@@ -858,7 +858,7 @@
   #elif MB(RAMPS_LONGER3D_LK4PRO)
     #error "BOARD_RAMPS_LONGER3D_LK4PRO is now BOARD_LONGER3D_LKx_PRO. Please update your configuration."
   #elif MB(BTT_SKR_V2_0)
-    #error "BOARD_BTT_SKR_V2_0 is now BOARD_BTT_SKR_V2_0_REV_A or BOARD_BTT_SKR_V2_0_REV_B. See https://bit.ly/3t5d9JQ for more information. Please update your configuration."
+    #error "BOARD_BTT_SKR_V2_0 is now BOARD_BTT_SKR_V2_0_REV_A or BOARD_BTT_SKR_V2_0_REV_B. See https:// bit.ly/3t5d9JQ for more information. Please update your configuration."
   #elif MB(TH3D_EZBOARD_LITE_V2)
     #error "BOARD_TH3D_EZBOARD_LITE_V2 is now BOARD_TH3D_EZBOARD_V2. Please update your configuration."
   #elif MB(BTT_SKR_SE_BX)
@@ -867,9 +867,9 @@
     #error "BOARD_MKS_MONSTER8 is now BOARD_MKS_MONSTER8_V1 or BOARD_MKS_MONSTER8_V2. Please update your configuration."
   #elif defined(MOTHERBOARD)
     #error "Unknown MOTHERBOARD value set in Configuration.h."
-  #else
+  #else // if MB(MKS_13)
     #error "MOTHERBOARD not defined! Use '#define MOTHERBOARD BOARD_...' in Configuration.h."
-  #endif
+  #endif // if MB(MKS_13)
 
   #undef BOARD_MKS_13
   #undef BOARD_TRIGORILLA
@@ -899,7 +899,7 @@
   #undef BOARD_BTT_SKR_SE_BX
   #undef BOARD_MKS_MONSTER8
 
-#endif
+#endif // if MB(RAMPS_OLD)
 
 //
 // Post-process pins according to configured settings

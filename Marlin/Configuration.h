@@ -1312,6 +1312,7 @@
   #define U_MAX_ENDSTOP_INVERTING false // Set to true to invert the logic of the endstop.
   #define V_MAX_ENDSTOP_INVERTING false // Set to true to invert the logic of the endstop.
   #define W_MAX_ENDSTOP_INVERTING false // Set to true to invert the logic of the endstop.
+  #define Z_MIN_PROBE_ENDSTOP_INVERTING false // Set to true to invert the logic of the probe.
 #endif // if ANY(KNUTWURST_MEGA, KNUTWURST_MEGA_S, KNUTWURST_MEGA_P, KNUTWURST_4MAXP2)
 
 // Enable this feature if all enabled endstop pins are interrupt-capable.

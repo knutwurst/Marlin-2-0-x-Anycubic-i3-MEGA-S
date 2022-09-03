@@ -55,7 +55,7 @@
     void restore_z_values() {
       uint16_t size  = z_values_size;
       int pos        = z_values_index;
-      uint8_t* value = (uint8_t*)&z_values;
+      uint8_t* value = (uint8_t*)&bedlevel.z_values;
       do {
         uint8_t c = eeprom_read_byte((unsigned char*)pos);
         *value = c;
@@ -114,10 +114,10 @@
         parser.seenval('R') ? RAW_X_POSITION(parser.value_linear_units()) : x_max,
         parser.seenval('B') ? RAW_Y_POSITION(parser.value_linear_units()) : y_max
         );
-      bilinear_grid_spacing.set((probe_position_rb.x - probe_position_lf.x) / (abl_grid_points.x - 1),
+      LevelingBilinear::grid_spacing.set((probe_position_rb.x - probe_position_lf.x) / (abl_grid_points.x - 1),
         (probe_position_rb.y - probe_position_lf.y) / (abl_grid_points.y - 1));
 
-      bilinear_start = probe_position_lf;
+      LevelingBilinear::grid_start = probe_position_lf;
       // Can't re-enable (on error) until the new grid is written
       set_bed_leveling_enabled(false);
 
@@ -125,8 +125,8 @@
       probe.offset.z = dpo[Z_AXIS];
 
       for (uint8_t x = 0; x < GRID_MAX_POINTS_X; x++)
-        for (uint8_t y = 0; y < GRID_MAX_POINTS_Y; y++) z_values[x][y] = float(-1.0);
-      refresh_bed_level();
+        for (uint8_t y = 0; y < GRID_MAX_POINTS_Y; y++) bedlevel.z_values[x][y] = float(-1.0);
+      bedlevel.refresh_bed_level();
       set_bed_leveling_enabled(true);
     }
   #endif // if ENABLED(KNUTWURST_TFT_LEVELING)
@@ -2020,7 +2020,7 @@
                       if (CodeSeen('X')) mx = CodeValueInt();
                       if (CodeSeen('Y')) my = CodeValueInt();
 
-                      float Zvalue = z_values[mx][my];
+                      float Zvalue = bedlevel.z_values[mx][my];
                       Zvalue = Zvalue * 100;
 
                       if ((!planner.movesplanned()) && (TFTstate != ANYCUBIC_TFT_STATE_SDPAUSE) && (TFTstate != ANYCUBIC_TFT_STATE_SDOUTAGE)) {
@@ -2041,9 +2041,9 @@
                           // SERIAL_ECHOLNPGM("Z Up");
                           setAxisPosition_mm(5.0, Z);
                           // report_current_position();
-                          setAxisPosition_mm(_GET_MESH_X(mx), X);
+                          setAxisPosition_mm(LevelingBilinear::get_mesh_x(mx), X);
                           // report_current_position();
-                          setAxisPosition_mm(_GET_MESH_Y(my), Y);
+                          setAxisPosition_mm(LevelingBilinear::get_mesh_y(my), Y);
                           // report_current_position();
                           setAxisPosition_mm(EXT_LEVEL_HIGH, Z);
 
@@ -2073,9 +2073,9 @@
                         float value = constrain(CodeValue(), -1.0, 1.0);
                         probe.offset.z += value;
                         for (x = 0; x < GRID_MAX_POINTS_X; x++)
-                          for (y = 0; y < GRID_MAX_POINTS_Y; y++) z_values[x][y] += value;
+                          for (y = 0; y < GRID_MAX_POINTS_Y; y++) bedlevel.z_values[x][y] += value;
                         set_bed_leveling_enabled(true);
-                        refresh_bed_level();
+                        bedlevel.refresh_bed_level();
 
                         HARDWARE_SERIAL_PROTOCOLPGM("A31V ");
                         HARDWARE_SERIAL_PROTOCOL_F(float(probe.offset.z), 2);
@@ -2093,7 +2093,7 @@
                         SAVE_zprobe_zoffset = probe.offset.z;
                         settings.save();
                         set_bed_leveling_enabled(true);
-                        refresh_bed_level();
+                        bedlevel.refresh_bed_level();
                       }
                       HARDWARE_SERIAL_ENTER();
                       break;
@@ -2114,12 +2114,12 @@
 
                       if (CodeSeen('V')) {
                         float new_z_value = float(constrain(CodeValue() / 100, -10, 10));
-                        z_values[x][y] = new_z_value;
+                        bedlevel.z_values[x][y] = new_z_value;
                         set_bed_leveling_enabled(true);
-                        refresh_bed_level();
+                        bedlevel.refresh_bed_level();
                       }
                       if (CodeSeen('S')) {
-                        refresh_bed_level();
+                        bedlevel.refresh_bed_level();
                         set_bed_leveling_enabled(true);
                         settings.save();
                       }
@@ -2127,7 +2127,7 @@
                         restore_z_values();
                         probe.offset.z = SAVE_zprobe_zoffset;
                         set_bed_leveling_enabled(true);
-                        refresh_bed_level();
+                        bedlevel.refresh_bed_level();
                       }
                     }
                     break;
