@@ -43,7 +43,7 @@ enum processID : uint8_t {
 enum PopupID : uint8_t {
   Pause, Stop, Resume, SaveLevel, ETemp, ConfFilChange, PurgeMore, MeshSlot,
   Level, Home, MoveWait, Heating,  FilLoad, FilChange, TempWarn, Runout, PIDWait, Resuming, ManualProbing,
-  FilInsert, HeaterTime, UserInput, LevelError, InvalidMesh, UI, Complete
+  FilInsert, HeaterTime, UserInput, LevelError, InvalidMesh, UI, Complete, Custom
 };
 
 enum menuID : uint8_t {
@@ -55,16 +55,16 @@ enum menuID : uint8_t {
       ZOffset,
       Preheat,
       ChangeFilament,
+      MenuCustom,
     Control,
       TempMenu,
         PID,
           HotendPID,
           BedPID,
-        Preheat1,
-        Preheat2,
-        Preheat3,
-        Preheat4,
-        Preheat5,
+        #if HAS_PREHEAT
+          #define _PREHEAT_ID(N) Preheat##N,
+          REPEAT_1(PREHEAT_COUNT, _PREHEAT_ID)
+        #endif
       Motion,
         HomeOffsets,
         MaxSpeed,
@@ -175,7 +175,9 @@ public:
   static uint16_t GetColor(uint8_t color, uint16_t original, bool light=false);
   static void Draw_Checkbox(uint8_t row, bool value);
   static void Draw_Title(const char * title);
+  static void Draw_Title(FSTR_P const title);
   static void Draw_Menu_Item(uint8_t row, uint8_t icon=0, const char * const label1=nullptr, const char * const label2=nullptr, bool more=false, bool centered=false);
+  static void Draw_Menu_Item(uint8_t row, uint8_t icon=0, FSTR_P const flabel1=nullptr, FSTR_P const flabel2=nullptr, bool more=false, bool centered=false);
   static void Draw_Menu(uint8_t menu, uint8_t select=0, uint8_t scroll=0);
   static void Redraw_Menu(bool lastprocess=true, bool lastselection=false, bool lastmenu=false);
   static void Redraw_Screen();
@@ -194,7 +196,7 @@ public:
   static void Draw_SD_Item(uint8_t item, uint8_t row);
   static void Draw_SD_List(bool removed=false);
   static void Draw_Status_Area(bool icons=false);
-  static void Draw_Popup(PGM_P const line1, PGM_P const line2, PGM_P const line3, uint8_t mode, uint8_t icon=0);
+  static void Draw_Popup(FSTR_P const line1, FSTR_P const line2, FSTR_P const line3, uint8_t mode, uint8_t icon=0);
   static void Popup_Select();
   static void Update_Status_Bar(bool refresh=false);
 
@@ -203,7 +205,7 @@ public:
     static void Set_Mesh_Viewer_Status();
   #endif
 
-  static const char * Get_Menu_Title(uint8_t menu);
+  static FSTR_P Get_Menu_Title(uint8_t menu);
   static uint8_t Get_Menu_Size(uint8_t menu);
   static void Menu_Item_Handler(uint8_t menu, uint8_t item, bool draw=true);
 

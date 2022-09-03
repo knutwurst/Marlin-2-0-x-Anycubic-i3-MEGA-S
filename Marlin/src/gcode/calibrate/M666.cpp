@@ -44,8 +44,8 @@
   void GcodeSuite::M666() {
     DEBUG_SECTION(log_M666, "M666", DEBUGGING(LEVELING));
     bool is_err = false, is_set = false;
-    LOOP_LINEAR_AXES(i) {
-      if (parser.seen(AXIS_CHAR(i))) {
+    LOOP_NUM_AXES(i) {
+      if (parser.seenval(AXIS_CHAR(i))) {
         is_set = true;
         const float v = parser.value_linear_units();
         if (v > 0)
@@ -61,7 +61,7 @@
   }
 
   void GcodeSuite::M666_report(const bool forReplay/*=true*/) {
-    report_heading_etc(forReplay, PSTR(STR_ENDSTOP_ADJUSTMENT));
+    report_heading_etc(forReplay, F(STR_ENDSTOP_ADJUSTMENT));
     SERIAL_ECHOLNPGM_P(
         PSTR("  M666 X"), LINEAR_UNIT(delta_endstop_adj.a)
       , SP_Y_STR, LINEAR_UNIT(delta_endstop_adj.b)
@@ -93,19 +93,19 @@
     #if ENABLED(Z_MULTI_ENDSTOPS)
       if (parser.seenval('Z')) {
         const float z_adj = parser.value_linear_units();
-        #if NUM_Z_STEPPER_DRIVERS == 2
+        #if NUM_Z_STEPPERS == 2
           endstops.z2_endstop_adj = z_adj;
         #else
           const int ind = parser.intval('S');
           #define _SET_ZADJ(N) if (!ind || ind == N) endstops.z##N##_endstop_adj = z_adj;
-          REPEAT_S(2, INCREMENT(NUM_Z_STEPPER_DRIVERS), _SET_ZADJ)
+          REPEAT_S(2, INCREMENT(NUM_Z_STEPPERS), _SET_ZADJ)
         #endif
       }
     #endif
   }
 
   void GcodeSuite::M666_report(const bool forReplay/*=true*/) {
-    report_heading_etc(forReplay, PSTR(STR_ENDSTOP_ADJUSTMENT));
+    report_heading_etc(forReplay, F(STR_ENDSTOP_ADJUSTMENT));
     SERIAL_ECHOPGM("  M666");
     #if ENABLED(X_DUAL_ENDSTOPS)
       SERIAL_ECHOLNPGM_P(SP_X_STR, LINEAR_UNIT(endstops.x2_endstop_adj));
@@ -114,11 +114,11 @@
       SERIAL_ECHOLNPGM_P(SP_Y_STR, LINEAR_UNIT(endstops.y2_endstop_adj));
     #endif
     #if ENABLED(Z_MULTI_ENDSTOPS)
-      #if NUM_Z_STEPPER_DRIVERS >= 3
+      #if NUM_Z_STEPPERS >= 3
         SERIAL_ECHOPGM(" S2 Z", LINEAR_UNIT(endstops.z3_endstop_adj));
         report_echo_start(forReplay);
         SERIAL_ECHOPGM("  M666 S3 Z", LINEAR_UNIT(endstops.z3_endstop_adj));
-        #if NUM_Z_STEPPER_DRIVERS >= 4
+        #if NUM_Z_STEPPERS >= 4
           report_echo_start(forReplay);
           SERIAL_ECHOPGM("  M666 S4 Z", LINEAR_UNIT(endstops.z4_endstop_adj));
         #endif

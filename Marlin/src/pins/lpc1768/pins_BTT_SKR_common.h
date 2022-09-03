@@ -134,8 +134,8 @@
   #define SD_SCK_PIN                       P0_15
   #define SD_MISO_PIN                      P0_17
   #define SD_MOSI_PIN                      P0_18
-  #define SD_SS_PIN                  EXP2_07_PIN
-  #define SD_DETECT_PIN              EXP2_04_PIN
+  #define SD_SS_PIN                  EXP2_04_PIN
+  #define SD_DETECT_PIN              EXP2_07_PIN
 
 #elif SD_CONNECTION_IS(ONBOARD)
   #undef SD_DETECT_PIN
@@ -150,59 +150,60 @@
 #endif
 
 #if ENABLED(BTT_MOTOR_EXPANSION)
-  /**       ------                       ------
-   *    NC | 1  2 | GND              NC | 1  2 | GND
-   *    NC | 3  4 | M1EN           M2EN | 3  4 | M3EN
-   * M1STP | 5  6   M1DIR          M1RX | 5  6   M1DIAG
-   * M2DIR | 7  8 | M2STP          M2RX | 7  8 | M2DIAG
-   * M3DIR | 9 10 | M3STP          M3RX | 9 10 | M3DIAG
-   *        ------                       ------
-   *         EXP2                         EXP1
+  /**
+   *          ------                       ------
+   * (M3STP) | 1  2 | (M3DIR)    (M3DIAG) | 1  2 | (M3RX)
+   * (M2STP) | 3  4 | (M2DIR)    (M2DIAG) | 3  4 | (M2RX)
+   * (M1DIR)   5  6 | (M1STP)    (M1DIAG)   5  6 | (M1RX)
+   *  (M1EN) | 7  8 | --           (M3EN) | 7  8 | (M2EN)
+   *     GND | 9 10 | --              GND | 9 10 | --
+   *          ------                       ------
+   *           EXP2                         EXP1
    *
    * NB In EXP_MOT_USE_EXP2_ONLY mode EXP1 is not used and M2EN and M3EN need to be jumpered to M1EN
    */
 
   // M1 on Driver Expansion Module
-  #define E2_STEP_PIN                EXP2_05_PIN
-  #define E2_DIR_PIN                 EXP2_06_PIN
-  #define E2_ENABLE_PIN              EXP2_04_PIN
+  #define E2_STEP_PIN                EXP2_06_PIN
+  #define E2_DIR_PIN                 EXP2_05_PIN
+  #define E2_ENABLE_PIN              EXP2_07_PIN
   #if !EXP_MOT_USE_EXP2_ONLY
-    #define E2_DIAG_PIN              EXP1_06_PIN
-    #define E2_CS_PIN                EXP1_05_PIN
+    #define E2_DIAG_PIN              EXP1_05_PIN
+    #define E2_CS_PIN                EXP1_06_PIN
     #if HAS_TMC_UART
-      #define E2_SERIAL_TX_PIN       EXP1_05_PIN
+      #define E2_SERIAL_TX_PIN       EXP1_06_PIN
       #define E2_SERIAL_RX_PIN  E2_SERIAL_TX_PIN
     #endif
   #endif
 
   // M2 on Driver Expansion Module
-  #define E3_STEP_PIN                EXP2_08_PIN
-  #define E3_DIR_PIN                 EXP2_07_PIN
+  #define E3_STEP_PIN                EXP2_03_PIN
+  #define E3_DIR_PIN                 EXP2_04_PIN
   #if !EXP_MOT_USE_EXP2_ONLY
-    #define E3_ENABLE_PIN            EXP1_03_PIN
-    #define E3_DIAG_PIN              EXP1_08_PIN
-    #define E3_CS_PIN                EXP1_07_PIN
+    #define E3_ENABLE_PIN            EXP1_08_PIN
+    #define E3_DIAG_PIN              EXP1_03_PIN
+    #define E3_CS_PIN                EXP1_04_PIN
     #if HAS_TMC_UART
-      #define E3_SERIAL_TX_PIN       EXP1_07_PIN
+      #define E3_SERIAL_TX_PIN       EXP1_04_PIN
       #define E3_SERIAL_RX_PIN  E3_SERIAL_TX_PIN
     #endif
   #else
-    #define E3_ENABLE_PIN            EXP2_04_PIN
+    #define E3_ENABLE_PIN            EXP2_07_PIN
   #endif
 
   // M3 on Driver Expansion Module
-  #define E4_STEP_PIN                EXP2_10_PIN
-  #define E4_DIR_PIN                 EXP2_09_PIN
+  #define E4_STEP_PIN                EXP2_01_PIN
+  #define E4_DIR_PIN                 EXP2_02_PIN
   #if !EXP_MOT_USE_EXP2_ONLY
-    #define E4_ENABLE_PIN            EXP1_04_PIN
-    #define E4_DIAG_PIN              EXP1_10_PIN
-    #define E4_CS_PIN                EXP1_09_PIN
+    #define E4_ENABLE_PIN            EXP1_07_PIN
+    #define E4_DIAG_PIN              EXP1_01_PIN
+    #define E4_CS_PIN                EXP1_02_PIN
     #if HAS_TMC_UART
-      #define E4_SERIAL_TX_PIN       EXP1_09_PIN
+      #define E4_SERIAL_TX_PIN       EXP1_02_PIN
       #define E4_SERIAL_RX_PIN  E4_SERIAL_TX_PIN
     #endif
   #else
-    #define E4_ENABLE_PIN            EXP2_04_PIN
+    #define E4_ENABLE_PIN            EXP2_07_PIN
   #endif
 
 #endif // BTT_MOTOR_EXPANSION

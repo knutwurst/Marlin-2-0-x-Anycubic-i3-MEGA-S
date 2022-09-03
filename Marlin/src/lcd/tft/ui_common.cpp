@@ -96,18 +96,17 @@ void lcd_moveto(const lcd_uint_t col, const lcd_uint_t row) {
   lcd_gotopixel(int(col) * (TFT_COL_WIDTH), int(row) * MENU_LINE_HEIGHT);
 }
 
-int lcd_put_wchar_max(wchar_t c, pixel_len_t max_length) {
+int lcd_put_lchar_max(const lchar_t &c, const pixel_len_t max_length) {
   if (max_length < 1) return 0;
-  tft_string.set();
-  tft_string.add(c);
+  tft_string.set(c);
   tft.add_text(MENU_TEXT_X_OFFSET, MENU_TEXT_Y_OFFSET, COLOR_MENU_TEXT, tft_string);
   lcd_gotopixel((cursor.x + 1) * (TFT_COL_WIDTH) + tft_string.width(), cursor.y * MENU_LINE_HEIGHT);
   return tft_string.width();
 }
 
-int lcd_put_u8str_max_P(PGM_P utf8_str_P, pixel_len_t max_length) {
+int lcd_put_u8str_max_P(PGM_P utf8_pstr, const pixel_len_t max_length) {
   if (max_length < 1) return 0;
-  tft_string.set(utf8_str_P);
+  tft_string.set(utf8_pstr);
   tft_string.trim();
   tft_string.truncate(max_length);
   tft.add_text(MENU_TEXT_X_OFFSET, MENU_TEXT_Y_OFFSET, COLOR_MENU_TEXT, tft_string);
@@ -115,7 +114,7 @@ int lcd_put_u8str_max_P(PGM_P utf8_str_P, pixel_len_t max_length) {
   return tft_string.width();
 }
 
-int lcd_put_u8str_max(const char * utf8_str, pixel_len_t max_length) {
+int lcd_put_u8str_max(const char * utf8_str, const pixel_len_t max_length) {
   return lcd_put_u8str_max_P(utf8_str, max_length);
 }
 
@@ -130,10 +129,10 @@ void lcd_put_int(const int i) {
 //
 
 // Draw a generic menu item with pre_char (if selected) and post_char
-void MenuItemBase::_draw(const bool sel, const uint8_t row, PGM_P const pstr, const char pre_char, const char post_char) {
+void MenuItemBase::_draw(const bool sel, const uint8_t row, FSTR_P const fstr, const char pre_char, const char post_char) {
   menu_item(row, sel);
 
-  uint8_t *string = (uint8_t *)pstr;
+  const char *string = FTOP(fstr);
   MarlinImage image = noImage;
   switch (*string) {
     case 0x01: image = imgRefresh; break;  // LCD_STR_REFRESH
@@ -147,38 +146,38 @@ void MenuItemBase::_draw(const bool sel, const uint8_t row, PGM_P const pstr, co
     tft.add_image(MENU_ITEM_ICON_X, MENU_ITEM_ICON_Y, image, COLOR_MENU_TEXT, sel ? COLOR_SELECTION_BG : COLOR_BACKGROUND);
   }
 
-  tft_string.set(string, itemIndex, itemString);
+  tft_string.set(string, itemIndex, itemStringC, itemStringF);
+
   tft.add_text(offset, MENU_TEXT_Y_OFFSET, COLOR_MENU_TEXT, tft_string);
 }
 
 // Draw a menu item with a (potentially) editable value
-void MenuEditItemBase::draw(const bool sel, const uint8_t row, PGM_P const pstr, const char * const data, const bool pgm) {
+void MenuEditItemBase::draw(const bool sel, const uint8_t row, FSTR_P const fstr, const char * const inStr, const bool pgm) {
   menu_item(row, sel);
 
-  tft_string.set(pstr, itemIndex, itemString);
+  tft_string.set(fstr, itemIndex, itemStringC, itemStringF);
   tft.add_text(MENU_TEXT_X_OFFSET, MENU_TEXT_Y_OFFSET, COLOR_MENU_TEXT, tft_string);
-  if (data) {
-    tft_string.set(data);
+  if (inStr) {
+    tft_string.set(inStr);
     tft.add_text(TFT_WIDTH - MENU_TEXT_X_OFFSET - tft_string.width(), MENU_TEXT_Y_OFFSET, COLOR_MENU_VALUE, tft_string);
   }
 }
 
 // Draw a static item with no left-right margin required. Centered by default.
-void MenuItem_static::draw(const uint8_t row, PGM_P const pstr, const uint8_t style/*=SS_DEFAULT*/, const char * const vstr/*=nullptr*/) {
+void MenuItem_static::draw(const uint8_t row, FSTR_P const fstr, const uint8_t style/*=SS_DEFAULT*/, const char * const vstr/*=nullptr*/) {
   menu_item(row);
-  tft_string.set(pstr, itemIndex, itemString);
-  if (vstr)
-    tft_string.add(vstr);
+  tft_string.set(fstr, itemIndex, itemStringC, itemStringF);
+  if (vstr) tft_string.add(vstr);
   tft.add_text(tft_string.center(TFT_WIDTH), MENU_TEXT_Y_OFFSET, COLOR_YELLOW, tft_string);
 }
 
 #if ENABLED(SDSUPPORT)
 
-  void MenuItem_sdbase::draw(const bool sel, const uint8_t row, PGM_P const, CardReader &theCard, const bool isDir) {
+  void MenuItem_sdbase::draw(const bool sel, const uint8_t row, FSTR_P const, CardReader &theCard, const bool isDir) {
     menu_item(row, sel);
-    if (isDir)
-      tft.add_image(MENU_ITEM_ICON_X, MENU_ITEM_ICON_Y, imgDirectory, COLOR_MENU_TEXT, sel ? COLOR_SELECTION_BG : COLOR_BACKGROUND);
-    tft.add_text(MENU_ITEM_ICON_SPACE, MENU_TEXT_Y_OFFSET, COLOR_MENU_TEXT, theCard.longest_filename());
+    if (isDir) tft.add_image(MENU_ITEM_ICON_X, MENU_ITEM_ICON_Y, imgDirectory, COLOR_MENU_TEXT, sel ? COLOR_SELECTION_BG : COLOR_BACKGROUND);
+    constexpr uint8_t maxlen = (MENU_ITEM_HEIGHT) - (MENU_TEXT_Y_OFFSET) + 1;
+    tft.add_text(MENU_ITEM_ICON_SPACE, MENU_TEXT_Y_OFFSET, COLOR_MENU_TEXT, ui.scrolled_filename(theCard, maxlen, row, sel));
   }
 
 #endif
@@ -211,12 +210,14 @@ void MarlinUI::clear_lcd() {
 }
 
 #if HAS_LCD_BRIGHTNESS
+
   void MarlinUI::_set_brightness() {
     #if PIN_EXISTS(TFT_BACKLIGHT)
       if (PWM_PIN(TFT_BACKLIGHT_PIN))
-        analogWrite(pin_t(TFT_BACKLIGHT_PIN), brightness);
+        analogWrite(pin_t(TFT_BACKLIGHT_PIN), backlight ? brightness : 0);
     #endif
   }
+
 #endif
 
 #if ENABLED(TOUCH_SCREEN_CALIBRATION)

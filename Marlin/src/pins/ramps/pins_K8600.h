@@ -25,8 +25,8 @@
  * VERTEX NANO Arduino Mega with RAMPS EFB v1.4 pin assignments.
  */
 
-#if HOTENDS > 1
-  #error "Only 1 hotend is supported for Vertex Nano."
+#if HAS_MULTI_HOTEND
+  #error "K8600 only supports 1 hotend / E stepper."
 #endif
 
 #define BOARD_INFO_NAME      "K8600"
@@ -59,7 +59,6 @@
 //
 // Other RAMPS pins
 //
-#define IS_RAMPS_EFB                              // Override autodetection. Bed will be undefined.
 #include "pins_RAMPS.h"
 
 //
@@ -70,7 +69,7 @@
 //
 // LCD / Controller
 //
-#if IS_ULTRA_LCD && IS_NEWPANEL
+#if HAS_WIRED_LCD && IS_NEWPANEL
   #undef BEEPER_PIN
 
   #undef LCD_PINS_RS

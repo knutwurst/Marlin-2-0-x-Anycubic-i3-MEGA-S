@@ -28,7 +28,7 @@
 
 #if ENABLED(TOUCH_UI_PORTRAIT)
   #define GRID_COLS  6
-  #define GRID_ROWS  15
+  #define GRID_ROWS 15
   #define FILES_PER_PAGE 11
   #define PREV_DIR LEFT
   #define NEXT_DIR RIGHT
@@ -40,7 +40,7 @@
   #define BTN1_POS BTN_POS(1,14), BTN_SIZE(3,2)
   #define BTN2_POS BTN_POS(4,14), BTN_SIZE(3,2)
 #else
-  #define GRID_COLS  12
+  #define GRID_COLS 12
   #define GRID_ROWS  8
   #define FILES_PER_PAGE 6
   #define PREV_DIR UP
@@ -77,7 +77,7 @@ const char *FilesScreen::getSelectedFilename(bool shortName) {
 }
 
 void FilesScreen::drawSelectedFile() {
-  if(mydata.selected_tag == 0xFF) return;
+  if (mydata.selected_tag == 0xFF) return;
   FileList files;
   files.seek(getSelectedFileIndex(), true);
   mydata.flags.is_dir = files.isDir();
@@ -111,16 +111,17 @@ void FilesScreen::drawFileButton(int x, int y, int w, int h, const char *filenam
   cmd.cmd(COLOR_RGB(is_highlighted ? fg_action : bg_color));
   cmd.font(font_medium).rectangle(bx, by, bw, bh);
   cmd.cmd(COLOR_RGB(is_highlighted ? normal_btn.rgb : bg_text_enabled));
-  #if ENABLED(SCROLL_LONG_FILENAMES)
-    if (is_highlighted) {
+  if (TERN0(SCROLL_LONG_FILENAMES, is_highlighted)) {
+    #if ENABLED(SCROLL_LONG_FILENAMES)
       cmd.cmd(SAVE_CONTEXT());
       cmd.cmd(SCISSOR_XY(x,y));
       cmd.cmd(SCISSOR_SIZE(w,h));
       cmd.cmd(MACRO(0));
       cmd.text(bx, by, bw, bh, filename, OPT_CENTERY | OPT_NOFIT);
-    } else
-  #endif
-  draw_text_with_ellipsis(cmd, bx,by, bw - (is_dir ? 20 : 0), bh, filename, OPT_CENTERY, font_medium);
+    #endif
+  }
+  else
+    draw_text_with_ellipsis(cmd, bx,by, bw - (is_dir ? 20 : 0), bh, filename, OPT_CENTERY, font_medium);
   if (is_dir && !is_highlighted) cmd.text(bx, by, bw, bh, F("> "),  OPT_CENTERY | OPT_RIGHTX);
   #if ENABLED(SCROLL_LONG_FILENAMES)
     if (is_highlighted) cmd.cmd(RESTORE_CONTEXT());

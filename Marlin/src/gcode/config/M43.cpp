@@ -65,12 +65,12 @@ inline void toggle_pins() {
     pin_t pin = GET_PIN_MAP_PIN_M43(i);
     if (!VALID_PIN(pin)) continue;
     if (M43_NEVER_TOUCH(i) || (!ignore_protection && pin_is_protected(pin))) {
-      report_pin_state_extended(pin, ignore_protection, true, PSTR("Untouched "));
+      report_pin_state_extended(pin, ignore_protection, true, F("Untouched "));
       SERIAL_EOL();
     }
     else {
-      watchdog_refresh();
-      report_pin_state_extended(pin, ignore_protection, true, PSTR("Pulsing   "));
+      hal.watchdog_refresh();
+      report_pin_state_extended(pin, ignore_protection, true, F("Pulsing   "));
       #ifdef __STM32F1__
         const auto prior_mode = _GET_MODE(i);
       #else
@@ -98,10 +98,10 @@ inline void toggle_pins() {
       {
         pinMode(pin, OUTPUT);
         for (int16_t j = 0; j < repeat; j++) {
-          watchdog_refresh(); extDigitalWrite(pin, 0); safe_delay(wait);
-          watchdog_refresh(); extDigitalWrite(pin, 1); safe_delay(wait);
-          watchdog_refresh(); extDigitalWrite(pin, 0); safe_delay(wait);
-          watchdog_refresh();
+          hal.watchdog_refresh(); extDigitalWrite(pin, 0); safe_delay(wait);
+          hal.watchdog_refresh(); extDigitalWrite(pin, 1); safe_delay(wait);
+          hal.watchdog_refresh(); extDigitalWrite(pin, 0); safe_delay(wait);
+          hal.watchdog_refresh();
         }
       }
       #ifdef __STM32F1__
@@ -198,10 +198,10 @@ inline void servo_probe_test() {
       uint8_t i = 0;
       SERIAL_ECHOLNPGM(". Deploy & stow 4 times");
       do {
-        MOVE_SERVO(probe_index, servo_angles[Z_PROBE_SERVO_NR][0]); // Deploy
+        servo[probe_index].move(servo_angles[Z_PROBE_SERVO_NR][0]); // Deploy
         safe_delay(500);
         deploy_state = READ(PROBE_TEST_PIN);
-        MOVE_SERVO(probe_index, servo_angles[Z_PROBE_SERVO_NR][1]); // Stow
+        servo[probe_index].move(servo_angles[Z_PROBE_SERVO_NR][1]); // Stow
         safe_delay(500);
         stow_state = READ(PROBE_TEST_PIN);
       } while (++i < 4);
@@ -226,7 +226,7 @@ inline void servo_probe_test() {
     }
 
     // Ask the user for a trigger event and measure the pulse width.
-    MOVE_SERVO(probe_index, servo_angles[Z_PROBE_SERVO_NR][0]); // Deploy
+    servo[probe_index].move(servo_angles[Z_PROBE_SERVO_NR][0]); // Deploy
     safe_delay(500);
     SERIAL_ECHOLNPGM("** Please trigger probe within 30 sec **");
     uint16_t probe_counter = 0;
@@ -256,7 +256,7 @@ inline void servo_probe_test() {
         }
         else SERIAL_ECHOLNPGM("FAIL: Noise detected - please re-run test");
 
-        MOVE_SERVO(probe_index, servo_angles[Z_PROBE_SERVO_NR][1]); // Stow
+        servo[probe_index].move(servo_angles[Z_PROBE_SERVO_NR][1]); // Stow
         return;
       }
     }
@@ -303,7 +303,7 @@ void GcodeSuite::M43() {
   if (parser.seen('E')) {
     endstops.monitor_flag = parser.value_bool();
     SERIAL_ECHOPGM("endstop monitor ");
-    SERIAL_ECHOPGM_P(endstops.monitor_flag ? PSTR("en") : PSTR("dis"));
+    SERIAL_ECHOF(endstops.monitor_flag ? F("en") : F("dis"));
     SERIAL_ECHOLNPGM("abled");
     return;
   }
@@ -313,7 +313,7 @@ void GcodeSuite::M43() {
 
   // 'P' Get the range of pins to test or watch
   uint8_t first_pin = PARSED_PIN_INDEX('P', 0),
-          last_pin = parser.seenval('P') ? first_pin : NUMBER_PINS_TOTAL - 1;
+          last_pin = parser.seenval('P') ? first_pin : TERN(HAS_HIGH_ANALOG_PINS, NUM_DIGITAL_PINS, NUMBER_PINS_TOTAL) - 1;
 
   if (first_pin > last_pin) return;
 
@@ -333,19 +333,19 @@ void GcodeSuite::M43() {
       if (M43_NEVER_TOUCH(i) || (!ignore_protection && pin_is_protected(pin))) continue;
       pinMode(pin, INPUT_PULLUP);
       delay(1);
-        /*
-        if (IS_ANALOG(pin))
-          pin_state[pin - first_pin] = analogRead(DIGITAL_PIN_TO_ANALOG_PIN(pin)); // int16_t pin_state[...]
-        else
-        //*/
-          pin_state[i - first_pin] = extDigitalRead(pin);
+      /*
+      if (IS_ANALOG(pin))
+        pin_state[pin - first_pin] = analogRead(DIGITAL_PIN_TO_ANALOG_PIN(pin)); // int16_t pin_state[...]
+      else
+      //*/
+        pin_state[i - first_pin] = extDigitalRead(pin);
     }
 
     #if HAS_RESUME_CONTINUE
       KEEPALIVE_STATE(PAUSED_FOR_USER);
       wait_for_user = true;
-      TERN_(HOST_PROMPT_SUPPORT, host_prompt_do(PROMPT_USER_CONTINUE, PSTR("M43 Wait Called"), CONTINUE_STR));
-      TERN_(EXTENSIBLE_UI, ExtUI::onUserConfirmRequired_P(PSTR("M43 Wait Called")));
+      TERN_(HOST_PROMPT_SUPPORT, hostui.prompt_do(PROMPT_USER_CONTINUE, F("M43 Wait Called"), FPSTR(CONTINUE_STR)));
+      TERN_(EXTENSIBLE_UI, ExtUI::onUserConfirmRequired(F("M43 Wait Called")));
     #endif
 
     for (;;) {
