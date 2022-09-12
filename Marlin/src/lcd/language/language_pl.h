@@ -27,12 +27,13 @@
  * LCD Menu Messages
  * See also https://marlinfw.org/docs/development/lcd_language.html
  *
- * Substitutions are applied for the following characters when used
- * in menu items that call lcd_put_u8str_ind_P with an index:
+ * Substitutions are applied for the following characters when used in menu items titles:
  *
+ *   $ displays an inserted string
  *   = displays  '0'....'10' for indexes 0 - 10
  *   ~ displays  '1'....'11' for indexes 0 - 10
  *   * displays 'E1'...'E11' for indexes 0 - 10 (By default. Uses LCD_FIRST_TOOL)
+ *   @ displays an axis name such as XYZUVW, or E for an extruder
  */
 
 #define DISPLAY_CHARSET_ISO10646_PL
@@ -51,7 +52,7 @@ namespace Language_pl {
   LSTR MSG_MEDIA_INSERTED                 = _UxGT("Karta włożona");
   LSTR MSG_MEDIA_REMOVED                  = _UxGT("Karta usunięta");
   LSTR MSG_MEDIA_WAITING                  = _UxGT("Oczekiwanie na kartę");
-  LSTR MSG_SD_INIT_FAIL                   = _UxGT("Błąd inicializacji karty");
+  LSTR MSG_MEDIA_INIT_FAIL                = _UxGT("Błąd inicializacji karty");
   LSTR MSG_MEDIA_READ_ERROR               = _UxGT("Bład odczytu karty");
   LSTR MSG_MEDIA_USB_REMOVED              = _UxGT("Urządzenie USB usunięte");
   LSTR MSG_MEDIA_USB_FAILED               = _UxGT("Błąd uruchomienia USB");
@@ -78,10 +79,9 @@ namespace Language_pl {
   LSTR MSG_Z_FADE_HEIGHT                  = _UxGT("Wys. zanikania");
   LSTR MSG_SET_HOME_OFFSETS               = _UxGT("Ust. poz. zer.");
   LSTR MSG_HOME_OFFSETS_APPLIED           = _UxGT("Poz. zerowa ust.");
-  LSTR MSG_SET_ORIGIN                     = _UxGT("Ustaw punkt zero");
   LSTR MSG_SELECT_ORIGIN                  = _UxGT("Wybierz punkt zero");
   LSTR MSG_LAST_VALUE_SP                  = _UxGT("Poprzednia wartość ");
-  #if PREHEAT_COUNT
+  #if HAS_PREHEAT
     LSTR MSG_PREHEAT_1                    = _UxGT("Rozgrzej ") PREHEAT_1_LABEL;
     LSTR MSG_PREHEAT_1_H                  = _UxGT("Rozgrzej ") PREHEAT_1_LABEL " ~";
     LSTR MSG_PREHEAT_1_END                = _UxGT("Rozgrzej ") PREHEAT_1_LABEL _UxGT(" Dysza");
@@ -133,9 +133,8 @@ namespace Language_pl {
   LSTR MSG_IDEX_MODE_DUPLICATE            = _UxGT("Duplikowanie");
   LSTR MSG_IDEX_MODE_MIRRORED_COPY        = _UxGT("Kopia lustrzana");
   LSTR MSG_IDEX_MODE_FULL_CTRL            = _UxGT("Pełne sterowanie");
-  LSTR MSG_HOTEND_OFFSET_X                = _UxGT("2ga dysza X");
-  LSTR MSG_HOTEND_OFFSET_Y                = _UxGT("2ga dysza Y");
   LSTR MSG_HOTEND_OFFSET_Z                = _UxGT("2ga dysza Z");
+  LSTR MSG_HOTEND_OFFSET_A                = _UxGT("2ga dysza @");
   LSTR MSG_UBL_DOING_G29                  = _UxGT("Wykonywanie G29");
   LSTR MSG_UBL_TOOLS                      = _UxGT("Narzędzia UBL");
   LSTR MSG_LCD_TILTING_MESH               = _UxGT("Punkt pochylenia");
@@ -236,10 +235,11 @@ namespace Language_pl {
   LSTR MSG_MOVE_X                         = _UxGT("Przesuń w X");
   LSTR MSG_MOVE_Y                         = _UxGT("Przesuń w Y");
   LSTR MSG_MOVE_Z                         = _UxGT("Przesuń w Z");
+  LSTR MSG_MOVE_N                         = _UxGT("Przesuń w @");
   LSTR MSG_MOVE_E                         = _UxGT("Ekstruzja (os E)");
   LSTR MSG_MOVE_EN                        = _UxGT("Ekstruzja (os E) *");
   LSTR MSG_HOTEND_TOO_COLD                = _UxGT("Dysza za zimna");
-  LSTR MSG_MOVE_N_MM                      = _UxGT("Przesuń co %s mm");
+  LSTR MSG_MOVE_N_MM                      = _UxGT("Przesuń co $ mm");
   LSTR MSG_MOVE_01MM                      = _UxGT("Przesuń co .1 mm");
   LSTR MSG_MOVE_1MM                       = _UxGT("Przesuń co 1 mm");
   LSTR MSG_MOVE_10MM                      = _UxGT("Przesuń co 10 mm");
@@ -273,14 +273,12 @@ namespace Language_pl {
   LSTR MSG_SELECT_E                       = _UxGT("Wybierz *");
   LSTR MSG_ACC                            = _UxGT("Przyspieszenie");
   LSTR MSG_JERK                           = _UxGT("Zryw");
-  LSTR MSG_VA_JERK                        = _UxGT("Zryw V") LCD_STR_A;
-  LSTR MSG_VB_JERK                        = _UxGT("Zryw V") LCD_STR_B;
-  LSTR MSG_VC_JERK                        = _UxGT("Zryw V") LCD_STR_C;
-  LSTR MSG_VI_JERK                        = _UxGT("Zryw V") LCD_STR_I;
-  LSTR MSG_VJ_JERK                        = _UxGT("Zryw V") LCD_STR_J;
-  LSTR MSG_VK_JERK                        = _UxGT("Zryw V") LCD_STR_K;
+  LSTR MSG_VA_JERK                        = _UxGT("Zryw V") STR_A;
+  LSTR MSG_VB_JERK                        = _UxGT("Zryw V") STR_B;
+  LSTR MSG_VC_JERK                        = _UxGT("Zryw V") STR_C;
+  LSTR MSG_VN_JERK                        = _UxGT("Zryw V@");
   LSTR MSG_VE_JERK                        = _UxGT("Zryw Ve");
-  LSTR MSG_VELOCITY                       = _UxGT("Prędkość (V)");
+  LSTR MSG_MAX_SPEED                      = _UxGT("Prędkość (V)");
 
   LSTR MSG_VTRAV_MIN                      = _UxGT("Vskok min");
   LSTR MSG_ACCELERATION                   = _UxGT("Przyspieszenie (A)");
@@ -289,12 +287,10 @@ namespace Language_pl {
   LSTR MSG_A_TRAVEL                       = _UxGT("A-przesuń.");
   LSTR MSG_XY_FREQUENCY_LIMIT             = _UxGT("Częstotliwość max");
   LSTR MSG_STEPS_PER_MM                   = _UxGT("kroki/mm");
-  LSTR MSG_A_STEPS                        = LCD_STR_A _UxGT(" kroki/mm");
-  LSTR MSG_B_STEPS                        = LCD_STR_B _UxGT(" kroki/mm");
-  LSTR MSG_C_STEPS                        = LCD_STR_C _UxGT(" kroki/mm");
-  LSTR MSG_I_STEPS                        = LCD_STR_I _UxGT(" kroki/mm");
-  LSTR MSG_J_STEPS                        = LCD_STR_J _UxGT(" kroki/mm");
-  LSTR MSG_K_STEPS                        = LCD_STR_K _UxGT(" kroki/mm");
+  LSTR MSG_A_STEPS                        = STR_A _UxGT(" kroki/mm");
+  LSTR MSG_B_STEPS                        = STR_B _UxGT(" kroki/mm");
+  LSTR MSG_C_STEPS                        = STR_C _UxGT(" kroki/mm");
+  LSTR MSG_N_STEPS                        = _UxGT("@ kroki/mm");
   LSTR MSG_E_STEPS                        = _UxGT("E kroki/mm");
   LSTR MSG_EN_STEPS                       = _UxGT("* kroki/mm");
   LSTR MSG_TEMPERATURE                    = _UxGT("Temperatura");
@@ -405,8 +401,6 @@ namespace Language_pl {
   LSTR MSG_DELTA_CALIBRATE_CENTER         = _UxGT("Kalibruj środek");
   LSTR MSG_DELTA_SETTINGS                 = _UxGT("Ustawienia delty");
   LSTR MSG_DELTA_AUTO_CALIBRATE           = _UxGT("Auto kalibrowanie");
-  LSTR MSG_DELTA_HEIGHT_CALIBRATE         = _UxGT("Ustaw wysokość delty");
-  LSTR MSG_DELTA_Z_OFFSET_CALIBRATE       = _UxGT("Przesun. Z sondy");
   LSTR MSG_DELTA_DIAG_ROD                 = _UxGT("Ukośne ramię");
   LSTR MSG_DELTA_HEIGHT                   = _UxGT("Wysokość");
   LSTR MSG_DELTA_RADIUS                   = _UxGT("Promień");
@@ -429,7 +423,7 @@ namespace Language_pl {
   LSTR MSG_CASE_LIGHT_BRIGHTNESS          = _UxGT("Jasność oświetlenia");
   LSTR MSG_KILL_EXPECTED_PRINTER          = _UxGT("Niepoprawna drukarka");
 
-  #if LCD_WIDTH >= 20
+  #if LCD_WIDTH >= 20 || HAS_DWIN_E3V2
     LSTR MSG_INFO_PRINT_COUNT             = _UxGT("Wydrukowano");
     LSTR MSG_INFO_COMPLETED_PRINTS        = _UxGT("Ukończono");
     LSTR MSG_INFO_PRINT_TIME              = _UxGT("Czas druku");
@@ -445,13 +439,7 @@ namespace Language_pl {
 
   LSTR MSG_INFO_PSU                       = _UxGT("Zasilacz");
   LSTR MSG_DRIVE_STRENGTH                 = _UxGT("Siła silnika");
-  LSTR MSG_DAC_PERCENT_A                  = LCD_STR_A _UxGT(" Siła %");
-  LSTR MSG_DAC_PERCENT_B                  = LCD_STR_B _UxGT(" Siła %");
-  LSTR MSG_DAC_PERCENT_C                  = LCD_STR_C _UxGT(" Siła %");
-  LSTR MSG_DAC_PERCENT_I                  = LCD_STR_I _UxGT(" Siła %");
-  LSTR MSG_DAC_PERCENT_J                  = LCD_STR_J _UxGT(" Siła %");
-  LSTR MSG_DAC_PERCENT_K                  = LCD_STR_K _UxGT(" Siła %");
-  LSTR MSG_DAC_PERCENT_E                  = _UxGT("E Siła %");
+  LSTR MSG_DAC_PERCENT_N                  = _UxGT("@ Siła %");
   LSTR MSG_ERROR_TMC                      = _UxGT("TMC BŁĄD POŁĄCZENIA");
   LSTR MSG_DAC_EEPROM_WRITE               = _UxGT("Zapisz DAC EEPROM");
   LSTR MSG_FILAMENT_CHANGE_HEADER         = _UxGT("ZMIEŃ FILAMENT");

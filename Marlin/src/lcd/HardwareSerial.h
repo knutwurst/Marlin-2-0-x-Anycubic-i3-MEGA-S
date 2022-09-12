@@ -35,41 +35,41 @@ struct ring_buffer;
 class HardwareSerialClass : public Stream
 {
 private:
-  ring_buffer *_rx_buffer;
-  ring_buffer *_tx_buffer;
-  volatile uint8_t *_ubrrh;
-  volatile uint8_t *_ubrrl;
-  volatile uint8_t *_ucsra;
-  volatile uint8_t *_ucsrb;
-  volatile uint8_t *_ucsrc;
-  volatile uint8_t *_udr;
-  uint8_t _rxen;
-  uint8_t _txen;
-  uint8_t _rxcie;
-  uint8_t _udrie;
-  uint8_t _u2x;
-  bool transmitting;
+ring_buffer *_rx_buffer;
+ring_buffer *_tx_buffer;
+volatile uint8_t *_ubrrh;
+volatile uint8_t *_ubrrl;
+volatile uint8_t *_ucsra;
+volatile uint8_t *_ucsrb;
+volatile uint8_t *_ucsrc;
+volatile uint8_t *_udr;
+uint8_t _rxen;
+uint8_t _txen;
+uint8_t _rxcie;
+uint8_t _udrie;
+uint8_t _u2x;
+bool transmitting;
 
 public:
-  HardwareSerialClass(ring_buffer *rx_buffer, ring_buffer *tx_buffer,
-                      volatile uint8_t *ubrrh, volatile uint8_t *ubrrl,
-                      volatile uint8_t *ucsra, volatile uint8_t *ucsrb,
-                      volatile uint8_t *ucsrc, volatile uint8_t *udr,
-                      uint8_t rxen, uint8_t txen, uint8_t rxcie, uint8_t udrie, uint8_t u2x);
-  void begin(unsigned long);
-  void begin(unsigned long, uint8_t);
-  void end();
-  virtual int available(void);
-  virtual int peek(void);
-  virtual int read(void);
-  virtual void flush(void);
-  virtual size_t write(uint8_t);
-  inline size_t write(unsigned long n) { return write((uint8_t)n); }
-  inline size_t write(long n) { return write((uint8_t)n); }
-  inline size_t write(unsigned int n) { return write((uint8_t)n); }
-  inline size_t write(int n) { return write((uint8_t)n); }
-  using Print::write; // pull in write(str) and write(buf, size) from Print
-  operator bool();
+HardwareSerialClass(ring_buffer *rx_buffer, ring_buffer *tx_buffer,
+                    volatile uint8_t *ubrrh, volatile uint8_t *ubrrl,
+                    volatile uint8_t *ucsra, volatile uint8_t *ucsrb,
+                    volatile uint8_t *ucsrc, volatile uint8_t *udr,
+                    uint8_t rxen, uint8_t txen, uint8_t rxcie, uint8_t udrie, uint8_t u2x);
+void begin(unsigned long);
+void begin(unsigned long, uint8_t);
+void end();
+virtual int available(void);
+virtual int peek(void);
+virtual int read(void);
+virtual void flush(void);
+virtual size_t write(uint8_t);
+inline size_t write(unsigned long n) { return write((uint8_t)n); }
+inline size_t write(long n) { return write((uint8_t)n); }
+inline size_t write(unsigned int n) { return write((uint8_t)n); }
+inline size_t write(int n) { return write((uint8_t)n); }
+using Print::write;   // pull in write(str) and write(buf, size) from Print
+operator bool();
 };
 
 // Define config for Serial.begin(baud, config);
@@ -99,7 +99,7 @@ public:
 #define SERIAL_8O2 0x3E
 
 #if defined(UBRR3H)
-extern HardwareSerialClass HardwareSerial;
+  extern HardwareSerialClass HardwareSerial;
 #endif
 
 extern void serialEventRun(void) __attribute__((weak));
@@ -131,8 +131,7 @@ const char newSucc[] PROGMEM = "OK";
 #define HARDWARE_SERIAL_ECHOPGM(x) HARDWARE_SERIAL_PROTOCOLPGM(x)
 #define HARDWARE_SERIAL_ECHO(x) HARDWARE_SERIAL_PROTOCOL(x)
 
-FORCE_INLINE void HardwareSerialprintPGM(const char *str)
-{
+FORCE_INLINE void HardwareSerialprintPGM(const char *str) {
   char ch = pgm_read_byte(str);
   while (ch)
   {
@@ -141,4 +140,4 @@ FORCE_INLINE void HardwareSerialprintPGM(const char *str)
   }
 }
 
-#endif
+#endif // ifndef hardwareserial_h

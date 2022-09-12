@@ -25,7 +25,7 @@
 #include "env_validate.h"
 
 #if HOTENDS > 2 || E_STEPPERS > 2
-  #error "LERDGE K supports up to 2 hotends / E-steppers."
+  #error "LERDGE K supports up to 2 hotends / E steppers."
 #endif
 
 #define BOARD_INFO_NAME      "Lerdge K"
@@ -40,8 +40,7 @@
   #define MARLIN_EEPROM_SIZE             0x10000
 #endif
 
-// USB Flash Drive support
-#define HAS_OTG_USB_HOST_SUPPORT
+#define HAS_OTG_USB_HOST_SUPPORT                  // USB Flash Drive support
 
 //
 // Servos

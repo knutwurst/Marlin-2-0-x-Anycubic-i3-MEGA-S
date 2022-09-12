@@ -48,7 +48,7 @@ void GcodeSuite::M280() {
       const int anew = parser.value_int();
       if (anew >= 0) {
         #if ENABLED(POLARGRAPH)
-          if (parser.seen('T')) { // (ms) Total duration of servo move
+          if (parser.seenval('T')) { // (ms) Total duration of servo move
             const int16_t t = constrain(parser.value_int(), 0, 10000);
             const int aold = servo[servo_index].read();
             millis_t now = millis();
@@ -56,14 +56,14 @@ void GcodeSuite::M280() {
             while (PENDING(now, end)) {
               safe_delay(50);
               now = _MIN(millis(), end);
-              MOVE_SERVO(servo_index, LROUND(aold + (anew - aold) * (float(now - start) / t)));
+              servo[servo_index].move(LROUND(aold + (anew - aold) * (float(now - start) / t)));
             }
           }
         #endif // POLARGRAPH
-        MOVE_SERVO(servo_index, anew);
+        servo[servo_index].move(anew);
       }
       else
-        DETACH_SERVO(servo_index);
+        servo[servo_index].detach();
     }
     else
       SERIAL_ECHO_MSG(" Servo ", servo_index, ": ", servo[servo_index].read());

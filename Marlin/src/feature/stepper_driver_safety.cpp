@@ -28,11 +28,11 @@
 
 static uint32_t axis_plug_backward = 0;
 
-void stepper_driver_backward_error(PGM_P str) {
+void stepper_driver_backward_error(FSTR_P const fstr) {
   SERIAL_ERROR_START();
-  SERIAL_ECHOPGM_P(str);
+  SERIAL_ECHOF(fstr);
   SERIAL_ECHOLNPGM(" driver is backward!");
-  ui.status_printf_P(2, PSTR(S_FMT S_FMT), str, GET_TEXT(MSG_DRIVER_BACKWARD));
+  ui.status_printf(2, F(S_FMT S_FMT), FTOP(fstr), GET_TEXT(MSG_DRIVER_BACKWARD));
 }
 
 void stepper_driver_backward_check() {
@@ -45,7 +45,7 @@ void stepper_driver_backward_check() {
       delay(20); \
       if (READ(AXIS##_ENABLE_PIN) == false) { \
         SBI(axis_plug_backward, BIT); \
-        stepper_driver_backward_error(PSTR(STRINGIFY(AXIS))); \
+        stepper_driver_backward_error(F(STRINGIFY(AXIS))); \
       } \
     }while(0)
 
@@ -65,15 +65,18 @@ void stepper_driver_backward_check() {
   TEST_BACKWARD(I,   8);
   TEST_BACKWARD(J,   9);
   TEST_BACKWARD(K,  10);
+  TEST_BACKWARD(U,  11);
+  TEST_BACKWARD(V,  12);
+  TEST_BACKWARD(W,  13);
 
-  TEST_BACKWARD(E0, 11);
-  TEST_BACKWARD(E1, 12);
-  TEST_BACKWARD(E2, 13);
-  TEST_BACKWARD(E3, 14);
-  TEST_BACKWARD(E4, 15);
-  TEST_BACKWARD(E5, 16);
-  TEST_BACKWARD(E6, 17);
-  TEST_BACKWARD(E7, 18);
+  TEST_BACKWARD(E0, 14);
+  TEST_BACKWARD(E1, 15);
+  TEST_BACKWARD(E2, 16);
+  TEST_BACKWARD(E3, 17);
+  TEST_BACKWARD(E4, 18);
+  TEST_BACKWARD(E5, 19);
+  TEST_BACKWARD(E6, 20);
+  TEST_BACKWARD(E7, 21);
 
   if (!axis_plug_backward)
     WRITE(SAFE_POWER_PIN, HIGH);
@@ -82,12 +85,12 @@ void stepper_driver_backward_check() {
 void stepper_driver_backward_report() {
   if (!axis_plug_backward) return;
 
-  auto _report_if_backward = [](PGM_P axis, uint8_t bit) {
+  auto _report_if_backward = [](FSTR_P const axis, uint8_t bit) {
     if (TEST(axis_plug_backward, bit))
       stepper_driver_backward_error(axis);
   };
 
-  #define REPORT_BACKWARD(axis, bit) TERN_(HAS_##axis##_ENABLE, _report_if_backward(PSTR(STRINGIFY(axis)), bit))
+  #define REPORT_BACKWARD(axis, bit) TERN_(HAS_##axis##_ENABLE, _report_if_backward(F(STRINGIFY(axis)), bit))
 
   REPORT_BACKWARD(X,   0);
   REPORT_BACKWARD(X2,  1);
@@ -103,15 +106,18 @@ void stepper_driver_backward_report() {
   REPORT_BACKWARD(I,   8);
   REPORT_BACKWARD(J,   9);
   REPORT_BACKWARD(K,  10);
+  REPORT_BACKWARD(U,  11);
+  REPORT_BACKWARD(V,  12);
+  REPORT_BACKWARD(W,  13);
 
-  REPORT_BACKWARD(E0, 11);
-  REPORT_BACKWARD(E1, 12);
-  REPORT_BACKWARD(E2, 13);
-  REPORT_BACKWARD(E3, 14);
-  REPORT_BACKWARD(E4, 15);
-  REPORT_BACKWARD(E5, 16);
-  REPORT_BACKWARD(E6, 17);
-  REPORT_BACKWARD(E7, 18);
+  REPORT_BACKWARD(E0, 14);
+  REPORT_BACKWARD(E1, 15);
+  REPORT_BACKWARD(E2, 16);
+  REPORT_BACKWARD(E3, 17);
+  REPORT_BACKWARD(E4, 18);
+  REPORT_BACKWARD(E5, 19);
+  REPORT_BACKWARD(E6, 20);
+  REPORT_BACKWARD(E7, 21);
 }
 
 #endif // HAS_DRIVER_SAFE_POWER_PROTECT

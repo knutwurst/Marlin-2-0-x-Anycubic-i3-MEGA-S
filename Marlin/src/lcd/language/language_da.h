@@ -47,8 +47,7 @@ namespace Language_da {
   LSTR MSG_LEVEL_BED_DONE                 = _UxGT("Bed level er færdig!");
   LSTR MSG_SET_HOME_OFFSETS               = _UxGT("Sæt forsk. af home");
   LSTR MSG_HOME_OFFSETS_APPLIED           = _UxGT("Forsk. er nu aktiv");
-  LSTR MSG_SET_ORIGIN                     = _UxGT("Sæt origin");
-  #if PREHEAT_COUNT
+  #if HAS_PREHEAT
     LSTR MSG_PREHEAT_1                    = _UxGT("Forvarm ") PREHEAT_1_LABEL;
     LSTR MSG_PREHEAT_1_H                  = _UxGT("Forvarm ") PREHEAT_1_LABEL " ~";
     LSTR MSG_PREHEAT_1_END                = _UxGT("Forvarm ") PREHEAT_1_LABEL _UxGT(" end");
@@ -75,7 +74,10 @@ namespace Language_da {
   LSTR MSG_MOVE_X                         = _UxGT("Flyt X");
   LSTR MSG_MOVE_Y                         = _UxGT("Flyt Y");
   LSTR MSG_MOVE_Z                         = _UxGT("Flyt Z");
-  LSTR MSG_MOVE_N_MM                      = _UxGT("Flyt %smm");
+  LSTR MSG_MOVE_N                         = _UxGT("Flyt @");
+  LSTR MSG_MOVE_E                         = _UxGT("Flyt E");
+  LSTR MSG_MOVE_EN                        = _UxGT("Flyt *");
+  LSTR MSG_MOVE_N_MM                      = _UxGT("Flyt $mm");
   LSTR MSG_MOVE_01MM                      = _UxGT("Flyt 0.1mm");
   LSTR MSG_MOVE_1MM                       = _UxGT("Flyt 1mm");
   LSTR MSG_MOVE_10MM                      = _UxGT("Flyt 10mm");
@@ -156,7 +158,7 @@ namespace Language_da {
   LSTR MSG_INFO_BOARD_MENU                = _UxGT("Kort Info");
   LSTR MSG_INFO_THERMISTOR_MENU           = _UxGT("Thermistors");
 
-  #if LCD_WIDTH >= 20
+  #if LCD_WIDTH >= 20 || HAS_DWIN_E3V2
     LSTR MSG_INFO_PRINT_COUNT             = _UxGT("Ant. Prints");
     LSTR MSG_INFO_COMPLETED_PRINTS        = _UxGT("Færdige");
     LSTR MSG_INFO_PRINT_TIME              = _UxGT("Total print tid");
@@ -173,13 +175,7 @@ namespace Language_da {
   LSTR MSG_INFO_PSU                       = _UxGT("Strømfors.");
 
   LSTR MSG_DRIVE_STRENGTH                 = _UxGT("Driv Styrke");
-  LSTR MSG_DAC_PERCENT_A                  = LCD_STR_A _UxGT(" Driv %");
-  LSTR MSG_DAC_PERCENT_B                  = LCD_STR_B _UxGT(" Driv %");
-  LSTR MSG_DAC_PERCENT_C                  = LCD_STR_C _UxGT(" Driv %");
-  LSTR MSG_DAC_PERCENT_I                  = LCD_STR_I _UxGT(" Driv %");
-  LSTR MSG_DAC_PERCENT_J                  = LCD_STR_J _UxGT(" Driv %");
-  LSTR MSG_DAC_PERCENT_K                  = LCD_STR_K _UxGT(" Driv %");
-  LSTR MSG_DAC_PERCENT_E                  = _UxGT("E Driv %");
+  LSTR MSG_DAC_PERCENT_N                  = _UxGT("@ Driv %");
 
   LSTR MSG_DAC_EEPROM_WRITE               = _UxGT("DAC EEPROM Skriv");
 

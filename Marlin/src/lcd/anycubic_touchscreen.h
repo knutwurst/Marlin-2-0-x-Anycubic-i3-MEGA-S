@@ -21,13 +21,12 @@
 #ifndef anycubic_touchscreen_h
 #define anycubic_touchscreen_h
 
-//#include <stdio.h>
-//#include "../inc/MarlinConfig.h"
-//#include "../module/configuration_store.h"
+// #include <stdio.h>
+// #include "../inc/MarlinConfig.h"
+// #include "../module/configuration_store.h"
 
 #include "./src/inc/MarlinConfigPre.h"
 #include "./src/feature/bedlevel/bedlevel.h"
-#include "./src/feature/bedlevel/abl/abl.h"
 #include "src/module/probe.h"
 
 
@@ -39,8 +38,8 @@ void initializeGrid();
 char *itostr2(const uint8_t &x);
 
 #ifndef ULTRA_LCD
-char *itostr3(const int);
-char *ftostr32(const float &);
+  char *itostr3(const int);
+  char *ftostr32(const float &);
 #endif
 
 #define TFTBUFSIZE 4
@@ -245,22 +244,22 @@ char *ftostr32(const float &);
 #endif
 
 class AnycubicTouchscreenClass {
-  public:
-    AnycubicTouchscreenClass();
-    void Setup();
-    void CommandScan();
-    void BedHeatingStart();
-    void BedHeatingDone();
-    void HeatingDone();
-    void HeatingStart();
-    void FilamentRunout();
-    void KillTFT();
-    #if BOTH(ANYCUBIC_TFT_DEBUG, KNUTWURST_DGUS2_TFT)
-       void Command(const char * const command);
-    #endif
-    char TFTstate = ANYCUBIC_TFT_STATE_IDLE;
+public:
+AnycubicTouchscreenClass();
+void Setup();
+void CommandScan();
+void BedHeatingStart();
+void BedHeatingDone();
+void HeatingDone();
+void HeatingStart();
+void FilamentRunout();
+void KillTFT();
+#if BOTH(ANYCUBIC_TFT_DEBUG, KNUTWURST_DGUS2_TFT)
+  void Command(const char * const command);
+#endif
+char TFTstate = ANYCUBIC_TFT_STATE_IDLE;
 
-    /**
+/**
      * Anycubic TFT pause states:
      *
      * 0 - printing / stopped
@@ -271,131 +270,132 @@ class AnycubicTouchscreenClass {
      * 5 - nozzle timeout on M600            // OBSOLETE
      * 6 - nozzle timeout on filament runout // OBSOLETE
      */
-     uint8_t ai3m_pause_state = 0;
+uint8_t ai3m_pause_state = 0;
 
-  private:
-    char TFTcmdbuffer[TFTBUFSIZE][TFT_MAX_CMD_SIZE];
-    int TFTbuflen = 0;
-    int TFTbufindr = 0;
-    int TFTbufindw = 0;
-    char serial3_char;
-    int serial3_count = 0;
-    char *TFTstrchr_pointer;
-    char FlagResumFromOutage = 0;
-    int filenumber = 0;
-    unsigned long starttime = 0;
-    unsigned long stoptime = 0;
-    uint8_t tmp_extruder = 0;
-    char LastSDstatus = 0;
-    uint16_t HeaterCheckCount = 0;
-    bool IsParked = false;
-    int currentFlowRate = 0;
-    bool PrintdoneAndPowerOFF = true;
-    bool powerOFFflag = 0;
+private:
+char TFTcmdbuffer[TFTBUFSIZE][TFT_MAX_CMD_SIZE];
+int TFTbuflen  = 0;
+int TFTbufindr = 0;
+int TFTbufindw = 0;
+char serial3_char;
+int serial3_count = 0;
+char *TFTstrchr_pointer;
+char FlagResumFromOutage  = 0;
+int filenumber            = 0;
+unsigned long starttime   = 0;
+unsigned long stoptime    = 0;
+uint8_t tmp_extruder      = 0;
+char LastSDstatus         = 0;
+uint16_t HeaterCheckCount = 0;
+bool IsParked             = false;
+int currentFlowRate       = 0;
+bool PrintdoneAndPowerOFF = true;
+bool powerOFFflag         = 0;
 
-    #if defined(POWER_OUTAGE_TEST)
-      struct OutageDataStruct {
-        char OutageDataVersion;
-        char OutageFlag;
-        float last_position[XYZE];
-        float last_bed_temp;
-        float last_hotend_temp;
-        long lastSDposition;
-      } OutageData;
-    #endif
+#if defined(POWER_OUTAGE_TEST)
+  struct OutageDataStruct {
+    char OutageDataVersion;
+    char OutageFlag;
+    float last_position[XYZE];
+    float last_bed_temp;
+    float last_hotend_temp;
+    long lastSDposition;
+  }
+  OutageData;
+#endif
 
-    int CodeValueInt();
-    float CodeValue();
-    bool CodeSeen(char);
-    void PrintList();
-    void StartPrint();
-    void PausePrint();
-    void StopPrint();
-    void StateHandler();
-    void GetCommandFromTFT();
-    void CheckSDCardChange();
-    void CheckHeaterError();
-    void HandleSpecialMenu();
-    void FilamentChangePause();
-    void FilamentChangeResume();
-    void ReheatNozzle();
-    void ParkAfterStop();
+int CodeValueInt();
+float CodeValue();
+bool CodeSeen(char);
+void PrintList();
+void StartPrint();
+void PausePrint();
+void StopPrint();
+void StateHandler();
+void GetCommandFromTFT();
+void CheckSDCardChange();
+void CheckHeaterError();
+void HandleSpecialMenu();
+void FilamentChangePause();
+void FilamentChangeResume();
+void ReheatNozzle();
+void ParkAfterStop();
 
-    char currentTouchscreenSelection[64];
-    char currentFileOrDirectory[64];
-    String flowRateBuffer;
-    String zOffsetBuffer;
-    uint16_t MyFileNrCnt = 0;
-    uint8_t FilamentSensorEnabled = true;
+char currentTouchscreenSelection[64];
+char currentFileOrDirectory[64];
+String flowRateBuffer;
+String zOffsetBuffer;
+uint16_t MyFileNrCnt          = 0;
+uint8_t FilamentSensorEnabled = true;
 
-    uint8_t SpecialMenu = false;
-    uint8_t MMLMenu = false;
-    uint8_t FlowMenu = false;
-    uint8_t BLTouchMenu = false;
-    uint8_t LevelMenu = false;
-    uint8_t CaseLight = true;
+uint8_t SpecialMenu = false;
+uint8_t MMLMenu     = false;
+uint8_t FlowMenu    = false;
+uint8_t BLTouchMenu = false;
+uint8_t LevelMenu   = false;
+uint8_t CaseLight   = true;
 
 #if ENABLED(ANYCUBIC_FILAMENT_RUNOUT_SENSOR)
-      char FilamentTestStatus = false;
-      char FilamentTestLastStatus = false;
-      bool FilamentSetMillis = true;
-      int FilamentRunoutCounter = 0;
-    #endif
+  char FilamentTestStatus     = false;
+  char FilamentTestLastStatus = false;
+  bool FilamentSetMillis      = true;
+  int FilamentRunoutCounter   = 0;
+#endif
 
-    #if ENABLED(KNUTWURST_MEGA_P_LASER)
-      typedef struct {
-        unsigned char       bfType[2];
-        unsigned char       bfSize[4];
-        unsigned char       bfReserved1[2];
-        unsigned char       bfReserved2[2];
-        unsigned char       bfOffBits[4];
-        unsigned char       biSize[4];
-        unsigned char       biWidth[4];
-        unsigned char       biHeight[4];
-        unsigned char       biPlanes[2];
-        unsigned char       biBitCount[2];
-        unsigned char      biCompression[4];
-        unsigned char      biSizeImage[4];
-        unsigned char      biXPelsPerMeter[4];
-        unsigned char      biYPelsPerMeter[4];
-        unsigned char      biClrUsed[4];
-        unsigned char      biClrImportant[4];
-      } BMP_HEAD;
+#if ENABLED(KNUTWURST_MEGA_P_LASER)
+  typedef struct {
+    unsigned char bfType[2];
+    unsigned char bfSize[4];
+    unsigned char bfReserved1[2];
+    unsigned char bfReserved2[2];
+    unsigned char bfOffBits[4];
+    unsigned char biSize[4];
+    unsigned char biWidth[4];
+    unsigned char biHeight[4];
+    unsigned char biPlanes[2];
+    unsigned char biBitCount[2];
+    unsigned char biCompression[4];
+    unsigned char biSizeImage[4];
+    unsigned char biXPelsPerMeter[4];
+    unsigned char biYPelsPerMeter[4];
+    unsigned char biClrUsed[4];
+    unsigned char biClrImportant[4];
+  } BMP_HEAD;
 
-      typedef struct {
-        unsigned long pic_file_size;
-        unsigned long pic_ptr;
-        unsigned long pic_start;
+  typedef struct {
+    unsigned long pic_file_size;
+    unsigned long pic_ptr;
+    unsigned long pic_start;
 
-        float pic_pixel_distance;
-        float laser_height;
-        float x_offset;
-        float y_offset;
+    float pic_pixel_distance;
+    float laser_height;
+    float x_offset;
+    float y_offset;
 
-        unsigned int  pic_realy_widht;
-        unsigned int  pic_widht;
-        unsigned int  pic_hight;
-        unsigned char pic_bit;
-        unsigned char pic_widht_odd;
-        unsigned char pic_hight_odd;
+    unsigned int pic_realy_widht;
+    unsigned int pic_widht;
+    unsigned int pic_hight;
+    unsigned char pic_bit;
+    unsigned char pic_widht_odd;
+    unsigned char pic_hight_odd;
 
-        unsigned char pic_print_status;
-        unsigned char pic_dir;
+    unsigned char pic_print_status;
+    unsigned char pic_dir;
 
-        unsigned char pic_vector;
-        unsigned char pic_x_mirror;
-        unsigned char pic_y_mirror;
-        unsigned char pic_laser_time;
-      } PRINTER_STRUCT;
+    unsigned char pic_vector;
+    unsigned char pic_x_mirror;
+    unsigned char pic_y_mirror;
+    unsigned char pic_laser_time;
+  } PRINTER_STRUCT;
 
-      #define PIC_FIXED 0.1f //  //  POINT/MM
-      #define PIC_OPEN  50 //  //  ms
-      #define PIC_SPEDD 20000
-      #define MIN_GRAY_VLAUE  20
-      #define LASER_PRINT_SPEED 30  //50*60
-    #endif
+  #define PIC_FIXED 0.1f     //  //  POINT/MM
+  #define PIC_OPEN  50     //  //  ms
+  #define PIC_SPEDD 20000
+  #define MIN_GRAY_VLAUE  20
+  #define LASER_PRINT_SPEED 30      // 50*60
+#endif // if ENABLED(KNUTWURST_MEGA_P_LASER)
 };
 
 extern AnycubicTouchscreenClass AnycubicTouchscreen;
 
-#endif
+#endif // ifndef anycubic_touchscreen_h

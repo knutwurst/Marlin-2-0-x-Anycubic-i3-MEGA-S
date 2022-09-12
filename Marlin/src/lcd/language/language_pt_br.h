@@ -67,8 +67,7 @@ namespace Language_pt_br {
   LSTR MSG_Z_FADE_HEIGHT                  = _UxGT("Suavizar altura");
   LSTR MSG_SET_HOME_OFFSETS               = _UxGT("Compensar origem");
   LSTR MSG_HOME_OFFSETS_APPLIED           = _UxGT("Alteração aplicada");
-  LSTR MSG_SET_ORIGIN                     = _UxGT("Ajustar Origem");
-  #if PREHEAT_COUNT
+  #if HAS_PREHEAT
     LSTR MSG_PREHEAT_1                    = _UxGT("Pre-aquecer ") PREHEAT_1_LABEL;
     LSTR MSG_PREHEAT_1_H                  = _UxGT("Pre-aquecer ") PREHEAT_1_LABEL " ~";
     LSTR MSG_PREHEAT_1_END                = _UxGT("Extrusora ") PREHEAT_1_LABEL;
@@ -111,9 +110,8 @@ namespace Language_pt_br {
   LSTR MSG_IDEX_MODE_DUPLICATE            = _UxGT("Duplicação");
   LSTR MSG_IDEX_MODE_MIRRORED_COPY        = _UxGT("Cópia espelhada");
   LSTR MSG_IDEX_MODE_FULL_CTRL            = _UxGT("Controle Total");
-  LSTR MSG_HOTEND_OFFSET_X                = _UxGT("2o bico X");
-  LSTR MSG_HOTEND_OFFSET_Y                = _UxGT("2o bico Y");
   LSTR MSG_HOTEND_OFFSET_Z                = _UxGT("2o bico Z");
+  LSTR MSG_HOTEND_OFFSET_A                = _UxGT("2o bico @");
   LSTR MSG_UBL_DOING_G29                  = _UxGT("Executando G29");
   LSTR MSG_UBL_TOOLS                      = _UxGT("Ferramentas UBL");
   LSTR MSG_UBL_LEVEL_BED                  = _UxGT("Nivel. Mesa Unif.");
@@ -134,7 +132,7 @@ namespace Language_pt_br {
   LSTR MSG_UBL_DONE_EDITING_MESH          = _UxGT("Fim da Edição");
   LSTR MSG_UBL_BUILD_CUSTOM_MESH          = _UxGT("Montar Malha Custom");
   LSTR MSG_UBL_BUILD_MESH_MENU            = _UxGT("Montar ");
-  #if PREHEAT_COUNT
+  #if HAS_PREHEAT
     LSTR MSG_UBL_BUILD_MESH_M             = _UxGT("Montar $");
     LSTR MSG_UBL_VALIDATE_MESH_M          = _UxGT("Checar $");
   #endif
@@ -211,10 +209,11 @@ namespace Language_pt_br {
   LSTR MSG_MOVE_X                         = _UxGT("Mover X");
   LSTR MSG_MOVE_Y                         = _UxGT("Mover Y");
   LSTR MSG_MOVE_Z                         = _UxGT("Mover Z");
+  LSTR MSG_MOVE_N                         = _UxGT("Mover @");
   LSTR MSG_MOVE_E                         = _UxGT("Mover Extrusor");
   LSTR MSG_MOVE_EN                        = _UxGT("Mover Extrusor *");
   LSTR MSG_HOTEND_TOO_COLD                = _UxGT("Extrus. mto fria");
-  LSTR MSG_MOVE_N_MM                      = _UxGT("Mover %smm");
+  LSTR MSG_MOVE_N_MM                      = _UxGT("Mover $mm");
   LSTR MSG_MOVE_01MM                      = _UxGT("Mover 0.1mm");
   LSTR MSG_MOVE_1MM                       = _UxGT("Mover 1mm");
   LSTR MSG_MOVE_10MM                      = _UxGT("Mover 10mm");
@@ -241,26 +240,22 @@ namespace Language_pt_br {
   LSTR MSG_SELECT_E                       = _UxGT("Selecionar *");
   LSTR MSG_ACC                            = _UxGT("Acel.");
   LSTR MSG_JERK                           = _UxGT("Arrancada");
-  LSTR MSG_VA_JERK                        = _UxGT("arrancada V") LCD_STR_A;
-  LSTR MSG_VB_JERK                        = _UxGT("arrancada V") LCD_STR_B;
-  LSTR MSG_VC_JERK                        = _UxGT("arrancada V") LCD_STR_C;
-  LSTR MSG_VI_JERK                        = _UxGT("arrancada V") LCD_STR_I;
-  LSTR MSG_VJ_JERK                        = _UxGT("arrancada V") LCD_STR_J;
-  LSTR MSG_VK_JERK                        = _UxGT("arrancada V") LCD_STR_K;
+  LSTR MSG_VA_JERK                        = _UxGT("arrancada V") STR_A;
+  LSTR MSG_VB_JERK                        = _UxGT("arrancada V") STR_B;
+  LSTR MSG_VC_JERK                        = _UxGT("arrancada V") STR_C;
+  LSTR MSG_VN_JERK                        = _UxGT("arrancada V@");
   LSTR MSG_VE_JERK                        = _UxGT("arrancada VE");
   LSTR MSG_JUNCTION_DEVIATION             = _UxGT("Desv. Junção");
-  LSTR MSG_VELOCITY                       = _UxGT("Velocidade");
+  LSTR MSG_MAX_SPEED                      = _UxGT("Velocidade");
   LSTR MSG_VTRAV_MIN                      = _UxGT("VDeslocamento min");
   LSTR MSG_ACCELERATION                   = _UxGT("Aceleração");
   LSTR MSG_A_RETRACT                      = _UxGT("Retrair A");
   LSTR MSG_A_TRAVEL                       = _UxGT("Movimento A");
   LSTR MSG_STEPS_PER_MM                   = _UxGT("Passo/mm");
-  LSTR MSG_A_STEPS                        = _UxGT("Passo ") LCD_STR_A _UxGT("/mm");
-  LSTR MSG_B_STEPS                        = _UxGT("Passo ") LCD_STR_B _UxGT("/mm");
-  LSTR MSG_C_STEPS                        = _UxGT("Passo ") LCD_STR_C _UxGT("/mm");
-  LSTR MSG_I_STEPS                        = _UxGT("Passo ") LCD_STR_I _UxGT("/mm");
-  LSTR MSG_J_STEPS                        = _UxGT("Passo ") LCD_STR_J _UxGT("/mm");
-  LSTR MSG_K_STEPS                        = _UxGT("Passo ") LCD_STR_K _UxGT("/mm");
+  LSTR MSG_A_STEPS                        = _UxGT("Passo ") STR_A _UxGT("/mm");
+  LSTR MSG_B_STEPS                        = _UxGT("Passo ") STR_B _UxGT("/mm");
+  LSTR MSG_C_STEPS                        = _UxGT("Passo ") STR_C _UxGT("/mm");
+  LSTR MSG_N_STEPS                        = _UxGT("Passo @/mm");
   LSTR MSG_E_STEPS                        = _UxGT("E/mm");
   LSTR MSG_EN_STEPS                       = _UxGT("*/mm");
   LSTR MSG_TEMPERATURE                    = _UxGT("Temperatura");
@@ -354,6 +349,7 @@ namespace Language_pt_br {
   LSTR MSG_BABYSTEP_X                     = _UxGT("Passinho X");
   LSTR MSG_BABYSTEP_Y                     = _UxGT("Passinho Y");
   LSTR MSG_BABYSTEP_Z                     = _UxGT("Passinho Z");
+  LSTR MSG_BABYSTEP_N                     = _UxGT("Passinho @");
   LSTR MSG_BABYSTEP_TOTAL                 = _UxGT("Total");
   LSTR MSG_ENDSTOP_ABORT                  = _UxGT("Abortar Fim de Curso");
   LSTR MSG_HEATING_FAILED_LCD             = _UxGT("Aquecimento falhou");
@@ -378,8 +374,6 @@ namespace Language_pt_br {
   LSTR MSG_DELTA_CALIBRATE_CENTER         = _UxGT("Calibrar Centro");
   LSTR MSG_DELTA_SETTINGS                 = _UxGT("Configuração Delta");
   LSTR MSG_DELTA_AUTO_CALIBRATE           = _UxGT("Auto-Calibração");
-  LSTR MSG_DELTA_HEIGHT_CALIBRATE         = _UxGT("Calibrar Altura");
-  LSTR MSG_DELTA_Z_OFFSET_CALIBRATE       = _UxGT("Desloc. Sonda Z");
   LSTR MSG_DELTA_DIAG_ROD                 = _UxGT("Haste Diagonal");
   LSTR MSG_DELTA_HEIGHT                   = _UxGT("Altura");
   LSTR MSG_DELTA_RADIUS                   = _UxGT("Raio");
@@ -401,7 +395,7 @@ namespace Language_pt_br {
   LSTR MSG_CASE_LIGHT_BRIGHTNESS          = _UxGT("Intensidade Brilho");
   LSTR MSG_KILL_EXPECTED_PRINTER          = _UxGT("Impressora Incorreta");
 
-  #if LCD_WIDTH >= 20
+  #if LCD_WIDTH >= 20 || HAS_DWIN_E3V2
     LSTR MSG_INFO_PRINT_COUNT             = _UxGT("Total de Impressões");
     LSTR MSG_INFO_COMPLETED_PRINTS        = _UxGT("Realizadas");
     LSTR MSG_INFO_PRINT_TIME              = _UxGT("Tempo de Impressão");

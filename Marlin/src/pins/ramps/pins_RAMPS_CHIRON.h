@@ -53,7 +53,7 @@
 
 #if NONE(IS_RAMPS_SMART, IS_RAMPS_DUO, IS_RAMPS4DUE, TARGET_LPC1768)
   #if !defined(__AVR_ATmega1280__) && !defined(__AVR_ATmega2560__)
-    #error "Oops! Select 'Arduino/Genuino Mega or Mega 2560' in 'Tools > Board.'"
+    // #error "Oops! Select 'Arduino/Genuino Mega or Mega 2560' in 'Tools > Board.'"
   #endif
 #endif
 
@@ -170,26 +170,26 @@
 #endif
 
 //
-// SPI for Max6675 or Max31855 Thermocouple
+// SPI for MAX Thermocouple
 //
-#ifndef MAX6675_SS_PIN
-  #define MAX6675_SS_PIN                      66  // Don't use 53 if using Display/SD card (SDSS) or 49 (SD_DETECT_PIN)
+#ifndef TEMP_0_CS_PIN
+  #define TEMP_0_CS_PIN                       66  // Don't use 53 if using Display/SD card (SDSS) or 49 (SD_DETECT_PIN)
 #endif
 
 //
 // Augmentation for auto-assigning RAMPS plugs
 //
-#if NONE(IS_RAMPS_EEB, IS_RAMPS_EEF, IS_RAMPS_EFB, IS_RAMPS_EFF, IS_RAMPS_SF) && !PIN_EXISTS(MOSFET_D)
+#if NONE(FET_ORDER_EEB, FET_ORDER_EEF, FET_ORDER_EFB, FET_ORDER_EFF, FET_ORDER_SF) && !PIN_EXISTS(MOSFET_D)
   #if HOTENDS > 1
     #if TEMP_SENSOR_BED
-      #define IS_RAMPS_EEB
+      #define FET_ORDER_EEB
     #else
-      #define IS_RAMPS_EEF
+      #define FET_ORDER_EEF
     #endif
   #elif TEMP_SENSOR_BED
-    #define IS_RAMPS_EFB
+    #define FET_ORDER_EFB
   #else
-    #define IS_RAMPS_EFF
+    #define FET_ORDER_EFF
   #endif
 #endif
 
@@ -211,16 +211,16 @@
 
 #define HEATER_0_PIN               RAMPS_D10_PIN
 
-#if ENABLED(IS_RAMPS_EFB)                         // Hotend, Fan, Bed
-  #define HEATER_BED_PIN            45 //RAMPS_D8_PIN
-#elif ENABLED(IS_RAMPS_EEF)                       // Hotend, Hotend, Fan
+#if ENABLED(FET_ORDER_EFB)                         // Hotend, Fan, Bed
+  #define HEATER_BED_PIN            45 // RAMPS_D8_PIN
+#elif ENABLED(FET_ORDER_EEF)                       // Hotend, Hotend, Fan
   #define HEATER_1_PIN              RAMPS_D9_PIN
-#elif ENABLED(IS_RAMPS_EEB)                       // Hotend, Hotend, Bed
+#elif ENABLED(FET_ORDER_EEB)                       // Hotend, Hotend, Bed
   #define HEATER_1_PIN              RAMPS_D9_PIN
   #define HEATER_BED_PIN            RAMPS_D8_PIN
-#elif ENABLED(IS_RAMPS_EFF)                       // Hotend, Fan, Fan
+#elif ENABLED(FET_ORDER_EFF)                       // Hotend, Fan, Fan
   #define FAN1_PIN                  RAMPS_D8_PIN
-#elif DISABLED(IS_RAMPS_SF)                       // Not Spindle, Fan (i.e., "EFBF" or "EFBE")
+#elif DISABLED(FET_ORDER_SF)                       // Not Spindle, Fan (i.e., "EFBF" or "EFBE")
   #define HEATER_BED_PIN            RAMPS_D8_PIN
   #if HOTENDS == 1
     #define FAN1_PIN                MOSFET_D_PIN
@@ -230,11 +230,11 @@
 #endif
 
 #ifndef FAN_PIN
-  #if EITHER(IS_RAMPS_EFB, IS_RAMPS_EFF)          // Hotend, Fan, Bed or Hotend, Fan, Fan
+  #if EITHER(FET_ORDER_EFB, FET_ORDER_EFF)          // Hotend, Fan, Bed or Hotend, Fan, Fan
     #define FAN_PIN                 RAMPS_D9_PIN
-  #elif EITHER(IS_RAMPS_EEF, IS_RAMPS_SF)         // Hotend, Hotend, Fan or Spindle, Fan
+  #elif EITHER(FET_ORDER_EEF, FET_ORDER_SF)         // Hotend, Hotend, Fan or Spindle, Fan
     #define FAN_PIN                 RAMPS_D8_PIN
-  #elif ENABLED(IS_RAMPS_EEB)                     // Hotend, Hotend, Bed
+  #elif ENABLED(FET_ORDER_EEB)                     // Hotend, Hotend, Bed
     #define FAN_PIN                            4  // IO pin. Buffer needed
   #else                                           // Non-specific are "EFB" (i.e., "EFBF" or "EFBE")
     #define FAN_PIN                 RAMPS_D9_PIN
@@ -307,17 +307,17 @@
    * Hardware serial communication ports.
    * If undefined software serial is used according to the pins below
    */
-  //#define X_HARDWARE_SERIAL Serial1
-  //#define X2_HARDWARE_SERIAL Serial1
-  //#define Y_HARDWARE_SERIAL Serial1
-  //#define Y2_HARDWARE_SERIAL Serial1
-  //#define Z_HARDWARE_SERIAL Serial1
-  //#define Z2_HARDWARE_SERIAL Serial1
-  //#define E0_HARDWARE_SERIAL Serial1
-  //#define E1_HARDWARE_SERIAL Serial1
-  //#define E2_HARDWARE_SERIAL Serial1
-  //#define E3_HARDWARE_SERIAL Serial1
-  //#define E4_HARDWARE_SERIAL Serial1
+  // #define X_HARDWARE_SERIAL Serial1
+  // #define X2_HARDWARE_SERIAL Serial1
+  // #define Y_HARDWARE_SERIAL Serial1
+  // #define Y2_HARDWARE_SERIAL Serial1
+  // #define Z_HARDWARE_SERIAL Serial1
+  // #define Z2_HARDWARE_SERIAL Serial1
+  // #define E0_HARDWARE_SERIAL Serial1
+  // #define E1_HARDWARE_SERIAL Serial1
+  // #define E2_HARDWARE_SERIAL Serial1
+  // #define E3_HARDWARE_SERIAL Serial1
+  // #define E4_HARDWARE_SERIAL Serial1
 
   //
   // Software serial
@@ -410,7 +410,7 @@
   #ifndef E7_SERIAL_RX_PIN
     #define E7_SERIAL_RX_PIN                  -1
   #endif
-#endif
+#endif // if HAS_TMC_UART
 
 //
 // Průša i3 MK2 Multiplexer Support
@@ -494,18 +494,18 @@
         #define BEEPER_PIN                    33
       #endif
 
-    #endif
+    #endif // if ENABLED(CR10_STOCKDISPLAY)
 
     #if DISABLED(NEWPANEL)
       // Buttons attached to a shift register
       // Not wired yet
-      //#define SHIFT_CLK                     38
-      //#define SHIFT_LD                      42
-      //#define SHIFT_OUT                     40
-      //#define SHIFT_EN                      17
+      // #define SHIFT_CLK                     38
+      // #define SHIFT_LD                      42
+      // #define SHIFT_OUT                     40
+      // #define SHIFT_EN                      17
     #endif
 
-  #endif
+  #endif // if ENABLED(REPRAPWORLD_GRAPHICAL_LCD)
 
   //
   // LCD Display input pins
@@ -610,9 +610,9 @@
 
         // GLCD features
         // Uncomment screen orientation
-        //#define LCD_SCREEN_ROT_90
-        //#define LCD_SCREEN_ROT_180
-        //#define LCD_SCREEN_ROT_270
+        // #define LCD_SCREEN_ROT_90
+        // #define LCD_SCREEN_ROT_180
+        // #define LCD_SCREEN_ROT_270
 
         // not connected to a pin
         #define LCD_BACKLIGHT_PIN             -1  // 65 (MKS mini12864 can't adjust backlight by software!)
@@ -630,8 +630,8 @@
         #define BTN_EN1                       33
         #define BTN_EN2                       31
 
-        //#define FORCE_SOFT_SPI                  // Use this if default of hardware SPI causes display problems
-                                                  //   results in LCD soft SPI mode 3, SD soft SPI mode 0
+        // #define FORCE_SOFT_SPI                  // Use this if default of hardware SPI causes display problems
+        //   results in LCD soft SPI mode 3, SD soft SPI mode 0
 
         #define LCD_RESET_PIN                 23  // Must be high or open for LCD to operate normally.
 
@@ -649,7 +649,7 @@
           #define NEOPIXEL_PIN                25
         #endif
 
-      #endif
+      #endif // if ENABLED(MKS_MINI_12864)
 
     #elif ENABLED(MINIPANEL)
 
@@ -662,9 +662,9 @@
 
       // GLCD features
       // Uncomment screen orientation
-      //#define LCD_SCREEN_ROT_90
-      //#define LCD_SCREEN_ROT_180
-      //#define LCD_SCREEN_ROT_270
+      // #define LCD_SCREEN_ROT_90
+      // #define LCD_SCREEN_ROT_180
+      // #define LCD_SCREEN_ROT_270
 
       #define BTN_EN1                         40
       #define BTN_EN2                         63
@@ -681,7 +681,7 @@
 
       // Pins only defined for RAMPS_SMART currently
 
-    #else
+    #else // if ENABLED(REPRAP_DISCOUNT_SMART_CONTROLLER)
 
       // Beeper on AUX-4
       #define BEEPER_PIN                      33
@@ -702,7 +702,7 @@
         #define KILL_PIN                      41
       #endif
 
-    #endif
+    #endif // if ENABLED(REPRAP_DISCOUNT_SMART_CONTROLLER)
   #endif // NEWPANEL
 
 #endif // HAS_SPI_LCD

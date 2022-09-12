@@ -28,7 +28,7 @@
 #if NOT_TARGET(__STM32F1__, STM32F1)
   #error "Oops! Select an STM32F1 board in 'Tools > Board.'"
 #elif HOTENDS > 2 || E_STEPPERS > 2
-  #error "MKS Robin nano supports up to 2 hotends / E-steppers. Comment out this line to continue."
+  #error "MKS Robin nano supports up to 2 hotends / E steppers."
 #elif HAS_FSMC_TFT
   #error "MKS Robin nano v2 doesn't support FSMC-based TFT displays."
 #endif
@@ -36,9 +36,10 @@
 #define BOARD_INFO_NAME "MKS Robin nano V2.0"
 
 #define BOARD_NO_NATIVE_USB
+#define USES_DIAG_PINS
 
 // Avoid conflict with TIMER_SERVO when using the STM32 HAL
-#define TEMP_TIMER                             5
+#define TEMP_TIMER  5
 
 //
 // Release PB4 (Y_ENABLE_PIN) from JTAG NRST role
@@ -53,7 +54,7 @@
 
 #if EITHER(NO_EEPROM_SELECTED, I2C_EEPROM)
   #define I2C_EEPROM                              // EEPROM on I2C-0
-  #define MARLIN_EEPROM_SIZE              0x1000  // 4KB
+  #define MARLIN_EEPROM_SIZE              0x1000  // 4K
 #endif
 
 //
@@ -192,7 +193,9 @@
 //
 #if ENABLED(MKS_PWC)
   #if ENABLED(TFT_LVGL_UI)
-    #undef PSU_CONTROL
+    #if ENABLED(PSU_CONTROL)
+      #error "PSU_CONTROL is incompatible with MKS_PWC plus TFT_LVGL_UI."
+    #endif
     #undef MKS_PWC
     #define SUICIDE_PIN                     PB2
     #define SUICIDE_PIN_STATE               LOW
@@ -279,11 +282,10 @@
   #define TFT_MISO_PIN                      PA6
   #define TFT_MOSI_PIN                      PA7
   #define TFT_DC_PIN                        PD10
-  #define TFT_RST_PIN                       PC6
   #define TFT_A0_PIN                  TFT_DC_PIN
 
   #define TFT_RESET_PIN                     PC6
-  #define TFT_BACKLIGHT_PIN                 PD13
+  #define TFT_BACKLIGHT_PIN    LCD_BACKLIGHT_PIN
 
   #define TOUCH_BUTTONS_HW_SPI
   #define TOUCH_BUTTONS_HW_SPI_DEVICE          1
@@ -337,10 +339,10 @@
       #define BEEPER_PIN                    -1
     #endif
 
-  #elif ENABLED(MKS_MINI_12864_V3)
+  #elif ENABLED(FYSETC_MINI_12864_2_1)
+    #define LCD_PINS_DC                     PC6
     #define DOGLCD_CS                       PD13
-    #define DOGLCD_A0                       PC6
-    #define LCD_PINS_DC                DOGLCD_A0
+    #define DOGLCD_A0                  DOGLCD_A0
     #define LCD_BACKLIGHT_PIN               -1
     #define LCD_RESET_PIN                   PE14
     #define NEOPIXEL_PIN                    PE15
@@ -349,7 +351,7 @@
     #if SD_CONNECTION_IS(ONBOARD)
       #define FORCE_SOFT_SPI
     #endif
-    //#define LCD_SCREEN_ROT_180
+    //#define LCD_SCREEN_ROTATE              180  // 0, 90, 180, 270
 
   #else                                           // !MKS_MINI_12864
 
@@ -365,7 +367,7 @@
 
     #endif
 
-    #if ENABLED(U8GLIB_ST7920)
+    #if IS_U8GLIB_ST7920
       #define BOARD_ST7920_DELAY_1           125
       #define BOARD_ST7920_DELAY_2           125
       #define BOARD_ST7920_DELAY_3           125
