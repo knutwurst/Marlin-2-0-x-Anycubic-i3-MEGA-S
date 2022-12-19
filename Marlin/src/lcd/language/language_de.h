@@ -301,6 +301,7 @@ namespace Language_de {
   LSTR MSG_MOVE_01MM                      = _UxGT("  0,1  mm");
   LSTR MSG_MOVE_1MM                       = _UxGT("  1,0  mm");
   LSTR MSG_MOVE_10MM                      = _UxGT(" 10,0  mm");
+  LSTR MSG_MOVE_50MM                      = _UxGT(" 50,0  mm");
   LSTR MSG_MOVE_100MM                     = _UxGT("100,0  mm");
   LSTR MSG_MOVE_0001IN                    = _UxGT("0.001 in");
   LSTR MSG_MOVE_001IN                     = _UxGT("0.010 in");
@@ -407,7 +408,6 @@ namespace Language_de {
   LSTR MSG_ADVANCE_K_E                    = _UxGT("Vorschubfaktor *");
   LSTR MSG_CONTRAST                       = _UxGT("LCD-Kontrast");
   LSTR MSG_BRIGHTNESS                     = _UxGT("LCD-Helligkeit");
-  LSTR MSG_LCD_TIMEOUT_SEC                = _UxGT("LCD-Ruhezustand (s)");
   LSTR MSG_SCREEN_TIMEOUT                 = _UxGT("LCD Timeout (m)");
   LSTR MSG_BRIGHTNESS_OFF                 = _UxGT("LCD ausschalten");
   LSTR MSG_STORE_EEPROM                   = _UxGT("Konfig. speichern");
