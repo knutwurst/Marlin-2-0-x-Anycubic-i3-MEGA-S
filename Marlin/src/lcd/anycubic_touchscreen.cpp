@@ -1190,7 +1190,9 @@
           else {
             card.selectFileByIndex(count - 1);
 
-            int fileNameLen     = strlen(card.longFilename);
+            // THe longname may not be filed, so we use the built-in fallback here.
+            char* fileName  = card.longest_filename();
+            int fileNameLen = strlen(fileName);
             bool fileNameWasCut = false;
 
             // Cut off too long filenames.
@@ -1211,7 +1213,7 @@
                 outputString[i] = ' ';
               }
               else {
-                outputString[i] = card.longFilename[i];
+                outputString[i] = fileName[i];
                 if (!isPrintable(outputString[i]))
                   outputString[i] = '_';
               }
