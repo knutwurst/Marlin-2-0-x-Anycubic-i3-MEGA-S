@@ -1190,15 +1190,14 @@
           else {
             card.selectFileByIndex(count - 1);
 
-            // THe longname may not be filed, so we use the built-in fallback here.
-            char* fileName  = card.longest_filename();
-            int fileNameLen = strlen(fileName);
+            // The longname may not be filed, so we use the built-in fallback here.
+            char* fileName      = card.longest_filename();
+            int fileNameLen     = strlen(fileName);
             bool fileNameWasCut = false;
 
-            // Cut off too long filenames.
-            // They don't fit on the screen anyway.
+            // Cut off too long filenames. They don't fit on the screen anyway.
             #if ENABLED(KNUTWURST_DGUS2_TFT)
-              if (fileNameLen >= MAX_PRINTABLE_FILENAME_LEN) {
+              if (fileNameLen > MAX_PRINTABLE_FILENAME_LEN) {
                 fileNameWasCut = true;
                 fileNameLen    = MAX_PRINTABLE_FILENAME_LEN;
               }
@@ -1206,20 +1205,18 @@
 
             char outputString[fileNameLen];
 
-            // Bugfix for non-printable special characters
-            // which are now replaced by underscores.
-            for (unsigned char i = 0; i <= fileNameLen; i++) {
-              if (i >= fileNameLen) {
-                outputString[i] = ' ';
-              }
-              else {
+            // Bugfix for non-printable special characters which are now replaced by underscores.
+            for (unsigned char i = 0; i < fileNameLen; i++) {
+              if (isPrintable(fileName[i]))
                 outputString[i] = fileName[i];
-                if (!isPrintable(outputString[i]))
-                  outputString[i] = '_';
-              }
+              else
+                outputString[i] = '_';
             }
 
-            // I know, it's ugly, but it's faster than a string lib
+            // Terminate the string.
+            outputString[fileNameLen] = '\0';
+
+            // Append extension, if filename was truncated. I know, it's ugly, but it's faster than a string lib.
             if (fileNameWasCut) {
               outputString[fileNameLen - 7] = '~';
               outputString[fileNameLen - 6] = '.';
@@ -1229,8 +1226,6 @@
               outputString[fileNameLen - 2] = 'd';
               outputString[fileNameLen - 1] = 'e';
             }
-
-            outputString[fileNameLen] = '\0';
 
             if (card.flag.filenameIsDir) {
               #if ENABLED(KNUTWURST_DGUS2_TFT)
