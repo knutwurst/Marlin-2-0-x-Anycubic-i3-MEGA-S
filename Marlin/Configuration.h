@@ -45,6 +45,8 @@
 // #define ANYCUBIC_TFT_DEBUG
 // #define POWER_OUTAGE_TEST
 
+#define LCD_SERIAL_PORT 3
+
 #define EXT_LEVEL_HIGH 0.1
 
 /*
