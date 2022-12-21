@@ -1172,10 +1172,10 @@
             // The longname may not be filed, so we use the built-in fallback here.
             char* fileName      = card.longest_filename();
             int fileNameLen     = strlen(fileName);
-            bool fileNameWasCut = false;
 
             // Cut off too long filenames. They don't fit on the screen anyway.
             #if ENABLED(KNUTWURST_DGUS2_TFT)
+              bool fileNameWasCut = false;
               if (fileNameLen > MAX_PRINTABLE_FILENAME_LEN) {
                 fileNameWasCut = true;
                 fileNameLen    = MAX_PRINTABLE_FILENAME_LEN;
@@ -1192,19 +1192,27 @@
                 outputString[i] = '_';
             }
 
-            // Terminate the string.
-            outputString[fileNameLen] = '\0';
-
-            // Append extension, if filename was truncated. I know, it's ugly, but it's faster than a string lib.
-            if (fileNameWasCut) {
-              outputString[fileNameLen - 7] = '~';
-              outputString[fileNameLen - 6] = '.';
-              outputString[fileNameLen - 5] = 'g';
-              outputString[fileNameLen - 4] = 'c';
-              outputString[fileNameLen - 3] = 'o';
-              outputString[fileNameLen - 2] = 'd';
-              outputString[fileNameLen - 1] = 'e';
-            }
+            #if ENABLED(KNUTWURST_DGUS2_TFT)
+              // Append extension, if filename was truncated. I know, it's ugly, but it's faster than a string lib.
+              if (fileNameWasCut) {
+                outputString[fileNameLen - 7] = '~';
+                outputString[fileNameLen - 6] = '.';
+                outputString[fileNameLen - 5] = 'g';
+                outputString[fileNameLen - 4] = 'c';
+                outputString[fileNameLen - 3] = 'o';
+                outputString[fileNameLen - 2] = 'd';
+                outputString[fileNameLen - 1] = 'e';
+              } else {
+                // Make sure to fill the output buffer with blanks.
+                for (unsigned char i = fileNameLen; i < MAX_PRINTABLE_FILENAME_LEN; i++) {
+                  outputString[i] = ' ';
+                }
+              }
+              outputString[MAX_PRINTABLE_FILENAME_LEN] = '\0';
+            #else
+              // Just terminate the string.
+              outputString[fileNameLen] = '\0';
+            #endif
 
             if (card.flag.filenameIsDir) {
               #if ENABLED(KNUTWURST_DGUS2_TFT)
