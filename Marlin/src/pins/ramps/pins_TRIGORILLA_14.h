@@ -69,7 +69,7 @@
   #define Y_STOP_PIN                          19
 
   #define CONTROLLER_FAN_PIN            FAN1_PIN // PATCH: knutwurst
-#elif ANY(TRIGORILLA_MAPPING_CHIRON, TRIGORILLA_MAPPING_I3MEGA, KNUTWURST_MEGA, KNUTWURST_MEGA_S, KNUTWURST_MEGA_P, KNUTWURST_MEGA_X, KNUTWURST_4MAXP2, KNUTWURST_CHIRON)   // PATCH: Knutwurst
+#elif EITHER(TRIGORILLA_MAPPING_CHIRON, TRIGORILLA_MAPPING_I3MEGA)
   // Chiron uses AUX header for Y and Z endstops
   #define Y_STOP_PIN                          42  // AUX
   #define Z_STOP_PIN                          43  // AUX
@@ -86,7 +86,7 @@
     #define OUTAGECON_PIN                     58
   #endif
 
-  #if EITHER(TRIGORILLA_MAPPING_CHIRON, KNUTWURST_CHIRON)   // PATCH: Knutwurst
+  #if ENABLED(TRIGORILLA_MAPPING_CHIRON)
     #ifndef FIL_RUNOUT_PIN
       #define FIL_RUNOUT_PIN                  33
     #endif

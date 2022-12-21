@@ -57,6 +57,15 @@
  */
 // #define KNUTWURST_DEBUG
 
+/*
+ * Adjust the Trigorilla pin mapping.
+ */
+#if ENABLED(KNUTWURST_CHIRON)
+  #define TRIGORILLA_MAPPING_CHIRON
+#else
+  #define TRIGORILLA_MAPPING_I3MEGA
+  #define SWAP_Z_MOTORS
+#endif
 
 /*
  * This enables the integrated Laser engaving feature
