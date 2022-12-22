@@ -1945,9 +1945,9 @@
                     }
                     break;
                     case 30: // A30 auto leveling (Old Anycubic TFT)
-                      if ((planner.movesplanned()) || (card.isPrinting())) {
+                      if ((planner.movesplanned()) || (card.isPrinting()))
                         SENDLINE_DBG_PGM("J24", "TFT Serial Debug: Forbid auto leveling... J24");
-                      else {
+                      else
                         SENDLINE_DBG_PGM("J26", "TFT Serial Debug: Start auto leveling... J26");
                       if (CodeSeen('S'))
                         queue.enqueue_now_P(PSTR("G28\nG29\nM500\nG90\nM300 S440 P200\nM300 S660 P250\nM300 S880 P300\nG1 Z30 F4000\nG1 X0 F4000\nG91\nM84"));

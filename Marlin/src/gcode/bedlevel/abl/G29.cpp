@@ -35,10 +35,6 @@
 #include "../../../module/probe.h"
 #include "../../queue.h"
 
-#if ENABLED(KNUTWURST_TFT_LEVELING)
-  #include "../../../lcd/HardwareSerial.h"
-#endif
-
 #if ENABLED(AUTO_BED_LEVELING_LINEAR)
   #include "../../../libs/least_squares_fit.h"
 #endif
@@ -812,8 +808,7 @@ G29_TYPE GcodeSuite::G29() {
         TERN_(IS_KINEMATIC, bedlevel.extrapolate_unprobed_bed_level());
 
         #if ENABLED(KNUTWURST_TFT_LEVELING)
-          HARDWARE_SERIAL_PROTOCOLPGM("J25"); // Autoleveling done!
-          HARDWARE_SERIAL_ENTER();
+          LCD_SERIAL.print("J25\r\n"); // Autoleveling done!
         #endif
 
         bedlevel.refresh_bed_level();
