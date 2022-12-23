@@ -2333,5 +2333,11 @@
     #endif
   }
 
+  #if ENABLED(KNUTWURST_TFT_LEVELING)
+    void AnycubicTouchscreenClass::LevelingDone() {
+      SENDLINE_DBG_PGM("J25", "TFT Serial Debug: Auto leveling done... J25");
+    }
+  #endif
+
   AnycubicTouchscreenClass AnycubicTouchscreen;
 #endif // ifdef ANYCUBIC_TOUCHSCREEN

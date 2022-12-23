@@ -92,7 +92,12 @@ namespace ExtUI {
 
   #if HAS_MESH
     void onLevelingStart() {}
-    void onLevelingDone() {}
+
+    void onLevelingDone() {
+      #if ENABLED(KNUTWURST_TFT_LEVELING)
+        AnycubicTouchscreen.LevelingDone();
+      #endif
+    }
 
     void onMeshUpdate(const int8_t xpos, const int8_t ypos, const_float_t zval) {
       // Called when any mesh points are updated
