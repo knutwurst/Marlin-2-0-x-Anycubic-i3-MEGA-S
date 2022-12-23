@@ -111,7 +111,7 @@
   #endif
 #endif
 
-#if EITHER(ANYCUBIC_LCD_CHIRON, ANYCUBIC_LCD_I3MEGA)
+#if ANY(ANYCUBIC_LCD_CHIRON, ANYCUBIC_LCD_I3MEGA, ANYCUBIC_TOUCHSCREEN) // PATCH: knutwurst
   #define BEEPER_PIN                          31
   #define SD_DETECT_PIN                       49
 #endif
