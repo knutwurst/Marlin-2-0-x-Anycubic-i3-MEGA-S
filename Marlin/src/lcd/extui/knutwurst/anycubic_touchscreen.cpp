@@ -24,21 +24,21 @@
 #include <stdlib.h>
 #include <string.h>
 
-#include "../gcode/queue.h"
-#include "../gcode/parser.h"
-#include "../feature/e_parser.h"
-#include "../feature/pause.h"
-#include "../feature/bedlevel/bedlevel.h"
-#include "../libs/buzzer.h"
-#include "../libs/numtostr.h"
-#include "../module/planner.h"
-#include "../module/printcounter.h"
-#include "../module/temperature.h"
-#include "../module/motion.h"
-#include "../module/probe.h"
-#include "../module/settings.h"
-#include "../module/stepper.h"
-#include "../sd/cardreader.h"
+#include "../../../gcode/queue.h"
+#include "../../../gcode/parser.h"
+#include "../../../feature/e_parser.h"
+#include "../../../feature/pause.h"
+#include "../../../feature/bedlevel/bedlevel.h"
+#include "../../../libs/buzzer.h"
+#include "../../../libs/numtostr.h"
+#include "../../../module/planner.h"
+#include "../../../module/printcounter.h"
+#include "../../../module/temperature.h"
+#include "../../../module/motion.h"
+#include "../../../module/probe.h"
+#include "../../../module/settings.h"
+#include "../../../module/stepper.h"
+#include "../../../sd/cardreader.h"
 
 #ifdef ANYCUBIC_TOUCHSCREEN
   #include "./anycubic_touchscreen.h"
@@ -1267,6 +1267,20 @@
     #endif
   }
 
+  void AnycubicTouchscreenClass::SDCardStateChange(bool isInserted) {
+    #if ENABLED(ANYCUBIC_TFT_DEBUG)
+      SERIAL_ECHOLNPGM("TFT Serial Debug: SDCardStateChange event triggered...", isInserted);
+    #endif
+    CheckSDCardChange();
+  }
+
+  void AnycubicTouchscreenClass::SDCardError() {
+    #if ENABLED(ANYCUBIC_TFT_DEBUG)
+      SERIAL_ECHOLNPGM("TFT Serial Debug: SDCardError event triggered...");
+    #endif
+    SENDLINE_DBG_PGM("J21", "TFT Serial Debug: SD Card Error ... J21");
+  }
+
   void AnycubicTouchscreenClass::CheckHeaterError() {
     if ((thermalManager.degHotend(0) < 5) || (thermalManager.degHotend(0) > 300)) {
       if (HeaterCheckCount > 600000) {
@@ -1443,6 +1457,9 @@
     }
   }
 
+  void AnycubicTouchscreenClass::UserConfirmRequired(const char * const msg) {
+      // TODO: implement to make advanced pause, filament change, etc. work again
+  }
 
   static boolean TFTcomment_mode = false;
 

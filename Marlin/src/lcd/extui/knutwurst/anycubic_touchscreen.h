@@ -25,9 +25,8 @@
 // #include "../inc/MarlinConfig.h"
 // #include "../module/configuration_store.h"
 
-#include "./src/inc/MarlinConfigPre.h"
-#include "./src/feature/bedlevel/bedlevel.h"
-#include "src/module/probe.h"
+#include "../../../inc/MarlinConfigPre.h"
+#include "../../../module/probe.h"
 
 
 enum axis_t     : uint8_t { X, Y, Z, X2, Y2, Z2, Z3, Z4 };
@@ -253,6 +252,9 @@ void BedHeatingDone();
 void HeatingDone();
 void HeatingStart();
 void FilamentRunout();
+void UserConfirmRequired(const char *);
+void SDCardStateChange(bool);
+void SDCardError();
 void KillTFT();
 #if BOTH(ANYCUBIC_TFT_DEBUG, KNUTWURST_DGUS2_TFT)
   void Command(const char * const command);

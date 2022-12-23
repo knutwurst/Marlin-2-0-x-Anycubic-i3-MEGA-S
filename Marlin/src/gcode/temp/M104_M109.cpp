@@ -39,7 +39,7 @@
 #include "../../MarlinCore.h" // for startOrResumeJob, etc.
 
 #ifdef ANYCUBIC_TOUCHSCREEN
-  #include "../../lcd/anycubic_touchscreen.h"
+  #include "../../lcd/extui/knutwurst/anycubic_touchscreen.h"
 #endif
 
 #if ENABLED(PRINTJOB_TIMER_AUTOSTART)

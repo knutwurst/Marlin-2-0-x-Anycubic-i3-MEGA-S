@@ -32,7 +32,7 @@
 
 // PATCH START: Knutwurst
 #ifdef ANYCUBIC_TOUCHSCREEN
-  #include "../../../lcd/anycubic_touchscreen.h"
+  #include "../../../lcd/extui/knutwurst/anycubic_touchscreen.h"
   #include "../../../sd/cardreader.h"
 #endif
 // PATCH END: Knutwurst

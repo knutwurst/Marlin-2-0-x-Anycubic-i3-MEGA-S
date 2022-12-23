@@ -254,7 +254,7 @@
 
 // PATCH START: Knutwurst
 #if ENABLED(ANYCUBIC_TOUCHSCREEN)
-  #include "lcd/anycubic_touchscreen.h"
+  #include "lcd/extui/knutwurst/anycubic_touchscreen.h"
 #endif
 // PATCH END: Knutwurst
 
@@ -353,7 +353,7 @@ void startOrResumeJob() {
     TERN_(GCODE_REPEAT_MARKERS, repeat.reset());
     TERN_(CANCEL_OBJECTS, cancelable.reset());
     TERN_(LCD_SHOW_E_TOTAL, e_move_accumulator = 0);
-    #if ENABLED(SET_REMAINING_TIME)
+    #if BOTH(LCD_SET_PROGRESS_MANUALLY, USE_M73_REMAINING_TIME)
       ui.reset_remaining_time();
     #endif
   }
@@ -890,10 +890,6 @@ void idle(bool no_stepper_sleep/*=false*/) {
   TERN_(MAX7219_DEBUG, max7219.idle_tasks());
 
   // PATCH START: Knutwurst
-  #ifdef ANYCUBIC_TOUCHSCREEN
-    AnycubicTouchscreen.CommandScan();
-  #endif
-
   #ifdef ENDSTOP_BEEP
     EndstopBeep();
   #endif
@@ -1010,12 +1006,6 @@ void kill(FSTR_P const lcd_error/*=nullptr*/, FSTR_P const lcd_component/*=nullp
 
   // "Error:Printer halted. kill() called!"
   SERIAL_ERROR_MSG(STR_ERR_KILLED);
-
-  // PATCH START: Knutwurst
-  #ifdef ANYCUBIC_TOUCHSCREEN
-    AnycubicTouchscreen.KillTFT();
-  #endif
-  // PATCH END: Knutwurst
 
   #ifdef ACTION_ON_KILL
     hostui.kill();
@@ -1291,12 +1281,6 @@ void setup() {
     #endif
   #endif
   SERIAL_ECHOLNPGM("start");
-
-  // PATCH START: Knutwurst
-  #ifdef ANYCUBIC_TOUCHSCREEN
-    AnycubicTouchscreen.Setup();
-  #endif
-  // PATCH END: Knutwurst
 
   // Set up these pins early to prevent suicide
   #if HAS_KILL
@@ -1795,13 +1779,6 @@ void loop() {
     #endif
 
     endstops.event_handler();
-
-    // PATCH START: Knutwurst
-    idle();
-    #ifdef ANYCUBIC_TOUCHSCREEN
-      AnycubicTouchscreen.CommandScan();
-    #endif
-    // PATCH END: Knutwurst
 
     TERN_(HAS_TFT_LVGL_UI, printer_state_polling());
 
