@@ -24,7 +24,7 @@
 
 #if BOTH(ANYCUBIC_TFT_DEBUG, KNUTWURST_DGUS2_TFT)
 
-#include "../../lcd/anycubic_touchscreen.h"
+#include "../../lcd/extui/knutwurst/anycubic_touchscreen.h"
 #include "../gcode.h"
 
 void GcodeSuite::M9999() {

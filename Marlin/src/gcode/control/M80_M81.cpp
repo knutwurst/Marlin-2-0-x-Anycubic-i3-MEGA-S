@@ -31,7 +31,7 @@
 
 // PATCH START: Knutwurst
 #if ENABLED(ANYCUBIC_TOUCHSCREEN)
-  #include "../../lcd/anycubic_touchscreen.h"
+  #include "../../lcd/extui/knutwurst/anycubic_touchscreen.h"
 #endif
 // PATCH END: Knutwurst
 

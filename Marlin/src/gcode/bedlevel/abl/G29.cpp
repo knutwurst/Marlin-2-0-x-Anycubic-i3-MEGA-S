@@ -806,11 +806,6 @@ G29_TYPE GcodeSuite::G29() {
         bedlevel.set_grid(abl.gridSpacing, abl.probe_position_lf);
         COPY(bedlevel.z_values, abl.z_values);
         TERN_(IS_KINEMATIC, bedlevel.extrapolate_unprobed_bed_level());
-
-        #if ENABLED(KNUTWURST_TFT_LEVELING)
-          LCD_SERIAL.print("J25\r\n"); // Autoleveling done!
-        #endif
-
         bedlevel.refresh_bed_level();
 
         bedlevel.print_leveling_grid();
