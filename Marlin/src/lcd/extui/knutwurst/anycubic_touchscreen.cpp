@@ -106,17 +106,6 @@
       #endif
     }
 
-    void setAxisPosition_mm(const float position, const axis_t axis, const feedRate_t feedrate /*=0*/) {
-      // Get motion limit from software endstops, if any
-      float min, max;
-      // max = soft_endstop.max[axis];
-      // min = soft_endstop.min[axis];
-      soft_endstop.get_manual_axis_limits((AxisEnum)axis, min, max);
-
-      current_position[axis] = constrain(position, min, max);
-      line_to_current_position(feedrate ?: 60);
-    }
-
     void initializeGrid() {
       #if ENABLED(PROBE_MANUALLY)
         #define ABL_VAR static
@@ -361,35 +350,36 @@
   }
 
   void AnycubicTouchscreenClass::ResumePrint() {
-      #if ENABLED(SDSUPPORT)
-    #if ENABLED(FILAMENT_RUNOUT_SENSOR)
-      if (READ(FIL_RUNOUT_PIN)) {
-        #if ENABLED(ANYCUBIC_LCD_DEBUG)
-          SERIAL_ECHOLNPGM("TFT Serial Debug: Resume Print with filament sensor still tripped... ");
-        #endif
+    #if ENABLED(SDSUPPORT)
+      #if ENABLED(FILAMENT_RUNOUT_SENSOR)
+        if (READ(FIL_RUNOUT_PIN)) {
+          #if ENABLED(ANYCUBIC_LCD_DEBUG)
+            SERIAL_ECHOLNPGM("TFT Serial Debug: Resume Print with filament sensor still tripped... ");
+          #endif
 
-        // trigger the user message box
-        DoFilamentRunoutCheck();
+          // trigger the user message box
+          DoFilamentRunoutCheck();
 
-        // re-enable the continue button
-        SENDLINE_DBG_PGM("J18", "TFT Serial Debug: Resume Print with filament sensor still tripped... J18");
-        return;
+          // re-enable the continue button
+          SENDLINE_DBG_PGM("J18", "TFT Serial Debug: Resume Print with filament sensor still tripped... J18");
+          return;
+        }
+      #endif
+
+      if (mediaPauseState == AMPAUSESTATE_HEATER_TIMEOUT) {
+        mediaPauseState = AMPAUSESTATE_REHEATING;
+        // reheat the nozzle
+        setUserConfirmed();
+      }
+      else {
+        mediaPrintingState = AMPRINTSTATE_PRINTING;
+        mediaPauseState    = AMPAUSESTATE_NOT_PAUSED;
+
+        SENDLINE_DBG_PGM("J04", "TFT Serial Debug: SD print resumed... J04"); // J04 printing form sd card now
+        setUserConfirmed();
+        resumePrint();
       }
     #endif
-
-    if (mediaPauseState == AMPAUSESTATE_HEATER_TIMEOUT) {
-      mediaPauseState = AMPAUSESTATE_REHEATING;
-      // reheat the nozzle
-      setUserConfirmed();
-    }
-    else {
-      mediaPrintingState = AMPRINTSTATE_PRINTING;
-      mediaPauseState    = AMPAUSESTATE_NOT_PAUSED;
-
-      SENDLINE_DBG_PGM("J04", "TFT Serial Debug: SD print resumed... J04"); // J04 printing form sd card now
-      resumePrint();
-    }
-  #endif
   }
 
   int AnycubicTouchscreenClass::CodeValueInt() {
@@ -1643,7 +1633,7 @@
                       float Zvalue = bedlevel.z_values[mx][my];
                       Zvalue = Zvalue * 100;
 
-                      if ((!planner.movesplanned()) && (TFTstate != ANYCUBIC_TFT_STATE_SDPAUSE) && (TFTstate != ANYCUBIC_TFT_STATE_SDOUTAGE)) {
+                      if (!isPrinting()) {
                         if (!all_axes_trusted()) {
                           queue.inject_P(PSTR("G28\n"));
                           /*
@@ -1677,7 +1667,7 @@
                     break;
 
                     case 30: // A30 auto leveling (Old Anycubic TFT)
-                      if ((planner.movesplanned()) || (card.isPrinting()))
+                      if (isPrinting())
                         SENDLINE_DBG_PGM("J24", "TFT Serial Debug: Forbid auto leveling... J24");
                       else
                         SENDLINE_DBG_PGM("J26", "TFT Serial Debug: Start auto leveling... J26");
@@ -1755,7 +1745,7 @@
                       break;
 
                     case 36: // A36 auto leveling (New Anycubic TFT)
-                      if ((planner.movesplanned()) || (card.isPrinting()))
+                      if (isPrinting())
                         SENDLINE_DBG_PGM("J24", "TFT Serial Debug: Forbid auto leveling... J24");
                       else
                         SENDLINE_DBG_PGM("J26", "TFT Serial Debug: Start auto leveling... J26");
