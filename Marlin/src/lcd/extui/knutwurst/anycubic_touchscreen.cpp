@@ -25,22 +25,14 @@
 #include <string.h>
 
 #include "../ui_api.h"
-#include "../../../inc/MarlinConfigPre.h"
 #include "../../../gcode/queue.h"
-#include "../../../gcode/parser.h"
-#include "../../../feature/e_parser.h"
-#include "../../../feature/pause.h"
 #include "../../../feature/bedlevel/bedlevel.h"
 #include "../../../libs/buzzer.h"
 #include "../../../libs/numtostr.h"
-#include "../../../module/planner.h"
-#include "../../../module/printcounter.h"
 #include "../../../module/temperature.h"
 #include "../../../module/motion.h"
-#include "../../../module/probe.h"
 #include "../../../module/settings.h"
 #include "../../../module/stepper.h"
-//#include "../../../sd/cardreader.h"
 
 #define ANYCUBIC_TFT_DEBUG
 
@@ -376,7 +368,7 @@
         mediaPauseState    = AMPAUSESTATE_NOT_PAUSED;
 
         SENDLINE_DBG_PGM("J04", "TFT Serial Debug: SD print resumed... J04"); // J04 printing form sd card now
-        setUserConfirmed();
+        setPauseMenuResponse(PAUSE_RESPONSE_RESUME_PRINT);
         resumePrint();
       }
     #endif
@@ -1127,56 +1119,62 @@
 
   void AnycubicTouchscreenClass::UserConfirmRequired(const char * const msg) {
     #if ENABLED(ANYCUBIC_LCD_DEBUG)
-        SERIAL_ECHOLNPGM("TFT Serial Debug: OnUserConfirmRequired triggered... ", msg);
-      #endif
+      SERIAL_ECHOLNPGM("TFT Serial Debug: OnUserConfirmRequired triggered... ", msg);
+    #endif
 
-      #if ENABLED(SDSUPPORT)
-        /**
-         * Need to handle the process of following states
-         * "Nozzle Parked"
-         * "Load Filament"
-         * "Filament Purging..."
-         * "HeaterTimeout"
-         * "Reheat finished."
-         *
-         * NOTE:  The only way to handle these states is strcmp_P with the msg unfortunately (very expensive)
-         */
-        if (strcmp_P(msg, PSTR("Nozzle Parked")) == 0) {
-          mediaPrintingState = AMPRINTSTATE_PAUSED;
-          mediaPauseState    = AMPAUSESTATE_PARKED;
-          // enable continue button
-          SENDLINE_DBG_PGM("J18", "TFT Serial Debug: UserConfirm SD print paused done... J18");
-        }
-        else if (strcmp_P(msg, PSTR("Load Filament")) == 0) {
-          mediaPrintingState = AMPRINTSTATE_PAUSED;
-          mediaPauseState    = AMPAUSESTATE_FILAMENT_OUT;
-          // enable continue button
-          SENDLINE_DBG_PGM("J18", "TFT Serial Debug: UserConfirm Filament is out... J18");
-          SENDLINE_DBG_PGM("J23", "TFT Serial Debug: UserConfirm Blocking filament prompt... J23");
-        }
-        else if (strcmp_P(msg, PSTR("Filament Purging...")) == 0) {
-          mediaPrintingState = AMPRINTSTATE_PAUSED;
-          mediaPauseState    = AMPAUSESTATE_PARKING;
-          // TODO: JBA I don't think J05 just disables the continue button, i think it injects a rogue M25. So taking this out
-          // disable continue button
-          // SENDLINE_DBG_PGM("J05", "TFT Serial Debug: UserConfirm SD Filament Purging... J05"); // J05 printing pause
+    #if ENABLED(SDSUPPORT)
+      /**
+       * Need to handle the process of following states
+       * "Nozzle Parked"
+       * "Load Filament"
+       * "Filament Purging..."
+       * "HeaterTimeout"
+       * "Reheat finished."
+       *
+       * NOTE:  The only way to handle these states is strcmp_P with the msg unfortunately (very expensive)
+       */
+      if (strcmp_P(msg, PSTR("Nozzle Parked")) == 0) {
+        mediaPrintingState = AMPRINTSTATE_PAUSED;
+        mediaPauseState    = AMPAUSESTATE_PARKED;
+        // enable continue button
+        SENDLINE_DBG_PGM("J18", "TFT Serial Debug: UserConfirm SD print paused done... J18");
+      }
+      else if (strcmp_P(msg, PSTR("Load Filament")) == 0) {
+        mediaPrintingState = AMPRINTSTATE_PAUSED;
+        mediaPauseState    = AMPAUSESTATE_FILAMENT_OUT;
+        // enable continue button
+        SENDLINE_DBG_PGM("J18", "TFT Serial Debug: UserConfirm Filament is out... J18");
+        SENDLINE_DBG_PGM("J23", "TFT Serial Debug: UserConfirm Blocking filament prompt... J23");
+      }
+      else if (strcmp_P(msg, PSTR("Filament Purging...")) == 0) {
+        mediaPrintingState = AMPRINTSTATE_PAUSED;
+        mediaPauseState    = AMPAUSESTATE_PARKING;
+        // TODO: JBA I don't think J05 just disables the continue button, i think it injects a rogue M25. So taking this out
+        // disable continue button
+        // SENDLINE_DBG_PGM("J05", "TFT Serial Debug: UserConfirm SD Filament Purging... J05"); // J05 printing pause
 
-          // enable continue button
-          SENDLINE_DBG_PGM("J18", "TFT Serial Debug: UserConfirm Filament is purging... J18");
-        }
-        else if (strcmp_P(msg, PSTR("HeaterTimeout")) == 0) {
-          mediaPrintingState = AMPRINTSTATE_PAUSED;
-          mediaPauseState    = AMPAUSESTATE_HEATER_TIMEOUT;
-          // enable continue button
-          SENDLINE_DBG_PGM("J18", "TFT Serial Debug: UserConfirm SD Heater timeout... J18");
-        }
-        else if (strcmp_P(msg, PSTR("Reheat finished.")) == 0) {
-          mediaPrintingState = AMPRINTSTATE_PAUSED;
-          mediaPauseState    = AMPAUSESTATE_REHEAT_FINISHED;
-          // enable continue button
-          SENDLINE_DBG_PGM("J18", "TFT Serial Debug: UserConfirm SD Reheat done... J18");
-        }
-      #endif
+        // enable continue button
+        SENDLINE_DBG_PGM("J18", "TFT Serial Debug: UserConfirm Filament is purging... J18");
+      }
+      else if (strcmp_P(msg, PSTR("HeaterTimeout")) == 0) {
+        mediaPrintingState = AMPRINTSTATE_PAUSED;
+        mediaPauseState    = AMPAUSESTATE_HEATER_TIMEOUT;
+        // enable continue button
+        SENDLINE_DBG_PGM("J18", "TFT Serial Debug: UserConfirm SD Heater timeout... J18");
+      }
+      else if (strcmp_P(msg, PSTR("Reheat finished.")) == 0) {
+        mediaPrintingState = AMPRINTSTATE_PAUSED;
+        mediaPauseState    = AMPAUSESTATE_REHEAT_FINISHED;
+        // enable continue button
+        SENDLINE_DBG_PGM("J18", "TFT Serial Debug: UserConfirm SD Reheat done... J18");
+      }
+      else if (strcmp_P(msg, PSTR("Paused")) == 0) {
+        mediaPrintingState = AMPRINTSTATE_PAUSED;
+        mediaPauseState    = AMPAUSESTATE_PAUSED;
+        // enable continue button
+        SENDLINE_DBG_PGM("J18", "TFT Serial Debug: UserConfirm SD Reheat done... J18");
+      }
+    #endif
   }
 
   static boolean TFTcomment_mode = false;
