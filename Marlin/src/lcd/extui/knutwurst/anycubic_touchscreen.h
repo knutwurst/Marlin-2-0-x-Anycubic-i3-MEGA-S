@@ -28,10 +28,6 @@
 #include "../../../inc/MarlinConfigPre.h"
 #include "../../../module/probe.h"
 
-
-enum axis_t     : uint8_t { X, Y, Z, X2, Y2, Z2, Z3, Z4 };
-enum extruder_t : uint8_t { E0, E1, E2, E3, E4, E5, E6, E7 };
-void setAxisPosition_mm(const float, const axis_t, const feedRate_t=0);
 void initializeGrid();
 
 char *itostr2(const uint8_t &x);
@@ -47,9 +43,9 @@ char *itostr2(const uint8_t &x);
 #define MAX_PRINTABLE_FILENAME_LEN 26
 
 #if ENABLED(KNUTWURST_CHIRON)
-  #define FILAMENT_RUNOUT_PIN 33
+  #define FIL_RUNOUT_PIN 33
 #else
-  #define FILAMENT_RUNOUT_PIN 19
+  #define FIL_RUNOUT_PIN 19
 #endif
 
 #define ANYCUBIC_TFT_STATE_IDLE 0
@@ -59,6 +55,25 @@ char *itostr2(const uint8_t &x);
 #define ANYCUBIC_TFT_STATE_SDPAUSE_OOF 4
 #define ANYCUBIC_TFT_STATE_SDSTOP_REQ 5
 #define ANYCUBIC_TFT_STATE_SDOUTAGE 99
+
+enum AnycubicMediaPrintState {
+  AMPRINTSTATE_NOT_PRINTING,
+  AMPRINTSTATE_PRINTING,
+  AMPRINTSTATE_PAUSE_REQUESTED,
+  AMPRINTSTATE_PAUSED,
+  AMPRINTSTATE_STOP_REQUESTED
+};
+
+enum AnycubicMediaPauseState {
+  AMPAUSESTATE_NOT_PAUSED,
+  AMPAUSESTATE_PARKING,
+  AMPAUSESTATE_PARKED,
+  AMPAUSESTATE_FILAMENT_OUT,
+  AMPAUSESTATE_FILAMENT_PURGING,
+  AMPAUSESTATE_HEATER_TIMEOUT,
+  AMPAUSESTATE_REHEATING,
+  AMPAUSESTATE_REHEAT_FINISHED
+};
 
 #if DISABLED(KNUTWURST_DGUS2_TFT)
   #define SM_DIR_UP_L           "/.."
@@ -245,37 +260,24 @@ char *itostr2(const uint8_t &x);
 class AnycubicTouchscreenClass {
 public:
 AnycubicTouchscreenClass();
+
 void Setup();
 void CommandScan();
-void BedHeatingStart();
-void BedHeatingDone();
-void HeatingDone();
-void HeatingStart();
 void FilamentRunout();
+void DoFilamentRunoutCheck();
 void UserConfirmRequired(const char *);
 void SDCardStateChange(bool);
 void SDCardError();
 void KillTFT();
+static void OnPrintTimerStarted();
+static void OnPrintTimerPaused();
+static void OnPrintTimerStopped();
 #if BOTH(ANYCUBIC_TFT_DEBUG, KNUTWURST_DGUS2_TFT)
   void Command(const char * const command);
 #endif
 #if ENABLED(KNUTWURST_TFT_LEVELING)
   void LevelingDone();
 #endif
-char TFTstate = ANYCUBIC_TFT_STATE_IDLE;
-
-/**
-     * Anycubic TFT pause states:
-     *
-     * 0 - printing / stopped
-     * 1 - regular pause
-     * 2 - M600 pause
-     * 3 - filament runout pause
-     * 4 - nozzle timeout on regular pause   // OBSOLETE
-     * 5 - nozzle timeout on M600            // OBSOLETE
-     * 6 - nozzle timeout on filament runout // OBSOLETE
-     */
-uint8_t ai3m_pause_state = 0;
 
 private:
 char TFTcmdbuffer[TFTBUFSIZE][TFT_MAX_CMD_SIZE];
@@ -296,6 +298,9 @@ bool IsParked             = false;
 int currentFlowRate       = 0;
 bool PrintdoneAndPowerOFF = true;
 bool powerOFFflag         = 0;
+
+static AnycubicMediaPrintState mediaPrintingState;
+static AnycubicMediaPauseState mediaPauseState;
 
 #if defined(POWER_OUTAGE_TEST)
   struct OutageDataStruct {
@@ -322,12 +327,12 @@ void CheckSDCardChange();
 void CheckHeaterError();
 void HandleSpecialMenu();
 void FilamentChangePause();
-void FilamentChangeResume();
+void ResumePrint();
 void ReheatNozzle();
 void ParkAfterStop();
 
-char currentTouchscreenSelection[64];
-char currentFileOrDirectory[64];
+char currentTouchscreenSelection[30];
+char currentFileOrDirectory[30];
 String flowRateBuffer;
 String zOffsetBuffer;
 uint16_t MyFileNrCnt          = 0;
@@ -339,13 +344,6 @@ uint8_t FlowMenu    = false;
 uint8_t BLTouchMenu = false;
 uint8_t LevelMenu   = false;
 uint8_t CaseLight   = true;
-
-#if ENABLED(ANYCUBIC_FILAMENT_RUNOUT_SENSOR)
-  char FilamentTestStatus     = false;
-  char FilamentTestLastStatus = false;
-  bool FilamentSetMillis      = true;
-  int FilamentRunoutCounter   = 0;
-#endif
 
 #if ENABLED(KNUTWURST_MEGA_P_LASER)
   typedef struct {
