@@ -252,12 +252,6 @@
   #include "tests/marlin_tests.h"
 #endif
 
-// PATCH START: Knutwurst
-#if ENABLED(ANYCUBIC_TOUCHSCREEN)
-  #include "lcd/extui/knutwurst/anycubic_touchscreen.h"
-#endif
-// PATCH END: Knutwurst
-
 PGMSTR(M112_KILL_STR, "M112 Shutdown");
 
 MarlinState marlin_state = MF_INITIALIZING;
@@ -396,88 +390,6 @@ void startOrResumeJob() {
 
 #endif // SDSUPPORT
 
-// PATCH START: Knutwurst
-#ifdef ENDSTOP_BEEP
-void EndstopBeep() {
-    static char last_status = ((READ(X_MIN_PIN) << 2) | (READ(Y_MIN_PIN) << 1) | READ(X_MAX_PIN));
-    static unsigned char now_status;
-
-    now_status = ((READ(X_MIN_PIN) << 2) | (READ(Y_MIN_PIN) << 1) | READ(X_MAX_PIN)) & 0xff;
-
-    if (now_status<last_status) {
-      static millis_t endstop_ms = millis() + 300UL;
-      if (ELAPSED(millis(), endstop_ms)) {
-        buzzer.tone(60, 2000);
-      }
-      last_status = now_status;
-    } else if (now_status != last_status) {
-      last_status=now_status;
-    }
-  }
-#endif
-
-#if HAS_FILAMENT_SENSOR
-  void event_filament_runout() {
-    #if ENABLED(ADVANCED_PAUSE_FEATURE)
-      if (did_pause_print) return;  // Action already in progress. Purge triggered repeated runout.
-    #endif
-
-    #if ENABLED(EXTENSIBLE_UI)
-      ExtUI::onFilamentRunout(ExtUI::getActiveTool());
-    #endif
-
-    #if EITHER(HOST_PROMPT_SUPPORT, HOST_ACTION_COMMANDS)
-      const char tool = '0'
-      #if NUM_RUNOUT_SENSORS > 1
-        + active_extruder
-      #endif
-      ;
-    #endif
-
-    //action:out_of_filament
-    #if ENABLED(HOST_PROMPT_SUPPORT)
-      host_prompt_reason = PROMPT_FILAMENT_RUNOUT;
-      host_action_prompt_end();
-      host_action_prompt_begin(PSTR("FilamentRunout T"), false);
-      SERIAL_CHAR(tool);
-      SERIAL_EOL();
-      host_action_prompt_show();
-    #endif
-
-    const bool run_runout_script = !runout.host_handling;
-
-    #if ENABLED(HOST_ACTION_COMMANDS)
-      if (run_runout_script
-        && ( strstr(FILAMENT_RUNOUT_SCRIPT, "M600")
-          || strstr(FILAMENT_RUNOUT_SCRIPT, "M125")
-          #if ENABLED(ADVANCED_PAUSE_FEATURE)
-            || strstr(FILAMENT_RUNOUT_SCRIPT, "M25")
-          #endif
-        )
-      ) {
-        host_action_paused(false);
-      } else {
-        // Legacy Repetier command for use until newer version supports standard dialog
-        // To be removed later when pause command also triggers dialog
-        #ifdef ACTION_ON_FILAMENT_RUNOUT
-          host_action(PSTR(ACTION_ON_FILAMENT_RUNOUT " T"), false);
-          SERIAL_CHAR(tool);
-          SERIAL_EOL();
-        #endif
-
-        host_action_pause(false);
-      }
-      SERIAL_ECHOPGM(" " ACTION_REASON_ON_FILAMENT_RUNOUT " ");
-      SERIAL_CHAR(tool);
-      SERIAL_EOL();
-    #endif // HOST_ACTION_COMMANDS
-
-    if (run_runout_script) {
-      queue.inject_P(PSTR(FILAMENT_RUNOUT_SCRIPT));
-    }
-  }
-#endif // HAS_FILAMENT_SENSOR
-// PATCH END: Knutwurst
 
 /**
  * Minimal management of Marlin's core activities:
@@ -493,12 +405,6 @@ void EndstopBeep() {
  *  - Pulse FET_SAFETY_PIN if it exists
  */
 inline void manage_inactivity(const bool no_stepper_sleep=false) {
-  // PATCH START: Knutwurst
-  #if ENABLED(ANYCUBIC_TOUCHSCREEN) && ENABLED(ANYCUBIC_FILAMENT_RUNOUT_SENSOR)
-    AnycubicTouchscreen.FilamentRunout();
-  #endif
-  // PATCH END: Knutwurst
-
   queue.get_available_commands();
 
   const millis_t ms = millis();
@@ -888,12 +794,6 @@ void idle(bool no_stepper_sleep/*=false*/) {
 
   // Max7219 heartbeat, animation, etc
   TERN_(MAX7219_DEBUG, max7219.idle_tasks());
-
-  // PATCH START: Knutwurst
-  #ifdef ENDSTOP_BEEP
-    EndstopBeep();
-  #endif
-  // PATCH END: Knutwurst
 
   // Return if setup() isn't completed
   if (marlin_state == MF_INITIALIZING) goto IDLE_DONE;
