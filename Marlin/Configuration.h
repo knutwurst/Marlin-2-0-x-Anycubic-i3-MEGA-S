@@ -1662,7 +1662,7 @@
  * Use G29 repeatedly, adjusting the Z height at each point with movement commands
  * or (with LCD_BED_LEVELING) the LCD controller.
  */
-#if NONE(KNUTWURST_BLTOUCH, KNUTWURST_TFT_LEVELING)
+#if NONE(KNUTWURST_BLTOUCH, KNUTWURST_TFT_LEVELING, KNUTWURST_KLICKY)
   #define PROBE_MANUALLY
 #endif
 
@@ -1739,21 +1739,24 @@
  * Magnetically Mounted Probe
  * For probes such as Euclid, Klicky, Klackender, etc.
  */
-// #define MAG_MOUNTED_PROBE
-#if ENABLED(MAG_MOUNTED_PROBE)
-  #define PROBE_DEPLOY_FEEDRATE (133 * 60)  // (mm/min) Probe deploy speed
-  #define PROBE_STOW_FEEDRATE   (133 * 60)  // (mm/min) Probe stow speed
+#if ENABLED(KNUTWURST_KLICKY)
+  // @see https://www.printables.com/model/489398-anycubic-mega-klicky-probe
+  #define MAG_MOUNTED_PROBE
+  #if ENABLED(MAG_MOUNTED_PROBE)
+    #define PROBE_DEPLOY_FEEDRATE (133 * 60)  // (mm/min) Probe deploy speed
+    #define PROBE_STOW_FEEDRATE   (133 * 60)  // (mm/min) Probe stow speed
 
-  #define MAG_MOUNTED_DEPLOY_1 { PROBE_DEPLOY_FEEDRATE, { 245, 114, 30 } }  // Move to side Dock & Attach probe
-  #define MAG_MOUNTED_DEPLOY_2 { PROBE_DEPLOY_FEEDRATE, { 210, 114, 30 } }  // Move probe off dock
-  #define MAG_MOUNTED_DEPLOY_3 { PROBE_DEPLOY_FEEDRATE, {   0,   0,  0 } }  // Extra move if needed
-  #define MAG_MOUNTED_DEPLOY_4 { PROBE_DEPLOY_FEEDRATE, {   0,   0,  0 } }  // Extra move if needed
-  #define MAG_MOUNTED_DEPLOY_5 { PROBE_DEPLOY_FEEDRATE, {   0,   0,  0 } }  // Extra move if needed
-  #define MAG_MOUNTED_STOW_1   { PROBE_STOW_FEEDRATE,   { 245, 114, 20 } }  // Move to dock
-  #define MAG_MOUNTED_STOW_2   { PROBE_STOW_FEEDRATE,   { 245, 114,  0 } }  // Place probe beside remover
-  #define MAG_MOUNTED_STOW_3   { PROBE_STOW_FEEDRATE,   { 230, 114,  0 } }  // Side move to remove probe
-  #define MAG_MOUNTED_STOW_4   { PROBE_STOW_FEEDRATE,   { 210, 114, 20 } }  // Side move to remove probe
-  #define MAG_MOUNTED_STOW_5   { PROBE_STOW_FEEDRATE,   {   0,   0,  0 } }  // Extra move if needed
+    #define MAG_MOUNTED_DEPLOY_1 { PROBE_DEPLOY_FEEDRATE, { 176, 0,  0 } }    // Move to front dock & attach probe
+    #define MAG_MOUNTED_DEPLOY_2 { PROBE_DEPLOY_FEEDRATE, { 176, 0, 20 } }    // Move probe off dock
+    #define MAG_MOUNTED_DEPLOY_3 { PROBE_DEPLOY_FEEDRATE, {   0, 0,  0 } }  // Extra move if needed
+    #define MAG_MOUNTED_DEPLOY_4 { PROBE_DEPLOY_FEEDRATE, {   0, 0,  0 } }  // Extra move if needed
+    #define MAG_MOUNTED_DEPLOY_5 { PROBE_DEPLOY_FEEDRATE, {   0, 0,  0 } }  // Extra move if needed
+    #define MAG_MOUNTED_STOW_1   { PROBE_STOW_FEEDRATE,   { 176, 0, 20 } }    // Move right above the dock
+    #define MAG_MOUNTED_STOW_2   { PROBE_STOW_FEEDRATE,   { 176, 0,  0 } }    // Move probe into dock
+    #define MAG_MOUNTED_STOW_3   { PROBE_STOW_FEEDRATE,   {  50, 0,  0 } }  // Side move to remove probe
+    #define MAG_MOUNTED_STOW_4   { PROBE_STOW_FEEDRATE,   {   0, 0,  0 } }  // Extra move if needed
+    #define MAG_MOUNTED_STOW_5   { PROBE_STOW_FEEDRATE,   {   0, 0,  0 } }  // Extra move if needed
+  #endif
 #endif
 
 // Duet Smart Effector (for delta printers) - https://bit.ly/2ul5U7J
@@ -1852,7 +1855,11 @@
   #define NOZZLE_TO_PROBE_OFFSET { 0, 0, -16.8 }
 #endif
 
-#if NONE(KNUTWURST_BLTOUCH, KNUTWURST_TFT_LEVELING)
+#if ENABLED(KNUTWURST_KLICKY)
+  #define NOZZLE_TO_PROBE_OFFSET  { 0, -25, -7 }
+#endif
+
+#if NONE(KNUTWURST_BLTOUCH, KNUTWURST_TFT_LEVELING, KNUTWURST_KLICKY)
   #define NOZZLE_TO_PROBE_OFFSET { 10, 10, 0 }
 #endif
 
@@ -1862,6 +1869,8 @@
 
 #if ENABLED(KNUTWURST_CHIRON)
   #define PROBING_MARGIN 15
+#elseif ENABLED(KNUTWURST_KLICKY)
+  #define PROBING_MARGIN 20
 #else
   #define PROBING_MARGIN 35
 #endif
@@ -2480,7 +2489,7 @@
  *   leveling in steps so you can manually adjust the Z height at each grid-point.
  *   With an LCD controller the process is guided step-by-step.
  */
-#if EITHER(KNUTWURST_BLTOUCH, KNUTWURST_TFT_LEVELING)
+#if ANY(KNUTWURST_BLTOUCH, KNUTWURST_TFT_LEVELING, KNUTWURST_KLICKY)
   // #define AUTO_BED_LEVELING_3POINT
   // #define AUTO_BED_LEVELING_LINEAR
   #define AUTO_BED_LEVELING_BILINEAR
@@ -2488,7 +2497,7 @@
   // #define MESH_BED_LEVELING
 #endif
 
-#if NONE(KNUTWURST_BLTOUCH, KNUTWURST_TFT_LEVELING)
+#if NONE(KNUTWURST_BLTOUCH, KNUTWURST_TFT_LEVELING, KNUTWURST_KLICKY)
   // #define AUTO_BED_LEVELING_3POINT
   // #define AUTO_BED_LEVELING_LINEAR
   // #define AUTO_BED_LEVELING_BILINEAR
