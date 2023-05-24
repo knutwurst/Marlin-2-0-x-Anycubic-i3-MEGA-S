@@ -363,12 +363,14 @@
         // reheat the nozzle
         setUserConfirmed();
       }
+      else if (mediaPauseState == AMPAUSESTATE_FILAMENT_PURGING) {
+        setUserConfirmed();
+      }
       else {
         mediaPrintingState = AMPRINTSTATE_PRINTING;
         mediaPauseState    = AMPAUSESTATE_NOT_PAUSED;
 
         SENDLINE_DBG_PGM("J04", "TFT Serial Debug: SD print resumed... J04"); // J04 printing form sd card now
-        setPauseMenuResponse(PAUSE_RESPONSE_RESUME_PRINT);
         resumePrint();
       }
     #endif
@@ -1148,7 +1150,8 @@
       }
       else if (strcmp_P(msg, PSTR("Filament Purging...")) == 0) {
         mediaPrintingState = AMPRINTSTATE_PAUSED;
-        mediaPauseState    = AMPAUSESTATE_PARKING;
+        mediaPauseState    = AMPAUSESTATE_FILAMENT_PURGING;
+        
         // TODO: JBA I don't think J05 just disables the continue button, i think it injects a rogue M25. So taking this out
         // disable continue button
         // SENDLINE_DBG_PGM("J05", "TFT Serial Debug: UserConfirm SD Filament Purging... J05"); // J05 printing pause
@@ -1165,12 +1168,6 @@
       else if (strcmp_P(msg, PSTR("Reheat finished.")) == 0) {
         mediaPrintingState = AMPRINTSTATE_PAUSED;
         mediaPauseState    = AMPAUSESTATE_REHEAT_FINISHED;
-        // enable continue button
-        SENDLINE_DBG_PGM("J18", "TFT Serial Debug: UserConfirm SD Reheat done... J18");
-      }
-      else if (strcmp_P(msg, PSTR("Paused")) == 0) {
-        mediaPrintingState = AMPRINTSTATE_PAUSED;
-        mediaPauseState    = AMPAUSESTATE_PAUSED;
         // enable continue button
         SENDLINE_DBG_PGM("J18", "TFT Serial Debug: UserConfirm SD Reheat done... J18");
       }

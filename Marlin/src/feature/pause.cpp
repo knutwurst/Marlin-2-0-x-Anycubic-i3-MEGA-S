@@ -576,17 +576,7 @@ void wait_for_confirmation(const bool is_reload/*=false*/, const int8_t max_beep
       IF_DISABLED(PAUSE_REHEAT_FAST_RESUME, wait_for_user = true);
 
       nozzle_timed_out = false;
-/*
-      #ifdef ANYCUBIC_TOUCHSCREEN
-        if (AnycubicTouchscreen.ai3m_pause_state > 3) {
-          AnycubicTouchscreen.ai3m_pause_state -= 3;
-          #ifdef ANYCUBIC_TFT_DEBUG
-            SERIAL_ECHOPGM(" DEBUG: NTO - AI3M Pause State set to: ", AnycubicTouchscreen.ai3m_pause_state);
-            SERIAL_EOL();
-          #endif
-        }
-      #endif
-*/
+
       first_impatient_beep(max_beep_count);
     }
     idle_no_sleep();
