@@ -30,13 +30,6 @@
 #include "../../../module/printcounter.h"
 #include "../../../lcd/marlinui.h"
 
-// PATCH START: Knutwurst
-#ifdef ANYCUBIC_TOUCHSCREEN
-  #include "../../../lcd/extui/knutwurst/anycubic_touchscreen.h"
-  #include "../../../sd/cardreader.h"
-#endif
-// PATCH END: Knutwurst
-
 #if HAS_MULTI_EXTRUDER
   #include "../../../module/tool_change.h"
 #endif
@@ -78,29 +71,6 @@
  *  Default values are used for omitted arguments.
  */
 void GcodeSuite::M600() {
-  // PATCH START: Knutwurst
-  #ifdef ANYCUBIC_TOUCHSCREEN
-    #ifdef SDSUPPORT
-      if (card.isPrinting()) { // are we printing from sd?
-        if (AnycubicTouchscreen.ai3m_pause_state < 2) {
-          AnycubicTouchscreen.ai3m_pause_state = 2;
-          #ifdef ANYCUBIC_TFT_DEBUG
-            SERIAL_ECHOPGM(" DEBUG: M600 - AI3M Pause State set to: ", AnycubicTouchscreen.ai3m_pause_state);
-            SERIAL_EOL();
-          #endif
-        }
-        #ifdef ANYCUBIC_TFT_DEBUG
-          SERIAL_ECHOLNPGM("DEBUG: Enter M600 TFTstate routine");
-        #endif
-        AnycubicTouchscreen.TFTstate = ANYCUBIC_TFT_STATE_SDPAUSE_REQ; // enter correct display state to show resume button
-        #ifdef ANYCUBIC_TFT_DEBUG
-          SERIAL_ECHOLNPGM("DEBUG: Set TFTstate to SDPAUSE_REQ");
-        #endif
-      }
-    #endif
-  #endif
-  // PATCH END: Knutwurst
-
   #if ENABLED(MIXING_EXTRUDER)
     const int8_t eindex = get_target_e_stepper_from_command();
     if (eindex < 0) return;

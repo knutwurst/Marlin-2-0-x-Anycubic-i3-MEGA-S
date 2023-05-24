@@ -43,9 +43,9 @@ namespace ExtUI {
   void onPlayTone(const uint16_t frequency, const uint16_t duration) {
     TERN_(SPEAKER, ::tone(BEEPER_PIN, frequency, duration));
   }
-  void onPrintTimerStarted()  { }
-  void onPrintTimerPaused()   { }
-  void onPrintTimerStopped()  { }
+  void onPrintTimerStarted()  { AnycubicTouchscreen.OnPrintTimerStarted(); }
+  void onPrintTimerPaused()   { AnycubicTouchscreen.OnPrintTimerPaused(); }
+  void onPrintTimerStopped()  { AnycubicTouchscreen.OnPrintTimerStopped(); }
   void onFilamentRunout(const extruder_t extruder)   { AnycubicTouchscreen.FilamentRunout(); }
   void onUserConfirmRequired(const char * const msg) { AnycubicTouchscreen.UserConfirmRequired(msg); }
   void onStatusChanged(const char * const msg) {}
