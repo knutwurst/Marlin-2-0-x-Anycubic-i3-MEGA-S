@@ -1283,13 +1283,14 @@
                 break;
               case 7: // A7 GET PRINTING TIME
               {
+                const uint32_t elapsedSeconds = getProgress_seconds_elapsed();
                 SEND_PGM("A7V ");
-                if (starttime != 0) { // print time
-                  uint16_t time = millis() / 60000 - starttime / 60000;
-                  SEND(itostr2(time / 60));
+                if (elapsedSeconds != 0) {  // print time
+                  const uint32_t elapsedMinutes = elapsedSeconds / 60;
+                  SEND(ui8tostr2(elapsedMinutes / 60));
                   SEND_PGM(" H ");
-                  SEND(itostr2(time % 60));
-                  SEND_PGM(" M");
+                  SEND(ui8tostr2(elapsedMinutes % 60));
+                  SENDLINE_PGM(" M");
                 }
                 else
                   SENDLINE_PGM(" 999:999");
