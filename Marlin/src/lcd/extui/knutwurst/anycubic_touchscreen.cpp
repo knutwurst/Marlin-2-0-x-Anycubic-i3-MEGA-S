@@ -214,15 +214,12 @@
     LCD_SERIAL.begin(LCD_BAUDRATE);
 
     #if DISABLED(KNUTWURST_4MAXP2)
-      SENDLINE_PGM("");
-      SENDLINE_PGM("J17"); // J17 Main board reset
-      delay(10);
+      SENDLINE_DBG_PGM("J17", "TFT Serial Debug: Main board reset... J17"); // J17 Main board reset
+      delay_ms(10);
     #endif
 
     mediaPrintingState = AMPRINTSTATE_NOT_PRINTING;
     mediaPauseState = AMPAUSESTATE_NOT_PAUSED;
-
-    SENDLINE_DBG_PGM("J12", "TFT Serial Debug: Ready... J12"); // J12 Ready
 
     currentTouchscreenSelection[0] = 0;
     currentFileOrDirectory[0]      = '\0';
@@ -239,6 +236,7 @@
     #if BOTH(SDSUPPORT, HAS_SD_DETECT)
       SET_INPUT_PULLUP(SD_DETECT_PIN);
     #endif
+    
     #if ENABLED(FILAMENT_RUNOUT_SENSOR)
       SET_INPUT_PULLUP(FIL_RUNOUT1_PIN);
     #endif
@@ -250,6 +248,10 @@
 
     setup_OutageTestPin();
     setup_PowerOffPin();
+
+    SENDLINE_DBG_PGM("J12", "TFT Serial Debug: Ready... J12"); // J12 Ready
+
+    DoFilamentRunoutCheck();
 
     #ifdef STARTUP_CHIME
       BUZZ(100, 554);
@@ -545,7 +547,7 @@
                || (strcasestr_P(currentTouchscreenSelection, PSTR(SM_PAUSE_L)) != NULL)
                ) {
         SERIAL_ECHOLNPGM("Special Menu: Fil. Change Pause");
-        ResumePrint();
+        PausePrint();
       }
       else if ((strcasestr_P(currentTouchscreenSelection, PSTR(SM_RESUME_L)) != NULL)
                || (strcasestr_P(currentTouchscreenSelection, PSTR(SM_RESUME_S)) != NULL)
@@ -557,7 +559,7 @@
                || (strcasestr_P(currentTouchscreenSelection, PSTR(SM_DIS_FILSENS_S)) != NULL)
                ) {
         SERIAL_ECHOLNPGM("Special Menu: Disable Filament Sensor");
-
+        queue.inject_P(PSTR("M412 H0 S0\nM500"));
         BUZZ(105, 1108);
         BUZZ(105, 1108);
         BUZZ(105, 1108);
@@ -566,7 +568,7 @@
                || (strcasestr_P(currentTouchscreenSelection, PSTR(SM_EN_FILSENS_S)) != NULL)
                ) {
         SERIAL_ECHOLNPGM("Special Menu: Enable Filament Sensor");
-
+        queue.inject_P(PSTR("M412 H0 S1\nM500"));
         BUZZ(105, 1108);
         BUZZ(105, 1108);
       }
