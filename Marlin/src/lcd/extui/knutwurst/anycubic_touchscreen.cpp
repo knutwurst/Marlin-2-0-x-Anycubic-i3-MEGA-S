@@ -165,43 +165,7 @@
       WRITE(OUTAGECON_PIN, LOW);
     #endif
   }
-
-  char *itostr2(const uint8_t &x) {
-    int xx = x;
-    _conv[0] = (xx / 10) % 10 + '0';
-    _conv[1] = (xx) % 10 + '0';
-    _conv[2] = 0;
-    return _conv;
-  }
-
-  #ifndef ULTRA_LCD
-    #define DIGIT(n) ('0' + (n))
-    #define DIGIMOD(n, f) DIGIT((n) / (f) % 10)
-    #define RJDIGIT(n, f) ((n) >= (f) ? DIGIMOD(n, f) : ' ')
-    #define MINUSOR(n, alt) (n >= 0 ? (alt) : (n = -n, '-'))
-
-    char *itostr3(const int x) {
-      int xx = x;
-      _conv[4] = MINUSOR(xx, RJDIGIT(xx, 100));
-      _conv[5] = RJDIGIT(xx, 10);
-      _conv[6] = DIGIMOD(xx, 1);
-      return &_conv[4];
-    }
-
-    // Convert signed float to fixed-length string with 023.45 / -23.45 format
-
-    char *ftostr32(const float &x) {
-      long xx = x * 100;
-      _conv[1] = MINUSOR(xx, DIGIMOD(xx, 10000));
-      _conv[2] = DIGIMOD(xx, 1000);
-      _conv[3] = DIGIMOD(xx, 100);
-      _conv[4] = '.';
-      _conv[5] = DIGIMOD(xx, 10);
-      _conv[6] = DIGIMOD(xx, 1);
-      return &_conv[1];
-    }
-  #endif
-
+  
   using namespace ExtUI;
 
   AnycubicTouchscreenClass::AnycubicTouchscreenClass() {
@@ -1235,30 +1199,23 @@
             TFTstrchr_pointer = strchr(TFTcmdbuffer[TFTbufindw], 'A');
             switch ((int)((strtod(&TFTcmdbuffer[TFTbufindw][TFTstrchr_pointer - TFTcmdbuffer[TFTbufindw] + 1], NULL)))) {
               case 0: // A0 GET HOTEND TEMP
-                SEND_PGM_VAL("A0V ", int(thermalManager.degHotend(0) + 0.5));
+                SEND_PGM_VAL("A0V ", int(getActualTemp_celsius(E0) + 0.5));
                 break;
 
               case 1: // A1  GET HOTEND TARGET TEMP
-                SEND_PGM_VAL("A1V ", int(thermalManager.degTargetHotend(0) + 0.5));
+                SEND_PGM_VAL("A1V ", int(getTargetTemp_celsius(E0) + 0.5));
                 break;
 
               case 2: // A2 GET HOTBED TEMP
-                SEND_PGM_VAL("A2V ", int(thermalManager.degBed() + 0.5));
+                SEND_PGM_VAL("A2V ", int(getActualTemp_celsius(BED) + 0.5));
                 break;
 
               case 3: // A3 GET HOTBED TARGET TEMP
-                SEND_PGM_VAL("A3V ", int(thermalManager.degTargetBed() + 0.5));
+                SEND_PGM_VAL("A3V ", int(getTargetTemp_celsius(BED) + 0.5));
                 break;
 
               case 4: // A4 GET FAN SPEED
-              {
-                unsigned int temp;
-
-                temp = ((thermalManager.fan_speed[0] * 100) / 255);
-                temp = constrain(temp, 0, 100);
-
-                SEND_PGM_VAL("A4V ", temp);
-              }
+                SEND_PGM_VAL("A4V ", int(getActualFan_percent(FAN0)));
               break;
               case 5: // A5 GET CURRENT COORDINATE
                 SEND_PGM("A5V X: "); LCD_SERIAL.print(current_position[X_AXIS]);
@@ -1269,16 +1226,16 @@
 
               case 6: // A6 GET SD CARD PRINTING STATUS
                 #ifdef SDSUPPORT
-                  if (card.isPrinting()) {
+                  if (isPrintingFromMedia())
+                  {
                     SEND_PGM("A6V ");
-                    if (card.isMounted())
-                      SENDLINE(itostr3(card.percentDone()));
+                    if (isMediaInserted())
+                      SENDLINE(ui8tostr3rj(getProgress_percent()));
                     else
-                      SENDLINE_DBG_PGM("J02", "TFT Serial Debug: SD Card initialized... J02");
+                      SENDLINE_DBG_PGM("J02", "TFT Serial Debug: No SD Card mounted to return printing status... J02");
                   }
-                  else {
+                  else
                     SENDLINE_PGM("A6V ---");
-                  }
                 #endif
                 break;
               case 7: // A7 GET PRINTING TIME
@@ -1393,13 +1350,13 @@
                 if (CodeSeen('S')) {
                   tempvalue = constrain(CodeValue(), 0, 260);
                   if (thermalManager.degTargetHotend(0) <= 260)
-                    thermalManager.setTargetHotend(tempvalue, 0); // do not set Temp from TFT if it is set via gcode
+                    setTargetTemp_celsius(tempvalue, (extruder_t)E0);; // do not set Temp from TFT if it is set via gcode
                 }
-                else if ((CodeSeen('C')) && (!planner.movesplanned())) {
-                  if ((current_position[Z_AXIS] < 10))
-                    queue.inject_P(PSTR("G1 Z10")); // RASE Z AXIS
+                else if ((CodeSeen('C')) && (!isPrinting())) {
+                  if ((getAxisPosition_mm(Z) < 10))
+                    injectCommands(F("G1 Z10")); // RASE Z AXIS
                   tempvalue = constrain(CodeValue(), 0, 260);
-                  thermalManager.setTargetHotend(tempvalue, 0);
+                  setTargetTemp_celsius(tempvalue, (extruder_t)E0);
                 }
               }
               break;
@@ -1408,36 +1365,33 @@
               {
                 unsigned int tempbed;
                 if (CodeSeen('S')) {
-                  tempbed = constrain(CodeValue(), 0, 115);
-                  thermalManager.setTargetBed(tempbed);
+                  tempbed = constrain(CodeValue(), 0, 120);
                   if (thermalManager.degTargetBed() <= 100)
-                    thermalManager.setTargetBed(tempbed); // do not set Temp from TFT if it is set via gcode
+                    setTargetTemp_celsius(tempbed, (heater_t)BED); // do not set Temp from TFT if it is set via gcode
                 }
               }
               break;
 
               case 18: // A18 set fan speed
-                unsigned int temp;
+                float fanPercent;
                 if (CodeSeen('S')) {
-                  temp = (CodeValue() * 255 / 100);
-                  temp = constrain(temp, 0, 255);
-                  thermalManager.set_fan_speed(0, temp);
+                  fanPercent = CodeValue();
+                  fanPercent = constrain(fanPercent, 0, 100);
+                  setTargetFan_percent(fanPercent, FAN0);
                 }
                 else {
-                  thermalManager.set_fan_speed(0, 255);
+                  fanPercent = 100;
+                  setTargetFan_percent(fanPercent, FAN0);
                 }
                 SENDLINE_PGM("");
                 break;
 
               case 19: // A19 stop stepper drivers
-                if ((!planner.movesplanned())
-                    #ifdef SDSUPPORT
-                      && (!card.isPrinting())
-                    #endif
-                    ) {
+                if (!isPrinting()) {
                   quickstop_stepper();
                   stepper.disable_all_steppers();
                 }
+
                 SENDLINE_PGM("");
                 break;
 
