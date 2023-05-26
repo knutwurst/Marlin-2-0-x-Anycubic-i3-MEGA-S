@@ -35,7 +35,7 @@
   #define BOARD_INFO_NAME      "Creality V4"
 #endif
 #ifndef DEFAULT_MACHINE_NAME
-  #define DEFAULT_MACHINE_NAME "Ender 3 V2"
+  #define DEFAULT_MACHINE_NAME "Ender-3 V2"
 #endif
 
 #define BOARD_NO_NATIVE_USB
@@ -53,6 +53,7 @@
 #if NO_EEPROM_SELECTED
   #define IIC_BL24CXX_EEPROM                      // EEPROM on I2C-0
   //#define SDCARD_EEPROM_EMULATION
+  #undef NO_EEPROM_SELECTED
 #endif
 
 #if ENABLED(IIC_BL24CXX_EEPROM)

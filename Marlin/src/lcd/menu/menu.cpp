@@ -117,8 +117,7 @@ void MenuEditItemBase::edit_screen(strfunc_t strfunc, loadfunc_t loadfunc) {
   // Reset repeat_delay for Touch Buttons
   TERN_(HAS_TOUCH_BUTTONS, ui.repeat_delay = BUTTON_DELAY_EDIT);
   // Constrain ui.encoderPosition to 0 ... maxEditValue (calculated in encoder steps)
-  if (int32_t(ui.encoderPosition) < 0) ui.encoderPosition = 0;
-  if (int32_t(ui.encoderPosition) > maxEditValue) ui.encoderPosition = maxEditValue;
+  ui.encoderPosition = constrain(int32_t(ui.encoderPosition), 0, maxEditValue);
   // If drawing is flagged then redraw the (whole) edit screen
   if (ui.should_draw())
     draw_edit_screen(strfunc(ui.encoderPosition + minEditValue));
@@ -271,13 +270,6 @@ void scroll_screen(const uint8_t limit, const bool is_menu) {
   else
     encoderTopLine = encoderLine;
 }
-
-#if HAS_SOUND
-  void MarlinUI::completion_feedback(const bool good/*=true*/) {
-    TERN_(HAS_TOUCH_SLEEP, wakeup_screen()); // Wake up on rotary encoder click...
-    if (good) OKAY_BUZZ(); else ERR_BUZZ();
-  }
-#endif
 
 #if HAS_LINE_TO_Z
 

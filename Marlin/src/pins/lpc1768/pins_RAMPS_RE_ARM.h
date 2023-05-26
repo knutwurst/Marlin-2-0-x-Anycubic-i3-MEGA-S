@@ -23,6 +23,8 @@
 
 /**
  * Re-ARM with RAMPS v1.4 pin assignments
+ * Schematic: https://green-candy.osdn.jp/external/MarlinFW/board_schematics/Re-ARM%20RAMPS%201.4/Re_ARM_Schematic.pdf
+ * Origin: https://reprap.org/mediawiki/images/f/fa/Re_ARM_Schematic.pdf
  *
  * Applies to the following boards:
  *
@@ -354,8 +356,8 @@
   #if EITHER(VIKI2, miniVIKI)
     #define DOGLCD_CS                      P0_16  // (16)
     #define DOGLCD_A0                      P2_06  // (59) J3-8 & AUX-2
-    #define DOGLCD_SCK                SD_SCK_PIN
-    #define DOGLCD_MOSI              SD_MOSI_PIN
+    #define DOGLCD_SCK                     P0_15  // (52) (SCK)  J3-9 & AUX-3
+    #define DOGLCD_MOSI                    P0_18  // (51) (MOSI) J3-10 & AUX-3
 
     #define STAT_LED_BLUE_PIN              P0_26  // (63)  may change if cable changes
     #define STAT_LED_RED_PIN               P1_21  // ( 6)  may change if cable changes
