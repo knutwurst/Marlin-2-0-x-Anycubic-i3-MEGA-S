@@ -1048,7 +1048,8 @@
   }
 
   void AnycubicTouchscreenClass::CheckHeaterError() {
-    if ((thermalManager.degHotend(0) < 5) || (thermalManager.degHotend(0) > 300)) {
+    if ( (getTargetTemp_celsius((extruder_t)E0) < 5)
+      || (getTargetTemp_celsius((extruder_t)E0) > 300)) {
       if (HeaterCheckCount > 600000) {
         HeaterCheckCount = 0;
         SENDLINE_DBG_PGM("J10", "TFT Serial Debug: Hotend temperature abnormal... J10");
@@ -1353,7 +1354,7 @@
                 unsigned int tempvalue;
                 if (CodeSeen('S')) {
                   tempvalue = constrain(CodeValue(), 0, 260);
-                  if (thermalManager.degTargetHotend(0) <= 260)
+                  if (getTargetTemp_celsius((extruder_t)E0) <= 260)
                     setTargetTemp_celsius(tempvalue, (extruder_t)E0);; // do not set Temp from TFT if it is set via gcode
                 }
                 else if ((CodeSeen('C')) && (!isPrinting())) {
@@ -1370,7 +1371,7 @@
                 unsigned int tempbed;
                 if (CodeSeen('S')) {
                   tempbed = constrain(CodeValue(), 0, 120);
-                  if (thermalManager.degTargetBed() <= 100)
+                  if (getTargetTemp_celsius((heater_t)BED) <= 100)
                     setTargetTemp_celsius(tempbed, (heater_t)BED); // do not set Temp from TFT if it is set via gcode
                 }
               }
