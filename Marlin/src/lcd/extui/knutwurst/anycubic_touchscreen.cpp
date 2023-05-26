@@ -517,7 +517,7 @@
                || (strcasestr_P(currentTouchscreenSelection, PSTR(SM_PAUSE_L)) != NULL)
                ) {
         SERIAL_ECHOLNPGM("Special Menu: Fil. Change Pause");
-        PausePrint();
+        injectCommands(F("M600"));
       }
       else if ((strcasestr_P(currentTouchscreenSelection, PSTR(SM_RESUME_L)) != NULL)
                || (strcasestr_P(currentTouchscreenSelection, PSTR(SM_RESUME_S)) != NULL)
