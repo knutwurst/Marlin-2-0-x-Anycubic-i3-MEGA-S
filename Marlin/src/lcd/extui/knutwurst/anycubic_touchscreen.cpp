@@ -313,7 +313,7 @@
     #if ENABLED(SDSUPPORT)
       #if ENABLED(FILAMENT_RUNOUT_SENSOR)
         if (READ(FIL_RUNOUT_PIN)) {
-          #if ENABLED(ANYCUBIC_LCD_DEBUG)
+          #if ENABLED(ANYCUBIC_TFT_DEBUG)
             SERIAL_ECHOLNPGM("TFT Serial Debug: Resume Print with filament sensor still tripped... ");
           #endif
 
@@ -360,7 +360,7 @@
   void AnycubicTouchscreenClass::HandleSpecialMenu() {
     #if ENABLED(KNUTWURST_SPECIAL_MENU)
       #ifdef ANYCUBIC_TFT_DEBUG
-        SERIAL_ECHOPGM("DEBUG: Special Menu Selection: ", currentTouchscreenSelection);
+        SERIAL_ECHOPGM("TFT Serial Debug: Special Menu Selection: ", currentTouchscreenSelection);
         SERIAL_EOL();
       #endif
       if ((strcasestr_P(currentTouchscreenSelection, PSTR(SM_SPECIAL_MENU_L)) != NULL)
@@ -766,7 +766,7 @@
         zOffsetBuffer = SM_BLTZ_DISP_L;
 
         #ifdef ANYCUBIC_TFT_DEBUG
-          SERIAL_ECHOPGM("DEBUG: Current probe.offset.z: ", float(probe.offset.z));
+          SERIAL_ECHOPGM("TFT Serial Debug: Current probe.offset.z: ", float(probe.offset.z));
           SERIAL_EOL();
         #endif
 
@@ -1093,7 +1093,7 @@
 }
 
   void AnycubicTouchscreenClass::UserConfirmRequired(const char * const msg) {
-    #if ENABLED(ANYCUBIC_LCD_DEBUG)
+    #if ENABLED(ANYCUBIC_TFT_DEBUG)
       SERIAL_ECHOLNPGM("TFT Serial Debug: OnUserConfirmRequired triggered... ", msg);
     #endif
 
@@ -1301,27 +1301,29 @@
 
               case 13: // A13 SELECTION FILE
                 #if ENABLED(SDSUPPORT)
-                  if (isMediaInserted()) {
+                  {
                     starpos = (strchr(TFTstrchr_pointer + 4, '*'));
                     if (TFTstrchr_pointer[4] == '/') {
                       strcpy(currentTouchscreenSelection, TFTstrchr_pointer + 5);
-                      currentFileOrDirectory[0] = 0;
-                      SENDLINE_DBG_PGM("J21", "TFT Serial Debug: Clear file selection... J21 "); // J21 Not File Selected
-                      SENDLINE_PGM("");
+                      #ifdef ANYCUBIC_TFT_DEBUG
+                        SERIAL_ECHOPGM("TFT Serial Debug: currentTouchscreenSelection: ", currentTouchscreenSelection);
+                        SERIAL_EOL();
+                      #endif
                     }
                     else if (TFTstrchr_pointer[4] == '<') {
                       strcpy(currentTouchscreenSelection, TFTstrchr_pointer + 4);
-                      SpecialMenu = true;
-                      currentFileOrDirectory[0] = 0;
-                      SENDLINE_DBG_PGM("J21", "TFT Serial Debug: Clear file selection... J21 "); // J21 Not File Selected
-                      SENDLINE_PGM("");
+                      #ifdef ANYCUBIC_TFT_DEBUG
+                        SERIAL_ECHOPGM("J21", "TFT Serial Debug: Clear file selection... J21 ");
+                        SERIAL_EOL();
+                      #endif
                     }
                     else {
-                      currentTouchscreenSelection[0] = 0;
+                      if (SpecialMenu == false)
+                        currentTouchscreenSelection[0] = 0;
 
-                      if (starpos) *(starpos - 1) = '\0';
-
-                      strcpy(currentFileOrDirectory, TFTstrchr_pointer + 4);
+                      if (starpos != NULL) *(starpos - 1) = '\0';
+                        strcpy(currentFileOrDirectory, TFTstrchr_pointer + 4);
+                      
                       SENDLINE_DBG_PGM_VAL("J20", "TFT Serial Debug: File Selected... J20 ", currentFileOrDirectory); // J20 File Selected
                     }
                   }
@@ -1510,55 +1512,51 @@
                 break;
 
               case 26: // A26 refresh SD
+              {
                 #ifdef SDSUPPORT
                   #ifdef ANYCUBIC_TFT_DEBUG
-                    SERIAL_ECHOPGM(" TFT Serial Debug: currentTouchscreenSelection: ", currentTouchscreenSelection);
+                    SERIAL_ECHOPGM("TFT Serial Debug: currentTouchscreenSelection: ", currentTouchscreenSelection);
                     SERIAL_EOL();
                   #endif
-                   if (isMediaInserted()) {
-                    if (strlen(currentTouchscreenSelection) > 0) {
-                      FileList currentFileList;
-                      if ((strcasestr_P(currentTouchscreenSelection, PSTR(SM_DIR_UP_S)) != NULL)
-                          ||  (strcasestr_P(currentTouchscreenSelection, PSTR(SM_DIR_UP_L)) != NULL)
-                          ) {
+
+                  if (strlen(currentTouchscreenSelection) > 0) {
+                    FileList currentFileList;
+                    if ((strcasestr_P(currentTouchscreenSelection, PSTR(SM_DIR_UP_S)) != NULL)
+                        ||  (strcasestr_P(currentTouchscreenSelection, PSTR(SM_DIR_UP_L)) != NULL)
+                        ) {
+                      #ifdef ANYCUBIC_TFT_DEBUG
+                        SERIAL_ECHOLNPGM("TFT Serial Debug: Directory UP (cd ..)");
+                      #endif
+                      currentFileList.upDir();
+                    }
+                    else {
+                      if (currentTouchscreenSelection[0] == '<') {
                         #ifdef ANYCUBIC_TFT_DEBUG
-                          SERIAL_ECHOLNPGM("TFT Serial Debug: Directory UP (cd ..)");
+                          SERIAL_ECHOLNPGM("TFT Serial Debug: Enter Special Menu");
                         #endif
-                        currentFileList.upDir();
+                        HandleSpecialMenu();
                       }
                       else {
-                        if (currentTouchscreenSelection[0] == '<') {
-                          #ifdef ANYCUBIC_TFT_DEBUG
-                            SERIAL_ECHOLNPGM("TFT Serial Debug: Enter Special Menu");
-                          #endif
-                          HandleSpecialMenu();
-                        }
-                        else {
-                          #ifdef ANYCUBIC_TFT_DEBUG
-                            SERIAL_ECHOLNPGM("TFT Serial Debug: Not a menu. Must be a directory!");
-                          #endif
+                        #ifdef ANYCUBIC_TFT_DEBUG
+                          SERIAL_ECHOLNPGM("TFT Serial Debug: Not a menu. Must be a directory!");
+                        #endif
 
-                          #if ENABLED(KNUTWURST_DGUS2_TFT)
-                            strcpy(currentFileOrDirectory, currentTouchscreenSelection);
-                            int currentFileLen = strlen(currentFileOrDirectory);
-                            currentFileOrDirectory[currentFileLen - 4] = '\0';
-                            card.cd(currentFileOrDirectory);
-                          #else
-                            currentFileList.changeDir(currentTouchscreenSelection);
-                          #endif
-                        }
+                        #if ENABLED(KNUTWURST_DGUS2_TFT)
+                          strcpy(currentFileOrDirectory, currentTouchscreenSelection);
+                          int currentFileLen = strlen(currentFileOrDirectory);
+                          currentFileOrDirectory[currentFileLen - 4] = '\0';
+                          card.cd(currentFileOrDirectory);
+                        #else
+                          currentFileList.changeDir(currentTouchscreenSelection);
+                        #endif
                       }
                     }
                   }
                   if (SpecialMenu == false)
                     currentTouchscreenSelection[0] = 0;
-
+                }
                 #endif // ifdef SDSUPPORT
                 break;
-                #ifdef SERVO_ENDSTOPS
-                    case 27: // A27 servos angles  adjust
-                      break;
-                #endif
 
               case 28: // A28 filament test
               {
@@ -1950,7 +1948,7 @@
     if (ELAPSED(ms, nextStopCheck)) {
       nextStopCheck = ms + 1000UL;
       if (mediaPrintingState == AMPRINTSTATE_STOP_REQUESTED) {
-        #if ENABLED(ANYCUBIC_LCD_DEBUG)
+        #if ENABLED(ANYCUBIC_TFT_DEBUG)
           SERIAL_ECHOLNPGM("TFT Serial Debug: Finished stopping print, releasing motors ...");
         #endif
         mediaPrintingState = AMPRINTSTATE_NOT_PRINTING;
