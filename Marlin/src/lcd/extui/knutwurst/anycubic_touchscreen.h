@@ -332,8 +332,8 @@ void ResumePrint();
 void ReheatNozzle();
 void ParkAfterStop();
 
-char currentTouchscreenSelection[30];
-char currentFileOrDirectory[30];
+char currentTouchscreenSelection[64];
+char currentFileOrDirectory[64];
 String flowRateBuffer;
 String zOffsetBuffer;
 uint16_t MyFileNrCnt          = 0;

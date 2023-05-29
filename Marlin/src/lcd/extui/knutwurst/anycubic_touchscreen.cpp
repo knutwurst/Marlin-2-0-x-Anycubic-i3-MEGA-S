@@ -34,7 +34,7 @@
 #include "../../../module/settings.h"
 #include "../../../module/stepper.h"
 
-//#define ANYCUBIC_TFT_DEBUG
+#define ANYCUBIC_TFT_DEBUG
 
 #ifdef ANYCUBIC_TOUCHSCREEN
   #include "./anycubic_touchscreen.h"
@@ -1305,25 +1305,23 @@
                     starpos = (strchr(TFTstrchr_pointer + 4, '*'));
                     if (TFTstrchr_pointer[4] == '/') {
                       strcpy(currentTouchscreenSelection, TFTstrchr_pointer + 5);
-                      #ifdef ANYCUBIC_TFT_DEBUG
-                        SERIAL_ECHOPGM("TFT Serial Debug: currentTouchscreenSelection: ", currentTouchscreenSelection);
-                        SERIAL_EOL();
-                      #endif
+                      currentFileOrDirectory[0] = 0;
+                      SENDLINE_DBG_PGM("J21", "TFT Serial Debug: Clear file selection... J21 "); // J21 Not File Selected
+                      SENDLINE_PGM("");
                     }
                     else if (TFTstrchr_pointer[4] == '<') {
                       strcpy(currentTouchscreenSelection, TFTstrchr_pointer + 4);
-                      #ifdef ANYCUBIC_TFT_DEBUG
-                        SERIAL_ECHOPGM("J21", "TFT Serial Debug: Clear file selection... J21 ");
-                        SERIAL_EOL();
-                      #endif
+                      SpecialMenu = true;
+                      currentFileOrDirectory[0] = 0;
+                      SENDLINE_DBG_PGM("J21", "TFT Serial Debug: Clear file selection... J21 "); // J21 Not File Selected
+                      SENDLINE_PGM("");
                     }
                     else {
-                      if (SpecialMenu == false)
-                        currentTouchscreenSelection[0] = 0;
+                      currentTouchscreenSelection[0] = 0;
 
-                      if (starpos != NULL) *(starpos - 1) = '\0';
-                        strcpy(currentFileOrDirectory, TFTstrchr_pointer + 4);
-                      
+                      if (starpos) *(starpos - 1) = '\0';
+
+                      strcpy(currentFileOrDirectory, TFTstrchr_pointer + 4);
                       SENDLINE_DBG_PGM_VAL("J20", "TFT Serial Debug: File Selected... J20 ", currentFileOrDirectory); // J20 File Selected
                     }
                   }
@@ -1514,15 +1512,16 @@
               case 26: // A26 refresh SD
               {
                 #ifdef SDSUPPORT
-                  #ifdef ANYCUBIC_TFT_DEBUG
-                    SERIAL_ECHOPGM("TFT Serial Debug: currentTouchscreenSelection: ", currentTouchscreenSelection);
-                    SERIAL_EOL();
-                  #endif
+                    #ifdef ANYCUBIC_TFT_DEBUG
+                      SERIAL_ECHOPGM("TFT Serial Debug: RefreshSD(): currentTouchscreenSelection: ", currentTouchscreenSelection);
+                      SERIAL_EOL();
+                      SERIAL_ECHOPGM("TFT Serial Debug: RefreshSD(): currentFileOrDirectory: ", currentFileOrDirectory);
+                      SERIAL_EOL();
+                    #endif
 
-                  if (strlen(currentTouchscreenSelection) > 0) {
                     FileList currentFileList;
-                    if ((strcasestr_P(currentTouchscreenSelection, PSTR(SM_DIR_UP_S)) != NULL)
-                        ||  (strcasestr_P(currentTouchscreenSelection, PSTR(SM_DIR_UP_L)) != NULL)
+                    if ((strcasestr_P(currentFileOrDirectory, PSTR(SM_DIR_UP_S)) != NULL)
+                        ||  (strcasestr_P(currentFileOrDirectory, PSTR(SM_DIR_UP_L)) != NULL)
                         ) {
                       #ifdef ANYCUBIC_TFT_DEBUG
                         SERIAL_ECHOLNPGM("TFT Serial Debug: Directory UP (cd ..)");
@@ -1545,16 +1544,16 @@
                           strcpy(currentFileOrDirectory, currentTouchscreenSelection);
                           int currentFileLen = strlen(currentFileOrDirectory);
                           currentFileOrDirectory[currentFileLen - 4] = '\0';
-                          card.cd(currentFileOrDirectory);
+                          currentFileList.changeDir(currentFileOrDirectory);
                         #else
-                          currentFileList.changeDir(currentTouchscreenSelection);
+                          currentFileList.changeDir(currentFileOrDirectory);
                         #endif
                       }
                     }
                   }
                   if (SpecialMenu == false)
                     currentTouchscreenSelection[0] = 0;
-                }
+
                 #endif // ifdef SDSUPPORT
                 break;
 
