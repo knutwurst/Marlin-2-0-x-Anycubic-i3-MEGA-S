@@ -1030,9 +1030,13 @@
 
 void AnycubicTouchscreenClass::RenderCurrentFileList() {
   uint16_t selectedNumber = 0;
-  currentTouchscreenSelection[0] = 0;
-  currentFileOrDirectory[0] = 0;
   FileList currentFileList;
+  currentFileOrDirectory[0] = 0;
+
+  if (SpecialMenu == false) {
+    currentTouchscreenSelection[0] = 0;
+  }
+    
 
   SENDLINE_PGM("FN "); // Filelist start
 
@@ -1894,8 +1898,9 @@ void AnycubicTouchscreenClass::RenderCurrentFolder(uint16_t selectedNumber) {
                       }
                     }
                   }
-                  if (SpecialMenu == false)
+                  if (SpecialMenu == false) {
                     currentTouchscreenSelection[0] = 0;
+                  }
 
                 #endif // ifdef SDSUPPORT
                 break;
