@@ -2658,7 +2658,7 @@
  */
 #define ADVANCED_PAUSE_FEATURE
 #if ENABLED(ADVANCED_PAUSE_FEATURE)
-    #if DISABLED(ENABLED_4MAXP2)
+    #if DISABLED(KNUTWURST_4MAXP2)
       #define PAUSE_PARK_RETRACT_FEEDRATE         40  // (mm/s) Initial retract feedrate.
       #define PAUSE_PARK_RETRACT_LENGTH            4  // (mm) Initial retract.
                                                       // This short retract is done immediately, before parking the nozzle.
