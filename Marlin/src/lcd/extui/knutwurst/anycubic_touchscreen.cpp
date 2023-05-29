@@ -34,7 +34,7 @@
 #include "../../../module/settings.h"
 #include "../../../module/stepper.h"
 
-//#define ANYCUBIC_TFT_DEBUG
+#define ANYCUBIC_TFT_DEBUG
 
 #ifdef ANYCUBIC_TOUCHSCREEN
   #include "./anycubic_touchscreen.h"
@@ -706,6 +706,8 @@
 
 
   void AnycubicTouchscreenClass::PrintList() {
+    SENDLINE_PGM("FN "); // Filelist start
+
     #if ENABLED(KNUTWURST_SPECIAL_MENU)
       if (MMLMenu) {
         switch (filenumber) {
@@ -1022,7 +1024,281 @@
         SENDLINE_PGM(SM_SPECIAL_MENU_L);
       #endif
     }
+    SENDLINE_PGM("END"); // Filelist stop
   }
+
+
+void AnycubicTouchscreenClass::RenderCurrentFileList() {
+  uint16_t selectedNumber = 0;
+  currentTouchscreenSelection[0] = 0;
+  currentFileOrDirectory[0] = 0;
+  FileList currentFileList;
+
+  SENDLINE_PGM("FN "); // Filelist start
+
+  if (!isMediaInserted() && !SpecialMenu) {
+    SENDLINE_DBG_PGM("J02", "TFT Serial Debug: No SD Card mounted to render Current File List... J02");
+
+    SENDLINE_PGM(SM_SPECIAL_MENU_S);
+    SENDLINE_PGM(SM_SPECIAL_MENU_L);
+  }
+  else {
+    if (CodeSeen('S'))
+      selectedNumber = CodeValue();
+
+    if (SpecialMenu)
+      RenderSpecialMenu(selectedNumber);
+    else if (selectedNumber <= currentFileList.count())
+      RenderCurrentFolder(selectedNumber);
+  }
+  SENDLINE_PGM("END"); // Filelist stop
+}
+
+void AnycubicTouchscreenClass::RenderSpecialMenu(uint16_t selectedNumber) {
+  #if ENABLED(KNUTWURST_SPECIAL_MENU)
+      if (MMLMenu) {
+        switch (selectedNumber) {
+          case 0: // Page 1
+            SENDLINE_PGM(SM_MESH_START_S);
+            SENDLINE_PGM(SM_MESH_START_L);
+            SENDLINE_PGM(SM_Z_UP_01_S);
+            SENDLINE_PGM(SM_Z_UP_01_L);
+            SENDLINE_PGM(SM_Z_DN_01_S);
+            SENDLINE_PGM(SM_Z_DN_01_L);
+            SENDLINE_PGM(SM_Z_UP_002_S);
+            SENDLINE_PGM(SM_Z_UP_002_L);
+            break;
+
+          case 4: // Page 2
+            SENDLINE_PGM(SM_Z_DN_002_S);
+            SENDLINE_PGM(SM_Z_DN_002_L);
+            SENDLINE_PGM(SM_Z_UP_001_S);
+            SENDLINE_PGM(SM_Z_UP_001_L);
+            SENDLINE_PGM(SM_Z_DN_001_S);
+            SENDLINE_PGM(SM_Z_DN_001_L);
+            SENDLINE_PGM(SM_MESH_NEXT_S);
+            SENDLINE_PGM(SM_MESH_NEXT_L);
+            break;
+
+          case 8: // Page 2
+            SENDLINE_PGM(SM_SAVE_EEPROM_S);
+            SENDLINE_PGM(SM_SAVE_EEPROM_L);
+            SENDLINE_PGM(SM_BACK_S);
+            SENDLINE_PGM(SM_BACK_L);
+            break;
+
+          default:
+            break;
+        }
+      }
+      else if (FlowMenu) {
+        flowRateBuffer = SM_FLOW_DISP_L;
+        flowRateBuffer.replace("XXX", String(currentFlowRate));
+
+        switch (selectedNumber) {
+          case 0: // Page 1
+            SENDLINE_PGM(SM_FLOW_DISP_S);
+            SENDLINE(flowRateBuffer.c_str());
+            SENDLINE_PGM(SM_FLOW_UP_S);
+            SENDLINE_PGM(SM_FLOW_UP_L);
+            SENDLINE_PGM(SM_FLOW_DN_S);
+            SENDLINE_PGM(SM_FLOW_DN_L);
+            SENDLINE_PGM(SM_FLOW_EXIT_S);
+            SENDLINE_PGM(SM_FLOW_EXIT_L);
+            break;
+
+          default:
+            break;
+        }
+      }
+      else if (BLTouchMenu) {
+        zOffsetBuffer = SM_BLTZ_DISP_L;
+
+        #ifdef ANYCUBIC_TFT_DEBUG
+          SERIAL_ECHOPGM("TFT Serial Debug: Current probe.offset.z: ", float(probe.offset.z));
+          SERIAL_EOL();
+        #endif
+
+        zOffsetBuffer.replace("XXXXX", String(float(probe.offset.z)));
+
+        switch (selectedNumber) {
+          case 0: // Page 1
+            SENDLINE_PGM(SM_BLTZ_DISP_S);
+            SENDLINE(zOffsetBuffer.c_str());
+            SENDLINE_PGM(SM_BLTZ_UP_S);
+            SENDLINE_PGM(SM_BLTZ_UP_L);
+            SENDLINE_PGM(SM_BLTZ_DN_S);
+            SENDLINE_PGM(SM_BLTZ_DN_L);
+            SENDLINE_PGM(SM_BLTOUCH_S);
+            SENDLINE_PGM(SM_BLTOUCH_L);
+            break;
+
+          case 4: // Page 2
+            SENDLINE_PGM(SM_BLTZ_EXIT_S);
+            SENDLINE_PGM(SM_BLTZ_EXIT_L);
+            break;
+
+          default:
+            break;
+        }
+      }
+      else if (LevelMenu) {
+        switch (selectedNumber) {
+          case 0: // Page 1
+            SENDLINE_PGM(SM_EZLVL_P1_S);
+            SENDLINE_PGM(SM_EZLVL_P1_L);
+            SENDLINE_PGM(SM_EZLVL_P2_S);
+            SENDLINE_PGM(SM_EZLVL_P2_L);
+            SENDLINE_PGM(SM_EZLVL_P3_S);
+            SENDLINE_PGM(SM_EZLVL_P3_L);
+            SENDLINE_PGM(SM_EZLVL_P4_S);
+            SENDLINE_PGM(SM_EZLVL_P4_L);
+            break;
+
+          case 4: // Page 2
+            SENDLINE_PGM(SM_EZLVL_EXIT_S);
+            SENDLINE_PGM(SM_EZLVL_EXIT_L);
+            break;
+
+          default:
+            break;
+        }
+      }
+      else if (SpecialMenu) {
+        switch (selectedNumber) {
+          case 0: // Page 1
+            SENDLINE_PGM(SM_FLOWMENU_S);
+            SENDLINE_PGM(SM_FLOWMENU_L);
+            SENDLINE_PGM(SM_PREHEAT_BED_S);
+            SENDLINE_PGM(SM_PREHEAT_BED_L);
+            SENDLINE_PGM(SM_PAUSE_S);
+            SENDLINE_PGM(SM_PAUSE_L);
+            SENDLINE_PGM(SM_RESUME_S);
+            SENDLINE_PGM(SM_RESUME_L);
+            break;
+
+            #if NONE(KNUTWURST_BLTOUCH, KNUTWURST_TFT_LEVELING)
+                case 4: // Page 2 for Manual Mesh Bed Level
+                  SENDLINE_PGM(SM_EZLVL_MENU_S);
+                  SENDLINE_PGM(SM_EZLVL_MENU_L);
+                  SENDLINE_PGM(SM_MESH_MENU_S);
+                  SENDLINE_PGM(SM_MESH_MENU_L);
+                  SENDLINE_PGM(SM_PID_HOTEND_S);
+                  SENDLINE_PGM(SM_PID_HOTEND_L);
+                  SENDLINE_PGM(SM_PID_BED_S);
+                  SENDLINE_PGM(SM_PID_BED_L);
+                  break;
+            #endif
+
+            #if ENABLED(KNUTWURST_BLTOUCH)
+                case 4: // Page 2 for BLTouch
+                  SENDLINE_PGM(SM_EZLVL_MENU_S);
+                  SENDLINE_PGM(SM_EZLVL_MENU_L);
+                  SENDLINE_PGM(SM_BLTZMENU_S);
+                  SENDLINE_PGM(SM_BLTZMENU_L);
+                  SENDLINE_PGM(SM_PID_HOTEND_S);
+                  SENDLINE_PGM(SM_PID_HOTEND_L);
+                  SENDLINE_PGM(SM_PID_BED_S);
+                  SENDLINE_PGM(SM_PID_BED_L);
+                  break;
+            #endif
+
+            #if ENABLED(KNUTWURST_TFT_LEVELING)
+                case 4: // Page 2 for Chiron ABL
+                  SENDLINE_PGM(SM_EZLVL_MENU_S);
+                  SENDLINE_PGM(SM_EZLVL_MENU_L);
+                  SENDLINE_PGM(SM_RESETLV_S);
+                  SENDLINE_PGM(SM_RESETLV_L);
+                  SENDLINE_PGM(SM_PID_HOTEND_S);
+                  SENDLINE_PGM(SM_PID_HOTEND_L);
+                  SENDLINE_PGM(SM_PID_BED_S);
+                  SENDLINE_PGM(SM_PID_BED_L);
+                  break;
+            #endif
+
+          case 8: // Page 3
+            SENDLINE_PGM(SM_LOAD_DEFAULTS_S);
+            SENDLINE_PGM(SM_LOAD_DEFAULTS_L);
+            SENDLINE_PGM(SM_SAVE_EEPROM_S);
+            SENDLINE_PGM(SM_SAVE_EEPROM_L);
+            SENDLINE_PGM(SM_DIS_FILSENS_S);
+            SENDLINE_PGM(SM_DIS_FILSENS_L);
+            SENDLINE_PGM(SM_EN_FILSENS_S);
+            SENDLINE_PGM(SM_EN_FILSENS_L);
+            break;
+
+          case 12: // Page 3
+            SENDLINE_PGM(SM_EXIT_S);
+            SENDLINE_PGM(SM_EXIT_L);
+            break;
+
+          default:
+            break;
+        }
+      }
+    #endif // if ENABLED(KNUTWURST_SPECIAL_MENU)
+}
+
+void AnycubicTouchscreenClass::RenderCurrentFolder(uint16_t selectedNumber) {
+  FileList currentFileList;
+  uint16_t count = selectedNumber;
+  uint16_t max_files;
+  uint16_t dir_files = currentFileList.count();
+
+  if ((dir_files - selectedNumber) < 4) {
+    max_files = dir_files;
+    #ifdef ANYCUBIC_TFT_DEBUG
+      SERIAL_ECHOLN("max_files = filesOnSDCard;");
+    #endif
+  } else {
+    max_files = selectedNumber + 3;
+    #ifdef ANYCUBIC_TFT_DEBUG
+      SERIAL_ECHOLN("max_files = filenumber + 3;");
+    #endif
+  }
+
+
+  for (count = selectedNumber; count <= max_files; count++) {
+    if (count == 0) { // Special Entry
+      if (currentFileList.isAtRootDir()) {
+        SENDLINE_PGM(SM_SPECIAL_MENU_S);
+        SENDLINE_PGM(SM_SPECIAL_MENU_L);
+        #ifdef ANYCUBIC_TFT_DEBUG
+          SERIAL_ECHO(count);
+          SERIAL_ECHO(": ");
+          SERIAL_ECHOLNPGM(SM_SPECIAL_MENU_L);
+        #endif
+      }
+      else {
+        SENDLINE_PGM(SM_DIR_UP_S);
+        SENDLINE_PGM(SM_DIR_UP_L);
+        #ifdef ANYCUBIC_TFT_DEBUG
+          SERIAL_ECHO(count);
+          SERIAL_ECHO(": ");
+          SERIAL_ECHOLNPGM(SM_DIR_UP_L);
+        #endif
+      }
+    }
+    else {
+      currentFileList.seek(count - 1, false);
+
+      #if ENABLED(ANYCUBIC_LCD_DEBUG)
+        SERIAL_ECHOLN(currentFileList.filename());
+      #endif
+      if (currentFileList.isDir()) {
+        SEND_PGM("/");
+        SENDLINE(currentFileList.shortFilename());
+        SEND_PGM("/");
+        SENDLINE(currentFileList.filename());
+
+      }
+      else {
+        SENDLINE(currentFileList.shortFilename());
+        SENDLINE(currentFileList.filename());
+      }
+    }
+  }
+}
 
   void AnycubicTouchscreenClass::CheckSDCardChange() {
   #if BOTH(SDSUPPORT, HAS_SD_DETECT)
@@ -1270,9 +1546,8 @@
                   #endif
                   {
                     if (CodeSeen('S')) filenumber = CodeValue();
-                    SENDLINE_PGM("FN "); // Filelist start
                     PrintList();
-                    SENDLINE_PGM("END"); // Filelist stop
+                    //RenderCurrentFileList();
                   }
                 #endif
                 break;

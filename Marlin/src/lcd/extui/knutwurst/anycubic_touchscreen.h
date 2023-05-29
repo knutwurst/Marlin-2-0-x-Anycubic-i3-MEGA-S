@@ -325,6 +325,9 @@ void FilamentChangePause();
 void ResumePrint();
 void ReheatNozzle();
 void ParkAfterStop();
+void RenderCurrentFileList();
+void RenderSpecialMenu(uint16_t);
+void RenderCurrentFolder(uint16_t);
 
 char currentTouchscreenSelection[64];
 char currentFileOrDirectory[64];
