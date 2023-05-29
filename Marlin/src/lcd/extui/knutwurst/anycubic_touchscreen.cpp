@@ -1043,13 +1043,15 @@ void AnycubicTouchscreenClass::RenderCurrentFileList() {
     SENDLINE_PGM(SM_SPECIAL_MENU_L);
   }
   else {
-    if (CodeSeen('S'))
+    if (CodeSeen('S')) {
       selectedNumber = CodeValue();
+    }
 
-    if (SpecialMenu)
+    if (SpecialMenu) {
       RenderSpecialMenu(selectedNumber);
-    else if (selectedNumber <= currentFileList.count())
+    } else if (selectedNumber <= currentFileList.count()) {
       RenderCurrentFolder(selectedNumber);
+    }
   }
   SENDLINE_PGM("END"); // Filelist stop
 }
@@ -1278,23 +1280,89 @@ void AnycubicTouchscreenClass::RenderCurrentFolder(uint16_t selectedNumber) {
           SERIAL_ECHOLNPGM(SM_DIR_UP_L);
         #endif
       }
-    }
-    else {
+    } else {
       currentFileList.seek(count - 1, false);
 
       #if ENABLED(ANYCUBIC_LCD_DEBUG)
         SERIAL_ECHOLN(currentFileList.filename());
       #endif
+      /*
       if (currentFileList.isDir()) {
         SEND_PGM("/");
         SENDLINE(currentFileList.shortFilename());
         SEND_PGM("/");
         SENDLINE(currentFileList.filename());
-
-      }
-      else {
+      } else {
         SENDLINE(currentFileList.shortFilename());
         SENDLINE(currentFileList.filename());
+      }
+      */
+
+      // The longname may not be filed, so we use the built-in fallback here.
+      const char* fileName  = currentFileList.filename();
+      int fileNameLen = strlen(fileName);
+      bool fileNameWasCut = false;
+
+      // Cut off too long filenames.
+      // They don't fit on the screen anyway.
+      #if ENABLED(KNUTWURST_DGUS2_TFT)
+        if (fileNameLen >= MAX_PRINTABLE_FILENAME_LEN) {
+          fileNameWasCut = true;
+          fileNameLen    = MAX_PRINTABLE_FILENAME_LEN;
+        }
+      #endif
+
+      char outputString[fileNameLen];
+
+      // Bugfix for non-printable special characters
+      // which are now replaced by underscores.
+      for (unsigned char i = 0; i <= fileNameLen; i++) {
+        if (i >= fileNameLen) {
+          outputString[i] = ' ';
+        }
+        else {
+          outputString[i] = fileName[i];
+          if (!isPrintable(outputString[i]))
+            outputString[i] = '_';
+        }
+      }
+
+      // I know, it's ugly, but it's faster than a string lib
+      if (fileNameWasCut) {
+        outputString[fileNameLen - 7] = '~';
+        outputString[fileNameLen - 6] = '.';
+        outputString[fileNameLen - 5] = 'g';
+        outputString[fileNameLen - 4] = 'c';
+        outputString[fileNameLen - 3] = 'o';
+        outputString[fileNameLen - 2] = 'd';
+        outputString[fileNameLen - 1] = 'e';
+      }
+
+      outputString[fileNameLen] = '\0';
+
+      if (currentFileList.isDir()) {
+        #if ENABLED(KNUTWURST_DGUS2_TFT)
+          SEND_PGM("/");
+          SEND(currentFileList.shortFilename());
+          SENDLINE_PGM(".GCO");
+          SEND_PGM("/");
+          SEND(outputString);
+          SENDLINE_PGM(".gcode");
+        #else
+          SEND_PGM("/");
+          SEND(currentFileList.shortFilename());
+          SEND_PGM("/");
+          SENDLINE(outputString);
+        #endif
+        SERIAL_ECHO(count);
+        SERIAL_ECHOPGM(": /");
+        SERIAL_ECHOLN(outputString);
+      } else {
+        SENDLINE(currentFileList.shortFilename());
+        SENDLINE(outputString);
+        SERIAL_ECHO(count);
+        SERIAL_ECHOPGM(": ");
+        SERIAL_ECHOLN(outputString);
       }
     }
   }
@@ -1546,8 +1614,8 @@ void AnycubicTouchscreenClass::RenderCurrentFolder(uint16_t selectedNumber) {
                   #endif
                   {
                     if (CodeSeen('S')) filenumber = CodeValue();
-                    PrintList();
-                    //RenderCurrentFileList();
+                    //PrintList();
+                    RenderCurrentFileList();
                   }
                 #endif
                 break;

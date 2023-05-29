@@ -86,6 +86,12 @@
     #define OUTAGECON_PIN                     58
   #endif
 
+  #if ANY(KNUTWURST_CHIRON, KNUTWURST_4MAXP2)
+    #define FIL_RUNOUT_PIN 33
+  #else
+    #define FIL_RUNOUT_PIN 19
+  #endif
+
   #if ENABLED(TRIGORILLA_MAPPING_CHIRON)
     #ifndef FIL_RUNOUT_PIN
       #define FIL_RUNOUT_PIN                  33
