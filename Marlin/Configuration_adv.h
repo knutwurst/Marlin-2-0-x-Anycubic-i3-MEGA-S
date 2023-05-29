@@ -2676,12 +2676,6 @@
       #define FILAMENT_CHANGE_FAST_LOAD_LENGTH   538  // (mm) Load length of filament, from extruder gear to nozzle.
                                                       //   For Bowden, the full length of the tube and nozzle.
                                                       //   For direct drive, the full length of the nozzle.
-      #define ADVANCED_PAUSE_CONTINUOUS_PURGE       // Purge continuously up to the purge length until interrupted.
-      #define ADVANCED_PAUSE_PURGE_FEEDRATE        2  // (mm/s) Extrude feedrate (after loading). Should be slower than load feedrate.
-      #define ADVANCED_PAUSE_PURGE_LENGTH          2  // (mm) Length to extrude after loading.
-                                                      //   Set to 0 for manual extrusion.
-                                                      //   Filament can be extruded repeatedly from the Filament Change menu
-                                                      //   until extrusion is consistent, and to purge old filament.
     #else
       #define PAUSE_PARK_RETRACT_FEEDRATE         40  // (mm/s) Initial retract feedrate.
       #define PAUSE_PARK_RETRACT_LENGTH            4  // (mm) Initial retract.
@@ -2702,7 +2696,12 @@
                                                       //   For direct drive, the full length of the nozzle.
   #endif
 
-
+  #define ADVANCED_PAUSE_CONTINUOUS_PURGE       // Purge continuously up to the purge length until interrupted.
+  #define ADVANCED_PAUSE_PURGE_FEEDRATE        2  // (mm/s) Extrude feedrate (after loading). Should be slower than load feedrate.
+  #define ADVANCED_PAUSE_PURGE_LENGTH          2  // (mm) Length to extrude after loading.
+                                                  //   Set to 0 for manual extrusion.
+                                                  //   Filament can be extruded repeatedly from the Filament Change menu
+                                                  //   until extrusion is consistent, and to purge old filament.
 
   // #define ADVANCED_PAUSE_RESUME_PRIME        0  // (mm) Extra distance to prime nozzle after returning from park.
   #define ADVANCED_PAUSE_FANS_PAUSE             // Turn off print-cooling fans while the machine is paused.
