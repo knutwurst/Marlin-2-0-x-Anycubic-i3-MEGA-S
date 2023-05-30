@@ -1031,9 +1031,9 @@ void AnycubicTouchscreenClass::RenderCurrentFolder(uint16_t selectedNumber) {
           SENDLINE_PGM(".gcode");
         #else
           SEND_PGM("/");
-          SEND(currentFileList.shortFilename());
+          SENDLINE(currentFileList.shortFilename());
           SEND_PGM("/");
-          SENDLINE(outputString);
+          SENDLINE(currentFileList.filename());
         #endif
         SERIAL_ECHO(count);
         SERIAL_ECHOPGM(": /");
