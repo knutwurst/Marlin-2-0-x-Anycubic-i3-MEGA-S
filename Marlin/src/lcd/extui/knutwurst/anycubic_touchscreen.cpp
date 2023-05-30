@@ -84,6 +84,8 @@
         *value = c;
         pos++;
         value++;
+        if(pos > 32766)
+          break;
       } while (--size);
     }
 
@@ -967,6 +969,7 @@ void AnycubicTouchscreenClass::RenderCurrentFolder(uint16_t selectedNumber) {
       #if ENABLED(ANYCUBIC_LCD_DEBUG)
         SERIAL_ECHOLN(currentFileList.filename());
       #endif
+
       /*
       if (currentFileList.isDir()) {
         SEND_PGM("/");
@@ -1038,7 +1041,7 @@ void AnycubicTouchscreenClass::RenderCurrentFolder(uint16_t selectedNumber) {
         SERIAL_ECHO(count);
         SERIAL_ECHOPGM(": /");
         SERIAL_ECHOLN(outputString);
-      } else {
+      } else { // The current selection is a file and not a directory
         SENDLINE(currentFileList.shortFilename());
         SENDLINE(outputString);
         SERIAL_ECHO(count);
@@ -1570,7 +1573,7 @@ void AnycubicTouchscreenClass::RenderCurrentFolder(uint16_t selectedNumber) {
                           currentFileOrDirectory[currentFileLen - 4] = '\0';
                           currentFileList.changeDir(currentFileOrDirectory);
                         #else
-                          currentFileList.changeDir(currentFileOrDirectory);
+                          currentFileList.changeDir(currentTouchscreenSelection);
                         #endif
                       }
                     }
