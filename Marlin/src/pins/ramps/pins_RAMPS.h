@@ -289,9 +289,23 @@
 
 #if ANY(KNUTWURST_CHIRON, KNUTWURST_4MAXP2)
   #define FIL_RUNOUT_PIN 33
+  #ifndef Z2_STEP_PIN 
+    #define Z2_STEP_PIN                         46
+  #endif
+  #ifndef Z2_DIR_PIN
+      #define Z2_DIR_PIN                        48
+  #endif
+  #ifndef Z2_ENABLE_PIN
+      #define Z2_ENABLE_PIN                     62
+  #endif
+  #ifndef Z2_CS_PIN
+      #define Z2_CS_PIN                         40
+  #endif
 #else
   #define FIL_RUNOUT_PIN 19
 #endif
+
+
 
 #ifndef PS_ON_PIN
   #define PS_ON_PIN                           12
