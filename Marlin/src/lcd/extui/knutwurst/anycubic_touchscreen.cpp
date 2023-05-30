@@ -980,7 +980,7 @@ void AnycubicTouchscreenClass::RenderCurrentFolder(uint16_t selectedNumber) {
       */
 
       // The longname may not be filed, so we use the built-in fallback here.
-      const char* fileName  = currentFileList.filename();
+      char* fileName  = strdup(currentFileList.filename());
       int fileNameLen = strlen(fileName);
       bool fileNameWasCut = false;
 
