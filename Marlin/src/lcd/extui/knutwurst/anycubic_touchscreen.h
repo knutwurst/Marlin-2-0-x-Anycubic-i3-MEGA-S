@@ -42,14 +42,6 @@ char *itostr2(const uint8_t &x);
 #define MSG_MY_VERSION CUSTOM_BUILD_VERSION
 #define MAX_PRINTABLE_FILENAME_LEN 26
 
-#define ANYCUBIC_TFT_STATE_IDLE 0
-#define ANYCUBIC_TFT_STATE_SDPRINT 1
-#define ANYCUBIC_TFT_STATE_SDPAUSE 2
-#define ANYCUBIC_TFT_STATE_SDPAUSE_REQ 3
-#define ANYCUBIC_TFT_STATE_SDPAUSE_OOF 4
-#define ANYCUBIC_TFT_STATE_SDSTOP_REQ 5
-#define ANYCUBIC_TFT_STATE_SDOUTAGE 99
-
 enum AnycubicMediaPrintState {
   AMPRINTSTATE_NOT_PRINTING,
   AMPRINTSTATE_PRINTING,
@@ -253,6 +245,7 @@ enum AnycubicMediaPauseState {
 #endif
 
 class AnycubicTouchscreenClass {
+
 public:
 AnycubicTouchscreenClass();
 
@@ -267,9 +260,11 @@ void KillTFT();
 static void OnPrintTimerStarted();
 static void OnPrintTimerPaused();
 static void OnPrintTimerStopped();
+
 #if BOTH(ANYCUBIC_TFT_DEBUG, KNUTWURST_DGUS2_TFT)
   void Command(const char * const command);
 #endif
+
 #if ENABLED(KNUTWURST_TFT_LEVELING)
   void LevelingDone();
 #endif
@@ -332,7 +327,6 @@ char currentTouchscreenSelection[64];
 char currentFileOrDirectory[64];
 String flowRateBuffer;
 String zOffsetBuffer;
-uint16_t MyFileNrCnt          = 0;
 uint8_t FilamentSensorEnabled = true;
 
 uint8_t SpecialMenu = false;

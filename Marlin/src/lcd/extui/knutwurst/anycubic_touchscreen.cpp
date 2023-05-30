@@ -193,7 +193,6 @@
     BLTouchMenu                    = false;
     LevelMenu                      = false;
     CaseLight                      = false;
-    MyFileNrCnt                    = 0;
     currentFlowRate                = 100;
     flowRateBuffer                 = SM_FLOW_DISP_L;
 
