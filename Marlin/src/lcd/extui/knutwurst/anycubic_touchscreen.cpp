@@ -970,18 +970,6 @@ void AnycubicTouchscreenClass::RenderCurrentFolder(uint16_t selectedNumber) {
         SERIAL_ECHOLN(currentFileList.filename());
       #endif
 
-      /*
-      if (currentFileList.isDir()) {
-        SEND_PGM("/");
-        SENDLINE(currentFileList.shortFilename());
-        SEND_PGM("/");
-        SENDLINE(currentFileList.filename());
-      } else {
-        SENDLINE(currentFileList.shortFilename());
-        SENDLINE(currentFileList.filename());
-      }
-      */
-
       // The longname may not be filed, so we use the built-in fallback here.
       const char* fileName  = currentFileList.filename();
       int fileNameLen = strlen(fileName);
@@ -994,9 +982,10 @@ void AnycubicTouchscreenClass::RenderCurrentFolder(uint16_t selectedNumber) {
           fileNameWasCut = true;
           fileNameLen    = MAX_PRINTABLE_FILENAME_LEN;
         }
+        char outputString[MAX_PRINTABLE_FILENAME_LEN];
+      #else
+        char outputString[fileNameLen];
       #endif
-
-      char outputString[fileNameLen];
 
       // Bugfix for non-printable special characters
       // which are now replaced by underscores.
@@ -1012,17 +1001,31 @@ void AnycubicTouchscreenClass::RenderCurrentFolder(uint16_t selectedNumber) {
       }
 
       // I know, it's ugly, but it's faster than a string lib
-      if (fileNameWasCut) {
-        outputString[fileNameLen - 7] = '~';
-        outputString[fileNameLen - 6] = '.';
-        outputString[fileNameLen - 5] = 'g';
-        outputString[fileNameLen - 4] = 'c';
-        outputString[fileNameLen - 3] = 'o';
-        outputString[fileNameLen - 2] = 'd';
-        outputString[fileNameLen - 1] = 'e';
-      }
-
-      outputString[fileNameLen] = '\0';
+      #if ENABLED(KNUTWURST_DGUS2_TFT)
+        if (fileNameWasCut) {
+          outputString[MAX_PRINTABLE_FILENAME_LEN - 7] = '~';
+          outputString[MAX_PRINTABLE_FILENAME_LEN - 6] = '.';
+          outputString[MAX_PRINTABLE_FILENAME_LEN - 5] = 'g';
+          outputString[MAX_PRINTABLE_FILENAME_LEN - 4] = 'c';
+          outputString[MAX_PRINTABLE_FILENAME_LEN - 3] = 'o';
+          outputString[MAX_PRINTABLE_FILENAME_LEN - 2] = 'd';
+          outputString[MAX_PRINTABLE_FILENAME_LEN - 1] = 'e';
+          outputString[MAX_PRINTABLE_FILENAME_LEN] = '\0';
+        } else if (currentFileList.isDir()) {
+            for (unsigned char i = fileNameLen; i < MAX_PRINTABLE_FILENAME_LEN - 7; i++) {
+              outputString[i] = ' ';
+            }
+            outputString[MAX_PRINTABLE_FILENAME_LEN - 7] = '\0';
+        } else {
+            for (unsigned char i = fileNameLen; i < MAX_PRINTABLE_FILENAME_LEN; i++) {
+              outputString[i] = ' ';
+            }
+            outputString[MAX_PRINTABLE_FILENAME_LEN] = '\0';
+        }
+      #else
+        outputString[fileNameLen] = '\0';
+      #endif
+    
 
       if (currentFileList.isDir()) {
         #if ENABLED(KNUTWURST_DGUS2_TFT)

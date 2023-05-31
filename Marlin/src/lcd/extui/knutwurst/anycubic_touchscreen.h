@@ -150,7 +150,7 @@ enum AnycubicMediaPauseState {
 #endif // !KNUTWURST_DGUS2_TFT
 
 #if ENABLED(KNUTWURST_DGUS2_TFT)
-  #define SM_DIR_UP_L           "<<< BACK <<<        .gcode"
+  #define SM_DIR_UP_L           "/..                 .gcode"
   #define SM_DIR_UP_S           "DIR_UP~1.GCO"
   #define SM_SPECIAL_MENU_L     "<Special Menu>      .gcode"
   #define SM_SPECIAL_MENU_S     "<SPECI~1.GCO"
