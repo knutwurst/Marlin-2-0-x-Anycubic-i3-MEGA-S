@@ -1036,7 +1036,7 @@ void AnycubicTouchscreenClass::RenderCurrentFolder(uint16_t selectedNumber) {
           SEND_PGM("/");
           SENDLINE(currentFileList.shortFilename());
           SEND_PGM("/");
-          SENDLINE(currentFileList.filename());
+          SENDLINE(outputString);
         #endif
         SERIAL_ECHO(count);
         SERIAL_ECHOPGM(": /");
