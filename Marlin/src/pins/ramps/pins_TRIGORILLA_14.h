@@ -103,7 +103,7 @@
     #endif
   #endif
 
-  #if ANY(TRIGORILLA_MAPPING_CHIRON, SWAP_Z_MOTORS, KNUTWURST_CHIRON, KNUTWURST_4MAXP2) // PATCH: knutwurst
+  #if EITHER(TRIGORILLA_MAPPING_CHIRON, SWAP_Z_MOTORS)
     // Chiron and some Anycubic i3 MEGAs swap Z steppers
     #define Z_STEP_PIN                        36
     #define Z_DIR_PIN                         34

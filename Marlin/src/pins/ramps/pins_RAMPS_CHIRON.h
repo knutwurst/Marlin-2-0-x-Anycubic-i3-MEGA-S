@@ -142,19 +142,6 @@
   #define Z_CS_PIN                            40
 #endif
 
-#ifndef Z2_STEP_PIN 
-    #define Z2_STEP_PIN                       46
-#endif
-#ifndef Z2_DIR_PIN
-    #define Z2_DIR_PIN                        48
-#endif
-#ifndef Z2_ENABLE_PIN
-    #define Z2_ENABLE_PIN                     62
-#endif
-#ifndef Z2_CS_PIN
-    #define Z2_CS_PIN                         40
-#endif
-
 #define E0_STEP_PIN                           26
 #define E0_DIR_PIN                            28
 #define E0_ENABLE_PIN                         24
