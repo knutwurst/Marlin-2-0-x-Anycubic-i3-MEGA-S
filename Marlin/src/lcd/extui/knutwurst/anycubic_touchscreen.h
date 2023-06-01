@@ -306,7 +306,7 @@ static AnycubicMediaPauseState mediaPauseState;
 
 int CodeValueInt();
 float CodeValue();
-bool CodeSeen(char);
+bool FindToken(char);
 void StartPrint();
 void PausePrint();
 void StopPrint();
