@@ -35,6 +35,7 @@
 #include "../../../module/stepper.h"
 
 //#define ANYCUBIC_TFT_DEBUG
+//#define KNUTWURST_DGUS2_TFT
 
 #ifdef ANYCUBIC_TOUCHSCREEN
   #include "./anycubic_touchscreen.h"
@@ -1016,6 +1017,15 @@ void AnycubicTouchscreenClass::RenderCurrentFolder(uint16_t selectedNumber) {
         } else {
             for (unsigned char i = fileNameLen; i < MAX_PRINTABLE_FILENAME_LEN; i++) {
               outputString[i] = ' ';
+            }
+            // fix for .GCO files, which are not displayed correctly.
+            if (outputString[fileNameLen - 4] == '.') {
+              outputString[fileNameLen - 4] = '.';
+              outputString[fileNameLen - 3] = 'g';
+              outputString[fileNameLen - 2] = 'c';
+              outputString[fileNameLen - 1] = 'o';
+              outputString[fileNameLen    ] = 'd';
+              outputString[fileNameLen + 1] = 'e';
             }
             outputString[MAX_PRINTABLE_FILENAME_LEN] = '\0';
         }
