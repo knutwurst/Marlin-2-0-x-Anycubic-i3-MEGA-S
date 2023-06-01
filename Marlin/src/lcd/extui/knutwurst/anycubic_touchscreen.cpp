@@ -973,11 +973,11 @@ void AnycubicTouchscreenClass::RenderCurrentFolder(uint16_t selectedNumber) {
       // The longname may not be filed, so we use the built-in fallback here.
       const char* fileName  = currentFileList.filename();
       int fileNameLen = strlen(fileName);
-      bool fileNameWasCut = false;
 
       // Cut off too long filenames.
       // They don't fit on the screen anyway.
       #if ENABLED(KNUTWURST_DGUS2_TFT)
+        bool fileNameWasCut = false;
         if (fileNameLen >= MAX_PRINTABLE_FILENAME_LEN) {
           fileNameWasCut = true;
           fileNameLen    = MAX_PRINTABLE_FILENAME_LEN;
@@ -1366,12 +1366,11 @@ void AnycubicTouchscreenClass::RenderCurrentFolder(uint16_t selectedNumber) {
 
               case 15: // A15 RESUMING FROM OUTAGE
                 #if defined(POWER_OUTAGE_TEST)
-                  if ((!planner.movesplanned()) && (TFTstate != ANYCUBIC_TFT_STATE_SDPAUSE)) {
+                  if (!isPrinting()) {
                     if (card.isFileOpen()) FlagResumFromOutage = true;
 
                     ResumingFlag = 1;
-                    card.startOrResumeFilePrinting();
-                    starttime = millis();
+                    resumePrint();
                     SENDLINE_PGM("OK");
                   }
                 #endif
@@ -1758,7 +1757,8 @@ void AnycubicTouchscreenClass::RenderCurrentFolder(uint16_t selectedNumber) {
                         else
                           SENDLINE_PGM("J34 ");
                       }
-                      // break; <-- TODO: do we need it?
+                      break;
+
                     case 42:
                       if (CaseLight == true) {
                         SERIAL_ECHOLNPGM("Case Light OFF");
@@ -1770,7 +1770,8 @@ void AnycubicTouchscreenClass::RenderCurrentFolder(uint16_t selectedNumber) {
                         injectCommands(F("M355 S1 P255"));
                         CaseLight = true;
                       }
-                      // break; <-- TODO: do we need it?
+                      break;
+
                 #endif
                 #if ENABLED(KNUTWURST_DGUS2_TFT)
                     case 50:
