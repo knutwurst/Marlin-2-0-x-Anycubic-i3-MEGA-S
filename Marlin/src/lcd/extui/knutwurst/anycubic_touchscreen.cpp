@@ -990,14 +990,10 @@ void AnycubicTouchscreenClass::RenderCurrentFolder(uint16_t selectedNumber) {
       // Bugfix for non-printable special characters
       // which are now replaced by underscores.
       for (unsigned char i = 0; i <= fileNameLen; i++) {
-        if (i >= fileNameLen) {
-          outputString[i] = ' ';
-        }
-        else {
           outputString[i] = fileName[i];
-          if (!isPrintable(outputString[i]))
+          if (!isPrintable(outputString[i])) {
             outputString[i] = '_';
-        }
+          }
       }
 
       // I know, it's ugly, but it's faster than a string lib
