@@ -1608,10 +1608,13 @@ void AnycubicTouchscreenClass::RenderCurrentFolder(uint16_t selectedNumber) {
 
                       else {
                         if (CodeSeen('S')) { // Set offset (adjusts all points by value)
-                          float Zshift = CodeValue();
-                          setSoftEndstopState(false);  // disable endstops
-                          // Allow temporary Z position nudging during print
-                          // From the leveling panel use the all points UI to adjust the print pos.
+                           // TODO: Is this the correct value? Old Code:
+                           // int8_t tokenpos = FindToken('S');
+                           // if (tokenpos >= 0) {
+                           //     float Zshift = atof(&panel_command[tokenpos+1]); 
+
+                          float Zshift = CodeValue();  
+                          setSoftEndstopState(false);
                           if (isPrinting()) {
                             #if ENABLED(ANYCUBIC_TFT_DEBUG)
                               SERIAL_ECHOLNPGM("Change Zoffset from:", live_Zoffset, " to ", live_Zoffset + Zshift);
