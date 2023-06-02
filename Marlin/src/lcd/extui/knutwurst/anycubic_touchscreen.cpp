@@ -32,9 +32,9 @@
 #include "../../../module/motion.h"
 #include "../../../module/stepper.h"
 
-//#define ANYCUBIC_TFT_DEBUG
+#define ANYCUBIC_TFT_DEBUG
 //#define KNUTWURST_DGUS2_TFT
-#define KNUTWURST_TFT_LEVELING
+//#define KNUTWURST_TFT_LEVELING
 
 #ifdef ANYCUBIC_TOUCHSCREEN
   #include "./anycubic_touchscreen.h"
@@ -531,7 +531,7 @@
                  || (strcasestr_P(currentTouchscreenSelection, PSTR(SM_BLTZ_EXIT_S)) != NULL)
                  ) {
           SERIAL_ECHOLNPGM("Special Menu: Exit BLTouch Menu & Save EEPROM");
-          settings.save(); // M500
+          injectCommands(F("M500"));
           BUZZ(105, 1108);
           BUZZ(210, 1661);
           BLTouchMenu = false;
