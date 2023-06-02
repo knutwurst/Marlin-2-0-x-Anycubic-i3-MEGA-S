@@ -1685,7 +1685,10 @@ void AnycubicTouchscreenClass::RenderCurrentFolder(uint16_t selectedNumber) {
 
                       if (CodeSeen('V')) {
                         float newval = float(constrain(CodeValue() / 100, -10, 10));
-                        
+                        #if ENABLED(ANYCUBIC_TFT_DEBUG)
+                          SERIAL_ECHOLNPGM("Change mesh point x:", pos.x, " y:", pos.y);
+                          SERIAL_ECHOLNPGM("from ", currmesh, " to ", newval);
+                        #endif
                         setMeshPoint(pos,newval);
                         if (!isPrinting()) {
                           // if we are at the current mesh point indicated on the panel Move Z pos +/- 0.05mm
