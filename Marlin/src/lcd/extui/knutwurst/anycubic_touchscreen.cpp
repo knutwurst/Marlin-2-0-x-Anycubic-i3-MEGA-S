@@ -1615,11 +1615,6 @@ void AnycubicTouchscreenClass::RenderCurrentFolder(uint16_t selectedNumber) {
 
                       else {
                         if (CodeSeen('S')) { // Set offset (adjusts all points by value)
-                           // TODO: Is this the correct value? Old Code:
-                           // int8_t tokenpos = FindToken('S');
-                           // if (tokenpos >= 0) {
-                           //     float Zshift = atof(&panel_command[tokenpos+1]); 
-
                           float Zshift = CodeValue();  
                           setSoftEndstopState(false);
                           if (isPrinting()) {
@@ -1661,7 +1656,6 @@ void AnycubicTouchscreenClass::RenderCurrentFolder(uint16_t selectedNumber) {
                             LCD_SERIAL.println(getZOffset_mm());
 
                             if (isAxisPositionKnown(Z)) {
-                              // Move Z axis
                               const float currZpos = getAxisPosition_mm(Z);
                               #if ENABLED(ANYCUBIC_TFT_DEBUG)
                                 SERIAL_ECHOLNPGM("Move Z pos from ", currZpos, " to ", currZpos + constrain(Zshift, -0.05, 0.05));
@@ -1697,9 +1691,7 @@ void AnycubicTouchscreenClass::RenderCurrentFolder(uint16_t selectedNumber) {
                           SERIAL_ECHOLNPGM("from ", currmesh, " to ", newval);
                         #endif
                         setMeshPoint(pos,newval);
-                        if (mediaPrintingState == AMPRINTSTATE_NOT_PRINTING || mediaPrintingState == AMPRINTSTATE_PROBING/*!isPrinting()*/) {
-                          // if we are at the current mesh point indicated on the panel Move Z pos +/- 0.05mm
-                          // (The panel changes the mesh value by +/- 0.05mm on each button press)
+                        if (mediaPrintingState == AMPRINTSTATE_NOT_PRINTING || mediaPrintingState == AMPRINTSTATE_PROBING) {
                           if (selectedmeshpoint.x == pos.x && selectedmeshpoint.y == pos.y) {
                             setSoftEndstopState(false);
                             float currZpos = getAxisPosition_mm(Z);
