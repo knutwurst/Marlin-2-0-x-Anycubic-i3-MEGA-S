@@ -34,9 +34,9 @@
 #include "../../../module/settings.h"
 #include "../../../module/stepper.h"
 
-//#define ANYCUBIC_TFT_DEBUG
+#define ANYCUBIC_TFT_DEBUG
 //#define KNUTWURST_DGUS2_TFT
-//#define KNUTWURST_TFT_LEVELING
+#define KNUTWURST_TFT_LEVELING
 
 #ifdef ANYCUBIC_TOUCHSCREEN
   #include "./anycubic_touchscreen.h"
@@ -355,7 +355,7 @@
     return (strtod(&TFTcmdbuffer[TFTbufindr][TFTstrchr_pointer - TFTcmdbuffer[TFTbufindr] + 1], NULL));
   }
 
-  bool AnycubicTouchscreenClass::FindToken(char code) {
+  bool AnycubicTouchscreenClass::CodeSeen(char code) {
     TFTstrchr_pointer = strchr(TFTcmdbuffer[TFTbufindr], code);
     return (TFTstrchr_pointer != NULL); // Return True if a character was found
   }
@@ -727,7 +727,7 @@ void AnycubicTouchscreenClass::RenderCurrentFileList() {
     SENDLINE_PGM(SM_SPECIAL_MENU_L);
   }
   else {
-    if (FindToken('S')) {
+    if (CodeSeen('S')) {
       selectedNumber = CodeValue();
     }
 
@@ -1308,7 +1308,7 @@ void AnycubicTouchscreenClass::RenderCurrentFolder(uint16_t selectedNumber) {
                     else
                   #endif
                   {
-                    if (FindToken('S')) filenumber = CodeValue();
+                    if (CodeSeen('S')) filenumber = CodeValue();
                     //PrintList();
                     RenderCurrentFileList();
                   }
@@ -1387,12 +1387,12 @@ void AnycubicTouchscreenClass::RenderCurrentFolder(uint16_t selectedNumber) {
               case 16: // A16 set hotend temp
               {
                 unsigned int tempvalue;
-                if (FindToken('S')) {
+                if (CodeSeen('S')) {
                   tempvalue = constrain(CodeValue(), 0, 260);
                   if (getTargetTemp_celsius((extruder_t)E0) <= 260)
                     setTargetTemp_celsius(tempvalue, (extruder_t)E0);; // do not set Temp from TFT if it is set via gcode
                 }
-                else if ((FindToken('C')) && (!isPrinting())) {
+                else if ((CodeSeen('C')) && (!isPrinting())) {
                   if ((getAxisPosition_mm(Z) < 10))
                     injectCommands(F("G1 Z10")); // RASE Z AXIS
                   tempvalue = constrain(CodeValue(), 0, 260);
@@ -1404,7 +1404,7 @@ void AnycubicTouchscreenClass::RenderCurrentFolder(uint16_t selectedNumber) {
               case 17: // A17 set heated bed temp
               {
                 unsigned int tempbed;
-                if (FindToken('S')) {
+                if (CodeSeen('S')) {
                   tempbed = constrain(CodeValue(), 0, 120);
                   if (getTargetTemp_celsius((heater_t)BED) <= 100)
                     setTargetTemp_celsius(tempbed, (heater_t)BED); // do not set Temp from TFT if it is set via gcode
@@ -1414,7 +1414,7 @@ void AnycubicTouchscreenClass::RenderCurrentFolder(uint16_t selectedNumber) {
 
               case 18: // A18 set fan speed
                 float fanPercent;
-                if (FindToken('S')) {
+                if (CodeSeen('S')) {
                   fanPercent = CodeValue();
                   fanPercent = constrain(fanPercent, 0, 100);
                   setTargetFan_percent(fanPercent, FAN0);
@@ -1437,7 +1437,7 @@ void AnycubicTouchscreenClass::RenderCurrentFolder(uint16_t selectedNumber) {
 
               case 20: // A20 read printing speed
               {
-                if (FindToken('S'))
+                if (CodeSeen('S'))
                   feedrate_percentage = constrain(CodeValue(), 40, 999);
                 else
                   SEND_PGM_VAL("A20V ", feedrate_percentage);
@@ -1446,15 +1446,15 @@ void AnycubicTouchscreenClass::RenderCurrentFolder(uint16_t selectedNumber) {
 
               case 21: // A21 all home
                 if (!isPrinting() && !isPrintingFromMediaPaused()) {
-                  if (FindToken('X') || FindToken('Y') || FindToken('Z')) {
-                    if (FindToken('X'))
+                  if (CodeSeen('X') || CodeSeen('Y') || CodeSeen('Z')) {
+                    if (CodeSeen('X'))
                       injectCommands(F("G28X"));
-                    if (FindToken('Y'))
+                    if (CodeSeen('Y'))
                       injectCommands(F("G28Y"));
-                    if (FindToken('Z'))
+                    if (CodeSeen('Z'))
                       injectCommands(F("G28Z"));
                   }
-                  else if (FindToken('C')) {
+                  else if (CodeSeen('C')) {
                     injectCommands_P(G28_STR);
                   }
                 }
@@ -1465,12 +1465,12 @@ void AnycubicTouchscreenClass::RenderCurrentFolder(uint16_t selectedNumber) {
                   float coorvalue;
                   unsigned int movespeed = 0;
                   char value[30];
-                  if (FindToken('F')) // Set feedrate
+                  if (CodeSeen('F')) // Set feedrate
                     movespeed = CodeValue();
 
                   queue.enqueue_now_P(PSTR("G91")); // relative coordinates
 
-                  if (FindToken('X')) { // Move in X direction
+                  if (CodeSeen('X')) { // Move in X direction
                     coorvalue = CodeValue();
                     if ((coorvalue <= 0.2) && coorvalue > 0)
                       sprintf_P(value, PSTR("G1 X0.1F%i"), movespeed);
@@ -1480,7 +1480,7 @@ void AnycubicTouchscreenClass::RenderCurrentFolder(uint16_t selectedNumber) {
                       sprintf_P(value, PSTR("G1 X%iF%i"), int(coorvalue), movespeed);
                     queue.enqueue_one_now(value);
                   }
-                  else if (FindToken('Y')) { // Move in Y direction
+                  else if (CodeSeen('Y')) { // Move in Y direction
                     coorvalue = CodeValue();
                     if ((coorvalue <= 0.2) && coorvalue > 0)
                       sprintf_P(value, PSTR("G1 Y0.1F%i"), movespeed);
@@ -1490,7 +1490,7 @@ void AnycubicTouchscreenClass::RenderCurrentFolder(uint16_t selectedNumber) {
                       sprintf_P(value, PSTR("G1 Y%iF%i"), int(coorvalue), movespeed);
                     queue.enqueue_one_now(value);
                   }
-                  else if (FindToken('Z')) { // Move in Z direction
+                  else if (CodeSeen('Z')) { // Move in Z direction
                     coorvalue = CodeValue();
                     if ((coorvalue <= 0.2) && coorvalue > 0)
                       sprintf_P(value, PSTR("G1 Z0.1F%i"), movespeed);
@@ -1500,7 +1500,7 @@ void AnycubicTouchscreenClass::RenderCurrentFolder(uint16_t selectedNumber) {
                       sprintf_P(value, PSTR("G1 Z%iF%i"), int(coorvalue), movespeed);
                     queue.enqueue_one_now(value);
                   }
-                  else if (FindToken('E')) { // Extrude
+                  else if (CodeSeen('E')) { // Extrude
                     coorvalue = CodeValue();
                     if ((coorvalue <= 0.2) && coorvalue > 0)
                       sprintf_P(value, PSTR("G1 E0.1F%i"), movespeed);
@@ -1597,9 +1597,9 @@ void AnycubicTouchscreenClass::RenderCurrentFolder(uint16_t selectedNumber) {
 
               case 28: // A28 filament test
               {
-                if (FindToken('O'))
+                if (CodeSeen('O'))
                   ;
-                else if (FindToken('C'))
+                else if (CodeSeen('C'))
                   ;
               }
                 SENDLINE_PGM("");
@@ -1615,44 +1615,40 @@ void AnycubicTouchscreenClass::RenderCurrentFolder(uint16_t selectedNumber) {
                 #if ENABLED(KNUTWURST_TFT_LEVELING)
                     case 29: // A29 bed grid read
                     {
-                      int mx, my;
+                      xy_uint8_t pos;
+                      float pos_z;
 
-                      if (FindToken('X')) mx = CodeValueInt();
-                      if (FindToken('Y')) my = CodeValueInt();
+                      if (CodeSeen('X')) pos.x = CodeValueInt();
+                      if (CodeSeen('Y')) pos.y = CodeValueInt();
 
-                      float Zvalue = bedlevel.z_values[mx][my];
-                      Zvalue = Zvalue * 100;
+                      pos_z = getMeshPoint(pos);
+
+                      SEND_PGM("A29V ");
+                      LCD_SERIAL.print(pos_z * 100, 2);
+                      SENDLINE_PGM("");
 
                       if (!isPrinting()) {
-                        if (!all_axes_trusted()) {
-                          injectCommands(F("G28\n"));
-                          /*
-                             set_axis_is_at_home(X_AXIS);
-                             sync_plan_position();
-                             set_axis_is_at_home(Y_AXIS);
-                             sync_plan_position();
-                             set_axis_is_at_home(Z_AXIS);
-                             sync_plan_position();
-                             report_current_position();
-                          */
-                        }
-                        else {
-                          // Go up before moving
-                          // SERIAL_ECHOLNPGM("Z Up");
-                          setAxisPosition_mm(5.0, Z);
-                          // report_current_position();
-                          setAxisPosition_mm(LevelingBilinear::get_mesh_x(mx), X);
-                          // report_current_position();
-                          setAxisPosition_mm(LevelingBilinear::get_mesh_y(my), Y);
-                          // report_current_position();
-                          setAxisPosition_mm(EXT_LEVEL_HIGH, Z);
+                        setSoftEndstopState(true); 
+                        if ((selectedmeshpoint.x == pos.x) && (selectedmeshpoint.y == pos.y)) {
+                          if (!isPositionKnown())
+                            injectCommands_P(G28_STR);
 
-                          report_current_position();
+                          if (isPositionKnown()) {
+                            #if ENABLED(ANYCUBIC_TFT_DEBUG)
+                              SERIAL_ECHOLNPGM("Moving to mesh point at x: ", pos.x, " y: ", pos.y, " z: ", pos_z);
+                            #endif
+                            setAxisPosition_mm(3.0,Z);
+                            setAxisPosition_mm(17 + (93 * pos.x), X);
+                            setAxisPosition_mm(20 + (93 * pos.y), Y);
+                            setAxisPosition_mm(0.0, Z);
+                            #if ENABLED(ANYCUBIC_TFT_DEBUG)
+                              SERIAL_ECHOLNPGM("Current Z: ", getAxisPosition_mm(Z));
+                            #endif
+                          }
                         }
+                        selectedmeshpoint.x = pos.x;
+                        selectedmeshpoint.y = pos.y;
                       }
-                      SEND_PGM("A29V ");
-                      LCD_SERIAL.print(Zvalue, 2);
-                      SENDLINE_PGM("");
                     }
                     break;
 
@@ -1661,39 +1657,97 @@ void AnycubicTouchscreenClass::RenderCurrentFolder(uint16_t selectedNumber) {
                         SENDLINE_DBG_PGM("J24", "TFT Serial Debug: Forbid auto leveling... J24");
                       else
                         SENDLINE_DBG_PGM("J26", "TFT Serial Debug: Start auto leveling... J26");
-                      if (FindToken('S'))
-                        queue.enqueue_now_P(PSTR("G28\nG29\nM500\nG90\nM300 S440 P200\nM300 S660 P250\nM300 S880 P300\nG1 Z30 F4000\nG1 X0 F4000\nG91\nM84"));
+                      if (CodeSeen('S'))
+                        injectCommands(F("G28\nG29\nM500\nG90\nM300 S440 P200\nM300 S660 P250\nM300 S880 P300\nG1 Z30 F4000\nG1 X0 F4000\nG91\nM84"));
                       break;
 
                     case 31: // A31 z-offset
-                      if (FindToken('S')) { // set
-                        // soft_endstops_enabled = false;  // disable endstops
-                        float value = constrain(CodeValue(), -1.0, 1.0);
-                        probe.offset.z += value;
-                        for (x = 0; x < GRID_MAX_POINTS_X; x++)
-                          for (y = 0; y < GRID_MAX_POINTS_Y; y++) bedlevel.z_values[x][y] += value;
-                        set_bed_leveling_enabled(true);
-                        bedlevel.refresh_bed_level();
+                      // The tokens can occur in different places on the new panel so we need to find it.
 
-                        SEND_PGM("A31V ");
-                        LCD_SERIAL.print(float(probe.offset.z), 2);
-                        SENDLINE_PGM("");
+                      if (CodeSeen('C')) { // Restore and apply original offsets
+                        if (!isPrinting()) {
+                          injectCommands(F("M501\nM420 S1"));
+                          selectedmeshpoint.x = selectedmeshpoint.y = 99;
+                          SERIAL_ECHOLNF(F("Mesh changes abandoned, previous mesh restored."));
+                        }
                       }
 
-                      if (FindToken('G')) { // get
-                        SAVE_zprobe_zoffset = probe.offset.z;
-                        SEND_PGM("A31V ");
-                        LCD_SERIAL.print(float(SAVE_zprobe_zoffset), 2);
-                        SENDLINE_PGM("");
+                      else if (CodeSeen('D')) { // Save Z Offset tables and restore leveling state
+                        if (!isPrinting()) {
+                          setAxisPosition_mm(1.0,Z); // Lift nozzle before any further movements are made
+                          injectCommands(F("M500"));
+                          SERIAL_ECHOLNF(F("Mesh changes saved."));
+                          selectedmeshpoint.x = selectedmeshpoint.y = 99;
+                        }
                       }
 
-                      if (FindToken('D')) { // save
-                        SAVE_zprobe_zoffset = probe.offset.z;
-                        settings.save();
-                        set_bed_leveling_enabled(true);
-                        bedlevel.refresh_bed_level();
+                      else if (CodeSeen('G')) { // Get current offset
+                        SENDLINE_PGM("A31V ");
+                        // When printing use the live z Offset position
+                        // we will use babystepping to move the print head
+                        if (isPrinting())
+                          LCD_SERIAL.println(live_Zoffset);
+                        else {
+                          LCD_SERIAL.println(getZOffset_mm());
+                          selectedmeshpoint.x = selectedmeshpoint.y = 99;
+                        }
                       }
-                      SENDLINE_PGM("");
+
+                      else {
+                        if (CodeSeen('S')) { // Set offset (adjusts all points by value)
+                          float Zshift = CodeValue();
+                          setSoftEndstopState(false);  // disable endstops
+                          // Allow temporary Z position nudging during print
+                          // From the leveling panel use the all points UI to adjust the print pos.
+                          if (isPrinting()) {
+                            #if ENABLED(ANYCUBIC_TFT_DEBUG)
+                              SERIAL_ECHOLNPGM("Change Zoffset from:", live_Zoffset, " to ", live_Zoffset + Zshift);
+                            #endif
+                            if (isAxisPositionKnown(Z)) {
+                              #if ENABLED(ANYCUBIC_TFT_DEBUG)
+                                const float currZpos = getAxisPosition_mm(Z);
+                                SERIAL_ECHOLNPGM("Nudge Z pos from ", currZpos, " to ", currZpos + constrain(Zshift, -0.05, 0.05));
+                              #endif
+                              // Use babystepping to adjust the head position
+                              int16_t steps = mmToWholeSteps(constrain(Zshift,-0.05,0.05), Z);
+                              #if ENABLED(ANYCUBIC_TFT_DEBUG)
+                                SERIAL_ECHOLNPGM("Steps to move Z: ", steps);
+                              #endif
+                              babystepAxis_steps(steps, Z);
+                              live_Zoffset += Zshift;
+                            }
+                            SENDLINE_PGM("A31V ");
+                            LCD_SERIAL.println(live_Zoffset);
+                          }
+                          else {
+                            GRID_LOOP(x, y) {
+                              const xy_uint8_t pos { x, y };
+                              const float currval = getMeshPoint(pos);
+                              setMeshPoint(pos, constrain(currval + Zshift, -10, 2));
+                              #if ENABLED(ANYCUBIC_TFT_DEBUG)
+                                SERIAL_ECHOLNPGM("Change mesh point X", x," Y",y ," from ", currval, " to ", getMeshPoint(pos) );
+                              #endif
+                            }
+                            const float currZOffset = getZOffset_mm();
+                            #if ENABLED(ANYCUBIC_TFT_DEBUG)
+                              SERIAL_ECHOLNPGM("Change probe offset from ", currZOffset, " to  ", currZOffset + Zshift);
+                            #endif
+
+                            setZOffset_mm(currZOffset + Zshift);
+                            SENDLINE_PGM("A31V ");
+                            LCD_SERIAL.println(getZOffset_mm());
+
+                            if (isAxisPositionKnown(Z)) {
+                              // Move Z axis
+                              const float currZpos = getAxisPosition_mm(Z);
+                              #if ENABLED(ANYCUBIC_TFT_DEBUG)
+                                SERIAL_ECHOLNPGM("Move Z pos from ", currZpos, " to ", currZpos + constrain(Zshift, -0.05, 0.05));
+                              #endif
+                              setAxisPosition_mm(currZpos+constrain(Zshift,-0.05,0.05),Z);
+                            }
+                          }
+                        }
+                      }
                       break;
 
                     case 32: // a32 clean leveling beep flag
@@ -1707,25 +1761,35 @@ void AnycubicTouchscreenClass::RenderCurrentFolder(uint16_t selectedNumber) {
 
                     case 34: // a34 bed grid write
                     {
-                      if (FindToken('X')) x = constrain(CodeValueInt(), 0, GRID_MAX_POINTS_X);
-                      if (FindToken('Y')) y = constrain(CodeValueInt(), 0, GRID_MAX_POINTS_Y);
+                      xy_uint8_t pos;
+                      if (CodeSeen('X')) pos.x = constrain(CodeValueInt(), 0, GRID_MAX_POINTS_X);
+                      if (CodeSeen('Y')) pos.y = constrain(CodeValueInt(), 0, GRID_MAX_POINTS_Y);
 
-                      if (FindToken('V')) {
-                        float new_z_value = float(constrain(CodeValue() / 100, -10, 10));
-                        bedlevel.z_values[x][y] = new_z_value;
-                        set_bed_leveling_enabled(true);
-                        bedlevel.refresh_bed_level();
+                      float currmesh = getMeshPoint(pos);
+
+                      if (CodeSeen('V')) {
+                        float newval = float(constrain(CodeValue() / 100, -10, 10));
+                        
+                        setMeshPoint(pos,newval);
+                        if (!isPrinting()) {
+                          // if we are at the current mesh point indicated on the panel Move Z pos +/- 0.05mm
+                          // (The panel changes the mesh value by +/- 0.05mm on each button press)
+                          if (selectedmeshpoint.x == pos.x && selectedmeshpoint.y == pos.y) {
+                            setSoftEndstopState(false);
+                            float currZpos = getAxisPosition_mm(Z);
+                            #if ENABLED(ANYCUBIC_TFT_DEBUG)
+                              SERIAL_ECHOLNPGM("Move Z pos from ", currZpos, " to ", currZpos + constrain(newval - currmesh, -0.05, 0.05));
+                            #endif
+                            setAxisPosition_mm(currZpos + constrain(newval - currmesh, -0.05, 0.05), Z);
+                          }
+                        }
                       }
-                      if (FindToken('S')) {
-                        bedlevel.refresh_bed_level();
-                        set_bed_leveling_enabled(true);
-                        settings.save();
+                      if (CodeSeen('S')) {
+                        injectCommands(F("M500"));
                       }
-                      if (FindToken('C')) {
-                        restore_z_values();
-                        probe.offset.z = SAVE_zprobe_zoffset;
-                        set_bed_leveling_enabled(true);
-                        bedlevel.refresh_bed_level();
+                      if (CodeSeen('C')) {
+                        injectCommands(F("M501\nM420 S1"));
+                        selectedmeshpoint.x = selectedmeshpoint.y = 99;
                       }
                     }
                     break;
@@ -1739,7 +1803,7 @@ void AnycubicTouchscreenClass::RenderCurrentFolder(uint16_t selectedNumber) {
                         SENDLINE_DBG_PGM("J24", "TFT Serial Debug: Forbid auto leveling... J24");
                       else
                         SENDLINE_DBG_PGM("J26", "TFT Serial Debug: Start auto leveling... J26");
-                      if (FindToken('S'))
+                      if (CodeSeen('S'))
                         queue.enqueue_now_P(PSTR("G28\nG29\nM500\nG90\nM300 S440 P200\nM300 S660 P250\nM300 S880 P300\nG1 Z30 F4000\nG1 X0 F4000\nG91\nM84"));
 
                 #endif // if ENABLED(KNUTWURST_TFT_LEVELING)
@@ -1751,15 +1815,15 @@ void AnycubicTouchscreenClass::RenderCurrentFolder(uint16_t selectedNumber) {
                       break;
 
                     case 41:
-                      if (FindToken('O')) {
+                      if (CodeSeen('O')) {
                         PrintdoneAndPowerOFF = true;
                         break;
                       }
-                      else if (FindToken('C')) {
+                      else if (CodeSeen('C')) {
                         PrintdoneAndPowerOFF = false;
                         break;
                       }
-                      if (FindToken('S')) {
+                      if (CodeSeen('S')) {
                         if (PrintdoneAndPowerOFF)
                           SENDLINE_PGM("J35 ");
                         else
@@ -1797,7 +1861,7 @@ void AnycubicTouchscreenClass::RenderCurrentFolder(uint16_t selectedNumber) {
                       break;
                     
                     case 36:
-                      if (FindToken('S')) {
+                      if (CodeSeen('S')) {
                         int coorvalue;
                         coorvalue = CodeValueInt();
                         if (coorvalue != 0)
@@ -1806,7 +1870,7 @@ void AnycubicTouchscreenClass::RenderCurrentFolder(uint16_t selectedNumber) {
                           Laser_printer_st.pic_vector = 0;
                         break;
                           case 37:
-                            if (FindToken('S')) {
+                            if (CodeSeen('S')) {
                               int coorvalue;
                               coorvalue = CodeValueInt();
                               if (coorvalue == 0)
@@ -1817,7 +1881,7 @@ void AnycubicTouchscreenClass::RenderCurrentFolder(uint16_t selectedNumber) {
                             break;
 
                           case 38:
-                            if (FindToken('S')) {
+                            if (CodeSeen('S')) {
                               int coorvalue;
                               coorvalue                       = CodeValueInt();
                               Laser_printer_st.pic_laser_time = coorvalue;
@@ -1825,7 +1889,7 @@ void AnycubicTouchscreenClass::RenderCurrentFolder(uint16_t selectedNumber) {
                             break;
 
                           case 39:
-                            if (FindToken('S')) { // A39
+                            if (CodeSeen('S')) { // A39
                               float coorvalue;
                               coorvalue                     = CodeValue();
                               Laser_printer_st.laser_height = coorvalue;
@@ -1836,7 +1900,7 @@ void AnycubicTouchscreenClass::RenderCurrentFolder(uint16_t selectedNumber) {
                             break;
 
                           case 40:
-                            if (FindToken('S')) { // A40
+                            if (CodeSeen('S')) { // A40
                               float coorvalue;
                               coorvalue                           = CodeValue();
                               Laser_printer_st.pic_pixel_distance = coorvalue;
@@ -1844,7 +1908,7 @@ void AnycubicTouchscreenClass::RenderCurrentFolder(uint16_t selectedNumber) {
                             break;
 
                           case 41:
-                            if (FindToken('S')) {
+                            if (CodeSeen('S')) {
                               float coorvalue;
                               coorvalue                 = CodeValue();
                               Laser_printer_st.x_offset = coorvalue;
@@ -1852,7 +1916,7 @@ void AnycubicTouchscreenClass::RenderCurrentFolder(uint16_t selectedNumber) {
                             break;
 
                           case 42:
-                            if (FindToken('S')) {
+                            if (CodeSeen('S')) {
                               float coorvalue;
                               coorvalue                 = CodeValue();
                               Laser_printer_st.y_offset = coorvalue;
@@ -1860,7 +1924,7 @@ void AnycubicTouchscreenClass::RenderCurrentFolder(uint16_t selectedNumber) {
                             break;
 
                           case 43:
-                            if (FindToken('S')) { // y
+                            if (CodeSeen('S')) { // y
                               int coorvalue;
                               coorvalue = CodeValueInt();
                               if (coorvalue == 0)
@@ -1892,27 +1956,27 @@ void AnycubicTouchscreenClass::RenderCurrentFolder(uint16_t selectedNumber) {
 
                 #if ENABLED(KNUTWURST_MEGA_P)
                     case 51:
-                      if (FindToken('H')) {
+                      if (CodeSeen('H')) {
                         queue.enqueue_now_P(PSTR("G1 Z5 F500"));
                         queue.enqueue_now_P(PSTR("G1 X30 Y30 F5000"));
                         queue.enqueue_now_P(PSTR("G1 Z0.15 F300"));
                       }
-                      else if (FindToken('I')) {
+                      else if (CodeSeen('I')) {
                         queue.enqueue_now_P(PSTR("G1 Z5 F500"));
                         queue.enqueue_now_P(PSTR("G1 X190 Y30 F5000"));
                         queue.enqueue_now_P(PSTR("G1 Z0.15 F300"));
                       }
-                      else if (FindToken('J')) {
+                      else if (CodeSeen('J')) {
                         queue.enqueue_now_P(PSTR("G1 Z5 F500"));
                         queue.enqueue_now_P(PSTR("G1 X190 Y190 F5000"));
                         queue.enqueue_now_P(PSTR("G1 Z0.15 F300"));
                       }
-                      else if (FindToken('K')) {
+                      else if (CodeSeen('K')) {
                         queue.enqueue_now_P(PSTR("G1 Z5 F500"));
                         queue.enqueue_now_P(PSTR("G1 X30 Y190 F5000"));
                         queue.enqueue_now_P(PSTR("G1 Z0.15 F300"));
                       }
-                      else if (FindToken('L')) {
+                      else if (CodeSeen('L')) {
                         queue.enqueue_now_P(PSTR("G1 X100 Y100  Z50 F5000"));
                       }
                       break;

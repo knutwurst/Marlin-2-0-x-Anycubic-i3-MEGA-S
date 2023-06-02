@@ -242,6 +242,9 @@ enum AnycubicMediaPauseState {
   extern int z_values_size;
   // temp value which needs to be saved
   extern float SAVE_zprobe_zoffset;
+
+  static xy_uint8_t       selectedmeshpoint;
+  static float            live_Zoffset;
 #endif
 
 class AnycubicTouchscreenClass {
@@ -306,7 +309,7 @@ static AnycubicMediaPauseState mediaPauseState;
 
 int CodeValueInt();
 float CodeValue();
-bool FindToken(char);
+bool CodeSeen(char);
 void StartPrint();
 void PausePrint();
 void StopPrint();
