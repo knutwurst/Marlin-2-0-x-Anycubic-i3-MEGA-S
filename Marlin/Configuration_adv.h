@@ -2676,8 +2676,9 @@
       #define FILAMENT_CHANGE_FAST_LOAD_LENGTH     5  // (mm) Load length of filament, from extruder gear to nozzle.
                                                       //   For Bowden, the full length of the tube and nozzle.
                                                       //   For direct drive, the full length of the nozzle.
-                                                      
-    #elseif ENABLED(KNUTWURST_CHIRON)
+    #endif
+
+    #if ENABLED(KNUTWURST_CHIRON)
       #define PAUSE_PARK_RETRACT_FEEDRATE         40  // (mm/s) Initial retract feedrate.
       #define PAUSE_PARK_RETRACT_LENGTH            4  // (mm) Initial retract.
                                                       // This short retract is done immediately, before parking the nozzle.
@@ -2695,8 +2696,9 @@
       #define FILAMENT_CHANGE_FAST_LOAD_LENGTH   538  // (mm) Load length of filament, from extruder gear to nozzle.
                                                       //   For Bowden, the full length of the tube and nozzle.
                                                       //   For direct drive, the full length of the nozzle.
+    #endif
 
-    #else // all other MEGA-family Printers 
+    #if NONE(KNUTWURST_CHIRON, KNUTWURST_4MAXP2)
       #define PAUSE_PARK_RETRACT_FEEDRATE         40  // (mm/s) Initial retract feedrate.
       #define PAUSE_PARK_RETRACT_LENGTH            4  // (mm) Initial retract.
                                                       // This short retract is done immediately, before parking the nozzle.
