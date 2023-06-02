@@ -1170,19 +1170,8 @@ void AnycubicTouchscreenClass::RenderCurrentFolder(uint16_t selectedNumber) {
 
               case 8: // A8 GET SD LIST
                 #ifdef SDSUPPORT
-                  if (SpecialMenu == false)
-                    currentTouchscreenSelection[0] = 0;
-
-                  #if DISABLED(KNUTWURST_SPECIAL_MENU_WO_SD)
-                    if (!IS_SD_INSERTED()) {
-                      SENDLINE_DBG_PGM("J02", "TFT Serial Debug: No SD Card mounted to render Current File List... J02");
-                    }
-                    else
-                  #endif
-                  {
-                    if (CodeSeen('S')) filenumber = CodeValue();
+                  if (SpecialMenu == false) currentTouchscreenSelection[0] = 0;
                     RenderCurrentFileList();
-                  }
                 #endif
                 break;
 
