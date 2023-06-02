@@ -21,14 +21,8 @@
 #ifndef anycubic_touchscreen_h
 #define anycubic_touchscreen_h
 
-// #include <stdio.h>
-// #include "../inc/MarlinConfig.h"
-// #include "../module/configuration_store.h"
-
 #include "../../../inc/MarlinConfigPre.h"
 #include "../../../module/probe.h"
-
-void initializeGrid();
 
 char *itostr2(const uint8_t &x);
 
@@ -236,17 +230,6 @@ enum AnycubicMediaPauseState {
   #define SM_BLTZ_EXIT_S        "<EXTABLM.GCO"
 #endif // KNUTWURST_DGUS2_TFT
 
-#if ENABLED(KNUTWURST_TFT_LEVELING)
-  // eeprom_index
-  extern int z_values_index;
-  extern int z_values_size;
-  // temp value which needs to be saved
-  extern float SAVE_zprobe_zoffset;
-
-  static xy_uint8_t       selectedmeshpoint;
-  static float            live_Zoffset;
-#endif
-
 class AnycubicTouchscreenClass {
 
 public:
@@ -291,6 +274,11 @@ bool IsParked             = false;
 int currentFlowRate       = 0;
 bool PrintdoneAndPowerOFF = true;
 bool powerOFFflag         = 0;
+
+#if ENABLED(KNUTWURST_TFT_LEVELING)
+  xy_uint8_t       selectedmeshpoint;
+  float            live_Zoffset;
+#endif
 
 static AnycubicMediaPrintState mediaPrintingState;
 static AnycubicMediaPauseState mediaPauseState;

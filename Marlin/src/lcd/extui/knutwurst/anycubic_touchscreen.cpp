@@ -26,17 +26,15 @@
 
 #include "../ui_api.h"
 #include "../../../gcode/queue.h"
-#include "../../../feature/bedlevel/bedlevel.h"
 #include "../../../libs/buzzer.h"
 #include "../../../libs/numtostr.h"
 #include "../../../module/temperature.h"
 #include "../../../module/motion.h"
-#include "../../../module/settings.h"
 #include "../../../module/stepper.h"
 
-#define ANYCUBIC_TFT_DEBUG
+//#define ANYCUBIC_TFT_DEBUG
 //#define KNUTWURST_DGUS2_TFT
-#define KNUTWURST_TFT_LEVELING
+//#define KNUTWURST_TFT_LEVELING
 
 #ifdef ANYCUBIC_TOUCHSCREEN
   #include "./anycubic_touchscreen.h"
@@ -70,82 +68,6 @@
   AnycubicMediaPrintState AnycubicTouchscreenClass::mediaPrintingState = AMPRINTSTATE_NOT_PRINTING;
   AnycubicMediaPauseState AnycubicTouchscreenClass::mediaPauseState = AMPAUSESTATE_NOT_PAUSED;
 
-  #if ENABLED(KNUTWURST_TFT_LEVELING)
-    int z_values_index;
-    int z_values_size;
-    float SAVE_zprobe_zoffset;
-    uint8_t x;
-    uint8_t y;
-
-    void restore_z_values() {
-      uint16_t size  = z_values_size;
-      int pos        = z_values_index;
-      uint8_t* value = (uint8_t*)&bedlevel.z_values;
-      do {
-        uint8_t c = eeprom_read_byte((unsigned char*)pos);
-        *value = c;
-        pos++;
-        value++;
-        if(pos > 32766)
-          break;
-      } while (--size);
-    }
-
-    void setupMyZoffset() {
-      #if ENABLED(AUTO_BED_LEVELING_BILINEAR)
-        SERIAL_ECHOPGM("MEANL_L:", 0x55);
-        SAVE_zprobe_zoffset = probe.offset.z;
-      #else
-        SERIAL_ECHOPGM("MEANL_L:", 0xaa);
-        constexpr float dpo[] = NOZZLE_TO_PROBE_OFFSET;
-        probe.offset.z = dpo[Z_AXIS];
-      #endif
-    }
-
-    void initializeGrid() {
-      #if ENABLED(PROBE_MANUALLY)
-        #define ABL_VAR static
-      #else
-        #define ABL_VAR
-      #endif
-
-      ABL_VAR xy_pos_t probe_position_lf, probe_position_rb;
-      // ABL_VAR xy_float_t gridSpacing = { 0, 0 };
-
-      const float x_min = probe.min_x(), x_max = probe.max_x(),
-                  y_min = probe.min_y(), y_max = probe.max_y();
-
-      constexpr xy_uint8_t abl_grid_points = { GRID_MAX_POINTS_X, GRID_MAX_POINTS_Y };
-      GCodeParser parser;
-
-      // Reset grid to 0.0 or "not probed". (Also disables ABL)
-      reset_bed_level();
-
-      // Initialize a grid with the given dimensions
-      probe_position_lf.set(
-        parser.seenval('L') ? RAW_X_POSITION(parser.value_linear_units()) : x_min,
-        parser.seenval('F') ? RAW_Y_POSITION(parser.value_linear_units()) : y_min
-        );
-      probe_position_rb.set(
-        parser.seenval('R') ? RAW_X_POSITION(parser.value_linear_units()) : x_max,
-        parser.seenval('B') ? RAW_Y_POSITION(parser.value_linear_units()) : y_max
-        );
-      LevelingBilinear::grid_spacing.set((probe_position_rb.x - probe_position_lf.x) / (abl_grid_points.x - 1),
-        (probe_position_rb.y - probe_position_lf.y) / (abl_grid_points.y - 1));
-
-      LevelingBilinear::grid_start = probe_position_lf;
-      // Can't re-enable (on error) until the new grid is written
-      set_bed_leveling_enabled(false);
-
-      constexpr float dpo[] = NOZZLE_TO_PROBE_OFFSET;
-      probe.offset.z = dpo[Z_AXIS];
-
-      for (uint8_t x = 0; x < GRID_MAX_POINTS_X; x++)
-        for (uint8_t y = 0; y < GRID_MAX_POINTS_Y; y++) bedlevel.z_values[x][y] = float(-1.0);
-      bedlevel.refresh_bed_level();
-      set_bed_leveling_enabled(true);
-    }
-  #endif // if ENABLED(KNUTWURST_TFT_LEVELING)
 
   #if ENABLED(POWER_OUTAGE_TEST)
     int PowerInt                     = 6;
@@ -206,11 +128,6 @@
     
     #if ENABLED(FILAMENT_RUNOUT_SENSOR)
       SET_INPUT_PULLUP(FIL_RUNOUT1_PIN);
-    #endif
-
-    #if ENABLED(KNUTWURST_TFT_LEVELING)
-      setupMyZoffset();
-      delay(10);
     #endif
 
     setup_OutageTestPin();
@@ -415,7 +332,7 @@
                || (strcasestr_P(currentTouchscreenSelection, PSTR(SM_SAVE_EEPROM_S)) != NULL)
                ) {
         SERIAL_ECHOLNPGM("Special Menu: Save EEPROM");
-        settings.save(); // M500
+        injectCommands(F("M500"));
         BUZZ(105, 1108);
         BUZZ(210, 1661);
       }
@@ -423,10 +340,7 @@
                || (strcasestr_P(currentTouchscreenSelection, PSTR(SM_LOAD_DEFAULTS_S)) != NULL)
                ) {
         SERIAL_ECHOLNPGM("Special Menu: Load FW Defaults");
-        settings.reset(); // M502
-        #if ENABLED(KNUTWURST_TFT_LEVELING)
-          initializeGrid();
-        #endif
+        injectCommands(F("M501\nM420 S1"));
         BUZZ(105, 1661);
         BUZZ(210, 1108);
       }
@@ -509,8 +423,7 @@
                  || (strcasestr_P(currentTouchscreenSelection, PSTR(SM_RESETLV_S)) != NULL)
                  ) {
           SERIAL_ECHOLNPGM("Special Menu: initializeGrid()");
-          initializeGrid();
-          settings.save();
+          injectCommands(F("M501\nM420 S1"));
           BUZZ(105, 1108);
           BUZZ(210, 1661);
         }
