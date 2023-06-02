@@ -1565,13 +1565,16 @@ void AnycubicTouchscreenClass::RenderCurrentFolder(uint16_t selectedNumber) {
                     }
                     break;
 
-                    case 30: // A30 auto leveling (Old Anycubic TFT)
-                      if (isPrinting())
-                        SENDLINE_DBG_PGM("J24", "TFT Serial Debug: Forbid auto leveling... J24");
-                      else
-                        SENDLINE_DBG_PGM("J26", "TFT Serial Debug: Start auto leveling... J26");
-                      if (CodeSeen('S'))
-                        injectCommands(F("G28\nG29\nM500\nG90\nM300 S440 P200\nM300 S660 P250\nM300 S880 P300\nG1 Z30 F4000\nG1 X0 F4000\nG91\nM84"));
+                    case 30: // A30 auto leveling (Old Anycubic TFT)    
+                      if (CodeSeen('S')) {
+                        if (isPrinting()) {
+                          SENDLINE_DBG_PGM("J24", "TFT Serial Debug: Forbid auto leveling... J24");
+                        } else {
+                          SENDLINE_DBG_PGM("J26", "TFT Serial Debug: Start auto leveling... J26");
+                          injectCommands(F("G28\nG29"));
+                          mediaPrintingState = AMPRINTSTATE_PROBING;
+                        }
+                      }
                       break;
 
                     case 31: // A31 z-offset
@@ -1589,7 +1592,9 @@ void AnycubicTouchscreenClass::RenderCurrentFolder(uint16_t selectedNumber) {
                         if (!isPrinting()) {
                           setAxisPosition_mm(1.0,Z); // Lift nozzle before any further movements are made
                           injectCommands(F("M500"));
-                          SERIAL_ECHOLNF(F("Mesh changes saved."));
+                          #if ENABLED(ANYCUBIC_TFT_DEBUG) 
+                            SERIAL_ECHOLNF(F("Mesh changes saved."));
+                          #endif
                           selectedmeshpoint.x = selectedmeshpoint.y = 99;
                         }
                       }
@@ -1690,7 +1695,7 @@ void AnycubicTouchscreenClass::RenderCurrentFolder(uint16_t selectedNumber) {
                           SERIAL_ECHOLNPGM("from ", currmesh, " to ", newval);
                         #endif
                         setMeshPoint(pos,newval);
-                        if (!isPrinting()) {
+                        if (mediaPrintingState == AMPRINTSTATE_NOT_PRINTING || mediaPrintingState == AMPRINTSTATE_PROBING/*!isPrinting()*/) {
                           // if we are at the current mesh point indicated on the panel Move Z pos +/- 0.05mm
                           // (The panel changes the mesh value by +/- 0.05mm on each button press)
                           if (selectedmeshpoint.x == pos.x && selectedmeshpoint.y == pos.y) {
@@ -1718,13 +1723,8 @@ void AnycubicTouchscreenClass::RenderCurrentFolder(uint16_t selectedNumber) {
                       break;
 
                     case 36: // A36 auto leveling (New Anycubic TFT)
-                      if (isPrinting())
-                        SENDLINE_DBG_PGM("J24", "TFT Serial Debug: Forbid auto leveling... J24");
-                      else
-                        SENDLINE_DBG_PGM("J26", "TFT Serial Debug: Start auto leveling... J26");
-                      if (CodeSeen('S'))
-                        queue.enqueue_now_P(PSTR("G28\nG29\nM500\nG90\nM300 S440 P200\nM300 S660 P250\nM300 S880 P300\nG1 Z30 F4000\nG1 X0 F4000\nG91\nM84"));
-
+                      SENDLINE_DBG_PGM("J26", "TFT Serial Debug: Start auto leveling... J26");
+                      break;
                 #endif // if ENABLED(KNUTWURST_TFT_LEVELING)
 
                 #if ENABLED(KNUTWURST_4MAXP2)
