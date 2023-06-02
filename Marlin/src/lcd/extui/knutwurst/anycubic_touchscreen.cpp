@@ -34,7 +34,7 @@
 
 //#define ANYCUBIC_TFT_DEBUG
 //#define KNUTWURST_DGUS2_TFT
-//#define KNUTWURST_TFT_LEVELING
+#define KNUTWURST_TFT_LEVELING
 
 #ifdef ANYCUBIC_TOUCHSCREEN
   #include "./anycubic_touchscreen.h"
