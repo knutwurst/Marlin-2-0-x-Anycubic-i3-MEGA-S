@@ -2682,9 +2682,9 @@
       #define PAUSE_PARK_RETRACT_FEEDRATE         40  // (mm/s) Initial retract feedrate.
       #define PAUSE_PARK_RETRACT_LENGTH            4  // (mm) Initial retract.
                                                       // This short retract is done immediately, before parking the nozzle.
-      #define FILAMENT_CHANGE_UNLOAD_FEEDRATE     30  // (mm/s) Unload filament feedrate. This can be pretty fast.
-      #define FILAMENT_CHANGE_UNLOAD_ACCEL        25  // (mm/s^2) Lower acceleration may allow a faster feedrate.
-      #define FILAMENT_CHANGE_UNLOAD_LENGTH      555  // (mm) The length of filament for a complete unload.
+      #define FILAMENT_CHANGE_UNLOAD_FEEDRATE      0  // (mm/s) Unload filament feedrate. This can be pretty fast.
+      #define FILAMENT_CHANGE_UNLOAD_ACCEL        30  // (mm/s^2) Lower acceleration may allow a faster feedrate.
+      #define FILAMENT_CHANGE_UNLOAD_LENGTH        0  // (mm) The length of filament for a complete unload.
                                                       //   For Bowden, the full length of the tube and nozzle.
                                                       //   For direct drive, the full length of the nozzle.
                                                       //   Set to 0 for manual unloading.
@@ -2693,7 +2693,7 @@
                                                       // 0 to disable start loading and skip to fast load only
       #define FILAMENT_CHANGE_FAST_LOAD_FEEDRATE  30  // (mm/s) Load filament feedrate. This can be pretty fast.
       #define FILAMENT_CHANGE_FAST_LOAD_ACCEL     25  // (mm/s^2) Lower acceleration may allow a faster feedrate.
-      #define FILAMENT_CHANGE_FAST_LOAD_LENGTH   538  // (mm) Load length of filament, from extruder gear to nozzle.
+      #define FILAMENT_CHANGE_FAST_LOAD_LENGTH     5  // (mm) Load length of filament, from extruder gear to nozzle.
                                                       //   For Bowden, the full length of the tube and nozzle.
                                                       //   For direct drive, the full length of the nozzle.
     #endif
