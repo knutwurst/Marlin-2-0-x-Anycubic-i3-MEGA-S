@@ -1574,6 +1574,8 @@ void AnycubicTouchscreenClass::RenderCurrentFolder(uint16_t selectedNumber) {
                           injectCommands(F("G28\nG29"));
                           mediaPrintingState = AMPRINTSTATE_PROBING;
                         }
+                      } else {
+                        SENDLINE_DBG_PGM("J26", "TFT Serial Debug: Start auto leveling... J26");
                       }
                       break;
 
