@@ -339,7 +339,7 @@
                || (strcasestr_P(currentTouchscreenSelection, PSTR(SM_LOAD_DEFAULTS_S)) != NULL)
                ) {
         SERIAL_ECHOLNPGM("Special Menu: Load FW Defaults");
-        injectCommands(F("M501\nM420 S1"));
+        injectCommands(F("M502"));
         BUZZ(105, 1661);
         BUZZ(210, 1108);
       }
