@@ -622,6 +622,7 @@
 
 void AnycubicTouchscreenClass::RenderCurrentFileList() {
   currentFileOrDirectory[0] = 0;
+
   if (SpecialMenu == false) {
     currentTouchscreenSelection[0] = 0;
   }
@@ -629,11 +630,8 @@ void AnycubicTouchscreenClass::RenderCurrentFileList() {
   SENDLINE_PGM("FN "); // Filelist start
 
   if (!isMediaInserted() && !SpecialMenu) {
-    SENDLINE_DBG_PGM("J02", "TFT Serial Debug: No SD Card mounted to render Current File List... J02");
-
     SENDLINE_PGM(SM_SPECIAL_MENU_S);
     SENDLINE_PGM(SM_SPECIAL_MENU_L);
-
   } else {
     uint16_t selectedNumber = 0;
     FileList currentFileList;
