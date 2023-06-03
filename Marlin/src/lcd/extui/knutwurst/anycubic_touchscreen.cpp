@@ -621,14 +621,10 @@
 
 
 void AnycubicTouchscreenClass::RenderCurrentFileList() {
-  uint16_t selectedNumber = 0;
-  FileList currentFileList;
   currentFileOrDirectory[0] = 0;
-
   if (SpecialMenu == false) {
     currentTouchscreenSelection[0] = 0;
   }
-    
 
   SENDLINE_PGM("FN "); // Filelist start
 
@@ -637,8 +633,11 @@ void AnycubicTouchscreenClass::RenderCurrentFileList() {
 
     SENDLINE_PGM(SM_SPECIAL_MENU_S);
     SENDLINE_PGM(SM_SPECIAL_MENU_L);
-  }
-  else {
+
+  } else {
+    uint16_t selectedNumber = 0;
+    FileList currentFileList;
+
     if (CodeSeen('S')) {
       selectedNumber = CodeValue();
     }
