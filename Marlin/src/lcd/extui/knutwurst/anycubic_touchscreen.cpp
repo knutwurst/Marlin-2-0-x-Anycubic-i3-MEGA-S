@@ -1917,6 +1917,13 @@ void AnycubicTouchscreenClass::RenderCurrentFolder(uint16_t selectedNumber) {
       }
     }
 
+    #if ENABLED(KNUTWURST_4MAXP2)
+      if (PrintdoneAndPowerOFF && powerOFFflag && (int(getActualTemp_celsius(E0) + 0.5) < 50 )) {
+        powerOFFflag = 0;
+        PowerDown();
+      }
+    #endif
+
     if (TFTbuflen < (TFTBUFSIZE - 1))
       GetCommandFromTFT();
 
