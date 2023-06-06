@@ -34,7 +34,7 @@
 
 #define ANYCUBIC_TFT_DEBUG
 //#define KNUTWURST_DGUS2_TFT
-//#define KNUTWURST_TFT_LEVELING
+#define KNUTWURST_TFT_LEVELING
 
 #ifdef ANYCUBIC_TOUCHSCREEN
   #include "./anycubic_touchscreen.h"
@@ -1481,8 +1481,9 @@ void AnycubicTouchscreenClass::RenderCurrentFolder(uint16_t selectedNumber) {
 
                       pos_z = getMeshPoint(pos);
 
-                      SENDLINE_PGM("A29V ");
-                      LCD_SERIAL.println(pos_z * 100);
+                      SEND_PGM("A29V ");
+                      LCD_SERIAL.print(pos_z * 100, 2);
+                      SENDLINE_PGM("");
 
                       if (!isPrinting()) {
                         setSoftEndstopState(true); 
