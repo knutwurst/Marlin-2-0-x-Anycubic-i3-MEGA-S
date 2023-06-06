@@ -1546,11 +1546,14 @@ void AnycubicTouchscreenClass::RenderCurrentFolder(uint16_t selectedNumber) {
                       }
 
                       else if (CodeSeen('G')) { // Get current offset
-                        SENDLINE_PGM("A31V ");
-                        if (isPrinting())
-                          LCD_SERIAL.println(live_Zoffset);
-                        else {
-                          LCD_SERIAL.println(getZOffset_mm());
+                        if (isPrinting()) {
+                          SEND_PGM("A31V ");
+                          LCD_SERIAL.print(live_Zoffset, 2);
+                          SENDLINE_PGM("");
+                        } else {
+                          SEND_PGM("A31V ");
+                          LCD_SERIAL.print(getZOffset_mm(), 2);
+                          SENDLINE_PGM("");
                           selectedmeshpoint.x = selectedmeshpoint.y = 99;
                         }
                       }
@@ -1575,8 +1578,10 @@ void AnycubicTouchscreenClass::RenderCurrentFolder(uint16_t selectedNumber) {
                               babystepAxis_steps(steps, Z);
                               live_Zoffset += Zshift;
                             }
-                            SENDLINE_PGM("A31V ");
-                            LCD_SERIAL.println(live_Zoffset);
+
+                            SEND_PGM("A31V ");
+                            LCD_SERIAL.print(live_Zoffset, 2);
+                            SENDLINE_PGM("");
                           }
                           else {
                             GRID_LOOP(x, y) {
@@ -1593,8 +1598,10 @@ void AnycubicTouchscreenClass::RenderCurrentFolder(uint16_t selectedNumber) {
                             #endif
 
                             setZOffset_mm(currZOffset + Zshift);
-                            SENDLINE_PGM("A31V ");
-                            LCD_SERIAL.println(getZOffset_mm());
+
+                            SEND_PGM("A31V ");
+                            LCD_SERIAL.print(getZOffset_mm(), 2);
+                            SENDLINE_PGM("");
 
                             if (isAxisPositionKnown(Z)) {
                               const float currZpos = getAxisPosition_mm(Z);
