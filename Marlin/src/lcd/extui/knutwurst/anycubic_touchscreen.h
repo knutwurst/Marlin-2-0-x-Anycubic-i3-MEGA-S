@@ -199,9 +199,9 @@ void UserConfirmRequired(const char *);
 void SDCardStateChange(bool);
 void SDCardError();
 void KillTFT();
-static void OnPrintTimerStarted();
-static void OnPrintTimerPaused();
-static void OnPrintTimerStopped();
+void OnPrintTimerStarted();
+void OnPrintTimerPaused();
+void OnPrintTimerStopped();
 
 #if BOTH(ANYCUBIC_TFT_DEBUG, KNUTWURST_DGUS2_TFT)
   void Command(const char * const command);
@@ -226,11 +226,8 @@ uint16_t HeaterCheckCount = 0;
 int currentFlowRate       = 0;
 bool PrintdoneAndPowerOFF = true;
 bool powerOFFflag         = 0;
-
-#if ENABLED(KNUTWURST_TFT_LEVELING)
-  xy_uint8_t       selectedmeshpoint;
-  float            live_Zoffset;
-#endif
+xy_uint8_t       selectedmeshpoint;
+float            live_Zoffset;
 
 static AnycubicMediaPrintState mediaPrintingState;
 static AnycubicMediaPauseState mediaPauseState;

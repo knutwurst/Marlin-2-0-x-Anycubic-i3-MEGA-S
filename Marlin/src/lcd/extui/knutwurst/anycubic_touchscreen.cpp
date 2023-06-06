@@ -32,7 +32,7 @@
 #include "../../../module/motion.h"
 #include "../../../module/stepper.h"
 
-//#define ANYCUBIC_TFT_DEBUG
+#define ANYCUBIC_TFT_DEBUG
 //#define KNUTWURST_DGUS2_TFT
 //#define KNUTWURST_TFT_LEVELING
 
@@ -121,6 +121,7 @@
     CaseLight                      = false;
     currentFlowRate                = 100;
     flowRateBuffer                 = SM_FLOW_DISP_L;
+    live_Zoffset                   = 0.0;
 
     #if BOTH(SDSUPPORT, HAS_SD_DETECT)
       SET_INPUT_PULLUP(SD_DETECT_PIN);
@@ -1493,7 +1494,7 @@ void AnycubicTouchscreenClass::RenderCurrentFolder(uint16_t selectedNumber) {
                             #if ENABLED(ANYCUBIC_TFT_DEBUG)
                               SERIAL_ECHOLNPGM("Moving to mesh point at x: ", pos.x, " y: ", pos.y, " z: ", pos_z);
                             #endif
-                            setAxisPosition_mm(3.0,Z);
+                            setAxisPosition_mm(5.0,Z);
                             setAxisPosition_mm(17 + (93 * pos.x), X);
                             setAxisPosition_mm(20 + (93 * pos.y), Y);
                             setAxisPosition_mm(0.0, Z);
@@ -1524,58 +1525,26 @@ void AnycubicTouchscreenClass::RenderCurrentFolder(uint16_t selectedNumber) {
                       break;
 
                     case 31: // A31 z-offset
-                      if (CodeSeen('S')) { // Set offset (adjusts all points by value)
-                        float Zshift = CodeValue();  
-                        setSoftEndstopState(false);
-                        if (isPrinting()) {
-                          #if ENABLED(ANYCUBIC_TFT_DEBUG)
-                            SERIAL_ECHOLNPGM("Change Zoffset from:", live_Zoffset, " to ", live_Zoffset + Zshift);
-                          #endif
-                          if (isAxisPositionKnown(Z)) {
-                            #if ENABLED(ANYCUBIC_TFT_DEBUG)
-                              const float currZpos = getAxisPosition_mm(Z);
-                              SERIAL_ECHOLNPGM("Nudge Z pos from ", currZpos, " to ", currZpos + constrain(Zshift, -0.05, 0.05));
-                            #endif
-                            // Use babystepping to adjust the head position
-                            int16_t steps = mmToWholeSteps(constrain(Zshift,-0.05,0.05), Z);
-                            #if ENABLED(ANYCUBIC_TFT_DEBUG)
-                              SERIAL_ECHOLNPGM("Steps to move Z: ", steps);
-                            #endif
-                            babystepAxis_steps(steps, Z);
-                            live_Zoffset += Zshift;
-                          }
-                          SENDLINE_PGM("A31V ");
-                          LCD_SERIAL.println(live_Zoffset);
-                        }
-                        else {
-                          GRID_LOOP(x, y) {
-                            const xy_uint8_t pos { x, y };
-                            const float currval = getMeshPoint(pos);
-                            setMeshPoint(pos, constrain(currval + Zshift, -10, 2));
-                            #if ENABLED(ANYCUBIC_TFT_DEBUG)
-                              SERIAL_ECHOLNPGM("Change mesh point X", x," Y",y ," from ", currval, " to ", getMeshPoint(pos) );
-                            #endif
-                          }
-                          const float currZOffset = getZOffset_mm();
-                          #if ENABLED(ANYCUBIC_TFT_DEBUG)
-                            SERIAL_ECHOLNPGM("Change probe offset from ", currZOffset, " to  ", currZOffset + Zshift);
-                          #endif
-
-                          setZOffset_mm(currZOffset + Zshift);
-                          SENDLINE_PGM("A31V ");
-                          LCD_SERIAL.println(getZOffset_mm());
-
-                          if (isAxisPositionKnown(Z)) {
-                            const float currZpos = getAxisPosition_mm(Z);
-                            #if ENABLED(ANYCUBIC_TFT_DEBUG)
-                              SERIAL_ECHOLNPGM("Move Z pos from ", currZpos, " to ", currZpos + constrain(Zshift, -0.05, 0.05));
-                            #endif
-                            setAxisPosition_mm(currZpos+constrain(Zshift,-0.05,0.05),Z);
-                          }
+                      if (CodeSeen('C')) { // Restore and apply original offsets
+                        if (!isPrinting()) {
+                          injectCommands(F("M501\nM420 S1"));
+                          selectedmeshpoint.x = selectedmeshpoint.y = 99;
+                          SERIAL_ECHOLNF(F("Mesh changes abandoned, previous mesh restored."));
                         }
                       }
-                      
-                      if (CodeSeen('G')) { // Get current offset
+
+                      else if (CodeSeen('D')) { // Save Z Offset tables and restore leveling state
+                        if (!isPrinting()) {
+                          setAxisPosition_mm(5.0,Z); // Lift nozzle before any further movements are made
+                          injectCommands(F("M500"));
+                          #if ENABLED(ANYCUBIC_TFT_DEBUG) 
+                            SERIAL_ECHOLNF(F("Mesh changes saved."));
+                          #endif
+                          selectedmeshpoint.x = selectedmeshpoint.y = 99;
+                        }
+                      }
+
+                      else if (CodeSeen('G')) { // Get current offset
                         SENDLINE_PGM("A31V ");
                         if (isPrinting())
                           LCD_SERIAL.println(live_Zoffset);
@@ -1585,27 +1554,57 @@ void AnycubicTouchscreenClass::RenderCurrentFolder(uint16_t selectedNumber) {
                         }
                       }
 
-                      if (CodeSeen('C')) { // Restore and apply original offsets
-                        if (!isPrinting()) {
-                          injectCommands(F("M501\nM420 S1"));
-                          selectedmeshpoint.x = selectedmeshpoint.y = 99;
-                          #if ENABLED(ANYCUBIC_TFT_DEBUG) 
-                            SERIAL_ECHOLNF(F("Mesh changes abandoned, previous mesh restored."));
-                          #endif
-                        }
-                      }
+                      else {
+                        if (CodeSeen('S')) { // Set offset (adjusts all points by value)
+                          float Zshift = CodeValue();  
+                          setSoftEndstopState(false);
+                          if (isPrinting()) {
+                            #if ENABLED(ANYCUBIC_TFT_DEBUG)
+                              SERIAL_ECHOLNPGM("Change Zoffset from:", live_Zoffset, " to ", live_Zoffset + Zshift);
+                            #endif
+                            if (isAxisPositionKnown(Z)) {
+                              #if ENABLED(ANYCUBIC_TFT_DEBUG)
+                                const float currZpos = getAxisPosition_mm(Z);
+                                SERIAL_ECHOLNPGM("Nudge Z pos from ", currZpos, " to ", currZpos + constrain(Zshift, -0.05, 0.05));
+                              #endif
+                              int16_t steps = mmToWholeSteps(constrain(Zshift,-0.05,0.05), Z);
+                              #if ENABLED(ANYCUBIC_TFT_DEBUG)
+                                SERIAL_ECHOLNPGM("Steps to move Z: ", steps);
+                              #endif
+                              babystepAxis_steps(steps, Z);
+                              live_Zoffset += Zshift;
+                            }
+                            SENDLINE_PGM("A31V ");
+                            LCD_SERIAL.println(live_Zoffset);
+                          }
+                          else {
+                            GRID_LOOP(x, y) {
+                              const xy_uint8_t pos { x, y };
+                              const float currval = getMeshPoint(pos);
+                              setMeshPoint(pos, constrain(currval + Zshift, -10, 2));
+                              #if ENABLED(ANYCUBIC_TFT_DEBUG)
+                                SERIAL_ECHOLNPGM("Change mesh point X", x," Y",y ," from ", currval, " to ", getMeshPoint(pos) );
+                              #endif
+                            }
+                            const float currZOffset = getZOffset_mm();
+                            #if ENABLED(ANYCUBIC_TFT_DEBUG)
+                              SERIAL_ECHOLNPGM("Change probe offset from ", currZOffset, " to  ", currZOffset + Zshift);
+                            #endif
 
-                      if (CodeSeen('D')) { // Save Z Offset tables and restore leveling state
-                        if (!isPrinting()) {
-                          setAxisPosition_mm(1.0,Z); // Lift nozzle before any further movements are made
-                          injectCommands(F("M500"));
-                          #if ENABLED(ANYCUBIC_TFT_DEBUG) 
-                            SERIAL_ECHOLNF(F("Mesh changes saved."));
-                          #endif
-                          selectedmeshpoint.x = selectedmeshpoint.y = 99;
+                            setZOffset_mm(currZOffset + Zshift);
+                            SENDLINE_PGM("A31V ");
+                            LCD_SERIAL.println(getZOffset_mm());
+
+                            if (isAxisPositionKnown(Z)) {
+                              const float currZpos = getAxisPosition_mm(Z);
+                              #if ENABLED(ANYCUBIC_TFT_DEBUG)
+                                SERIAL_ECHOLNPGM("Move Z pos from ", currZpos, " to ", currZpos + constrain(Zshift, -0.05, 0.05));
+                              #endif
+                              setAxisPosition_mm(currZpos+constrain(Zshift,-0.05,0.05),Z);
+                            }
+                          }
                         }
                       }
-                      SENDLINE_PGM("");
                       break;
 
                     case 32: // a32 clean leveling beep flag
@@ -1935,9 +1934,10 @@ void AnycubicTouchscreenClass::RenderCurrentFolder(uint16_t selectedNumber) {
 
   void AnycubicTouchscreenClass::OnPrintTimerStarted() {
     #if ENABLED(SDSUPPORT)
-      if (mediaPrintingState == AMPRINTSTATE_PRINTING)
+      if (mediaPrintingState == AMPRINTSTATE_PRINTING) {
         SENDLINE_DBG_PGM("J04", "TFT Serial Debug: Starting SD Print... J04"); // J04 Starting Print
-
+        live_Zoffset      = 0.0;
+      }
     #endif
   }
 
