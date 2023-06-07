@@ -1686,16 +1686,28 @@ void AnycubicTouchscreenClass::RenderCurrentFolder(uint16_t selectedNumber) {
                     case 41:
                       if (CodeSeen('O')) {
                         PrintdoneAndPowerOFF = true;
+                        #if ENABLED(ANYCUBIC_TFT_DEBUG)
+                          SERIAL_ECHOLNPGM("TFT Serial Debug: PrintdoneAndPowerOFF is set!");
+                        #endif
                         break;
                       }
                       else if (CodeSeen('C')) {
                         PrintdoneAndPowerOFF = false;
+                        #if ENABLED(ANYCUBIC_TFT_DEBUG)
+                          SERIAL_ECHOLNPGM("TFT Serial Debug: PrintdoneAndPowerOFF is disabled!");
+                        #endif
                         break;
                       }
                       if (CodeSeen('S')) {
                         if (PrintdoneAndPowerOFF)
+                          #if ENABLED(ANYCUBIC_TFT_DEBUG)
+                            SERIAL_ECHOLNPGM("TFT Serial Debug: Sending J35 because PrintdoneAndPowerOFF = true");
+                          #endif
                           SENDLINE_PGM("J35 ");
                         else
+                          #if ENABLED(ANYCUBIC_TFT_DEBUG)
+                           SERIAL_ECHOLNPGM("TFT Serial Debug: Sending J34 because PrintdoneAndPowerOFF = false");
+                          #endif
                           SENDLINE_PGM("J34 ");
                       }
                       break;
@@ -1904,6 +1916,9 @@ void AnycubicTouchscreenClass::RenderCurrentFolder(uint16_t selectedNumber) {
 
   #if ENABLED(KNUTWURST_4MAXP2)
     void PowerDown() {
+      #if ENABLED(ANYCUBIC_TFT_DEBUG)
+          SERIAL_ECHOLNPGM("TFT Serial Debug: PowerDown is called!");
+      #endif
       for (unsigned char i = 0; i < 3; i++) {
         WRITE(POWER_OFF_PIN, LOW);
         delay(10);
