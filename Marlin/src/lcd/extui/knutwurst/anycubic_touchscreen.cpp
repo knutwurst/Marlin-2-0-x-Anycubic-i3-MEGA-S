@@ -1724,12 +1724,14 @@ void AnycubicTouchscreenClass::RenderCurrentFolder(uint16_t selectedNumber) {
                           #if ENABLED(ANYCUBIC_TFT_DEBUG)
                             SERIAL_ECHOLNPGM("TFT Serial Debug: Sending J35 because PrintdoneAndPowerOFF = true");
                           #endif
-                          SENDLINE_PGM("J35 ");
+                          SEND_PGM("J35 ");
+                          SENDLINE_PGM("");
                         } else {
                           #if ENABLED(ANYCUBIC_TFT_DEBUG)
                            SERIAL_ECHOLNPGM("TFT Serial Debug: Sending J34 because PrintdoneAndPowerOFF = false");
                           #endif
-                          SENDLINE_PGM("J34 ");
+                          SEND_PGM("J34 ");
+                          SENDLINE_PGM("");
                         }
                       }
                       break;
