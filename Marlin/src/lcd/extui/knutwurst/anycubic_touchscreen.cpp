@@ -32,7 +32,7 @@
 #include "../../../module/motion.h"
 #include "../../../module/stepper.h"
 
-#define ANYCUBIC_TFT_DEBUG
+//#define ANYCUBIC_TFT_DEBUG
 //#define KNUTWURST_DGUS2_TFT
 //#define KNUTWURST_TFT_LEVELING
 
