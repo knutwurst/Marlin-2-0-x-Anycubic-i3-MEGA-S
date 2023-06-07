@@ -356,6 +356,8 @@
                  || (strcasestr_P(currentTouchscreenSelection, PSTR(SM_MESH_MENU_S)) != NULL)
                  ) {
           MMLMenu = true;
+          SERIAL_ECHOLNPGM("Special Menu: Manual Med Leveling + disable soft endstops");
+          setSoftEndstopState(false);
         }
         else if ((strcasestr_P(currentTouchscreenSelection, PSTR(SM_MESH_START_L)) != NULL)
                  || (strcasestr_P(currentTouchscreenSelection, PSTR(SM_MESH_START_S)) != NULL)
@@ -466,6 +468,8 @@
       else if ((strcasestr_P(currentTouchscreenSelection, PSTR(SM_BACK_L)) != NULL)
                || (strcasestr_P(currentTouchscreenSelection, PSTR(SM_BACK_S)) != NULL)
                ) {
+        SERIAL_ECHOLNPGM("Special Menu: Exit Manual Med Leveling + enable soft endstops");
+        setSoftEndstopState(true);
         MMLMenu = false;
       }
       else if ((strcasestr_P(currentTouchscreenSelection, PSTR(SM_FLOWMENU_L)) != NULL)
@@ -514,6 +518,7 @@
                  ) {
           SERIAL_ECHOLNPGM("Special Menu: Enter BLTouch Menu");
           BLTouchMenu = true;
+          setSoftEndstopState(false); 
         }
         else if ((strcasestr_P(currentTouchscreenSelection, PSTR(SM_BLTZ_UP_L)) != NULL)
                  || (strcasestr_P(currentTouchscreenSelection, PSTR(SM_BLTZ_UP_S)) != NULL)
@@ -531,6 +536,7 @@
                  || (strcasestr_P(currentTouchscreenSelection, PSTR(SM_BLTZ_EXIT_S)) != NULL)
                  ) {
           SERIAL_ECHOLNPGM("Special Menu: Exit BLTouch Menu & Save EEPROM");
+          setSoftEndstopState(true); 
           injectCommands(F("M500"));
           BUZZ(105, 1108);
           BUZZ(210, 1661);
@@ -1521,7 +1527,7 @@ void AnycubicTouchscreenClass::RenderCurrentFolder(uint16_t selectedNumber) {
                           mediaPrintingState = AMPRINTSTATE_PROBING;
                         }
                       } else {
-                        SENDLINE_DBG_PGM("J26", "TFT Serial Debug: Start auto leveling... J26");
+                        SENDLINE_DBG_PGM("J26", "TFT Serial Debug: Enable level menu... J26");
                       }
                       break;
 
