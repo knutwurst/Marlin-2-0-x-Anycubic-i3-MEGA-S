@@ -220,7 +220,7 @@
 
   inline void AnycubicTouchscreenClass::StopPrint() {
     #if ENABLED(SDSUPPORT)
-      setSoftEndstopState(false);
+      setSoftEndstopState(true);
       mediaPrintingState = AMPRINTSTATE_STOP_REQUESTED;
       mediaPauseState    = AMPAUSESTATE_NOT_PAUSED;
       SENDLINE_DBG_PGM("J16", "TFT Serial Debug: SD print stop called... J16");
