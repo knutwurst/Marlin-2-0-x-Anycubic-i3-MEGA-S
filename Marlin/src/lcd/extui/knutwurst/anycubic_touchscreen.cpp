@@ -1699,16 +1699,17 @@ void AnycubicTouchscreenClass::RenderCurrentFolder(uint16_t selectedNumber) {
                         break;
                       }
                       if (CodeSeen('S')) {
-                        if (PrintdoneAndPowerOFF)
+                        if (PrintdoneAndPowerOFF) {
                           #if ENABLED(ANYCUBIC_TFT_DEBUG)
                             SERIAL_ECHOLNPGM("TFT Serial Debug: Sending J35 because PrintdoneAndPowerOFF = true");
                           #endif
                           SENDLINE_PGM("J35 ");
-                        else
+                        } else {
                           #if ENABLED(ANYCUBIC_TFT_DEBUG)
                            SERIAL_ECHOLNPGM("TFT Serial Debug: Sending J34 because PrintdoneAndPowerOFF = false");
                           #endif
                           SENDLINE_PGM("J34 ");
+                        }
                       }
                       break;
 
