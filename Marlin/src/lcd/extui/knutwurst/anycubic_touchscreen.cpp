@@ -1584,7 +1584,6 @@ void AnycubicTouchscreenClass::RenderCurrentFolder(uint16_t selectedNumber) {
                             SENDLINE_PGM("");
                           }
                           else {
-                            /*
                             GRID_LOOP(x, y) {
                               const xy_uint8_t pos { x, y };
                               const float currval = getMeshPoint(pos);
@@ -1593,7 +1592,6 @@ void AnycubicTouchscreenClass::RenderCurrentFolder(uint16_t selectedNumber) {
                                 SERIAL_ECHOLNPGM("Change mesh point X", x," Y",y ," from ", currval, " to ", getMeshPoint(pos) );
                               #endif
                             }
-                            */
                             const float currZOffset = getZOffset_mm();
                             #if ENABLED(ANYCUBIC_TFT_DEBUG)
                               SERIAL_ECHOLNPGM("Change probe offset from ", currZOffset, " to  ", currZOffset + Zshift);
