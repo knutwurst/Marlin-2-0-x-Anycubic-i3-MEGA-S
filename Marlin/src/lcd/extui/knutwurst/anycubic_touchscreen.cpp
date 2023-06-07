@@ -1970,7 +1970,7 @@ void AnycubicTouchscreenClass::RenderCurrentFolder(uint16_t selectedNumber) {
     }
 
     #if ENABLED(KNUTWURST_4MAXP2)
-      if (PrintdoneAndPowerOFF && powerOFFflag && ((int(getActualTemp_celsius(E0)) + 0.5) < 50 )) {
+      if (PrintdoneAndPowerOFF && powerOFFflag && (thermalManager.degHotend(0) < 50 )) {
         powerOFFflag = 0;
         PowerDown();
       }
@@ -1991,6 +1991,7 @@ void AnycubicTouchscreenClass::RenderCurrentFolder(uint16_t selectedNumber) {
         SENDLINE_DBG_PGM("J04", "TFT Serial Debug: Starting SD Print... soft endstops disabled J04"); // J04 Starting Print
         setSoftEndstopState(false);
         live_Zoffset      = 0.0;
+        powerOFFflag      = 0;
       }
     #endif
   }
@@ -2010,6 +2011,7 @@ void AnycubicTouchscreenClass::RenderCurrentFolder(uint16_t selectedNumber) {
         mediaPrintingState = AMPRINTSTATE_NOT_PRINTING;
         mediaPauseState    = AMPAUSESTATE_NOT_PAUSED;
         setSoftEndstopState(true);
+        powerOFFflag = 1;
         SENDLINE_DBG_PGM("J14", "TFT Serial Debug: SD Print Completed... soft endstops enabled J14");
       }
       // otherwise it was stopped by the printer so don't send print completed signal to TFT
