@@ -450,8 +450,7 @@
                ) {
         SERIAL_ECHOLNPGM("Special Menu: Disable Filament Sensor");
         injectCommands(F("M412 H0 S0\nM500"));
-        BUZZ(105, 1108);
-        BUZZ(105, 1108);
+        BUZZ(210, 1661);
         BUZZ(105, 1108);
       }
       else if ((strcasestr_P(currentTouchscreenSelection, PSTR(SM_EN_FILSENS_L)) != NULL)
@@ -460,7 +459,7 @@
         SERIAL_ECHOLNPGM("Special Menu: Enable Filament Sensor");
         injectCommands(F("M412 H0 S1\nM500"));
         BUZZ(105, 1108);
-        BUZZ(105, 1108);
+        BUZZ(210, 1661);
       }
       else if ((strcasestr_P(currentTouchscreenSelection, PSTR(SM_EXIT_L)) != NULL)
                || (strcasestr_P(currentTouchscreenSelection, PSTR(SM_EXIT_S)) != NULL)
@@ -534,6 +533,22 @@
           SERIAL_ECHOLNPGM("Special Menu: Offset Down");
           probe.offset.z -= 0.01F;
         }
+        else if ((strcasestr_P(currentTouchscreenSelection, PSTR(SM_HS_ENABLE_L)) != NULL)
+                 || (strcasestr_P(currentTouchscreenSelection, PSTR(SM_HS_ENABLE_S)) != NULL)
+                 ) {
+          SERIAL_ECHOLNPGM("Special Menu: HighSpeed Mode ENABLED");
+          injectCommands(F("M401 S1\nM500"));
+          BUZZ(105, 1108);
+          BUZZ(210, 1661);
+        }
+        else if ((strcasestr_P(currentTouchscreenSelection, PSTR(SM_HS_DISABLE_L)) != NULL)
+                 || (strcasestr_P(currentTouchscreenSelection, PSTR(SM_HS_DISABLE_S)) != NULL)
+                 ) {
+          SERIAL_ECHOLNPGM("Special Menu: HighSpeed Mode DISABLED!");
+          injectCommands(F("M401 S0\nM500"));
+          BUZZ(210, 1661);
+          BUZZ(105, 1108);
+        }
         else if ((strcasestr_P(currentTouchscreenSelection, PSTR(SM_BLTZ_EXIT_L)) != NULL)
                  || (strcasestr_P(currentTouchscreenSelection, PSTR(SM_BLTZ_EXIT_S)) != NULL)
                  ) {
@@ -544,6 +559,8 @@
           BUZZ(210, 1661);
           BLTouchMenu = false;
         }
+
+        
       #endif
       else if ((strcasestr_P(currentTouchscreenSelection, PSTR(SM_EZLVL_MENU_L)) != NULL)
                || (strcasestr_P(currentTouchscreenSelection, PSTR(SM_EZLVL_MENU_S)) != NULL)
@@ -738,6 +755,10 @@ void AnycubicTouchscreenClass::RenderSpecialMenu(uint16_t selectedNumber) {
             break;
 
           case 4: // Page 2
+            SENDLINE_PGM(SM_HS_ENABLE_S);
+            SENDLINE_PGM(SM_HS_ENABLE_L);
+            SENDLINE_PGM(SM_HS_DISABLE_S);
+            SENDLINE_PGM(SM_HS_DISABLE_L);
             SENDLINE_PGM(SM_BLTZ_EXIT_S);
             SENDLINE_PGM(SM_BLTZ_EXIT_L);
             break;
