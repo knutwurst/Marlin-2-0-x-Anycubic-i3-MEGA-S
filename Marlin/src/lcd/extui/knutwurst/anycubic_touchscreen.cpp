@@ -32,7 +32,7 @@
 #include "../../../module/motion.h"
 #include "../../../module/stepper.h"
 
-//#define ANYCUBIC_TFT_DEBUG
+#define ANYCUBIC_TFT_DEBUG
 //#define KNUTWURST_DGUS2_TFT
 //#define KNUTWURST_TFT_LEVELING
 
@@ -525,13 +525,13 @@
                  || (strcasestr_P(currentTouchscreenSelection, PSTR(SM_BLTZ_UP_S)) != NULL)
                  ) {
           SERIAL_ECHOLNPGM("Special Menu: Offset UP");
-          probe.offset.z += 0.01F;
+          setZOffset_mm(getZOffset_mm() + 0.01F);
         }
         else if ((strcasestr_P(currentTouchscreenSelection, PSTR(SM_BLTZ_DN_L)) != NULL)
                  || (strcasestr_P(currentTouchscreenSelection, PSTR(SM_BLTZ_DN_S)) != NULL)
                  ) {
           SERIAL_ECHOLNPGM("Special Menu: Offset Down");
-          probe.offset.z -= 0.01F;
+          setZOffset_mm(getZOffset_mm() - 0.01F);
         }
         else if ((strcasestr_P(currentTouchscreenSelection, PSTR(SM_HS_ENABLE_L)) != NULL)
                  || (strcasestr_P(currentTouchscreenSelection, PSTR(SM_HS_ENABLE_S)) != NULL)
@@ -736,11 +736,11 @@ void AnycubicTouchscreenClass::RenderSpecialMenu(uint16_t selectedNumber) {
         zOffsetBuffer = SM_BLTZ_DISP_L;
 
         #ifdef ANYCUBIC_TFT_DEBUG
-          SERIAL_ECHOPGM("TFT Serial Debug: Current probe.offset.z: ", float(probe.offset.z));
+          SERIAL_ECHOPGM("TFT Serial Debug: Current getZOffset_mm(): ", getZOffset_mm());
           SERIAL_EOL();
         #endif
 
-        zOffsetBuffer.replace("XXXXX", String(float(probe.offset.z)));
+        zOffsetBuffer.replace("XXXXX", String(getZOffset_mm()));
 
         switch (selectedNumber) {
           case 0: // Page 1
@@ -878,11 +878,22 @@ void AnycubicTouchscreenClass::RenderCurrentFolder(uint16_t selectedNumber) {
   } else {
     max_files = selectedNumber + 3;
     #ifdef ANYCUBIC_TFT_DEBUG
-      SERIAL_ECHOLN("max_files = filenumber + 3;");
+      SERIAL_ECHOLN("max_files = selectedNumber + 3;");
     #endif
   }
 
-  if (filesOnSDCard == 3) filenumber = 0;
+  if (filesOnSDCard == 3) selectedNumber = 0;
+
+  #ifdef ANYCUBIC_TFT_DEBUG
+    SERIAL_ECHOPGM("filesOnSDCard: ");
+    SERIAL_ECHOLN(filesOnSDCard);
+    SERIAL_ECHOPGM("selectedNumber: ");
+    SERIAL_ECHOLN(selectedNumber);
+    SERIAL_ECHOPGM("max_files: ");
+    SERIAL_ECHOLN(max_files);
+    SERIAL_ECHOPGM("count: ");
+    SERIAL_ECHOLN(count);
+  #endif
 
   for (count = selectedNumber; count <= max_files; count++) {
     if (count == 0) { // Special Entry
@@ -911,7 +922,6 @@ void AnycubicTouchscreenClass::RenderCurrentFolder(uint16_t selectedNumber) {
         SERIAL_ECHOLN(currentFileList.filename());
       #endif
 
-      // The longname may not be filed, so we use the built-in fallback here.
       char* fileName  = strdup(currentFileList.filename());
       int fileNameLen = strlen(fileName);
 

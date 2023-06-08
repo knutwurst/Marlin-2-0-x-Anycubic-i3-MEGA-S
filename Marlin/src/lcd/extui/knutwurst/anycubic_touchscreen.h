@@ -226,7 +226,6 @@ char serial3_char;
 int serial3_count = 0;
 char *TFTstrchr_pointer;
 char FlagResumFromOutage  = 0;
-int filenumber            = 0;
 uint8_t tmp_extruder      = 0;
 uint16_t HeaterCheckCount = 0;
 int currentFlowRate       = 0;

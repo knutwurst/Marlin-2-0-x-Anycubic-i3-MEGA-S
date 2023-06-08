@@ -99,19 +99,6 @@
 #endif
 
 
-/*
- * Here you can set the default preheat-Temperatures
- * which are set when you use the builtin preheat
- * functions in the TFT.
- *
- * These settings are required and not set by PlatformIO.
- */
-#define KNUTWURST_PRHEAT_NOZZLE_PLA 200
-#define KNUTWURST_PRHEAT_BED_PLA     60
-#define KNUTWURST_PRHEAT_NOZZLE_ABS 240
-#define KNUTWURST_PRHEAT_BED_ABS     90
-
-
 // ===========================================================================
 // ============================= Getting Started =============================
 // ===========================================================================
