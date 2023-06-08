@@ -203,14 +203,14 @@
   void AnycubicTouchscreenClass::PausePrint() {
     #ifdef SDSUPPORT
       if (isPrintingFromMedia() && mediaPrintingState != AMPRINTSTATE_STOP_REQUESTED && mediaPauseState == AMPAUSESTATE_NOT_PAUSED) {
-      mediaPrintingState = AMPRINTSTATE_PAUSE_REQUESTED;
-      mediaPauseState    = AMPAUSESTATE_NOT_PAUSED; // need the userconfirm method to update pause state
-      SENDLINE_DBG_PGM("J05", "TFT Serial Debug: SD print pause started... J05"); // J05 printing pause
+        mediaPrintingState = AMPRINTSTATE_PAUSE_REQUESTED;
+        mediaPauseState    = AMPAUSESTATE_NOT_PAUSED; // need the userconfirm method to update pause state
+        SENDLINE_DBG_PGM("J05", "TFT Serial Debug: SD print pause started... J05"); // J05 printing pause
 
-      // for some reason pausing the print doesn't retract the extruder so force a manual one here
-      injectCommands(F("G91\nG1 E-2 F1800\nG90"));
-      pausePrint();
-    }
+        // for some reason pausing the print doesn't retract the extruder so force a manual one here
+        injectCommands(F("G91\nG1 E-2 F1800\nG90"));
+        pausePrint();
+      }
     #endif
   }
 
