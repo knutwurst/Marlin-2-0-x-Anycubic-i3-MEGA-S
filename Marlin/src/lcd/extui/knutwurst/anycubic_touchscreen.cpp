@@ -161,8 +161,8 @@
     }
 
     void send_pic_param() {
-      SEND_PGM("A45V W"); LCD_SERIAL.print(Laser_printer_st.pic_widht);
-      SEND_PGM(    " H"); LCD_SERIAL(Laser_printer_st.pic_hight);
+      SEND_PGM("A45V W"); LCD_SERIAL.print(Laser_printer_st.pic_width);
+      SEND_PGM(    " H"); LCD_SERIAL(Laser_printer_st.pic_height);
       SENDLINE_PGM(" ");
     }
 

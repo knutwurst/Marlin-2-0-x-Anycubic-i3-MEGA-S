@@ -307,12 +307,12 @@ uint8_t CaseLight   = true;
     float x_offset;
     float y_offset;
 
-    unsigned int pic_realy_widht;
-    unsigned int pic_widht;
-    unsigned int pic_hight;
+    unsigned int pic_real_width;
+    unsigned int pic_width;
+    unsigned int pic_height;
     unsigned char pic_bit;
-    unsigned char pic_widht_odd;
-    unsigned char pic_hight_odd;
+    unsigned char pic_width_odd;
+    unsigned char pic_height_odd;
 
     unsigned char pic_print_status;
     unsigned char pic_dir;
