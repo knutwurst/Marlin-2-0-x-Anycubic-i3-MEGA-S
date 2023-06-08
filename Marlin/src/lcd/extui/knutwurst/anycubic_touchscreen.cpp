@@ -32,10 +32,6 @@
 #include "../../../module/motion.h"
 #include "../../../module/stepper.h"
 
-#define ANYCUBIC_TFT_DEBUG
-//#define KNUTWURST_DGUS2_TFT
-//#define KNUTWURST_TFT_LEVELING
-
 #ifdef ANYCUBIC_TOUCHSCREEN
   #include "./anycubic_touchscreen.h"
 
@@ -416,7 +412,7 @@
                  || (strcasestr_P(currentTouchscreenSelection, PSTR(SM_BLTOUCH_S)) != NULL)
                  ) {
           SERIAL_ECHOLNPGM("Special Menu: BLTouch Leveling");
-          injectCommands(F("G28\nG29\nM500\nG90\nM300 S440 P200\nM300 S660 P250\nM300 S880 P300\nG1 Z30 F4000\nG1 X0 F4000\nG91\nM84\nM420 S1"));
+          injectCommands(F("G28\nG29\nG90\nM300 S440 P200\nM300 S660 P250\nM300 S880 P300\nG1 Z30 F4000\nG1 X0 F4000\nG91\nM84\nM420 S1"));
           BUZZ(105, 1108);
           BUZZ(210, 1661);
         }
@@ -883,17 +879,6 @@ void AnycubicTouchscreenClass::RenderCurrentFolder(uint16_t selectedNumber) {
   }
 
   if (filesOnSDCard == 3) selectedNumber = 0;
-
-  #ifdef ANYCUBIC_TFT_DEBUG
-    SERIAL_ECHOPGM("filesOnSDCard: ");
-    SERIAL_ECHOLN(filesOnSDCard);
-    SERIAL_ECHOPGM("selectedNumber: ");
-    SERIAL_ECHOLN(selectedNumber);
-    SERIAL_ECHOPGM("max_files: ");
-    SERIAL_ECHOLN(max_files);
-    SERIAL_ECHOPGM("count: ");
-    SERIAL_ECHOLN(count);
-  #endif
 
   for (count = selectedNumber; count <= max_files; count++) {
     if (count == 0) { // Special Entry
