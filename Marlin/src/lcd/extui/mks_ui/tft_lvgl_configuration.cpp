@@ -38,7 +38,7 @@
 #include "../../../MarlinCore.h"
 #include "../../../inc/MarlinConfig.h"
 
-#include HAL_PATH(../../../HAL, tft/xpt2046.h)
+#include HAL_PATH(../../.., tft/xpt2046.h)
 #include "../../marlinui.h"
 XPT2046 touch;
 
@@ -137,7 +137,10 @@ void tft_lvgl_init() {
     uint16_t usb_flash_loop = 1000;
     #if ENABLED(MULTI_VOLUME) && !HAS_SD_HOST_DRIVE
       SET_INPUT_PULLUP(SD_DETECT_PIN);
-      card.changeMedia(IS_SD_INSERTED() ? &card.media_driver_sdcard : &card.media_driver_usbFlash);
+      if (IS_SD_INSERTED())
+        card.changeMedia(&card.media_driver_sdcard);
+      else
+        card.changeMedia(&card.media_driver_usbFlash);
     #endif
     do {
       card.media_driver_usbFlash.idle();
@@ -494,6 +497,7 @@ void lv_encoder_pin_init() {
 }
 
 #if 1 // HAS_ENCODER_ACTION
+
   void lv_update_encoder() {
     static uint32_t encoder_time1;
     uint32_t tmpTime, diffTime = 0;
@@ -554,7 +558,7 @@ void lv_encoder_pin_init() {
 
       #endif // HAS_ENCODER_WHEEL
 
-    } // next_button_update_ms
+    } // encoder_time1
   }
 
 #endif // HAS_ENCODER_ACTION

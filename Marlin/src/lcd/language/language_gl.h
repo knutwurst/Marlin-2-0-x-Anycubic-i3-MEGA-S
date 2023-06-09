@@ -266,7 +266,6 @@ namespace Language_gl {
   LSTR MSG_PID_BAD_EXTRUDER_NUM           = _UxGT("Auto-Sint. fallida! Extrusor danado.");
   LSTR MSG_PID_TEMP_TOO_HIGH              = _UxGT("Auto-Sint. fallida! Temperatura moi alta.");
   LSTR MSG_PID_TIMEOUT                    = _UxGT("Auto-Sint. fallida! Tempo excedido.");
-  LSTR MSG_SELECT                         = _UxGT("Escolla");
   LSTR MSG_SELECT_E                       = _UxGT("Escolla *");
   LSTR MSG_ACC                            = _UxGT("Acel");
   LSTR MSG_JERK                           = _UxGT("Jerk");
@@ -318,7 +317,7 @@ namespace Language_gl {
   LSTR MSG_RESTORE_DEFAULTS               = _UxGT("Rest. Defecto");
   LSTR MSG_INIT_EEPROM                    = _UxGT("Inicializar EEPROM");
   LSTR MSG_ERR_EEPROM_CRC                 = _UxGT("Erro: CRC EEPROM");
-  LSTR MSG_ERR_EEPROM_INDEX               = _UxGT("Erro: Índice EEPROM");
+  LSTR MSG_ERR_EEPROM_SIZE                = _UxGT("Erro: Tamaño EEPROM");
   LSTR MSG_ERR_EEPROM_VERSION             = _UxGT("Erro: Versión EEPROM");
   LSTR MSG_SETTINGS_STORED                = _UxGT("Config Gardada");
   LSTR MSG_MEDIA_UPDATE                   = _UxGT("Actualizar SD/FD");
@@ -414,7 +413,7 @@ namespace Language_gl {
   LSTR MSG_MANUAL_DEPLOY_TOUCHMI          = _UxGT("Estender TouchMI");
   LSTR MSG_MANUAL_DEPLOY                  = _UxGT("Estender Sonda Z");
   LSTR MSG_MANUAL_STOW                    = _UxGT("Recoller Sonda Z");
-  LSTR MSG_HOME_FIRST                     = _UxGT("Orixe %s%s%s Primeiro");
+  LSTR MSG_HOME_FIRST                     = _UxGT("Orixe %s Primeiro");
   LSTR MSG_ZPROBE_OFFSETS                 = _UxGT("Desfases Sonda");
   LSTR MSG_ZPROBE_XOFFSET                 = _UxGT("Desfase Sonda X");
   LSTR MSG_ZPROBE_YOFFSET                 = _UxGT("Desfase Sonda Y");

@@ -27,6 +27,10 @@
 #include "../libs/buzzer.h"
 #include "buttons.h"
 
+#if ENABLED(EEPROM_SETTINGS)
+  #include "../module/settings.h"
+#endif
+
 #if ENABLED(TOUCH_SCREEN_CALIBRATION)
   #include "tft_io/touch_calibration.h"
 #endif
@@ -228,7 +232,7 @@ public:
   #endif
 
   #if USE_MARLINUI_BUZZER
-    static void buzz(const long duration, const uint16_t freq);
+    static void buzz(const long duration, const uint16_t freq=0);
   #endif
 
   static void chirp() {
@@ -467,6 +471,7 @@ public:
 
       #if BOTH(FILAMENT_LCD_DISPLAY, SDSUPPORT)
         static millis_t next_filament_display;
+        static void pause_filament_display(const millis_t ms=millis()) { next_filament_display = ms + 5000UL; }
       #endif
 
       #if HAS_TOUCH_SLEEP
@@ -501,7 +506,6 @@ public:
 
     #if IS_DWIN_MARLINUI
       static bool did_first_redraw;
-      static bool old_is_printing;
     #endif
 
     #if EITHER(BABYSTEP_ZPROBE_GFX_OVERLAY, MESH_EDIT_GFX_OVERLAY)
@@ -520,6 +524,11 @@ public:
     static void update() {}
     static void kill_screen(FSTR_P const, FSTR_P const) {}
 
+  #endif
+
+  #if !HAS_WIRED_LCD
+    static void quick_feedback(const bool=true) {}
+    static void completion_feedback(const bool=true) {}
   #endif
 
   #if ENABLED(SDSUPPORT)
@@ -667,12 +676,7 @@ public:
       static void load_settings();
       static void store_settings();
     #endif
-    #if DISABLED(EEPROM_AUTO_INIT)
-      static void eeprom_alert(const uint8_t msgid);
-      static void eeprom_alert_crc()     { eeprom_alert(0); }
-      static void eeprom_alert_index()   { eeprom_alert(1); }
-      static void eeprom_alert_version() { eeprom_alert(2); }
-    #endif
+    static void eeprom_alert(const EEPROM_Error) TERN_(EEPROM_AUTO_INIT, {});
   #endif
 
   //
@@ -802,5 +806,7 @@ private:
 
 #define LCD_MESSAGE_F(S)       ui.set_status(F(S))
 #define LCD_MESSAGE(M)         ui.set_status(GET_TEXT_F(M))
+#define LCD_MESSAGE_MIN(M)     ui.set_status(GET_TEXT_F(M), -1)
+#define LCD_MESSAGE_MAX(M)     ui.set_status(GET_TEXT_F(M), 99)
 #define LCD_ALERTMESSAGE_F(S)  ui.set_alert_status(F(S))
 #define LCD_ALERTMESSAGE(M)    ui.set_alert_status(GET_TEXT_F(M))
