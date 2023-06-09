@@ -924,9 +924,9 @@ void AnycubicTouchscreenClass::RenderCurrentFolder(uint16_t selectedNumber) {
           fileNameWasCut = true;
           fileNameLen    = MAX_PRINTABLE_FILENAME_LEN;
         }
-        char outputString[MAX_PRINTABLE_FILENAME_LEN];
+        char outputString[MAX_PRINTABLE_FILENAME_LEN] = {'\0'};
       #else
-        char outputString[fileNameLen];
+        char outputString[fileNameLen] = {'\0'};
       #endif
 
       // Bugfix for non-printable special characters
