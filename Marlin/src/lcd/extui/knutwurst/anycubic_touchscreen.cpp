@@ -1539,7 +1539,7 @@ void AnycubicTouchscreenClass::RenderCurrentFolder(uint16_t selectedNumber) {
                         } else {
                           SENDLINE_DBG_PGM("J26", "TFT Serial Debug: Start auto leveling... J26");
                           //injectCommands(F("G28\nG29"));
-                          injectCommands(F("G28\nG29\nG90\nM300 S440 P200\nM300 S660 P250\nM300 S880 P300\nG1 Z30 F4000\nG1 X5 F4000\nG91\nM84\nM420 S1"));
+                          injectCommands(F("G28\nG29\nM500\nG90\nM300 S440 P200\nM300 S660 P250\nM300 S880 P300\nG1 Z30 F4000\nG1 X5 F4000\nG91\nM84\nM420 S1"));
                           mediaPrintingState = AMPRINTSTATE_PROBING;
                         }
                       } else {
