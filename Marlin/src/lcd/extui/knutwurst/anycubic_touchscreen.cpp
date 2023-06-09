@@ -1005,7 +1005,7 @@ void AnycubicTouchscreenClass::RenderCurrentFolder(uint16_t selectedNumber) {
 
   void AnycubicTouchscreenClass::SDCardStateChange(bool isInserted) {
     #if BOTH(SDSUPPORT, HAS_SD_DETECT)
-      if (isMediaInserted())
+      if (isInserted)
         SENDLINE_DBG_PGM("J00", "TFT Serial Debug: SD card state changed... card inserted");
       else
         SENDLINE_DBG_PGM("J01", "TFT Serial Debug: SD card state changed... card removed");
