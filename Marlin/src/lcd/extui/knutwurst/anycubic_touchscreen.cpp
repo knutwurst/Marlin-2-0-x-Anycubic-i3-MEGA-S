@@ -913,7 +913,7 @@ void AnycubicTouchscreenClass::RenderCurrentFolder(uint16_t selectedNumber) {
         SERIAL_ECHOLN(currentFileList.filename());
       #endif
 
-      char* fileName  = strdup(currentFileList.filename());
+      const char* fileName  = currentFileList.filename();
       int fileNameLen = strlen(fileName);
 
       // Cut off too long filenames.
