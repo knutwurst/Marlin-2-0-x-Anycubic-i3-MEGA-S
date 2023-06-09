@@ -996,22 +996,13 @@ void AnycubicTouchscreenClass::RenderCurrentFolder(uint16_t selectedNumber) {
   }
 }
 
-  void AnycubicTouchscreenClass::CheckSDCardChange() {
-  #if BOTH(SDSUPPORT, HAS_SD_DETECT)
-    bool isInserted = isMediaInserted();
-    if (isInserted)
-      SENDLINE_DBG_PGM("J00", "TFT Serial Debug: SD card state changed... isInserted");
-    else
-      SENDLINE_DBG_PGM("J01", "TFT Serial Debug: SD card state changed... !isInserted");
-
-  #endif
-  }
-
   void AnycubicTouchscreenClass::SDCardStateChange(bool isInserted) {
-    #if ENABLED(ANYCUBIC_TFT_DEBUG)
-      SERIAL_ECHOLNPGM("TFT Serial Debug: SDCardStateChange event triggered...", isInserted);
+    #if BOTH(SDSUPPORT, HAS_SD_DETECT)
+      if (isMediaInserted())
+        SENDLINE_DBG_PGM("J00", "TFT Serial Debug: SD card state changed... card inserted");
+      else
+        SENDLINE_DBG_PGM("J01", "TFT Serial Debug: SD card state changed... card removed");
     #endif
-    CheckSDCardChange();
   }
 
   void AnycubicTouchscreenClass::SDCardError() {

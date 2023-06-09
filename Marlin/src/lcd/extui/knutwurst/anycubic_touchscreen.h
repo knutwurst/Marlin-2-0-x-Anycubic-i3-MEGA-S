@@ -257,7 +257,6 @@ void PausePrint();
 void ResumePrint();
 void StopPrint();
 void GetCommandFromTFT();
-void CheckSDCardChange();
 void CheckHeaterError();
 void FilamentChangePause();
 void HandleSpecialMenu();
