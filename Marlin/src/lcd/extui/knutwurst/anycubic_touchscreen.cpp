@@ -32,6 +32,8 @@
 #include "../../../module/motion.h"
 #include "../../../module/stepper.h"
 
+//#define ANYCUBIC_TFT_DEBUG
+
 #ifdef ANYCUBIC_TOUCHSCREEN
   #include "./anycubic_touchscreen.h"
 
@@ -644,31 +646,28 @@
 
 void AnycubicTouchscreenClass::RenderCurrentFileList() {
   currentFileOrDirectory[0] = 0;
+  uint16_t selectedNumber = 0;
+  FileList currentFileList;
+  
+  if (CodeSeen('S')) selectedNumber = CodeValue();
 
-  if (SpecialMenu == false) {
+  // Filelist start
+  SEND_PGM("FN ");
+  SENDLINE_PGM("");
+
+  if (SpecialMenu) {
+    RenderSpecialMenu(selectedNumber);
+  } else if (isMediaInserted() && (selectedNumber <= currentFileList.count())) {
     currentTouchscreenSelection[0] = 0;
-  }
-
-  SENDLINE_PGM("FN "); // Filelist start
-
-  if (!isMediaInserted() && !SpecialMenu) {
+    RenderCurrentFolder(selectedNumber);
+  } else {
     SENDLINE_PGM(SM_SPECIAL_MENU_S);
     SENDLINE_PGM(SM_SPECIAL_MENU_L);
-  } else {
-    uint16_t selectedNumber = 0;
-    FileList currentFileList;
-
-    if (CodeSeen('S')) {
-      selectedNumber = CodeValue();
-    }
-
-    if (SpecialMenu) {
-      RenderSpecialMenu(selectedNumber);
-    } else if (selectedNumber <= currentFileList.count()) {
-      RenderCurrentFolder(selectedNumber);
-    }
   }
-  SENDLINE_PGM("END"); // Filelist stop
+
+  SEND_PGM("END");
+  SENDLINE_PGM("");
+  // Filelist stop
 }
 
 void AnycubicTouchscreenClass::RenderSpecialMenu(uint16_t selectedNumber) {
@@ -1169,9 +1168,10 @@ void AnycubicTouchscreenClass::RenderCurrentFolder(uint16_t selectedNumber) {
                       SENDLINE(ui8tostr3rj(getProgress_percent()));
                     else
                       SENDLINE_DBG_PGM("J02", "TFT Serial Debug: No SD Card mounted to return printing status... J02");
+                  } else {
+                    SEND_PGM("A6V ---");
                   }
-                  else
-                    SENDLINE_PGM("A6V ---");
+                  SENDLINE_PGM("");    
                 #endif
                 break;
               case 7: // A7 GET PRINTING TIME
@@ -1191,8 +1191,7 @@ void AnycubicTouchscreenClass::RenderCurrentFolder(uint16_t selectedNumber) {
               break;
 
               case 8: // A8 GET SD LIST
-                #ifdef SDSUPPORT
-                  if (SpecialMenu == false) currentTouchscreenSelection[0] = 0;
+                #ifdef SDSUPPORT                    
                     RenderCurrentFileList();
                 #endif
                 break;
@@ -1491,7 +1490,8 @@ void AnycubicTouchscreenClass::RenderCurrentFolder(uint16_t selectedNumber) {
                     case 33: // A33 get version info
                       SEND_PGM("J33 ");
                       SEND_PGM("KW-");
-                      SENDLINE_PGM(MSG_MY_VERSION);
+                      SEND_PGM(MSG_MY_VERSION);
+                      SENDLINE_PGM("");
                       break;
                 #endif
                 #if ENABLED(KNUTWURST_TFT_LEVELING)
