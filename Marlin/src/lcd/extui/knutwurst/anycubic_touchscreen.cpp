@@ -1158,19 +1158,20 @@ void AnycubicTouchscreenClass::RenderCurrentFolder(uint16_t selectedNumber) {
 
               case 6: // A6 GET SD CARD PRINTING STATUS
                 #ifdef SDSUPPORT
-                  if (isPrintingFromMedia())
-                  {
+                  if (isPrintingFromMedia()) {
                     SEND_PGM("A6V ");
-                    if (isMediaInserted())
+                    if (isMediaInserted()) {
                       SENDLINE(ui8tostr3rj(getProgress_percent()));
-                    else
+                    } else {
                       SENDLINE_DBG_PGM("J02", "TFT Serial Debug: No SD Card mounted to return printing status... J02");
+                    }
                   } else {
                     SEND_PGM("A6V ---");
                   }
                   SENDLINE_PGM("");    
                 #endif
                 break;
+
               case 7: // A7 GET PRINTING TIME
               {
                 const uint32_t elapsedSeconds = getProgress_seconds_elapsed();
@@ -1181,9 +1182,10 @@ void AnycubicTouchscreenClass::RenderCurrentFolder(uint16_t selectedNumber) {
                   SEND_PGM(" H ");
                   SEND(ui8tostr2(elapsedMinutes % 60));
                   SENDLINE_PGM(" M");
-                }
-                else
+                } else {
                   SENDLINE_PGM(" 999:999");
+                }
+                SENDLINE_PGM("");  
               }
               break;
 
@@ -1224,19 +1226,15 @@ void AnycubicTouchscreenClass::RenderCurrentFolder(uint16_t selectedNumber) {
                       currentFileOrDirectory[0] = 0;
                       SENDLINE_DBG_PGM("J21", "TFT Serial Debug: Clear file selection... J21 "); // J21 Not File Selected
                       SENDLINE_PGM("");
-                    }
-                    else if (TFTstrchr_pointer[4] == '<') {
+                    } else if (TFTstrchr_pointer[4] == '<') {
                       strcpy(currentTouchscreenSelection, TFTstrchr_pointer + 4);
                       SpecialMenu = true;
                       currentFileOrDirectory[0] = 0;
                       SENDLINE_DBG_PGM("J21", "TFT Serial Debug: Clear file selection... J21 "); // J21 Not File Selected
                       SENDLINE_PGM("");
-                    }
-                    else {
+                    } else {
                       currentTouchscreenSelection[0] = 0;
-
                       if (starpos) *(starpos - 1) = '\0';
-
                       strcpy(currentFileOrDirectory, TFTstrchr_pointer + 4);
                       SENDLINE_DBG_PGM_VAL("J20", "TFT Serial Debug: File Selected... J20 ", currentFileOrDirectory); // J20 File Selected
                     }
