@@ -32,8 +32,6 @@
 #include "../../../module/motion.h"
 #include "../../../module/stepper.h"
 
-//#define ANYCUBIC_TFT_DEBUG
-
 #ifdef ANYCUBIC_TOUCHSCREEN
   #include "./anycubic_touchscreen.h"
 

@@ -182,13 +182,13 @@
      ---------------
     ||  D37   D35  ||
     ||             ||
-    || [D17] [D16] ||   <---- Connect your ESP8266 here (TX/RX)
+    || [D17] [D16] ||   <---- Connect your ESP8266 Wifi module here (TX/RX)
   /||              ||
   |||   D23   D25  ||
   \||              ||
     ||  D27   D29  ||
     ||             ||
-    ||  GND    5V  ||
+    || [GND] [5V]  ||   <---- Connect your ESP8266 Wifi module here (GND/VIO)
      ---------------
 */
 
