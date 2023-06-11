@@ -133,7 +133,7 @@
     SENDLINE_DBG_PGM("J12", "TFT Serial Debug: Ready... J12");
 
     CheckHeaterError();
-    DoFilamentRunoutCheck();
+    //DoFilamentRunoutCheck();
     
     #ifdef STARTUP_CHIME
       BUZZ(100, 554);
