@@ -1964,7 +1964,7 @@ void AnycubicTouchscreenClass::RenderCurrentFolder(uint16_t selectedNumber) {
     }
 
     #if ENABLED(KNUTWURST_4MAXP2)
-      if (PrintdoneAndPowerOFF && powerOFFflag && (getTargetTemp_celsius((extruder_t)E0) < 50 )) {
+      if (PrintdoneAndPowerOFF && powerOFFflag && (thermalManager.degHotend(0) < 50 )) {
         powerOFFflag = 0;
         PowerDown();
       }
