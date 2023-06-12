@@ -1164,9 +1164,8 @@ void AnycubicTouchscreenClass::RenderCurrentFolder(uint16_t selectedNumber) {
                       SENDLINE_DBG_PGM("J02", "TFT Serial Debug: No SD Card mounted to return printing status... J02");
                     }
                   } else {
-                    SEND_PGM("A6V ---");
-                  }
-                  SENDLINE_PGM("");    
+                    SENDLINE_PGM("A6V ---");
+                  }  
                 #endif
                 break;
 
