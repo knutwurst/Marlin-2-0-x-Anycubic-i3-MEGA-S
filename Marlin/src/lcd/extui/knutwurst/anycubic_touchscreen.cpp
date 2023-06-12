@@ -1244,6 +1244,7 @@ void AnycubicTouchscreenClass::RenderCurrentFolder(uint16_t selectedNumber) {
                   if (!isPrinting())
                     StartPrint();
                 #endif
+                break;
 
               case 15: // A15 RESUMING FROM OUTAGE
                 #if defined(POWER_OUTAGE_TEST)
