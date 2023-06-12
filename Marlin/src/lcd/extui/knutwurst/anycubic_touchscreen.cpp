@@ -1423,51 +1423,39 @@ void AnycubicTouchscreenClass::RenderCurrentFolder(uint16_t selectedNumber) {
               case 26: // A26 refresh SD
               {
                 #ifdef SDSUPPORT
+                  FileList currentFileList;
+
+                  if (currentTouchscreenSelection[0] == '<') {
                     #ifdef ANYCUBIC_TFT_DEBUG
-                      SERIAL_ECHOPGM("TFT Serial Debug: RefreshSD(): currentTouchscreenSelection: ", currentTouchscreenSelection);
-                      SERIAL_EOL();
-                      SERIAL_ECHOPGM("TFT Serial Debug: RefreshSD(): currentFileOrDirectory: ", currentFileOrDirectory);
-                      SERIAL_EOL();
+                      SERIAL_ECHOLNPGM("TFT Serial Debug: Enter Special Menu");
                     #endif
-
-                    FileList currentFileList;
-                    if ((strcasestr_P(currentFileOrDirectory, PSTR(SM_DIR_UP_S)) != NULL)
-                        ||  (strcasestr_P(currentFileOrDirectory, PSTR(SM_DIR_UP_L)) != NULL)
-                        ) {
-                      #ifdef ANYCUBIC_TFT_DEBUG
-                        SERIAL_ECHOLNPGM("TFT Serial Debug: Directory UP (cd ..)");
-                      #endif
-                      currentFileList.upDir();
-                    }
-                    else {
-                      if (currentTouchscreenSelection[0] == '<') {
-                        #ifdef ANYCUBIC_TFT_DEBUG
-                          SERIAL_ECHOLNPGM("TFT Serial Debug: Enter Special Menu");
-                        #endif
-                        HandleSpecialMenu();
-                      }
-                      else {
-                        #ifdef ANYCUBIC_TFT_DEBUG
-                          SERIAL_ECHOLNPGM("TFT Serial Debug: Not a menu. Must be a directory!");
-                        #endif
-
-                        #if ENABLED(KNUTWURST_DGUS2_TFT)
-                          strcpy(currentFileOrDirectory, currentTouchscreenSelection);
-                          int currentFileLen = strlen(currentFileOrDirectory);
-                          currentFileOrDirectory[currentFileLen - 4] = '\0';
-                          currentFileList.changeDir(currentFileOrDirectory);
-                        #else
-                          currentFileList.changeDir(currentTouchscreenSelection);
-                        #endif
-                      }
-                    }
+                    HandleSpecialMenu();
+                  } else if (((strcasestr_P(currentFileOrDirectory, PSTR(SM_DIR_UP_S)) != NULL) ||
+                              (strcasestr_P(currentFileOrDirectory, PSTR(SM_DIR_UP_L)) != NULL)) &&
+                            isMediaInserted()) {
+                    #ifdef ANYCUBIC_TFT_DEBUG
+                      SERIAL_ECHOLNPGM("TFT Serial Debug: Directory UP (cd ..)");
+                    #endif
+                    currentFileList.upDir();
+                  } else if (isMediaInserted()) {
+                    #ifdef ANYCUBIC_TFT_DEBUG
+                      SERIAL_ECHOLNPGM("TFT Serial Debug: Enter Directoy");
+                    #endif
+                    #if ENABLED(KNUTWURST_DGUS2_TFT)
+                      strcpy(currentFileOrDirectory, currentTouchscreenSelection);
+                      int currentFileLen                         = strlen(currentFileOrDirectory);
+                      currentFileOrDirectory[currentFileLen - 4] = '\0';
+                      currentFileList.changeDir(currentFileOrDirectory);
+                    #else
+                      currentFileList.changeDir(currentTouchscreenSelection);
+                    #endif
                   }
                   if (SpecialMenu == false) {
                     currentTouchscreenSelection[0] = 0;
                   }
-
                 #endif // ifdef SDSUPPORT
-                break;
+              }
+              break;
 
               case 28: // A28 filament test
               {
