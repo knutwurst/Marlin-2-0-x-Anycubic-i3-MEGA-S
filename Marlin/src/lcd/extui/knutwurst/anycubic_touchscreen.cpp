@@ -646,7 +646,7 @@ void AnycubicTouchscreenClass::RenderCurrentFileList() {
   currentFileOrDirectory[0] = 0;
   uint16_t selectedNumber = 0;
   FileList currentFileList;
-  
+
   if (SpecialMenu == false) {
     currentTouchscreenSelection[0] = 0;
   }
@@ -1451,8 +1451,8 @@ void AnycubicTouchscreenClass::RenderCurrentFolder(uint16_t selectedNumber) {
                     #else
                       currentFileList.changeDir(currentTouchscreenSelection);
                     #endif
-                  } else {
-                    // TODO: try to remount the SD card
+                  } else if (currentTouchscreenSelection[0] == 0 && isMediaInserted()) {
+                    card.mount();
                   }
                   if (SpecialMenu == false) {
                     currentTouchscreenSelection[0] = 0;
