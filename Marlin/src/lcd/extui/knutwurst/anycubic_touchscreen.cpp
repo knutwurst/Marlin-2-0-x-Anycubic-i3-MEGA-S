@@ -1439,7 +1439,7 @@ void AnycubicTouchscreenClass::RenderCurrentFolder(uint16_t selectedNumber) {
                       SERIAL_ECHOLNPGM("TFT Serial Debug: Directory UP (cd ..)");
                     #endif
                     currentFileList.upDir();
-                  } else if (isMediaInserted()) {
+                  } else if (isMediaInserted() && (currentFileList.count() > 0)) {
                     #ifdef ANYCUBIC_TFT_DEBUG
                       SERIAL_ECHOLNPGM("TFT Serial Debug: Enter Directoy");
                     #endif
@@ -1451,6 +1451,8 @@ void AnycubicTouchscreenClass::RenderCurrentFolder(uint16_t selectedNumber) {
                     #else
                       currentFileList.changeDir(currentTouchscreenSelection);
                     #endif
+                  } else {
+                    // TODO: try to remount the SD card
                   }
                   if (SpecialMenu == false) {
                     currentTouchscreenSelection[0] = 0;
