@@ -1178,9 +1178,9 @@ void AnycubicTouchscreenClass::RenderCurrentFolder(uint16_t selectedNumber) {
                   SEND(ui8tostr2(elapsedMinutes / 60));
                   SEND_PGM(" H ");
                   SEND(ui8tostr2(elapsedMinutes % 60));
-                  SENDLINE_PGM(" M");
+                  SEND_PGM(" M");
                 } else {
-                  SENDLINE_PGM(" 999:999");
+                  SEND_PGM(" 999:999");
                 }
                 SENDLINE_PGM("");  
               }
@@ -1311,10 +1311,12 @@ void AnycubicTouchscreenClass::RenderCurrentFolder(uint16_t selectedNumber) {
 
               case 20: // A20 read printing speed
               {
-                if (CodeSeen('S'))
+                if (CodeSeen('S')) {
                   feedrate_percentage = constrain(CodeValue(), 40, 999);
-                else
+                } else {
                   SEND_PGM_VAL("A20V ", feedrate_percentage);
+                  SENDLINE_PGM("");
+                }
               }
               break;
 
