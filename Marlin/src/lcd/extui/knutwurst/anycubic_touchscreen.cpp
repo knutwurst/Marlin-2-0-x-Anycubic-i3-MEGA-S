@@ -1616,10 +1616,55 @@ void AnycubicTouchscreenClass::RenderCurrentFolder(uint16_t selectedNumber) {
                       }
                       break;
 
-                    case 32: // a32 clean leveling beep flag
-                      break;
                   #endif
 
+                  #if ENABLED(KNUTWURST_4MAXP2)
+
+                    case 30: // a30 assist leveling
+                      if (!isPrintingFromMedia()) {
+
+                        if (CodeSeen('S')) {
+                          injectCommands(F("G28\nM420 S0\nG90\nG1 Z5\nG1 X15 Y15 F4000\nG1 Z0"));
+                        } else if (CodeSeen('O')) {
+                          injectCommands(F("G90\nG1 Z5\nG1 X15 Y15 F4000\nG1 Z0"));
+                        } else if (CodeSeen('T')) {
+                          injectCommands(F("G90\nG1 Z5\nG1 X255 Y15 F4000\nG1 Z0"));
+                        } else if (CodeSeen('C')) {
+                          injectCommands(F("G90\nG1 Z5\nG1 X255 Y195 F4000\nG1 Z0"));
+                        } else if (CodeSeen('Q')) {
+                          injectCommands(F("G90\nG1 Z5\nG1 X15 Y195 F4000\nG1 Z0"));
+                        } else if (CodeSeen('H') || CodeSeen('L')) {
+                          if (CodeSeen('L')) {
+                            injectCommands(F("G90\nG1 Z10\nG1 X15 Y15 F4000\nM420 S1"));
+                          }
+                        }
+                      }
+                      SENDLINE_PGM("");
+
+                      break;
+
+                    case 31: // a31 zoffset
+                      if (!isPrintingFromMedia()) {
+
+                        if (CodeSeen('S')) {
+                          SENDLINE_PGM("A9V ");
+                          LCD_SERIAL.print(getZOffset_mm() * 100, 2);
+                          SENDLINE_PGM("");
+                        }
+                        if (CodeSeen('D')) {
+                          const_float_t newOffset = CodeValue() / 100;
+                          setZOffset_mm(newOffset);
+                          injectCommands(F("M500"));
+                        }
+                      }
+                      SENDLINE_PGM("");
+                      break;
+                    #endif // #if ENABLED(KNUTWURST_4MAXP2)
+
+
+                    case 32: // a32 clean leveling beep flag
+                      break;
+                  
                     case 33: // A33 get version info
                       SEND_PGM("J33 ");
                       SEND_PGM("KW-");
