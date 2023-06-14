@@ -1661,6 +1661,9 @@ void AnycubicTouchscreenClass::GetCommandFromTFT() {
   #if ENABLED(KNUTWURST_4MAXP2)
 
             case 30: // a30 assist leveling
+              SEND_PGM("J22"); // level watching finish (that's from anycubic's 4MAX firmware and I don't know, what is does)
+              SENDLINE_PGM("");
+
               if (!isPrintingFromMedia()) {
 
                 if (CodeSeen('S')) {
