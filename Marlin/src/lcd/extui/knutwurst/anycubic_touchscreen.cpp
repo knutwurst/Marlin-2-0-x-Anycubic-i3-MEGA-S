@@ -349,7 +349,7 @@
         injectCommands(F("M140 S60"));
       }
 
-      #if NONE(KNUTWURST_BLTOUCH, KNUTWURST_TFT_LEVELING)
+      #if NONE(KNUTWURST_BLTOUCH, KNUTWURST_CHIRON)
         else if ((strcasestr_P(currentTouchscreenSelection, PSTR(SM_MESH_MENU_L)) != NULL)
                  || (strcasestr_P(currentTouchscreenSelection, PSTR(SM_MESH_MENU_S)) != NULL)
                  ) {
@@ -405,7 +405,7 @@
           SERIAL_ECHOLNPGM("Special Menu: Z Down 0.01");
           injectCommands(F("G91\nG1 Z+0.02\nG4 P250\nG1 Z-0.03\nG90"));
         }
-      #endif // if NONE(KNUTWURST_BLTOUCH, KNUTWURST_TFT_LEVELING)
+      #endif // if NONE(KNUTWURST_BLTOUCH, KNUTWURST_CHIRON)
 
       #if ENABLED(KNUTWURST_BLTOUCH)
         else if ((strcasestr_P(currentTouchscreenSelection, PSTR(SM_BLTOUCH_L)) != NULL)
@@ -418,7 +418,7 @@
         }
       #endif
 
-      #if ENABLED(KNUTWURST_TFT_LEVELING)
+      #if ENABLED(KNUTWURST_CHIRON)
         else if ((strcasestr_P(currentTouchscreenSelection, PSTR(SM_RESETLV_L)) != NULL)
                  || (strcasestr_P(currentTouchscreenSelection, PSTR(SM_RESETLV_S)) != NULL)
                  ) {
@@ -801,7 +801,7 @@ void AnycubicTouchscreenClass::RenderSpecialMenu(uint16_t selectedNumber) {
             SENDLINE_PGM(SM_RESUME_L);
             break;
 
-            #if NONE(KNUTWURST_BLTOUCH, KNUTWURST_TFT_LEVELING)
+            #if NONE(KNUTWURST_BLTOUCH, KNUTWURST_CHIRON)
                 case 4: // Page 2 for Manual Mesh Bed Level
                   SENDLINE_PGM(SM_EZLVL_MENU_S);
                   SENDLINE_PGM(SM_EZLVL_MENU_L);
@@ -827,7 +827,7 @@ void AnycubicTouchscreenClass::RenderSpecialMenu(uint16_t selectedNumber) {
                   break;
             #endif
 
-            #if ENABLED(KNUTWURST_TFT_LEVELING)
+            #if ENABLED(KNUTWURST_CHIRON)
                 case 4: // Page 2 for Chiron ABL
                   SENDLINE_PGM(SM_EZLVL_MENU_S);
                   SENDLINE_PGM(SM_EZLVL_MENU_L);
@@ -1471,15 +1471,7 @@ void AnycubicTouchscreenClass::RenderCurrentFolder(uint16_t selectedNumber) {
                 SENDLINE_PGM("");
                 break;
 
-                #if DISABLED(KNUTWURST_TFT_LEVELING)
-                    case 33: // A33 get version info
-                      SEND_PGM("J33 ");
-                      SEND_PGM("KW-");
-                      SEND_PGM(MSG_MY_VERSION);
-                      SENDLINE_PGM("");
-                      break;
-                #endif
-                #if ENABLED(KNUTWURST_TFT_LEVELING)
+                #if ENABLED(KNUTWURST_CHIRON)
                     case 29: // A29 bed grid read
                     {
                       xy_uint8_t pos;
@@ -1626,13 +1618,16 @@ void AnycubicTouchscreenClass::RenderCurrentFolder(uint16_t selectedNumber) {
 
                     case 32: // a32 clean leveling beep flag
                       break;
+                  #endif
 
                     case 33: // A33 get version info
                       SEND_PGM("J33 ");
                       SEND_PGM("KW-");
-                      SENDLINE_PGM(MSG_MY_VERSION);
+                      SEND_PGM(MSG_MY_VERSION);
+                      SENDLINE_PGM("");
                       break;
 
+                  #if ENABLED(KNUTWURST_CHIRON)
                     case 34: // a34 bed grid write
                     {
                       xy_uint8_t pos;
@@ -1676,7 +1671,7 @@ void AnycubicTouchscreenClass::RenderCurrentFolder(uint16_t selectedNumber) {
                     case 36: // A36 auto leveling (New Anycubic TFT)
                       SENDLINE_DBG_PGM("J26", "TFT Serial Debug: Start auto leveling... J26");
                       break;
-                #endif // if ENABLED(KNUTWURST_TFT_LEVELING)
+                #endif // if ENABLED(KNUTWURST_CHIRON)
 
                 #if ENABLED(KNUTWURST_4MAXP2)
                     case 40:
@@ -2026,7 +2021,7 @@ void AnycubicTouchscreenClass::RenderCurrentFolder(uint16_t selectedNumber) {
     #endif
   }
 
-  #if ENABLED(KNUTWURST_TFT_LEVELING)
+  #if ENABLED(KNUTWURST_CHIRON)
     void AnycubicTouchscreenClass::LevelingDone() {
       SENDLINE_DBG_PGM("J25", "TFT Serial Debug: Auto leveling done... J25");
     }

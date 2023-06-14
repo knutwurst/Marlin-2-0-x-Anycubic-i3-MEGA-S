@@ -38,13 +38,10 @@
 #define CONFIGURATION_H_VERSION 02010201
 #define ANYCUBIC_TOUCHSCREEN
 #define KNUTWURST_SPECIAL_MENU
-#define KNUTWURST_SPECIAL_MENU_WO_SD
 // #define ANYCUBIC_TFT_DEBUG
 // #define POWER_OUTAGE_TEST
 
 #define LCD_SERIAL_PORT 3
-
-#define EXT_LEVEL_HIGH 0.1
 
 /*
  * This feature is for debugging purpose only.
@@ -74,18 +71,6 @@
  */
 #if ENABLED(KNUTWURST_MEGA_P)
 // #define KNUTWURST_MEGA_P_LASER
-#endif
-
-
-/*
- * This enables the integrated leveling features
- * in the anycubic touchscreen. It's currently only
- * supported by the Anycubic Chiron and therefore it
- * is automatically set if the chiron is enabled.
- *
- */
-#if ENABLED(KNUTWURST_CHIRON)
-  #define KNUTWURST_TFT_LEVELING
 #endif
 
 /*
@@ -197,8 +182,8 @@
  * Currently Ethernet (-2) is only supported on Teensy 4.1 boards.
  * :[-2, -1, 0, 1, 2, 3, 4, 5, 6, 7]
  */
-// #define SERIAL_PORT_2 2
-// #define BAUDRATE_2 500000   // :[2400, 9600, 19200, 38400, 57600, 115200, 250000, 500000, 1000000] Enable to override BAUDRATE
+#define SERIAL_PORT_2 2
+#define BAUDRATE_2 250000   // :[2400, 9600, 19200, 38400, 57600, 115200, 250000, 500000, 1000000] Enable to override BAUDRATE
 
 /**
  * Select a third serial port on the board to use for communication with the host.
@@ -1652,7 +1637,7 @@
  * Use G29 repeatedly, adjusting the Z height at each point with movement commands
  * or (with LCD_BED_LEVELING) the LCD controller.
  */
-#if NONE(KNUTWURST_BLTOUCH, KNUTWURST_TFT_LEVELING)
+#if NONE(KNUTWURST_BLTOUCH, KNUTWURST_CHIRON)
   #define PROBE_MANUALLY
 #endif
 
@@ -1671,7 +1656,7 @@
 /**
  * Z Servo Probe, such as an endstop switch on a rotating arm.
  */
-#if ENABLED(KNUTWURST_TFT_LEVELING)
+#if ENABLED(KNUTWURST_CHIRON)
   #define Z_PROBE_SERVO_NR 0       // Defaults to SERVO 0 connector.
   #define Z_SERVO_ANGLES { 70, 0 } // Z Servo Deploy and Stow angles
 #endif
@@ -1838,11 +1823,11 @@
   // #define NOZZLE_TO_PROBE_OFFSET { 29, -15, 0 } //X-Carriage
 #endif
 
-#if ENABLED(KNUTWURST_TFT_LEVELING)
+#if ENABLED(KNUTWURST_CHIRON)
   #define NOZZLE_TO_PROBE_OFFSET { 0, 0, -16.8 }
 #endif
 
-#if NONE(KNUTWURST_BLTOUCH, KNUTWURST_TFT_LEVELING)
+#if NONE(KNUTWURST_BLTOUCH, KNUTWURST_CHIRON)
   #define NOZZLE_TO_PROBE_OFFSET { 10, 10, 0 }
 #endif
 
@@ -2470,7 +2455,7 @@
  *   leveling in steps so you can manually adjust the Z height at each grid-point.
  *   With an LCD controller the process is guided step-by-step.
  */
-#if EITHER(KNUTWURST_BLTOUCH, KNUTWURST_TFT_LEVELING)
+#if EITHER(KNUTWURST_BLTOUCH, KNUTWURST_CHIRON)
   // #define AUTO_BED_LEVELING_3POINT
   // #define AUTO_BED_LEVELING_LINEAR
   #define AUTO_BED_LEVELING_BILINEAR
@@ -2478,7 +2463,7 @@
   // #define MESH_BED_LEVELING
 #endif
 
-#if NONE(KNUTWURST_BLTOUCH, KNUTWURST_TFT_LEVELING)
+#if NONE(KNUTWURST_BLTOUCH, KNUTWURST_CHIRON)
   // #define AUTO_BED_LEVELING_3POINT
   // #define AUTO_BED_LEVELING_LINEAR
   // #define AUTO_BED_LEVELING_BILINEAR
@@ -3985,7 +3970,7 @@
  * Set this manually if there are extra servos needing manual control.
  * Set to 0 to turn off servo support.
  */
-#if ENABLED(KNUTWURST_TFT_LEVELING)
+#if ENABLED(KNUTWURST_CHIRON)
   #define NUM_SERVOS 1 // Note: Servo index starts with 0 for M280-M282 commands
 #endif
 

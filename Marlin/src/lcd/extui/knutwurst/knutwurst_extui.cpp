@@ -94,7 +94,7 @@ namespace ExtUI {
     void onLevelingStart() {}
 
     void onLevelingDone() {
-      #if ENABLED(KNUTWURST_TFT_LEVELING)
+      #if ENABLED(KNUTWURST_CHIRON)
         AnycubicTouchscreen.LevelingDone();
       #endif
     }

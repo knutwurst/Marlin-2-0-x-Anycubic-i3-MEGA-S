@@ -213,7 +213,7 @@ void OnPrintTimerStopped();
   void Command(const char * const command);
 #endif
 
-#if ENABLED(KNUTWURST_TFT_LEVELING)
+#if ENABLED(KNUTWURST_CHIRON)
   void LevelingDone();
 #endif
 
