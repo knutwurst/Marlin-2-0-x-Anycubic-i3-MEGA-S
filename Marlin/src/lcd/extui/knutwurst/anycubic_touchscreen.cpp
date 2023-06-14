@@ -1447,6 +1447,38 @@ void AnycubicTouchscreenClass::GetCommandFromTFT() {
               }
               break;
 
+  #if ENABLED(KNUTWURST_4MAXP2)
+    #ifdef SERVO_ENDSTOPS
+            case 27: // a27 servos angles  adjust
+              if (!isPrintingFromMedia()) {
+                char value[30];
+                planner.buffer_line(current_position[X_AXIS], current_position[Y_AXIS], 20, current_position[E_AXIS],
+                                    10, active_extruder);
+                stepper.synchronize();
+                SEND_PGM("A27V ");
+                SEND_PGM("R ");
+                SEND(RiseAngles);
+                SEND(" ");
+                SEND_PGM("F ");
+                SEND(FallAngles);
+                SEND(" ");
+                if (CodeSeen('R')) {
+                  RiseAngles = CodeValue();
+                }
+                if (CodeSeen('F')) {
+                  FallAngles = CodeValue();
+                }
+                if (CodeSeen('O')) {
+                  SaveMyServoAngles();
+                  delay(200);
+                  servos[0].detach();
+                }
+              }
+              SENDLINE_PGM("");
+              break;
+    #endif
+  #endif // KNUTWURST_4MAXP2
+
             case 28: // A28 filament test
               {
                 if (CodeSeen('O'))
@@ -1456,6 +1488,21 @@ void AnycubicTouchscreenClass::GetCommandFromTFT() {
               }
               SENDLINE_PGM("");
               break;
+  #if ENABLED(KNUTWURST_4MAXP2)
+    #ifdef SERVO_ENDSTOPS
+            case 29: // A29 Z PROBE OFFESET SET
+              {
+                SEND_PGM("The past value:");
+                SEND(MY_Z_PROBE);
+                if (CodeSeen('S')) {
+                  MY_Z_PROBE_OFFSET_FROM_EXTRUDER = CodeValue();
+                  SaveMyServoAngles();
+                }
+              }
+              SENDLINE_PGM("OK");
+              break;
+    #endif
+  #endif // KNUTWURST_4MAXP2
 
   #if ENABLED(KNUTWURST_CHIRON)
             case 29: // A29 bed grid read
