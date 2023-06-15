@@ -1320,57 +1320,62 @@ void AnycubicTouchscreenClass::GetCommandFromTFT() {
 
             case 22: // A22 move X/Y/Z or extrude
               if (!isPrinting()) {
-                float        coorvalue;
-                unsigned int movespeed = 0;
-                char         value[30];
+                float    coorvalue;
+                uint16_t movespeed = 0;
+                char     commandStr[30];
+                char     fullCommandStr[38];
+
+                commandStr[0] = 0;   // empty string
                 if (CodeSeen('F')) { // Set feedrate
                   movespeed = CodeValue();
                 }
 
-                queue.enqueue_now_P(PSTR("G91")); // relative coordinates
-
                 if (CodeSeen('X')) { // Move in X direction
                   coorvalue = CodeValue();
                   if ((coorvalue <= 0.2) && coorvalue > 0) {
-                    sprintf_P(value, PSTR("G1 X0.1F%i"), movespeed);
+                    sprintf_P(commandStr, PSTR("G1 X0.1F%i"), movespeed);
                   } else if ((coorvalue <= -0.1) && coorvalue > -1) {
-                    sprintf_P(value, PSTR("G1 X-0.1F%i"), movespeed);
+                    sprintf_P(commandStr, PSTR("G1 X-0.1F%i"), movespeed);
                   } else {
-                    sprintf_P(value, PSTR("G1 X%iF%i"), int(coorvalue), movespeed);
+                    sprintf_P(commandStr, PSTR("G1 X%iF%i"), int(coorvalue), movespeed);
                   }
-                  queue.enqueue_one_now(value);
                 } else if (CodeSeen('Y')) { // Move in Y direction
                   coorvalue = CodeValue();
                   if ((coorvalue <= 0.2) && coorvalue > 0) {
-                    sprintf_P(value, PSTR("G1 Y0.1F%i"), movespeed);
+                    sprintf_P(commandStr, PSTR("G1 Y0.1F%i"), movespeed);
                   } else if ((coorvalue <= -0.1) && coorvalue > -1) {
-                    sprintf_P(value, PSTR("G1 Y-0.1F%i"), movespeed);
+                    sprintf_P(commandStr, PSTR("G1 Y-0.1F%i"), movespeed);
                   } else {
-                    sprintf_P(value, PSTR("G1 Y%iF%i"), int(coorvalue), movespeed);
+                    sprintf_P(commandStr, PSTR("G1 Y%iF%i"), int(coorvalue), movespeed);
                   }
-                  queue.enqueue_one_now(value);
                 } else if (CodeSeen('Z')) { // Move in Z direction
                   coorvalue = CodeValue();
                   if ((coorvalue <= 0.2) && coorvalue > 0) {
-                    sprintf_P(value, PSTR("G1 Z0.1F%i"), movespeed);
+                    sprintf_P(commandStr, PSTR("G1 Z0.1F%i"), movespeed);
                   } else if ((coorvalue <= -0.1) && coorvalue > -1) {
-                    sprintf_P(value, PSTR("G1 Z-0.1F%i"), movespeed);
+                    sprintf_P(commandStr, PSTR("G1 Z-0.1F%i"), movespeed);
                   } else {
-                    sprintf_P(value, PSTR("G1 Z%iF%i"), int(coorvalue), movespeed);
+                    sprintf_P(commandStr, PSTR("G1 Z%iF%i"), int(coorvalue), movespeed);
                   }
-                  queue.enqueue_one_now(value);
                 } else if (CodeSeen('E')) { // Extrude
                   coorvalue = CodeValue();
                   if ((coorvalue <= 0.2) && coorvalue > 0) {
-                    sprintf_P(value, PSTR("G1 E0.1F%i"), movespeed);
+                    sprintf_P(commandStr, PSTR("G1 E0.1F%i"), movespeed);
                   } else if ((coorvalue <= -0.1) && coorvalue > -1) {
-                    sprintf_P(value, PSTR("G1 E-0.1F%i"), movespeed);
+                    sprintf_P(commandStr, PSTR("G1 E-0.1F%i"), movespeed);
                   } else {
-                    sprintf_P(value, PSTR("G1 E%iF500"), int(coorvalue));
+                    sprintf_P(commandStr, PSTR("G1 E%iF500"), int(coorvalue));
                   }
-                  queue.enqueue_one_now(value);
                 }
-                queue.enqueue_now_P(PSTR("G90")); // absolute coordinates
+
+                if (strlen(commandStr) > 0) {
+                  sprintf_P(fullCommandStr, PSTR("G91\n%s\nG90"), commandStr);
+  #if ENABLED(ANYCUBIC_LCD_DEBUG)
+                  SERIAL_ECHOPGM("TFT Serial Debug: A22 Move final request with gcode... ");
+                  SERIAL_ECHOLN(fullCommandStr);
+  #endif
+                  injectCommands(fullCommandStr);
+                }
               }
               SENDLINE_PGM("");
               break;
@@ -1661,7 +1666,8 @@ void AnycubicTouchscreenClass::GetCommandFromTFT() {
   #if ENABLED(KNUTWURST_4MAXP2)
 
             case 30: // a30 assist leveling
-              SEND_PGM("J22"); // level watching finish (that's from anycubic's 4MAX firmware and I don't know, what is does)
+              SEND_PGM(
+                  "J22"); // level watching finish (that's from anycubic's 4MAX firmware and I don't know, what is does)
               SENDLINE_PGM("");
 
               if (!isPrintingFromMedia()) {
@@ -1932,23 +1938,23 @@ void AnycubicTouchscreenClass::GetCommandFromTFT() {
   #if ENABLED(KNUTWURST_MEGA_P)
                 case 51:
                   if (CodeSeen('H')) {
-                    queue.enqueue_now_P(PSTR("G1 Z5 F500"));
-                    queue.enqueue_now_P(PSTR("G1 X30 Y30 F5000"));
-                    queue.enqueue_now_P(PSTR("G1 Z0.15 F300"));
+                    injectCommands(F("G1 Z5 F500"));
+                    injectCommands(F("G1 X30 Y30 F5000"));
+                    injectCommands(F("G1 Z0.15 F300"));
                   } else if (CodeSeen('I')) {
-                    queue.enqueue_now_P(PSTR("G1 Z5 F500"));
-                    queue.enqueue_now_P(PSTR("G1 X190 Y30 F5000"));
-                    queue.enqueue_now_P(PSTR("G1 Z0.15 F300"));
+                    injectCommands(F("G1 Z5 F500"));
+                    injectCommands(F("G1 X190 Y30 F5000"));
+                    injectCommands(F("G1 Z0.15 F300"));
                   } else if (CodeSeen('J')) {
-                    queue.enqueue_now_P(PSTR("G1 Z5 F500"));
-                    queue.enqueue_now_P(PSTR("G1 X190 Y190 F5000"));
-                    queue.enqueue_now_P(PSTR("G1 Z0.15 F300"));
+                    injectCommands(F("G1 Z5 F500"));
+                    injectCommands(F("G1 X190 Y190 F5000"));
+                    injectCommands(F("G1 Z0.15 F300"));
                   } else if (CodeSeen('K')) {
-                    queue.enqueue_now_P(PSTR("G1 Z5 F500"));
-                    queue.enqueue_now_P(PSTR("G1 X30 Y190 F5000"));
-                    queue.enqueue_now_P(PSTR("G1 Z0.15 F300"));
+                    injectCommands(F("G1 Z5 F500"));
+                    injectCommands(F("G1 X30 Y190 F5000"));
+                    injectCommands(F("G1 Z0.15 F300"));
                   } else if (CodeSeen('L')) {
-                    queue.enqueue_now_P(PSTR("G1 X100 Y100  Z50 F5000"));
+                    injectCommands(F("G1 X100 Y100  Z50 F5000"));
                   }
                   break;
   #endif
