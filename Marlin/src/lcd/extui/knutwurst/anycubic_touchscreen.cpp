@@ -77,8 +77,6 @@ static void sendLine_P(PGM_P str) {
   sendNewLine();
 }
 
-char _conv[8];
-
 AnycubicMediaPrintState AnycubicTouchscreenClass::mediaPrintingState = AMPRINTSTATE_NOT_PRINTING;
 AnycubicMediaPauseState AnycubicTouchscreenClass::mediaPauseState    = AMPAUSESTATE_NOT_PAUSED;
 
@@ -1666,8 +1664,7 @@ void AnycubicTouchscreenClass::GetCommandFromTFT() {
   #if ENABLED(KNUTWURST_4MAXP2)
 
             case 30: // a30 assist leveling
-              SEND_PGM(
-                  "J22"); // level watching finish (that's from anycubic's 4MAX firmware and I don't know, what is does)
+              SEND_PGM("J22"); // level watching finish
               SENDLINE_PGM("");
 
               if (!isPrintingFromMedia()) {
