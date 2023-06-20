@@ -464,7 +464,7 @@ void AnycubicTouchscreenClass::HandleSpecialMenu() {
     SpecialMenu = false;
   } else if ((strcasestr_P(currentTouchscreenSelection, PSTR(SM_BACK_L)) != NULL) ||
              (strcasestr_P(currentTouchscreenSelection, PSTR(SM_BACK_S)) != NULL)) {
-    SERIAL_ECHOLNPGM("Special Menu: Exit Manual Med Leveling + enable soft endstops");
+    SERIAL_ECHOLNPGM("Special Menu: Exit Manual Bed Leveling + enable soft endstops");
     setSoftEndstopState(true);
     MMLMenu = false;
   } else if ((strcasestr_P(currentTouchscreenSelection, PSTR(SM_FLOWMENU_L)) != NULL) ||
@@ -505,7 +505,7 @@ void AnycubicTouchscreenClass::HandleSpecialMenu() {
     #if ENABLED(KNUTWURST_BLTOUCH)
   else if ((strcasestr_P(currentTouchscreenSelection, PSTR(SM_BLTZMENU_L)) != NULL) ||
            (strcasestr_P(currentTouchscreenSelection, PSTR(SM_BLTZMENU_S)) != NULL)) {
-    SERIAL_ECHOLNPGM("Special Menu: Enter BLTouch Menu");
+    SERIAL_ECHOLNPGM("Special Menu: Enter BLTouch Menu + disable SoftEndstops");
     BLTouchMenu = true;
     setSoftEndstopState(false);
   } else if ((strcasestr_P(currentTouchscreenSelection, PSTR(SM_BLTZ_UP_L)) != NULL) ||
