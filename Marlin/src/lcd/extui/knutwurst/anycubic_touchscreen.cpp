@@ -980,7 +980,7 @@ void AnycubicTouchscreenClass::SDCardError() {
 
 void AnycubicTouchscreenClass::CheckHeaterError() {
   if ((getTargetTemp_celsius((extruder_t)E0) < 5) || (getTargetTemp_celsius((extruder_t)E0) > 300)) {
-    if (HeaterCheckCount > 600000) {
+    if (HeaterCheckCount > 60000) {
       HeaterCheckCount = 0;
       SENDLINE_DBG_PGM("J10", "TFT Serial Debug: Hotend temperature abnormal... J10");
     } else {
