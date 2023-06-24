@@ -28,9 +28,6 @@ Clearly describe the submitted changes with lots of details. Include images wher
 
 <!-- Attach Configurations ZIP and any other files needed to test this PR. -->
 
-### Configurations
-
-<!-- Attach any Configuration.h, Configuration_adv.h, or platformio.ini files needed to compile/test your Pull Request. -->
 
 ### Related Issues
 

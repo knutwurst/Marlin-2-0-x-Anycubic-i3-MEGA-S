@@ -24,13 +24,6 @@
 #include "../../../inc/MarlinConfigPre.h"
 #include "../../../module/probe.h"
 
-char* itostr2(const uint8_t& x);
-
-#ifndef ULTRA_LCD
-char* itostr3(const int);
-char* ftostr32(const float&);
-#endif
-
 #define TFTBUFSIZE                 4
 #define TFT_MAX_CMD_SIZE           96
 #define MSG_MY_VERSION             CUSTOM_BUILD_VERSION
@@ -226,11 +219,10 @@ class AnycubicTouchscreenClass {
     int        serial3_count = 0;
     char*      TFTstrchr_pointer;
     char       FlagResumFromOutage  = 0;
-    uint8_t    tmp_extruder         = 0;
     uint16_t   HeaterCheckCount     = 0;
     int        currentFlowRate      = 0;
     bool       PrintdoneAndPowerOFF = true;
-    bool       powerOFFflag         = 0;
+    bool       powerOFFflag         = false;
     xy_uint8_t selectedmeshpoint;
     float      live_Zoffset;
 
@@ -257,7 +249,6 @@ class AnycubicTouchscreenClass {
     void  StopPrint();
     void  GetCommandFromTFT();
     void  CheckHeaterError();
-    void  FilamentChangePause();
     void  HandleSpecialMenu();
     void  RenderCurrentFileList();
     void  RenderSpecialMenu(uint16_t);
