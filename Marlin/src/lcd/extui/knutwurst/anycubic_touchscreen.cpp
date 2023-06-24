@@ -830,7 +830,6 @@ void AnycubicTouchscreenClass::RenderSpecialMenu(uint16_t selectedNumber) {
 
 void AnycubicTouchscreenClass::RenderCurrentFolder(uint16_t selectedNumber) {
   FileList currentFileList;
-  uint16_t count = selectedNumber;
   uint16_t max_files;
   uint16_t filesOnSDCard = currentFileList.count();
 
@@ -850,7 +849,7 @@ void AnycubicTouchscreenClass::RenderCurrentFolder(uint16_t selectedNumber) {
     selectedNumber = 0;
   }
 
-  for (count = selectedNumber; count <= max_files; count++) {
+  for (uint16_t count = selectedNumber; count <= max_files; count++) {
     if (count == 0) { // Special Entry
       if (currentFileList.isAtRootDir()) {
         SENDLINE_PGM(SM_SPECIAL_MENU_S);
@@ -876,25 +875,22 @@ void AnycubicTouchscreenClass::RenderCurrentFolder(uint16_t selectedNumber) {
       SERIAL_ECHOLN(currentFileList.filename());
   #endif
 
-      const char* fileName    = currentFileList.filename();
-      int         fileNameLen = strlen(fileName);
+      const char* fileName     = currentFileList.filename();
+      unsigned int fileNameLen = strlen(fileName);
 
-  // Cut off too long filenames.
-  // They don't fit on the screen anyway.
-  #if ENABLED(KNUTWURST_DGUS2_TFT)
-      bool fileNameWasCut = false;
-      if (fileNameLen >= MAX_PRINTABLE_FILENAME_LEN) {
-        fileNameWasCut = true;
-        fileNameLen    = MAX_PRINTABLE_FILENAME_LEN;
-      }
-      char outputString[MAX_PRINTABLE_FILENAME_LEN] = {'\0'};
-  #else
-      char outputString[fileNameLen] = {'\0'};
-  #endif
+      // Cut off too long filenames.
+      // They don't fit on the screen anyway.
+      #if ENABLED(KNUTWURST_DGUS2_TFT)
+        bool fileNameWasCut = false;
+        if (fileNameLen >= MAX_PRINTABLE_FILENAME_LEN) {
+          fileNameWasCut = true;
+          fileNameLen    = MAX_PRINTABLE_FILENAME_LEN;
+        }
+        #endif
 
-      // Bugfix for non-printable special characters
-      // which are now replaced by underscores.
-      for (unsigned char i = 0; i <= fileNameLen; i++) {
+      // Bugfix for non-printable special characters which are now replaced by underscores.
+      static char outputString[MAX_PRINTABLE_FILENAME_LEN] = {'\0'};
+      for (unsigned int i = 0; i <= fileNameLen; i++) {
         if (isPrintable(fileName[i])) {
           outputString[i] = fileName[i];
         } else {
