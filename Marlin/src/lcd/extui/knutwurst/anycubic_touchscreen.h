@@ -222,7 +222,7 @@ class AnycubicTouchscreenClass {
     uint16_t   HeaterCheckCount     = 0;
     int        currentFlowRate      = 0;
     bool       PrintdoneAndPowerOFF = true;
-    bool       powerOFFflag         = 0;
+    bool       powerOFFflag         = false;
     xy_uint8_t selectedmeshpoint;
     float      live_Zoffset;
 

@@ -1074,7 +1074,7 @@ void AnycubicTouchscreenClass::GetCommandFromTFT() {
   char* starpos = NULL;
   while (LCD_SERIAL.available() > 0 && TFTbuflen < TFTBUFSIZE) {
     serial3_char = LCD_SERIAL.read();
-    if (serial3_char == '\n' || serial3_char == '\r' || (serial3_char == ':' && TFTcomment_mode == false) ||
+    if (serial3_char == '\n' || serial3_char == '\r' || (serial3_char == ':' && !TFTcomment_mode) ||
         serial3_count >= (TFT_MAX_CMD_SIZE - 1)) {
       if (!serial3_count) {      // if empty line
         TFTcomment_mode = false; // for new command
@@ -1236,7 +1236,7 @@ void AnycubicTouchscreenClass::GetCommandFromTFT() {
                   tempvalue = constrain(CodeValue(), 0, 260);
                   if (getTargetTemp_celsius((extruder_t)E0) <= 260) {
                     setTargetTemp_celsius(tempvalue, (extruder_t)E0);
-                  }; // do not set Temp from TFT if it is set via gcode
+                  } // do not set Temp from TFT if it is set via gcode
                 } else if ((CodeSeen('C')) && (!isPrinting())) {
                   if ((getAxisPosition_mm(Z) < 10)) {
                     injectCommands(F("G1 Z10")); // RASE Z AXIS
@@ -2062,7 +2062,7 @@ void AnycubicTouchscreenClass::GetCommandFromTFT() {
                        "TFT Serial Debug: Starting SD Print... soft endstops disabled J04"); // J04 Starting Print
       setSoftEndstopState(false);
       live_Zoffset = 0.0;
-      powerOFFflag = 0;
+      powerOFFflag = false;
     }
   #endif
   }
@@ -2082,7 +2082,7 @@ void AnycubicTouchscreenClass::GetCommandFromTFT() {
       mediaPrintingState = AMPRINTSTATE_NOT_PRINTING;
       mediaPauseState    = AMPAUSESTATE_NOT_PAUSED;
       setSoftEndstopState(true);
-      powerOFFflag = 1;
+      powerOFFflag = true;
       SENDLINE_DBG_PGM("J14", "TFT Serial Debug: SD Print Completed... soft endstops enabled J14");
     }
       // otherwise it was stopped by the printer so don't send print completed
