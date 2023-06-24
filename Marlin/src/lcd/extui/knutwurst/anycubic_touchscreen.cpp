@@ -19,7 +19,6 @@
  */
 
 #include "Arduino.h"
-#include <inttypes.h>
 #include <stdio.h>
 #include <stdlib.h>
 #include <string.h>
@@ -2101,20 +2100,6 @@ void AnycubicTouchscreenClass::GetCommandFromTFT() {
     #endif
   }
   #endif
-
-  void PowerKill() {
-  #ifdef POWER_OUTAGE_TEST
-    Temp_Buf_Extuder_Temperature = thermalManager.degTargetHotend(0);
-    Temp_Buf_Bed_Temperature     = thermalManager.degTargetBed();
-    if (PowerTestFlag == true) {
-      thermalManager.disable_all_heaters();
-      OutageSave();
-      PowerTestFlag = false;
-      thermalManager.setTargetHotend(Temp_Buf_Extuder_Temperature, 0);
-      thermalManager.setTargetBed(Temp_Buf_Bed_Temperature);
-    }
-  #endif
-  }
 
   #if ENABLED(KNUTWURST_CHIRON)
   void AnycubicTouchscreenClass::LevelingDone() {
