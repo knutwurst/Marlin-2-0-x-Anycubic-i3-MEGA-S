@@ -874,21 +874,23 @@ void AnycubicTouchscreenClass::RenderCurrentFolder(uint16_t selectedNumber) {
       SERIAL_ECHOLN(currentFileList.filename());
   #endif
 
-      const char* fileName     = currentFileList.filename();
+      const char*  fileName    = currentFileList.filename();
       unsigned int fileNameLen = strlen(fileName);
 
-      // Cut off too long filenames.
-      // They don't fit on the screen anyway.
-      #if ENABLED(KNUTWURST_DGUS2_TFT)
-        bool fileNameWasCut = false;
-        if (fileNameLen >= MAX_PRINTABLE_FILENAME_LEN) {
-          fileNameWasCut = true;
-          fileNameLen    = MAX_PRINTABLE_FILENAME_LEN;
-        }
-        #endif
+  // Cut off too long filenames.
+  // They don't fit on the screen anyway.
+  #if ENABLED(KNUTWURST_DGUS2_TFT)
+      bool fileNameWasCut = false;
+      if (fileNameLen >= MAX_PRINTABLE_FILENAME_LEN) {
+        fileNameWasCut = true;
+        fileNameLen    = MAX_PRINTABLE_FILENAME_LEN;
+      }
+      static char outputString[MAX_PRINTABLE_FILENAME_LEN];
+  #else
+      char outputString[fileNameLen];
+  #endif
 
       // Bugfix for non-printable special characters which are now replaced by underscores.
-      static char outputString[MAX_PRINTABLE_FILENAME_LEN] = {'\0'};
       for (unsigned int i = 0; i <= fileNameLen; i++) {
         if (isPrintable(fileName[i])) {
           outputString[i] = fileName[i];
@@ -929,7 +931,7 @@ void AnycubicTouchscreenClass::RenderCurrentFolder(uint16_t selectedNumber) {
         outputString[MAX_PRINTABLE_FILENAME_LEN] = '\0';
       }
   #else
-      outputString[fileNameLen]      = '\0';
+      outputString[fileNameLen] = '\0';
   #endif
 
 
