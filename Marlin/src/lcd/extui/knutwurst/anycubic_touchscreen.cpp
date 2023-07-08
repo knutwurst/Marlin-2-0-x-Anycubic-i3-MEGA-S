@@ -2061,7 +2061,7 @@ void AnycubicTouchscreenClass::GetCommandFromTFT() {
     if (mediaPrintingState == AMPRINTSTATE_PRINTING) {
       SENDLINE_DBG_PGM("J04",
                        "TFT Serial Debug: Starting SD Print... soft endstops disabled J04"); // J04 Starting Print
-      setSoftEndstopState(false);
+      //setSoftEndstopState(false);
       live_Zoffset = 0.0;
       powerOFFflag = false;
     }
@@ -2082,7 +2082,7 @@ void AnycubicTouchscreenClass::GetCommandFromTFT() {
     if (mediaPrintingState == AMPRINTSTATE_PRINTING) {
       mediaPrintingState = AMPRINTSTATE_NOT_PRINTING;
       mediaPauseState    = AMPAUSESTATE_NOT_PAUSED;
-      setSoftEndstopState(true);
+      //setSoftEndstopState(true);
       powerOFFflag = true;
       SENDLINE_DBG_PGM("J14", "TFT Serial Debug: SD Print Completed... soft endstops enabled J14");
     }
