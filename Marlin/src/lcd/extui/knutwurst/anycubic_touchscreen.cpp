@@ -379,7 +379,7 @@ void AnycubicTouchscreenClass::HandleSpecialMenu() {
            (strcasestr_P(currentTouchscreenSelection, PSTR(SM_MESH_MENU_S)) != NULL)) {
     MMLMenu = true;
     SERIAL_ECHOLNPGM("Special Menu: Manual Med Leveling + disable soft endstops");
-    //setSoftEndstopState(false);
+    setSoftEndstopState(false);
   } else if ((strcasestr_P(currentTouchscreenSelection, PSTR(SM_MESH_START_L)) != NULL) ||
              (strcasestr_P(currentTouchscreenSelection, PSTR(SM_MESH_START_S)) != NULL)) {
     SERIAL_ECHOLNPGM("Special Menu: Start Mesh Leveling");
@@ -462,7 +462,7 @@ void AnycubicTouchscreenClass::HandleSpecialMenu() {
   } else if ((strcasestr_P(currentTouchscreenSelection, PSTR(SM_BACK_L)) != NULL) ||
              (strcasestr_P(currentTouchscreenSelection, PSTR(SM_BACK_S)) != NULL)) {
     SERIAL_ECHOLNPGM("Special Menu: Exit Manual Bed Leveling + enable soft endstops");
-    //setSoftEndstopState(true);
+    setSoftEndstopState(true);
     MMLMenu = false;
   } else if ((strcasestr_P(currentTouchscreenSelection, PSTR(SM_FLOWMENU_L)) != NULL) ||
              (strcasestr_P(currentTouchscreenSelection, PSTR(SM_FLOWMENU_S)) != NULL)) {
@@ -504,7 +504,7 @@ void AnycubicTouchscreenClass::HandleSpecialMenu() {
            (strcasestr_P(currentTouchscreenSelection, PSTR(SM_BLTZMENU_S)) != NULL)) {
     SERIAL_ECHOLNPGM("Special Menu: Enter BLTouch Menu + disable SoftEndstops");
     BLTouchMenu = true;
-    //setSoftEndstopState(false);
+    setSoftEndstopState(false);
   } else if ((strcasestr_P(currentTouchscreenSelection, PSTR(SM_BLTZ_UP_L)) != NULL) ||
              (strcasestr_P(currentTouchscreenSelection, PSTR(SM_BLTZ_UP_S)) != NULL)) {
     SERIAL_ECHOLNPGM("Special Menu: Offset UP");
@@ -528,7 +528,7 @@ void AnycubicTouchscreenClass::HandleSpecialMenu() {
   } else if ((strcasestr_P(currentTouchscreenSelection, PSTR(SM_BLTZ_EXIT_L)) != NULL) ||
              (strcasestr_P(currentTouchscreenSelection, PSTR(SM_BLTZ_EXIT_S)) != NULL)) {
     SERIAL_ECHOLNPGM("Special Menu: Exit BLTouch Menu & Save EEPROM");
-    //setSoftEndstopState(true);
+    setSoftEndstopState(true);
     injectCommands(F("M500"));
     BUZZ(105, 1108);
     BUZZ(210, 1661);
@@ -1522,7 +1522,7 @@ void AnycubicTouchscreenClass::GetCommandFromTFT() {
                 SENDLINE_PGM("");
 
                 if (!isPrinting()) {
-                  //setSoftEndstopState(true);
+                  setSoftEndstopState(true);
                   if ((selectedmeshpoint.x == pos.x) && (selectedmeshpoint.y == pos.y)) {
                     if (!isPositionKnown()) {
                       injectCommands_P(G28_STR);
@@ -1600,7 +1600,7 @@ void AnycubicTouchscreenClass::GetCommandFromTFT() {
               else {
                 if (CodeSeen('S')) { // Set offset (adjusts all points by value)
                   float Zshift = CodeValue();
-                  //setSoftEndstopState(false);
+                  setSoftEndstopState(false);
                   if (isPrinting()) {
     #if ENABLED(ANYCUBIC_TFT_DEBUG)
                     SERIAL_ECHOLNPGM("Change Zoffset from:", live_Zoffset, " to ", live_Zoffset + Zshift);
@@ -1735,7 +1735,7 @@ void AnycubicTouchscreenClass::GetCommandFromTFT() {
                   setMeshPoint(pos, newval);
                   if (mediaPrintingState == AMPRINTSTATE_NOT_PRINTING || mediaPrintingState == AMPRINTSTATE_PROBING) {
                     if (selectedmeshpoint.x == pos.x && selectedmeshpoint.y == pos.y) {
-                      //setSoftEndstopState(false);
+                      setSoftEndstopState(false);
                       float currZpos = getAxisPosition_mm(Z);
     #if ENABLED(ANYCUBIC_TFT_DEBUG)
                       SERIAL_ECHOLNPGM("Move Z pos from ", currZpos, " to ",
@@ -2061,7 +2061,7 @@ void AnycubicTouchscreenClass::GetCommandFromTFT() {
     if (mediaPrintingState == AMPRINTSTATE_PRINTING) {
       SENDLINE_DBG_PGM("J04",
                        "TFT Serial Debug: Starting SD Print... soft endstops disabled J04"); // J04 Starting Print
-      //setSoftEndstopState(false);
+      setSoftEndstopState(false);
       live_Zoffset = 0.0;
       powerOFFflag = false;
     }
@@ -2082,7 +2082,7 @@ void AnycubicTouchscreenClass::GetCommandFromTFT() {
     if (mediaPrintingState == AMPRINTSTATE_PRINTING) {
       mediaPrintingState = AMPRINTSTATE_NOT_PRINTING;
       mediaPauseState    = AMPAUSESTATE_NOT_PAUSED;
-      //setSoftEndstopState(true);
+      setSoftEndstopState(true);
       powerOFFflag = true;
       SENDLINE_DBG_PGM("J14", "TFT Serial Debug: SD Print Completed... soft endstops enabled J14");
     }
