@@ -304,13 +304,13 @@
  */
 #if ENABLED(THERMAL_PROTECTION_HOTENDS)
   #if ENABLED(KNUTWURST_CHIRON)
-    #define THERMAL_PROTECTION_PERIOD     60     // Seconds
+    #define THERMAL_PROTECTION_PERIOD     30     // Seconds
     #define THERMAL_PROTECTION_HYSTERESIS 20     // Degrees Celsius
 
     #define WATCH_TEMP_PERIOD   60               // Seconds
-    #define WATCH_TEMP_INCREASE 10               // Degrees Celsius
+    #define WATCH_TEMP_INCREASE 5               // Degrees Celsius
   #else
-    #define THERMAL_PROTECTION_PERIOD 10        // Seconds
+    #define THERMAL_PROTECTION_PERIOD 20        // Seconds
     #define THERMAL_PROTECTION_HYSTERESIS 15     // Degrees Celsius
 
     // #define ADAPTIVE_FAN_SLOWING              // Slow part cooling fan if temperature drops
@@ -340,22 +340,22 @@
  */
 #if ENABLED(THERMAL_PROTECTION_BED)
   #if ENABLED(KNUTWURST_CHIRON)
-    #define THERMAL_PROTECTION_BED_PERIOD         40 // Seconds
-    #define THERMAL_PROTECTION_BED_HYSTERESIS     10 // Degrees Celsius
+    #define THERMAL_PROTECTION_BED_PERIOD         120 // Seconds
+    #define THERMAL_PROTECTION_BED_HYSTERESIS     15 // Degrees Celsius
 
     /**
      * As described above, except for the bed (M140/M190/M303).
      */
-    #define WATCH_BED_TEMP_PERIOD                120 // Seconds
-    #define WATCH_BED_TEMP_INCREASE               10 // Degrees Celsius
+    #define WATCH_BED_TEMP_PERIOD                300 // Seconds
+    #define WATCH_BED_TEMP_INCREASE                2 // Degrees Celsius
   #else
-    #define THERMAL_PROTECTION_BED_PERIOD        20 // Seconds
+    #define THERMAL_PROTECTION_BED_PERIOD        30 // Seconds
     #define THERMAL_PROTECTION_BED_HYSTERESIS     2 // Degrees Celsius
 
     /**
      * As described above, except for the bed (M140/M190/M303).
      */
-    #define WATCH_BED_TEMP_PERIOD                60 // Seconds
+    #define WATCH_BED_TEMP_PERIOD               120 // Seconds
     #define WATCH_BED_TEMP_INCREASE               2 // Degrees Celsius
   #endif
 #endif
