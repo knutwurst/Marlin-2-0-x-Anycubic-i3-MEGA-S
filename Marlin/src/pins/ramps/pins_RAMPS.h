@@ -133,13 +133,6 @@
 #endif
 
 //
-// Z Probe (when not Z_MIN_PIN)
-//
-#ifndef Z_MIN_PROBE_PIN
-  #define Z_MIN_PROBE_PIN                      2    // PATCH: Knutwurst
-#endif
-
-//
 // Steppers
 //
 #define X_STEP_PIN                            54
@@ -285,13 +278,6 @@
   #ifndef POWER_OFF_PIN
     #define POWER_OFF_PIN                       21
   #endif
-#endif
-
-
-#if ANY(KNUTWURST_CHIRON, KNUTWURST_4MAXP2)
-  #define FIL_RUNOUT_PIN 33
-#else
-  #define FIL_RUNOUT_PIN 19
 #endif
 
 #ifndef PS_ON_PIN
