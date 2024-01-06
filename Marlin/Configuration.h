@@ -2404,6 +2404,9 @@
   // NOTE: After 'M412 H1' the host handles filament runout and this script does not apply.
   #define FILAMENT_RUNOUT_SCRIPT "M600"
 
+  // More relaxed threshold to prevent false-positive triggers (default: 5)
+  #define FILAMENT_RUNOUT_THRESHOLD 20
+
   // After a runout is detected, continue printing this length of filament
   // before executing the runout script. Useful for a sensor at the end of
   // a feed tube. Requires 4 bytes SRAM per sensor, plus 4 bytes overhead.
