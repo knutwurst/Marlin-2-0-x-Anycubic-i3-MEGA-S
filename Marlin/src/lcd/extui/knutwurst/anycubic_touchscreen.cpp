@@ -1930,23 +1930,31 @@ void AnycubicTouchscreenClass::GetCommandFromTFT() {
   #if ENABLED(KNUTWURST_MEGA_P)
                 case 51:
                   if (CodeSeen('H')) {
-                    injectCommands(F("G1 Z5 F500"));
-                    injectCommands(F("G1 X30 Y30 F5000"));
-                    injectCommands(F("G1 Z0.15 F300"));
+                    injectCommands(F(
+                      "G1 Z5 F500\n"
+                      "G1 X30 Y30 F5000\n"
+                      "G1 Z0.15 F300"
+                    ));
                   } else if (CodeSeen('I')) {
-                    injectCommands(F("G1 Z5 F500"));
-                    injectCommands(F("G1 X190 Y30 F5000"));
-                    injectCommands(F("G1 Z0.15 F300"));
+                    injectCommands(F(
+                      "G1 Z5 F500\n"
+                      "G1 X190 Y30 F5000\n"
+                      "G1 Z0.15 F300"
+                    ));
                   } else if (CodeSeen('J')) {
-                    injectCommands(F("G1 Z5 F500"));
-                    injectCommands(F("G1 X190 Y190 F5000"));
-                    injectCommands(F("G1 Z0.15 F300"));
+                    injectCommands(F(
+                      "G1 Z5 F500\n"
+                      "G1 X190 Y190 F5000\n"
+                      "G1 Z0.15 F300"
+                    ));
                   } else if (CodeSeen('K')) {
-                    injectCommands(F("G1 Z5 F500"));
-                    injectCommands(F("G1 X30 Y190 F5000"));
-                    injectCommands(F("G1 Z0.15 F300"));
+                    injectCommands(F(
+                      "G1 Z5 F500\n"
+                      "G1 X30 Y190 F5000\n"
+                      "G1 Z0.15 F300"
+                    ));
                   } else if (CodeSeen('L')) {
-                    injectCommands(F("G1 X100 Y100  Z50 F5000"));
+                    injectCommands(F("G1 X100 Y100 Z50 F5000"));
                   }
                   break;
   #endif
