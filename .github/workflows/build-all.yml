@@ -124,7 +124,7 @@ jobs:
     #     .pio/build/${{ matrix.platform }}/${{ matrix.platform }}_v*.hex
 
     - name: Archive all artifacts into one ZIP file
-      uses: actions/upload-artifact@master
+      uses: actions/upload-artifact@v3
       with:
         name: Knuwurst-all-in-one-${{github.sha}}
         path: |

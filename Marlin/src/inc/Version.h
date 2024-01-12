@@ -41,10 +41,10 @@
  * here we define this default string as the date where the latest release
  * version was tagged.
  */
- #define CUSTOM_BUILD_VERSION "1.5.3-pre"
+ #define CUSTOM_BUILD_VERSION "1.5.3"
 
 #ifndef STRING_DISTRIBUTION_DATE
-  #define STRING_DISTRIBUTION_DATE "2023-10-14"
+  #define STRING_DISTRIBUTION_DATE "2024-01-07"
 #endif
 
 /**
