@@ -87,7 +87,7 @@ jobs:
          - 4MAXP2_DGUS_BLT_11
          - 4MAXP2_DGUS_TMC_BLT_10
          - 4MAXP2_DGUS_TMC_BLT_11
-         
+
   steps:
     - uses: actions/checkout@v4
     - uses: actions/setup-python@v5
@@ -126,6 +126,6 @@ jobs:
       with:
         name: Knuwurst-all-in-one-${{github.sha}}
         pattern: Knuwurst-all-in-one-${{github.sha}}-*
-+       merge-multiple: true
+        merge-multiple: true
         path: |
          .pio/build/${{ matrix.platform }}/${{ matrix.platform }}_v*.hex
