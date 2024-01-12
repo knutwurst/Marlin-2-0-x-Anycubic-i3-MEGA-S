@@ -89,8 +89,7 @@ jobs:
          - 4MAXP2_DGUS_TMC_BLT_11
 
     steps:
-
-    - name: Setup Python
+    - name: Setup Python 3
       - uses: actions/setup-python@v5
         with:
           python-version: '3.x'
