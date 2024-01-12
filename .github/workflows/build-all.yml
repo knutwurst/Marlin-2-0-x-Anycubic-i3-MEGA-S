@@ -125,7 +125,5 @@ jobs:
       uses: actions/upload-artifact@v4
       with:
         name: Knuwurst-all-in-one-${{github.sha}}
-        pattern: Knuwurst-all-in-one-${{github.sha}}-*
-        merge-multiple: true
-        path: |
-         .pio/build/${{ matrix.platform }}/${{ matrix.platform }}_v*.hex
+        path: .pio/build/${{ matrix.platform }}/${{ matrix.platform }}_v*.hex
+
