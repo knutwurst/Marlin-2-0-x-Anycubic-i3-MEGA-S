@@ -87,12 +87,12 @@ jobs:
          - 4MAXP2_DGUS_BLT_11
          - 4MAXP2_DGUS_TMC_BLT_10
          - 4MAXP2_DGUS_TMC_BLT_11
-
+         
   steps:
-    - name: Setup Python 3
-      - uses: actions/setup-python@v5
-        with:
-          python-version: '3.x'
+    - uses: actions/checkout@v4
+    - uses: actions/setup-python@v5
+      with:
+        python-version: '3.x'
 
     - name: Install PlatformIO
       run: |
