@@ -89,10 +89,12 @@ jobs:
          - 4MAXP2_DGUS_TMC_BLT_11
 
   steps:
-    - name: Install Python
-      uses: actions/setup-python@v4
+
+    - name: Setup Python 3.7
+      uses: actions/setup-python@v1
       with:
-        python-version: '3.10'  
+        python-version: '3.7' # Version range or exact version of a Python version to use, using semvers version range syntax.
+        architecture: 'x64' # optional x64 or x86. Defaults to x64 if not specified
 
     - name: Install PlatformIO
       run: |
@@ -125,5 +127,7 @@ jobs:
       uses: actions/upload-artifact@v4
       with:
         name: Knuwurst-all-in-one-${{github.sha}}
-        path: .pio/build/${{ matrix.platform }}/${{ matrix.platform }}_v*.hex
-
+        pattern: Knuwurst-all-in-one-${{github.sha}}-*
+        merge-multiple: true
+        path: |
+         .pio/build/${{ matrix.platform }}/${{ matrix.platform }}_v*.hex
