@@ -33,6 +33,13 @@
 
 #if ENABLED(MARLIN_DEV_MODE)
   #warning "WARNING! Disable MARLIN_DEV_MODE for the final build!"
+  #ifdef __LONG_MAX__
+    #if __LONG_MAX__ > __INT_MAX__
+      #warning "The 'long' type is larger than the 'int' type on this platform."
+    #else
+      #warning "The 'long' type is the same as the 'int' type on this platform."
+    #endif
+  #endif
 #endif
 
 #if ENABLED(LA_DEBUG)
@@ -749,17 +756,17 @@
 /**
  * FYSETC/MKS/BTT Mini Panel backlighting
  */
-#if EITHER(FYSETC_242_OLED_12864, FYSETC_MINI_12864_2_1) && !ALL(NEOPIXEL_LED, LED_CONTROL_MENU, LED_USER_PRESET_STARTUP, LED_COLOR_PRESETS)
+#if ANY(FYSETC_242_OLED_12864, FYSETC_MINI_12864_2_1) && !ALL(NEOPIXEL_LED, LED_CONTROL_MENU, LED_USER_PRESET_STARTUP, LED_COLOR_PRESETS)
   #warning "Your FYSETC/MKS/BTT Mini Panel works best with NEOPIXEL_LED, LED_CONTROL_MENU, LED_USER_PRESET_STARTUP, and LED_COLOR_PRESETS."
 #endif
 
-#if EITHER(FYSETC_MINI_12864_1_2, FYSETC_MINI_12864_2_0) && DISABLED(RGB_LED)
+#if ANY(FYSETC_MINI_12864_1_2, FYSETC_MINI_12864_2_0) && DISABLED(RGB_LED)
   #warning "Your FYSETC Mini Panel works best with RGB_LED."
-#elif EITHER(FYSETC_MINI_12864_2_0, FYSETC_MINI_12864_2_1) && DISABLED(LED_USER_PRESET_STARTUP)
+#elif ANY(FYSETC_MINI_12864_2_0, FYSETC_MINI_12864_2_1) && DISABLED(LED_USER_PRESET_STARTUP)
   #warning "Your FYSETC Mini Panel works best with LED_USER_PRESET_STARTUP."
 #endif
 
-#if EITHER(FYSETC_242_OLED_12864, FYSETC_MINI_12864) && BOTH(PSU_CONTROL, HAS_COLOR_LEDS) && !LED_POWEROFF_TIMEOUT
+#if ANY(FYSETC_242_OLED_12864, FYSETC_MINI_12864) && ALL(PSU_CONTROL, HAS_COLOR_LEDS) && !LED_POWEROFF_TIMEOUT
   #warning "Your FYSETC display with PSU_CONTROL works best with LED_POWEROFF_TIMEOUT."
 #endif
 
@@ -794,6 +801,30 @@
 /**
  * Input Shaping
  */
-#if HAS_SHAPING && ANY(CORE_IS_XY, MARKFORGED_XY, MARKFORGED_YX)
+#if HAS_ZV_SHAPING && ANY(CORE_IS_XY, MARKFORGED_XY, MARKFORGED_YX)
   #warning "Input Shaping for CORE / MARKFORGED kinematic axes is still experimental."
+#endif
+
+/**
+ * SD Card extras
+ */
+#if SDSORT_CACHE_VFATS_WARNING
+  #warning "SDSORT_CACHE_VFATS has been reduced to VFAT_ENTRIES_LIMIT."
+#endif
+#if SDSORT_CACHE_LPC1768_WARNING
+  #warning "SDCARD_SORT_ALPHA sub-options overridden for LPC1768 with DOGM LCD SCK overlap."
+#endif
+
+/**
+ * Ender-5 S1 bootloader
+ */
+#ifdef STM32F4_UPDATE_FOLDER
+  #warning "Place the firmware bin file in a folder named 'STM32F4_UPDATE' on the SD card. Install with 'M936 V2'."
+#endif
+
+/**
+ * ProUI Boot Screen Duration
+ */
+#if ENABLED(DWIN_LCD_PROUI) && BOOTSCREEN_TIMEOUT > 2000
+  #warning "For ProUI the original BOOTSCREEN_TIMEOUT of 1100 is recommended."
 #endif

@@ -143,7 +143,7 @@ Stepper stepper; // Singleton
 
 // public:
 
-#if EITHER(HAS_EXTRA_ENDSTOPS, Z_STEPPER_AUTO_ALIGN)
+#if ANY(HAS_EXTRA_ENDSTOPS, Z_STEPPER_AUTO_ALIGN)
   bool Stepper::separate_multi_axis = false;
 #endif
 
@@ -177,7 +177,7 @@ bool Stepper::abort_current_block;
   bool Stepper::locked_Y_motor = false, Stepper::locked_Y2_motor = false;
 #endif
 
-#if EITHER(Z_MULTI_ENDSTOPS, Z_STEPPER_AUTO_ALIGN)
+#if ANY(Z_MULTI_ENDSTOPS, Z_STEPPER_AUTO_ALIGN)
   bool Stepper::locked_Z_motor = false, Stepper::locked_Z2_motor = false
     #if NUM_Z_STEPPERS >= 3
       , Stepper::locked_Z3_motor = false
@@ -206,7 +206,7 @@ uint32_t Stepper::advance_divisor = 0,
          Stepper::decelerate_after,          // The count at which to start decelerating
          Stepper::step_event_count;          // The total event count for the current block
 
-#if EITHER(HAS_MULTI_EXTRUDER, MIXING_EXTRUDER)
+#if ANY(HAS_MULTI_EXTRUDER, MIXING_EXTRUDER)
   uint8_t Stepper::stepper_extruder;
 #else
   constexpr uint8_t Stepper::stepper_extruder;
@@ -232,7 +232,7 @@ uint32_t Stepper::advance_divisor = 0,
            Stepper::la_advance_steps = 0;
 #endif
 
-#if HAS_SHAPING
+#if HAS_ZV_SHAPING
   shaping_time_t      ShapingQueue::now = 0;
   shaping_time_t      ShapingQueue::times[shaping_echoes];
   shaping_echo_axis_t ShapingQueue::echo_axes[shaping_echoes];
@@ -596,7 +596,7 @@ void Stepper::disable_all_steppers() {
  *   COREXZ: X_AXIS=A_AXIS and Z_AXIS=C_AXIS
  *   COREYZ: Y_AXIS=B_AXIS and Z_AXIS=C_AXIS
  */
-void Stepper::set_directions() {
+void Stepper::apply_directions() {
 
   DIR_WAIT_BEFORE();
 
@@ -1487,7 +1487,7 @@ void Stepper::isr() {
     // Enable ISRs to reduce USART processing latency
     hal.isr_on();
 
-    TERN_(HAS_SHAPING, shaping_isr());                  // Do Shaper stepping, if needed
+    TERN_(HAS_ZV_SHAPING, shaping_isr());               // Do Shaper stepping, if needed
 
     if (!nextMainISR) pulse_phase_isr();                // 0 = Do coordinated axes Stepper pulses
 
@@ -1535,7 +1535,7 @@ void Stepper::isr() {
     //
 
     nextMainISR -= interval;
-    TERN_(HAS_SHAPING, ShapingQueue::decrement_delays(interval));
+    TERN_(HAS_ZV_SHAPING, ShapingQueue::decrement_delays(interval));
     TERN_(LIN_ADVANCE, if (nextAdvanceISR != LA_ADV_NEVER) nextAdvanceISR -= interval);
     TERN_(INTEGRATED_BABYSTEPPING, if (nextBabystepISR != BABYSTEP_NEVER) nextBabystepISR -= interval);
 
@@ -1628,7 +1628,7 @@ void Stepper::pulse_phase_isr() {
     abort_current_block = false;
     if (current_block) {
       discard_current_block();
-      #if HAS_SHAPING
+      #if HAS_ZV_SHAPING
         ShapingQueue::purge();
         #if ENABLED(INPUT_SHAPING_X)
           shaping_x.delta_error = 0;
@@ -1864,7 +1864,7 @@ void Stepper::pulse_phase_isr() {
         PULSE_PREP(W);
       #endif
 
-      #if EITHER(HAS_E0_STEP, MIXING_EXTRUDER)
+      #if ANY(HAS_E0_STEP, MIXING_EXTRUDER)
         PULSE_PREP(E);
 
         #if ENABLED(LIN_ADVANCE)
@@ -1877,7 +1877,7 @@ void Stepper::pulse_phase_isr() {
         #endif
       #endif
 
-      #if HAS_SHAPING
+      #if HAS_ZV_SHAPING
         // record an echo if a step is needed in the primary bresenham
         const bool x_step = TERN0(INPUT_SHAPING_X, shaping_x.enabled && step_needed[X_AXIS]),
                    y_step = TERN0(INPUT_SHAPING_Y, shaping_y.enabled && step_needed[Y_AXIS]);
@@ -1991,7 +1991,7 @@ void Stepper::pulse_phase_isr() {
   } while (--events_to_do);
 }
 
-#if HAS_SHAPING
+#if HAS_ZV_SHAPING
 
   void Stepper::shaping_isr() {
     xy_bool_t step_needed{0};
@@ -2043,7 +2043,7 @@ void Stepper::pulse_phase_isr() {
     }
   }
 
-#endif // HAS_SHAPING
+#endif // HAS_ZV_SHAPING
 
 // Calculate timer interval, with all limits applied.
 uint32_t Stepper::calc_timer_interval(uint32_t step_rate) {
@@ -2269,7 +2269,7 @@ uint32_t Stepper::block_phase_isr() {
           }
         #endif // LIN_ADVANCE
 
-        /*
+        /**
          * Adjust Laser Power - Decelerating
          * trap_ramp_entry_decr - holds the precalculated value to decrease the current power per decel step.
          */
@@ -2422,7 +2422,7 @@ uint32_t Stepper::block_phase_isr() {
          * If DeltaA == -DeltaB, the movement is only in the 2nd axis (Y or Z, handled below)
          * If DeltaA ==  DeltaB, the movement is only in the 1st axis (X)
          */
-        #if EITHER(COREXY, COREXZ)
+        #if ANY(COREXY, COREXZ)
           #define X_CMP(A,B) ((A)==(B))
         #else
           #define X_CMP(A,B) ((A)!=(B))
@@ -2442,7 +2442,7 @@ uint32_t Stepper::block_phase_isr() {
          * If DeltaA ==  DeltaB, the movement is only in the 1st axis (X or Y)
          * If DeltaA == -DeltaB, the movement is only in the 2nd axis (Y or Z)
          */
-        #if EITHER(COREYX, COREYZ)
+        #if ANY(COREYX, COREYZ)
           #define Y_CMP(A,B) ((A)==(B))
         #else
           #define Y_CMP(A,B) ((A)!=(B))
@@ -2462,7 +2462,7 @@ uint32_t Stepper::block_phase_isr() {
          * If DeltaA ==  DeltaB, the movement is only in the 1st axis (X or Y, already handled above)
          * If DeltaA == -DeltaB, the movement is only in the 2nd axis (Z)
          */
-        #if EITHER(COREZX, COREZY)
+        #if ANY(COREZX, COREZY)
           #define Z_CMP(A,B) ((A)==(B))
         #else
           #define Z_CMP(A,B) ((A)!=(B))
@@ -2705,7 +2705,7 @@ void Stepper::init() {
   #if MB(ALLIGATOR)
     const float motor_current[] = MOTOR_CURRENT;
     unsigned int digipot_motor = 0;
-    LOOP_L_N(i, 3 + EXTRUDERS) {
+    for (uint8_t i = 0; i < 3 + EXTRUDERS; ++i) {
       digipot_motor = 255 * (motor_current[i] / 2.5);
       dac084s085::setValue(i, digipot_motor);
     }
@@ -2719,7 +2719,7 @@ void Stepper::init() {
   TERN_(HAS_X2_DIR, X2_DIR_INIT());
   #if HAS_Y_DIR
     Y_DIR_INIT();
-    #if BOTH(HAS_DUAL_Y_STEPPERS, HAS_Y2_DIR)
+    #if ALL(HAS_DUAL_Y_STEPPERS, HAS_Y2_DIR)
       Y2_DIR_INIT();
     #endif
   #endif
@@ -2785,7 +2785,7 @@ void Stepper::init() {
     #endif
     X_ENABLE_INIT();
     if (X_ENABLE_INIT_STATE) X_ENABLE_WRITE(X_ENABLE_INIT_STATE);
-    #if BOTH(HAS_X2_STEPPER, HAS_X2_ENABLE)
+    #if ALL(HAS_X2_STEPPER, HAS_X2_ENABLE)
       X2_ENABLE_INIT();
       if (X_ENABLE_INIT_STATE) X2_ENABLE_WRITE(X_ENABLE_INIT_STATE);
     #endif
@@ -2796,7 +2796,7 @@ void Stepper::init() {
     #endif
     Y_ENABLE_INIT();
     if (Y_ENABLE_INIT_STATE) Y_ENABLE_WRITE(Y_ENABLE_INIT_STATE);
-    #if BOTH(HAS_DUAL_Y_STEPPERS, HAS_Y2_ENABLE)
+    #if ALL(HAS_DUAL_Y_STEPPERS, HAS_Y2_ENABLE)
       Y2_ENABLE_INIT();
       if (Y_ENABLE_INIT_STATE) Y2_ENABLE_WRITE(Y_ENABLE_INIT_STATE);
     #endif
@@ -3018,7 +3018,7 @@ void Stepper::init() {
   #endif
 }
 
-#if HAS_SHAPING
+#if HAS_ZV_SHAPING
 
   /**
    * Calculate a fixed point factor to apply to the signal and its echo
@@ -3089,7 +3089,7 @@ void Stepper::init() {
     return -1;
   }
 
-#endif // HAS_SHAPING
+#endif // HAS_ZV_SHAPING
 
 /**
  * Set the stepper positions directly in steps
@@ -3607,7 +3607,7 @@ void Stepper::report_positions() {
 
   void Stepper::refresh_motor_power() {
     if (!initialized) return;
-    LOOP_L_N(i, COUNT(motor_current_setting)) {
+    for (uint8_t i = 0; i < COUNT(motor_current_setting); ++i) {
       switch (i) {
         #if ANY_PIN(MOTOR_CURRENT_PWM_XY, MOTOR_CURRENT_PWM_X, MOTOR_CURRENT_PWM_Y, MOTOR_CURRENT_PWM_I, MOTOR_CURRENT_PWM_J, MOTOR_CURRENT_PWM_K, MOTOR_CURRENT_PWM_U, MOTOR_CURRENT_PWM_V, MOTOR_CURRENT_PWM_W)
           case 0:
@@ -3703,7 +3703,7 @@ void Stepper::report_positions() {
         SPI.begin();
         SET_OUTPUT(DIGIPOTSS_PIN);
 
-        LOOP_L_N(i, COUNT(motor_current_setting))
+        for (uint8_t i = 0; i < COUNT(motor_current_setting); ++i)
           set_digipot_current(i, motor_current_setting[i]);
 
       #elif HAS_MOTOR_CURRENT_PWM

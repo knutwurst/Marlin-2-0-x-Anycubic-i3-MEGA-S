@@ -25,7 +25,7 @@
 #if ENABLED(PINS_DEBUGGING)
 
 #include "../gcode.h"
-#include "../../MarlinCore.h" // for pin_is_protected
+#include "../../MarlinCore.h" // for pin_is_protected, wait_for_user
 #include "../../pins/pinsDebug.h"
 #include "../../module/endstops.h"
 
@@ -61,7 +61,7 @@ inline void toggle_pins() {
             end = PARSED_PIN_INDEX('L', NUM_DIGITAL_PINS - 1),
             wait = parser.intval('W', 500);
 
-  LOOP_S_LE_N(i, start, end) {
+  for (uint8_t i = start; i <= end; ++i) {
     pin_t pin = GET_PIN_MAP_PIN_M43(i);
     if (!VALID_PIN(pin)) continue;
     if (M43_NEVER_TOUCH(i) || (!ignore_protection && pin_is_protected(pin))) {
@@ -195,31 +195,30 @@ inline void servo_probe_test() {
     if (!blt) {
       // DEPLOY and STOW 4 times and see if the signal follows
       // Then it is a mechanical switch
-      uint8_t i = 0;
       SERIAL_ECHOLNPGM(". Deploy & stow 4 times");
-      do {
+      for (uint8_t i = 0; i < 4; ++i) {
         servo[probe_index].move(servo_angles[Z_PROBE_SERVO_NR][0]); // Deploy
         safe_delay(500);
         deploy_state = READ(PROBE_TEST_PIN);
         servo[probe_index].move(servo_angles[Z_PROBE_SERVO_NR][1]); // Stow
         safe_delay(500);
         stow_state = READ(PROBE_TEST_PIN);
-      } while (++i < 4);
+      }
 
       if (probe_inverting != deploy_state) SERIAL_ECHOLNPGM("WARNING: INVERTING setting probably backwards.");
 
       if (deploy_state != stow_state) {
         SERIAL_ECHOLNPGM("= Mechanical Switch detected");
         if (deploy_state) {
-          SERIAL_ECHOLNPGM("  DEPLOYED state: HIGH (logic 1)",
-                            "  STOWED (triggered) state: LOW (logic 0)");
+          SERIAL_ECHOLNPGM(". DEPLOYED state: HIGH (logic 1)\n"
+                           ". STOWED (triggered) state: LOW (logic 0)");
         }
         else {
-          SERIAL_ECHOLNPGM("  DEPLOYED state: LOW (logic 0)",
-                            "  STOWED (triggered) state: HIGH (logic 1)");
+          SERIAL_ECHOLNPGM(". DEPLOYED state: LOW (logic 0)\n"
+                           ". STOWED (triggered) state: HIGH (logic 1)");
         }
         #if ENABLED(BLTOUCH)
-          SERIAL_ECHOLNPGM("FAIL: BLTOUCH enabled - Set up this device as a Servo Probe with INVERTING set to 'true'.");
+          SERIAL_ECHOLNPGM("FAIL: Can't enable BLTOUCH. Check your settings.");
         #endif
         return;
       }
@@ -336,7 +335,7 @@ void GcodeSuite::M43() {
     const uint8_t pin_count = last_pin - first_pin + 1;
     uint8_t pin_state[pin_count];
     bool can_watch = false;
-    LOOP_S_LE_N(i, first_pin, last_pin) {
+    for (uint8_t i = first_pin; i <= last_pin; ++i) {
       pin_t pin = GET_PIN_MAP_PIN_M43(i);
       if (!VALID_PIN(pin)) continue;
       if (M43_NEVER_TOUCH(i) || (!ignore_protection && pin_is_protected(pin))) continue;
@@ -379,7 +378,7 @@ void GcodeSuite::M43() {
     #endif
 
     for (;;) {
-      LOOP_S_LE_N(i, first_pin, last_pin) {
+      for (uint8_t i = first_pin; i <= last_pin; ++i) {
         const pin_t pin = GET_PIN_MAP_PIN_M43(i);
         if (!VALID_PIN(pin)) continue;
         if (M43_NEVER_TOUCH(i) || (!ignore_protection && pin_is_protected(pin))) continue;
@@ -408,7 +407,7 @@ void GcodeSuite::M43() {
   }
   else {
     // Report current state of selected pin(s)
-    LOOP_S_LE_N(i, first_pin, last_pin) {
+    for (uint8_t i = first_pin; i <= last_pin; ++i) {
       const pin_t pin = GET_PIN_MAP_PIN_M43(i);
       if (VALID_PIN(pin)) report_pin_state_extended(pin, ignore_protection, true);
     }

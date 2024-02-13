@@ -109,8 +109,8 @@
 #endif
 #define HEATER_BED_PIN                         4
 
-#ifndef FAN_PIN
-  #define FAN_PIN                              8
+#ifndef FAN0_PIN
+  #define FAN0_PIN                             8
 #endif
 #define FAN1_PIN                               6
 
@@ -126,10 +126,12 @@
 //
 // M3/M4/M5 - Spindle/Laser Control
 //
-// use P1 connector for spindle pins
-#define SPINDLE_LASER_PWM_PIN                  9  // Hardware PWM
-#define SPINDLE_LASER_ENA_PIN                 18  // Pullup!
-#define SPINDLE_DIR_PIN                       19
+#if HAS_CUTTER
+  // Use P1 connector for spindle pins
+  #define SPINDLE_LASER_PWM_PIN                9  // Hardware PWM
+  #define SPINDLE_LASER_ENA_PIN               18  // Pullup!
+  #define SPINDLE_DIR_PIN                     19
+#endif
 
 //
 // Průša i3 MK2 Multiplexer Support
@@ -145,6 +147,7 @@
 //
 // LCD / Controller
 //
+
 #if HAS_WIRED_LCD || TOUCH_UI_ULTIPANEL
 
   #if !MB(MINIRAMBO_10A)
@@ -162,7 +165,7 @@
       #define BTN_ENC                         21
 
       #define LCD_PINS_RS                     38
-      #define LCD_PINS_ENABLE                  5
+      #define LCD_PINS_EN                      5
       #define LCD_PINS_D4                     14
       #define LCD_PINS_D5                     15
       #define LCD_PINS_D6                     32
@@ -170,7 +173,7 @@
 
       #define SD_DETECT_PIN                   72
 
-    #else                                         // !MINIRAMBO_10A
+    #else // !MINIRAMBO_10A
 
       // AUX-4
       #define BEEPER_PIN                      84
@@ -181,7 +184,7 @@
       #define BTN_ENC                          9
 
       #define LCD_PINS_RS                     82
-      #define LCD_PINS_ENABLE                 18
+      #define LCD_PINS_EN                     18
       #define LCD_PINS_D4                     19
       #define LCD_PINS_D5                     70
       #define LCD_PINS_D6                     85

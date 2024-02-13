@@ -93,10 +93,9 @@
 #define HEATER_1_PIN                          11
 #define HEATER_BED_PIN                        45
 
-#ifndef FAN_PIN
-  #define FAN_PIN                              7  // M106 Sxxx command supported and tested. M107 as well.
+#ifndef FAN0_PIN
+  #define FAN0_PIN                             7  // M106 Sxxx command supported and tested. M107 as well.
 #endif
-
-#ifndef FAN_PIN1
-  #define FAN_PIN1                            12  // Currently Unsupported by Marlin
+#ifndef FAN1_PIN
+  #define FAN1_PIN                            12  // Currently Unsupported by Marlin
 #endif

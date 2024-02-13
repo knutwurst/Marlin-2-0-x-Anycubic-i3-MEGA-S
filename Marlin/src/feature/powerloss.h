@@ -43,7 +43,7 @@
 #endif
 
 #ifndef POWER_LOSS_ZRAISE
-  #define POWER_LOSS_ZRAISE 2
+  #define POWER_LOSS_ZRAISE 2 // Default Z-raise on outage or resume
 #endif
 
 //#define DEBUG_POWER_LOSS_RECOVERY
@@ -113,7 +113,7 @@ typedef struct {
   millis_t print_job_elapsed;
 
   // Relative axis modes
-  uint8_t axis_relative;
+  relative_t axis_relative;
 
   // Misc. Marlin flags
   struct {
