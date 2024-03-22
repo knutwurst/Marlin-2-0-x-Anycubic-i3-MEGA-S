@@ -29,7 +29,7 @@
 #include "dwin_string.h"
 #include "lcdprint_dwin.h"
 
-#include "../../fontutils.h"
+#include "../../utf8.h"
 #include "../../../libs/numtostr.h"
 #include "../../marlinui.h"
 
@@ -39,7 +39,7 @@
 #include "../../../module/printcounter.h"
 #include "../../../module/planner.h"
 
-#if ENABLED(SDSUPPORT)
+#if HAS_MEDIA
   #include "../../../libs/duration_t.h"
 #endif
 
@@ -192,7 +192,7 @@ FORCE_INLINE void _draw_heater_status(const heater_id_t heater, const uint16_t x
   #endif
 
   celsius_float_t tc = 0, tt = 0;
-  bool isBed = (DISABLED(HAS_HOTEND) && ENABLED(HAS_HEATED_BED)) || (BOTH(HAS_HOTEND, HAS_HEATED_BED) && heater < 0),
+  bool isBed = (DISABLED(HAS_HOTEND) && ENABLED(HAS_HEATED_BED)) || (ALL(HAS_HOTEND, HAS_HEATED_BED) && heater < 0),
        ta = false, c_draw, t_draw, i_draw;
   c_draw = t_draw = i_draw = !ui.did_first_redraw;
   if (isBed) {

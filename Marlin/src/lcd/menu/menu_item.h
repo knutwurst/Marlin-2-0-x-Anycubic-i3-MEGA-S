@@ -242,6 +242,9 @@ class MenuItem_bool : public MenuEditItemBase {
 #define START_SCREEN() SCREEN_OR_MENU_LOOP(false)
 #define START_MENU() SCREEN_OR_MENU_LOOP(true)
 #define NEXT_ITEM() (++_thisItemNr)
+#define MY_LINE() (_menuLineNr == _thisItemNr)
+#define HIGHLIGHTED() (encoderLine == _thisItemNr)
+#define CLICKED() (HIGHLIGHTED() && ui.use_click())
 #define SKIP_ITEM() NEXT_ITEM()
 #define END_SCREEN() } screen_items = _thisItemNr
 #define END_MENU() END_SCREEN(); UNUSED(_skipStatic)
@@ -274,19 +277,19 @@ class MenuItem_bool : public MenuEditItemBase {
 
 #define _MENU_INNER_F(TYPE, USE_MULTIPLIER, FLABEL, V...) do { \
   FSTR_P const flabel = FLABEL;                                \
-  if (encoderLine == _thisItemNr && ui.use_click()) {          \
+  if (CLICKED()) {                                             \
     _MENU_ITEM_MULTIPLIER_CHECK(USE_MULTIPLIER);               \
     MenuItem_##TYPE::action(flabel, ##V);                      \
     if (ui.screen_changed) return;                             \
   }                                                            \
   if (ui.should_draw())                                        \
     MenuItem_##TYPE::draw                                      \
-      (encoderLine == _thisItemNr, _lcdLineNr, flabel, ##V);   \
+      (HIGHLIGHTED(), _lcdLineNr, flabel, ##V);                \
 }while(0)
 
 // Item with optional data
 #define _MENU_ITEM_F(TYPE, V...) do { \
-  if (_menuLineNr == _thisItemNr) {   \
+  if (MY_LINE()) {                    \
     _skipStatic = false;              \
     _MENU_INNER_F(TYPE, ##V);         \
   }                                   \
@@ -295,7 +298,7 @@ class MenuItem_bool : public MenuEditItemBase {
 
 // Item with index value, C-string, and optional data
 #define _MENU_ITEM_N_S_F(TYPE, N, S, V...) do{ \
-  if (_menuLineNr == _thisItemNr) {            \
+  if (MY_LINE()) {                             \
     _skipStatic = false;                       \
     MenuItemBase::init(N, S);                  \
     _MENU_INNER_F(TYPE, ##V);                  \
@@ -305,7 +308,7 @@ class MenuItem_bool : public MenuEditItemBase {
 
 // Item with index value and F-string
 #define _MENU_ITEM_N_f_F(TYPE, N, f, V...) do{ \
-  if (_menuLineNr == _thisItemNr) {            \
+  if (MY_LINE()) {                             \
     _skipStatic = false;                       \
     MenuItemBase::init(N, f);                  \
     _MENU_INNER_F(TYPE, ##V);                  \
@@ -315,7 +318,7 @@ class MenuItem_bool : public MenuEditItemBase {
 
 // Item with index value
 #define _MENU_ITEM_N_F(TYPE, N, V...) do{ \
-  if (_menuLineNr == _thisItemNr) {       \
+  if (MY_LINE()) {                        \
     _skipStatic = false;                  \
     MenuItemBase::init(N);                \
     _MENU_INNER_F(TYPE, ##V);             \
@@ -325,7 +328,7 @@ class MenuItem_bool : public MenuEditItemBase {
 
 // Items with a unique string
 #define _MENU_ITEM_S_F(TYPE, S, V...) do{ \
-  if (_menuLineNr == _thisItemNr) {       \
+  if (MY_LINE()) {                        \
     _skipStatic = false;                  \
     MenuItemBase::init(0, S);             \
     _MENU_INNER_F(TYPE, ##V);             \
@@ -335,7 +338,7 @@ class MenuItem_bool : public MenuEditItemBase {
 
 // Items with a unique F-string
 #define _MENU_ITEM_f_F(TYPE, f, V...) do{ \
-  if (_menuLineNr == _thisItemNr) {       \
+  if (MY_LINE()) {                        \
     _skipStatic = false;                  \
     MenuItemBase::init(0, f);             \
     _MENU_INNER_F(TYPE, ##V);             \
@@ -356,32 +359,42 @@ class MenuItem_bool : public MenuEditItemBase {
 } while(0)
 
 #define STATIC_ITEM_F(FLABEL, V...) do{ \
-  if (_menuLineNr == _thisItemNr)       \
+  if (MY_LINE())                        \
     STATIC_ITEM_INNER_F(FLABEL, ##V);   \
   NEXT_ITEM();                          \
 } while(0)
 
 #define STATIC_ITEM_N_F(N, FLABEL, V...) do{ \
-  if (_menuLineNr == _thisItemNr) {          \
+  if (MY_LINE()) {                           \
     MenuItemBase::init(N);                   \
     STATIC_ITEM_INNER_F(FLABEL, ##V);        \
   }                                          \
   NEXT_ITEM();                               \
 }while(0)
 
-// PSTRING_ITEM is like STATIC_ITEM but it takes
-// two PSTRs with the style as the last parameter.
+// PSTRING_ITEM is like STATIC_ITEM
+// but also takes a PSTR and style.
 
-#define PSTRING_ITEM_F(FLABEL, PVAL, STYL) do{ \
-  constexpr int m = 20;                        \
-  char msg[m+1];                               \
-  msg[0] = ':'; msg[1] = ' ';                  \
-  strncpy_P(msg+2, PSTR(PVAL), m-2);           \
-  if (msg[m-1] & 0x80) msg[m-1] = '\0';        \
-  STATIC_ITEM_F(FLABEL, STYL, msg);            \
+#define PSTRING_ITEM_F_P(FLABEL, PVAL, STYL) do{ \
+  constexpr int m = 20;                          \
+  char msg[m + 1];                               \
+  if (_menuLineNr == _thisItemNr) {              \
+    msg[0] = ':'; msg[1] = ' ';                  \
+    strncpy_P(msg + 2, PVAL, m - 2);             \
+    if (msg[m - 1] & 0x80) msg[m - 1] = '\0';    \
+  }                                              \
+  STATIC_ITEM_F(FLABEL, STYL, msg);              \
 }while(0)
 
-#define PSTRING_ITEM(LABEL, V...)                     PSTRING_ITEM_F(GET_TEXT_F(LABEL), ##V)
+#define PSTRING_ITEM_N_F_P(N, V...) do{ \
+  if (_menuLineNr == _thisItemNr)       \
+    MenuItemBase::init(N);              \
+  PSTRING_ITEM_F_P(V);                  \
+}while(0)
+
+#define PSTRING_ITEM_N_P(N, LABEL, V...)          PSTRING_ITEM_N_F_P(N, GET_TEXT_F(LABEL), ##V)
+#define PSTRING_ITEM_P(LABEL, V...)                 PSTRING_ITEM_F_P(GET_TEXT_F(LABEL), ##V)
+#define PSTRING_ITEM(LABEL, S, V...)                  PSTRING_ITEM_P(LABEL, PSTR(S), ##V)
 
 #define STATIC_ITEM(LABEL, V...)                       STATIC_ITEM_F(GET_TEXT_F(LABEL), ##V)
 #define STATIC_ITEM_N(N, LABEL, V...)                STATIC_ITEM_N_F(N, GET_TEXT_F(LABEL), ##V)
@@ -490,18 +503,18 @@ class MenuItem_bool : public MenuEditItemBase {
 #define EDIT_ITEM_FAST_f(TYPE, f, LABEL, V...)        EDIT_ITEM_FAST_f_F(TYPE, f, GET_TEXT_F(LABEL), ##V)
 
 #define _CONFIRM_ITEM_INNER_F(FLABEL, V...) do {             \
-  if (encoderLine == _thisItemNr && ui.use_click()) {        \
+  if (CLICKED()) {                                           \
     ui.push_current_screen();                                \
     ui.goto_screen([]{MenuItem_confirm::select_screen(V);}); \
     return;                                                  \
   }                                                          \
   if (ui.should_draw()) MenuItem_confirm::draw               \
-    (encoderLine == _thisItemNr, _lcdLineNr, FLABEL, ##V);   \
+    (HIGHLIGHTED(), _lcdLineNr, FLABEL, ##V);                \
 }while(0)
 
 // Indexed items set a global index value and optional data
 #define _CONFIRM_ITEM_F(FLABEL, V...) do { \
-  if (_menuLineNr == _thisItemNr) {        \
+  if (MY_LINE()) {                         \
     _skipStatic = false;                   \
     _CONFIRM_ITEM_INNER_F(FLABEL, ##V);    \
   }                                        \
@@ -510,7 +523,7 @@ class MenuItem_bool : public MenuEditItemBase {
 
 // Indexed items set a global index value
 #define _CONFIRM_ITEM_N_S_F(N, S, V...) do{ \
-  if (_menuLineNr == _thisItemNr) {         \
+  if (MY_LINE()) {                          \
     _skipStatic = false;                    \
     MenuItemBase::init(N, S);               \
     _CONFIRM_ITEM_INNER_F(TYPE, ##V);       \
@@ -538,7 +551,7 @@ class MenuItem_bool : public MenuEditItemBase {
 #define YESNO_ITEM_N(N,LABEL, V...)                  YESNO_ITEM_N_F(N, GET_TEXT_F(LABEL), ##V)
 
 #if ENABLED(LCD_BED_TRAMMING)
-  void _lcd_level_bed_corners();
+  void _lcd_bed_tramming();
 #endif
 
 #if HAS_FAN
@@ -571,10 +584,10 @@ class MenuItem_bool : public MenuEditItemBase {
   }while(0)
 
   #if FAN_COUNT > 1
-    #define FAN_EDIT_ITEMS(F) _FAN_EDIT_ITEMS(F,FAN_SPEED_N)
+    #define FAN_EDIT_ITEMS(F) _FAN_EDIT_ITEMS(F, FAN_SPEED_N)
   #endif
 
-  #define SNFAN(N) (ENABLED(SINGLENOZZLE_STANDBY_FAN) && !HAS_FAN##N && EXTRUDERS > N)
+  #define SNFAN(N) (ENABLED(SINGLENOZZLE_STANDBY_FAN) && !HAS_FAN##N && (N) < EXTRUDERS)
 
   #if SNFAN(1) || SNFAN(2) || SNFAN(3) || SNFAN(4) || SNFAN(5) || SNFAN(6) || SNFAN(7)
     #define DEFINE_SINGLENOZZLE_ITEM() \

@@ -95,7 +95,7 @@
 #define HEATER_1_PIN                           3
 #define HEATER_BED_PIN                         4
 
-#define FAN_PIN                                7  // material cooling fan
+#define FAN0_PIN                               7  // material cooling fan
 
 //
 // SD Card
@@ -122,11 +122,12 @@
 //
 // LCD / Controller
 //
+
 #if HAS_WIRED_LCD
   // OVERLORD OLED pins
   #define LCD_PINS_RS                         20
   #define LCD_PINS_D5                         21
-  #define LCD_PINS_ENABLE                     15
+  #define LCD_PINS_EN                         15
   #define LCD_PINS_D4                         14
   #define LCD_PINS_D6                          5
   #define LCD_PINS_D7                          6

@@ -81,7 +81,7 @@
   #else
     // EEB
     #define RAMPS_D8_PIN       TG_HEATER_BED_PIN
-    #define FAN_PIN                  TG_FAN0_PIN  // Override pin 4 in pins_RAMPS.h
+    #define FAN0_PIN                  TG_FAN0_PIN  // Override pin 4 in pins_RAMPS.h
   #endif
 #elif TEMP_SENSOR_BED
   // EFB (Anycubic Kossel default)

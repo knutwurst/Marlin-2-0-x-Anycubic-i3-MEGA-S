@@ -28,7 +28,7 @@
 
 #include "../../inc/MarlinConfigPre.h"
 
-#if HAS_EXTRUDERS
+#if HAS_HOTEND
 
 #include "../gcode.h"
 #include "../../module/temperature.h"
@@ -43,10 +43,6 @@
   #if ENABLED(CANCEL_OBJECTS)
     #include "../../feature/cancel_object.h"
   #endif
-#endif
-
-#if ENABLED(SINGLENOZZLE_STANDBY_TEMP)
-  #include "../../module/tool_change.h"
 #endif
 
 /**
@@ -138,4 +134,4 @@ void GcodeSuite::M104_M109(const bool isM109) {
   SERIAL_FLUSH();
 }
 
-#endif // EXTRUDERS
+#endif // HAS_HOTEND

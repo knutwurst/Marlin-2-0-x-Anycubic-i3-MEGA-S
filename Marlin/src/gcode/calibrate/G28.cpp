@@ -86,7 +86,7 @@
         NUM_AXIS_LIST(
           TERN0(X_SENSORLESS, tmc_enable_stallguard(stepperX)),
           TERN0(Y_SENSORLESS, tmc_enable_stallguard(stepperY)),
-          false, false, false, false
+          false, false, false, false, false, false, false
         )
         , TERN0(X2_SENSORLESS, tmc_enable_stallguard(stepperX2))
         , TERN0(Y2_SENSORLESS, tmc_enable_stallguard(stepperY2))
@@ -424,20 +424,10 @@ void GcodeSuite::G28() {
     if (seenR && z_homing_height == 0) {
       if (DEBUGGING(LEVELING)) DEBUG_ECHOLNPGM("R0 = No Z raise");
     }
-    else {
-      bool with_probe = ENABLED(HOMING_Z_WITH_PROBE);
-      // Raise above the current Z (which should be synced in the planner)
-      // The "height" for Z is a coordinate. But if Z is not trusted/homed make it relative.
-      if (seenR || !TERN(HOME_AFTER_DEACTIVATE, axis_is_trusted, axis_was_homed)(Z_AXIS)) {
-        z_homing_height += current_position.z;
-        with_probe = false;
-      }
-
-      if (may_skate) {
-        // Apply Z clearance before doing any lateral motion
-        if (DEBUGGING(LEVELING)) DEBUG_ECHOLNPGM("Raise Z before homing:");
-        do_z_clearance(z_homing_height, with_probe);
-      }
+    else if (z_homing_height && may_skate) {
+      // Raise Z before homing any other axes and z is not already high enough (never lower z)
+      if (DEBUGGING(LEVELING)) DEBUG_ECHOLNPGM("Raise Z before homing:");
+      do_z_clearance(z_homing_height);
     }
 
     // Init BLTouch ahead of any lateral motion, even if not homing with the probe
@@ -478,7 +468,7 @@ void GcodeSuite::G28() {
       #endif
     }
 
-    #if BOTH(FOAMCUTTER_XYUV, HAS_I_AXIS)
+    #if ALL(FOAMCUTTER_XYUV, HAS_I_AXIS)
       // Home I (after X)
       if (doI) homeaxis(I_AXIS);
     #endif
@@ -489,7 +479,7 @@ void GcodeSuite::G28() {
         homeaxis(Y_AXIS);
     #endif
 
-    #if BOTH(FOAMCUTTER_XYUV, HAS_J_AXIS)
+    #if ALL(FOAMCUTTER_XYUV, HAS_J_AXIS)
       // Home J (after Y)
       if (doJ) homeaxis(J_AXIS);
     #endif
@@ -503,7 +493,7 @@ void GcodeSuite::G28() {
       // Home Z last if homing towards the bed
       #if HAS_Z_AXIS && DISABLED(HOME_Z_FIRST)
         if (doZ) {
-          #if EITHER(Z_MULTI_ENDSTOPS, Z_STEPPER_AUTO_ALIGN)
+          #if ANY(Z_MULTI_ENDSTOPS, Z_STEPPER_AUTO_ALIGN)
             stepper.set_all_z_lock(false);
             stepper.set_separate_multi_axis(false);
           #endif

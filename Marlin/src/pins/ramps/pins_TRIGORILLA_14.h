@@ -46,7 +46,7 @@
 //
 // Heaters / Fans
 //
-#define FAN_PIN                                9  // FAN0
+#define FAN0_PIN                               9  // FAN0
 #define FAN1_PIN                               7  // FAN1
 #define FAN2_PIN                              44  // FAN2
 #ifndef E0_AUTO_FAN_PIN
@@ -69,38 +69,39 @@
  *       IIC : 12V GND D21 D20 GND 5V
  *                    (SCL SDA)
  *
+ *             TX2 RX2 RX3 TX3
  * END STOPS : D19 D18 D15 D14 D2  D3
  *             GND GND GND GND GND GND
  *             5V  5V  5V  5V  5V  5V
  */
 
-/**               Expansion Headers
- *        ------                    ------
- *    37 | 1  2 | 35     (MISO) 50 | 1  2 | 52 (SCK)
- *    17 | 3  4 | 16            31 | 3  4 | 53
- *    23   5  6 | 25            33   5  6 | 51 (MOSI)
- *    27 | 7  8 | 29            49 | 7  8 | 41
- * (GND) | 9 10 | (5V)       (GND) | 9 10 | RESET
- *        ------                    ------
- *         EXP1                      EXP2
+/**                       Expansion Headers
+ *              ------                           ------
+ *   (BEEP) 37 | 1  2 | 35 (ENC)      (MISO) 50 | 1  2 | 52 (SCK)
+ * (LCD_EN) 17 | 3  4 | 16 (LCD_RS)    (EN1) 31 | 3  4 | 53 (SDSS)
+ * (LCD_D4) 23   5  6 | 25 (LCD_D5)    (EN2) 33   5  6 | 51 (MOSI)
+ * (LCD_D6) 27 | 7  8 | 29 (LCD_D7) (SD_DET) 49 | 7  8 | 41 (KILL)
+ *         GND | 9 10 | 5V                  GND | 9 10 | RESET
+ *              ------                           ------
+ *               EXP1                             EXP2
  */
-#define EXP1_01_PIN                           37
-#define EXP1_02_PIN                           35
-#define EXP1_03_PIN                           17
-#define EXP1_04_PIN                           16
-#define EXP1_05_PIN                           23
-#define EXP1_06_PIN                           25
-#define EXP1_07_PIN                           27
-#define EXP1_08_PIN                           29
+#define EXP1_01_PIN                           37  // BEEPER
+#define EXP1_02_PIN                           35  // ENC
+#define EXP1_03_PIN                           17  // LCD_EN
+#define EXP1_04_PIN                           16  // LCD_RS
+#define EXP1_05_PIN                           23  // LCD_D4
+#define EXP1_06_PIN                           25  // LCD_D5
+#define EXP1_07_PIN                           27  // LCD_D6
+#define EXP1_08_PIN                           29  // LCD_D7
 
 #define EXP2_01_PIN                           50  // MISO
 #define EXP2_02_PIN                           52  // SCK
-#define EXP2_03_PIN                           31
-#define EXP2_04_PIN                           53
-#define EXP2_05_PIN                           33
+#define EXP2_03_PIN                           31  // EN1
+#define EXP2_04_PIN                           53  // SDSS
+#define EXP2_05_PIN                           33  // EN2
 #define EXP2_06_PIN                           51  // MOSI
-#define EXP2_07_PIN                           49
-#define EXP2_08_PIN                           41
+#define EXP2_07_PIN                           49  // SD_DET
+#define EXP2_08_PIN                           41  // KILL
 
 //
 // AnyCubic pin mappings
@@ -117,11 +118,13 @@
   #define Y_STOP_PIN                          19  // Z+
 
   #define CONTROLLER_FAN_PIN            FAN1_PIN // PATCH: knutwurst
-#elif EITHER(TRIGORILLA_MAPPING_CHIRON, TRIGORILLA_MAPPING_I3MEGA)
+#elif ANY(TRIGORILLA_MAPPING_CHIRON, TRIGORILLA_MAPPING_I3MEGA)
   // Chiron uses AUX header for Y and Z endstops
   #define Y_STOP_PIN                          42  // AUX (1)
   #define Z_STOP_PIN                          43  // AUX (2)
-  #define Z2_MIN_PIN                          18  // Z-
+  #ifndef Z2_STOP_PIN
+     #define Z2_STOP_PIN                      18  // Z-
+  #endif
 
   #ifndef Z_MIN_PROBE_PIN
     #define Z_MIN_PROBE_PIN                    2  // X+
@@ -151,7 +154,7 @@
     #define FIL_RUNOUT_PIN                    19  // Z+
   #endif
 
-  #if EITHER(TRIGORILLA_MAPPING_CHIRON, SWAP_Z_MOTORS)
+  #if ANY(TRIGORILLA_MAPPING_CHIRON, SWAP_Z_MOTORS)
     // Chiron and some Anycubic i3 MEGAs swap Z steppers
     #define Z_STEP_PIN                        36
     #define Z_DIR_PIN                         34

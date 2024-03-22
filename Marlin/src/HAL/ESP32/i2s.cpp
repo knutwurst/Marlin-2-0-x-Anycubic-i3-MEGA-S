@@ -134,8 +134,8 @@ static void IRAM_ATTR i2s_intr_handler_default(void *arg) {
 
   if (high_priority_task_awoken == pdTRUE) portYIELD_FROM_ISR();
 
-  // clear interrupt
-  I2S0.int_clr.val = I2S0.int_st.val; //clear pending interrupt
+  // Clear pending interrupt
+  I2S0.int_clr.val = I2S0.int_st.val;
 }
 
 void stepperTask(void *parameter) {
@@ -356,7 +356,7 @@ void i2s_push_sample() {
   // Every 4µs (when space in DMA buffer) toggle each expander PWM output using
   // the current duty cycle/frequency so they sync with any steps (once
   // through the DMA/FIFO buffers).  PWM signal inversion handled by other functions
-  LOOP_L_N(p, MAX_EXPANDER_BITS) {
+  for (uint8_t p = 0; p < MAX_EXPANDER_BITS; ++p) {
     if (hal.pwm_pin_data[p].pwm_duty_ticks > 0) { // pin has active pwm?
       if (hal.pwm_pin_data[p].pwm_tick_count == 0) {
         if (TEST32(i2s_port_data, p)) {  // hi->lo
