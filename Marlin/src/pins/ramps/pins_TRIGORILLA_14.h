@@ -121,7 +121,9 @@
 #elif ANY(TRIGORILLA_MAPPING_CHIRON, TRIGORILLA_MAPPING_I3MEGA)
   // Chiron uses AUX header for Y and Z endstops
   #define Y_STOP_PIN                          42  // AUX (1)
-  #define Z_STOP_PIN                          43  // AUX (2)
+  #if DISABLED(KNUTWURST_ONE_Z_ENDSTOP)
+    #define Z_STOP_PIN                          43  // AUX (2)
+  #endif
   #ifndef Z2_STOP_PIN
      #define Z2_STOP_PIN                      18  // Z-
   #endif
