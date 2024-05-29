@@ -25,7 +25,7 @@
  * Release version. Leave the Marlin version or apply a custom scheme.
  */
 #ifndef SHORT_BUILD_VERSION
-  #define SHORT_BUILD_VERSION "2.1.2.2"
+  #define SHORT_BUILD_VERSION "2.1.2.3"
 #endif
 
 /**
@@ -41,10 +41,10 @@
  * here we define this default string as the date where the latest release
  * version was tagged.
  */
- #define CUSTOM_BUILD_VERSION "1.5.4"
+#define CUSTOM_BUILD_VERSION "1.5.4"
 
 #ifndef STRING_DISTRIBUTION_DATE
-  #define STRING_DISTRIBUTION_DATE "2024-03-22"
+  #define STRING_DISTRIBUTION_DATE "2024-05-29"
 #endif
 
 /**
@@ -54,7 +54,7 @@
  * to alert users to major changes.
  */
 
-#define MARLIN_HEX_VERSION 02010202
+#define MARLIN_HEX_VERSION 02010203
 #ifndef REQUIRED_CONFIGURATION_H_VERSION
   #define REQUIRED_CONFIGURATION_H_VERSION MARLIN_HEX_VERSION
 #endif
@@ -94,10 +94,10 @@
   #define DEFAULT_MACHINE_UUID "b6153152-86fb-4cd8-bda7-91c6a04c467d"   // PATCH: Knutwurst
 #endif
 
-  /**
-   * The WEBSITE_URL is the location where users can get more information such as
-   * documentation about a specific Marlin release. Displayed in the Info Menu.
-   */
+/**
+ * The WEBSITE_URL is the location where users can get more information such as
+ * documentation about a specific Marlin release. Displayed in the Info Menu.
+ */
 #ifndef WEBSITE_URL
   #define WEBSITE_URL "marlinfw.org"
 #endif
