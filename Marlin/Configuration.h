@@ -35,7 +35,7 @@
  *
  * Advanced settings can be found in Configuration_adv.h
  */
-#define CONFIGURATION_H_VERSION 02010202
+#define CONFIGURATION_H_VERSION 02010203
 #define ANYCUBIC_TOUCHSCREEN
 #define KNUTWURST_SPECIAL_MENU
 // #define ANYCUBIC_TFT_DEBUG
@@ -802,6 +802,7 @@
 #else
   #define BANG_MAX 255    // Limit hotend current while in bang-bang mode; 255=full current
 #endif
+
 /**
  * Model Predictive Control for hotend
  *
@@ -1851,8 +1852,6 @@
 
 // Most probes should stay away from the edges of the bed, but
 // with NOZZLE_AS_PROBE this can be negative for a wider probing area.
-// #define PROBING_MARGIN 10
-
 #if ENABLED(KNUTWURST_CHIRON)
   #define PROBING_MARGIN 15
 #else
@@ -4015,10 +4014,10 @@
 #define SERVO_DELAY { 300 }
 
 // Only power servos during movement, otherwise leave off to prevent jitter
-// #define DEACTIVATE_SERVOS_AFTER_MOVE
+//#define DEACTIVATE_SERVOS_AFTER_MOVE
 
 // Edit servo angles with M281 and save to EEPROM with M500
-// #define EDITABLE_SERVO_ANGLES
+//#define EDITABLE_SERVO_ANGLES
 
 // Disable servo with M282 to reduce power consumption, noise, and heat when not in use
-// #define SERVO_DETACH_GCODE
+//#define SERVO_DETACH_GCODE

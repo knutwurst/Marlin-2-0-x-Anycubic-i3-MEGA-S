@@ -595,7 +595,7 @@ volatile bool Temperature::raw_temps_ready = false;
 #endif
 
 #if MILLISECONDS_PREHEAT_TIME > 0
-  millis_t Temperature::preheat_end_ms_hotend[HOTENDS]; // = { 0 };
+  millis_t Temperature::preheat_end_ms_hotend[HOTENDS]; // = { 0 }
 #endif
 #if HAS_HEATED_BED && PREHEAT_TIME_BED_MS > 0
   millis_t Temperature::preheat_end_ms_bed = 0;
@@ -1814,7 +1814,7 @@ void Temperature::mintemp_error(const heater_id_t heater_id) {
       // Make sure temperature is decreasing
       if (watch_cooler.elapsed(ms)) {             // Time to check the cooler?
         if (degCooler() > watch_cooler.target)    // Failed to decrease enough?
-          _temp_error(H_COOLER, GET_TEXT_F(MSG_COOLING_FAILED), GET_TEXT_F(MSG_COOLING_FAILED));
+          _temp_error(H_COOLER, GET_EN_TEXT_F(MSG_COOLING_FAILED), GET_TEXT_F(MSG_COOLING_FAILED));
         else
           start_watching_cooler();                // Start again if the target is still far off
       }
@@ -2442,7 +2442,7 @@ void Temperature::updateTemperaturesFromRawValues() {
       /**
       // DEBUG PREHEATING TIME
       SERIAL_ECHOLNPGM("\nExtruder = ", e, " Preheat On/Off = ", is_preheating(e));
-      const float test_is_preheating = (preheat_end_time[HOTEND_INDEX] - millis()) * 0.001f;
+      const float test_is_preheating = (preheat_end_ms_hotend[HOTEND_INDEX] - millis()) * 0.001f;
       if (test_is_preheating < 31) SERIAL_ECHOLNPGM("Extruder = ", e, " Preheat remaining time = ", test_is_preheating, "s", "\n");
       //*/
 
