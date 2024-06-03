@@ -1000,7 +1000,6 @@ void AnycubicTouchscreenClass::FilamentRunout() {
   DoFilamentRunoutCheck();
 }
 
-
 void AnycubicTouchscreenClass::DoFilamentRunoutCheck() {
   #if ENABLED(FILAMENT_RUNOUT_SENSOR)
   // NOTE: getFilamentRunoutState() only returns the runout state if the job is
@@ -1012,7 +1011,6 @@ void AnycubicTouchscreenClass::DoFilamentRunoutCheck() {
       // play tone to indicate filament is out
       injectCommands(F("\nM300 P200 S1567\nM300 P200 S1174\nM300 P200 "
                        "S1567\nM300 P200 S1174\nM300 P2000 S1567"));
-
       // tell the user that the filament has run out and wait
       SENDLINE_DBG_PGM("J23", "TFT Serial Debug: Blocking filament prompt... J23");
     } else {
@@ -1107,6 +1105,7 @@ void AnycubicTouchscreenClass::GetCommandFromTFT() {
             case 4: // A4 GET FAN SPEED
               SEND_PGM_VAL("A4V ", int(getActualFan_percent(FAN0)));
               break;
+
             case 5: // A5 GET CURRENT COORDINATE
               SEND_PGM("A5V X: ");
               LCD_SERIAL.print(current_position[X_AXIS]);
@@ -1654,7 +1653,7 @@ void AnycubicTouchscreenClass::GetCommandFromTFT() {
               }
               break;
 
-  #endif
+  #endif // if ENABLED(KNUTWURST_CHIRON)
 
   #if ENABLED(KNUTWURST_4MAXP2)
 
@@ -1701,7 +1700,6 @@ void AnycubicTouchscreenClass::GetCommandFromTFT() {
               SENDLINE_PGM("");
               break;
   #endif // #if ENABLED(KNUTWURST_4MAXP2)
-
 
             case 32: // a32 clean leveling beep flag
               break;
@@ -1840,7 +1838,9 @@ void AnycubicTouchscreenClass::GetCommandFromTFT() {
                 } else {
                   Laser_printer_st.pic_vector = 0;
                 }
-                break;
+              }
+              break;
+
                 case 37:
                   if (CodeSeen('S')) {
                     int coorvalue;
@@ -1961,22 +1961,22 @@ void AnycubicTouchscreenClass::GetCommandFromTFT() {
 
                 default:
                   break;
-              }
-          }
-          TFTbufindw  = (TFTbufindw + 1) % TFTBUFSIZE;
-          TFTbuflen  += 1;
+          } // switch
         }
-        serial3_count = 0; // clear buffer
-      } else {
-        if (serial3_char == ';') {
-          TFTcomment_mode = true;
-        }
-        if (!TFTcomment_mode) {
-          TFTcmdbuffer[TFTbufindw][serial3_count++] = serial3_char;
-        }
+        TFTbufindw  = (TFTbufindw + 1) % TFTBUFSIZE;
+        TFTbuflen  += 1;
+      } // if (!TFTcomment_mode)
+      serial3_count = 0; // clear buffer
+    } else {
+      if (serial3_char == ';') {
+        TFTcomment_mode = true;
+      }
+      if (!TFTcomment_mode) {
+        TFTcmdbuffer[TFTbufindw][serial3_count++] = serial3_char;
       }
     }
-  }
+  } // while
+}
 
   #if ENABLED(KNUTWURST_MEGA_P_LASER)
   void prepare_laser_print() {
