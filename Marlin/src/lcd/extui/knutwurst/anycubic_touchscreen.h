@@ -138,6 +138,7 @@ enum AnycubicMediaPauseState {
   #define SM_BLTZ_EXIT_L     "<SAVE and EXIT>"
   #define SM_HS_DISABLE_L    "<Disable HiSpeed Mode>"
   #define SM_HS_ENABLE_L     "<Enable HiSpeed Mode>"
+  #define WAIT_MS_UNTIL_ACYCLIC_SEND 500
 #endif // !KNUTWURST_DGUS2_TFT
 
 #if ENABLED(KNUTWURST_DGUS2_TFT)
@@ -228,6 +229,8 @@ class AnycubicTouchscreenClass {
 
     static AnycubicMediaPrintState mediaPrintingState;
     static AnycubicMediaPauseState mediaPauseState;
+    static uint32_t time_last_cyclic_tft_command;
+    static uint8_t delayed_tft_command;
 
 #if defined(POWER_OUTAGE_TEST)
     struct OutageDataStruct {

@@ -78,7 +78,8 @@ static void sendLine_P(PGM_P str) {
 
 AnycubicMediaPrintState AnycubicTouchscreenClass::mediaPrintingState = AMPRINTSTATE_NOT_PRINTING;
 AnycubicMediaPauseState AnycubicTouchscreenClass::mediaPauseState    = AMPAUSESTATE_NOT_PAUSED;
-
+uint32_t AnycubicTouchscreenClass::time_last_cyclic_tft_command = 0;
+uint8_t AnycubicTouchscreenClass::delayed_tft_command = 0;
 
   #if ENABLED(POWER_OUTAGE_TEST)
 int           PowerInt                     = 6;
@@ -261,10 +262,13 @@ void AnycubicTouchscreenClass::ResumePrint() {
 
     // trigger the user message box
     DoFilamentRunoutCheck();
-
-    // re-enable the continue button
-    SENDLINE_DBG_PGM("J18", "TFT Serial Debug: Resume Print with filament sensor still "
-                            "tripped... J18");
+    if ( millis() - time_last_cyclic_tft_command >= WAIT_MS_UNTIL_ACYCLIC_SEND ) {
+      // re-enable the continue button
+      SENDLINE_DBG_PGM("J18", "TFT Serial Debug: Resume Print with filament sensor still "
+                              "tripped... J18");
+    }
+    else
+      delayed_tft_command = 18;
     return;
   }
     #endif
@@ -1011,8 +1015,12 @@ void AnycubicTouchscreenClass::DoFilamentRunoutCheck() {
       // play tone to indicate filament is out
       injectCommands(F("\nM300 P200 S1567\nM300 P200 S1174\nM300 P200 "
                        "S1567\nM300 P200 S1174\nM300 P2000 S1567"));
-      // tell the user that the filament has run out and wait
-      SENDLINE_DBG_PGM("J23", "TFT Serial Debug: Blocking filament prompt... J23");
+      if ( millis() - time_last_cyclic_tft_command >= WAIT_MS_UNTIL_ACYCLIC_SEND ) {
+        // tell the user that the filament has run out and wait
+        SENDLINE_DBG_PGM("J23", "TFT Serial Debug: Blocking filament prompt... J23");
+      }
+      else
+        delayed_tft_command = 23;
     } else {
       SENDLINE_DBG_PGM("J15", "TFT Serial Debug: Non blocking filament runout... J15");
     }
@@ -1040,29 +1048,49 @@ void AnycubicTouchscreenClass::UserConfirmRequired(const char* const msg) {
   if (strcmp_P(msg, PSTR("Nozzle Parked")) == 0) {
     mediaPrintingState = AMPRINTSTATE_PAUSED;
     mediaPauseState    = AMPAUSESTATE_PARKED;
-    // enable continue button
-    SENDLINE_DBG_PGM("J18", "TFT Serial Debug: UserConfirm SD print paused done... J18");
+    if ( millis() - time_last_cyclic_tft_command >= WAIT_MS_UNTIL_ACYCLIC_SEND ) {
+      // enable continue button
+      SENDLINE_DBG_PGM("J18", "TFT Serial Debug: UserConfirm SD print paused done... J18");
+    }
+    else
+      delayed_tft_command = 18;
   } else if (strcmp_P(msg, PSTR("Load Filament")) == 0) {
     mediaPrintingState = AMPRINTSTATE_PAUSED;
     mediaPauseState    = AMPAUSESTATE_FILAMENT_OUT;
-    // enable continue button
-    SENDLINE_DBG_PGM("J18", "TFT Serial Debug: UserConfirm Filament is out... J18");
-    SENDLINE_DBG_PGM("J23", "TFT Serial Debug: UserConfirm Blocking filament prompt... J23");
+    if ( millis() - time_last_cyclic_tft_command >= WAIT_MS_UNTIL_ACYCLIC_SEND ) {
+      // enable continue button
+      SENDLINE_DBG_PGM("J18", "TFT Serial Debug: UserConfirm Filament is out... J18");
+      SENDLINE_DBG_PGM("J23", "TFT Serial Debug: UserConfirm Blocking filament prompt... J23");
+    }
+    else
+      delayed_tft_command = 118;
   } else if (strcmp_P(msg, PSTR("Filament Purging...")) == 0) {
     mediaPrintingState = AMPRINTSTATE_PAUSED;
     mediaPauseState    = AMPAUSESTATE_FILAMENT_PURGING;
-    // enable continue button
-    SENDLINE_DBG_PGM("J18", "TFT Serial Debug: UserConfirm Filament is purging... J18");
+    if ( millis() - time_last_cyclic_tft_command >= WAIT_MS_UNTIL_ACYCLIC_SEND ) {
+      // enable continue button
+      SENDLINE_DBG_PGM("J18", "TFT Serial Debug: UserConfirm Filament is purging... J18");
+    }
+    else
+      delayed_tft_command = 18;
   } else if (strcmp_P(msg, PSTR("HeaterTimeout")) == 0) {
     mediaPrintingState = AMPRINTSTATE_PAUSED;
     mediaPauseState    = AMPAUSESTATE_HEATER_TIMEOUT;
-    // enable continue button
-    SENDLINE_DBG_PGM("J18", "TFT Serial Debug: UserConfirm SD Heater timeout... J18");
+    if ( millis() - time_last_cyclic_tft_command >= WAIT_MS_UNTIL_ACYCLIC_SEND ) {
+      // enable continue button
+      SENDLINE_DBG_PGM("J18", "TFT Serial Debug: UserConfirm SD Heater timeout... J18");
+    }
+    else
+      delayed_tft_command = 18;
   } else if (strcmp_P(msg, PSTR("Reheat finished.")) == 0) {
     mediaPrintingState = AMPRINTSTATE_PAUSED;
     mediaPauseState    = AMPAUSESTATE_REHEAT_FINISHED;
-    // enable continue button
-    SENDLINE_DBG_PGM("J18", "TFT Serial Debug: UserConfirm SD Reheat done... J18");
+    if ( millis() - time_last_cyclic_tft_command >= WAIT_MS_UNTIL_ACYCLIC_SEND ) {
+      // enable continue button
+      SENDLINE_DBG_PGM("J18", "TFT Serial Debug: UserConfirm SD Reheat done... J18");
+    }
+    else
+      delayed_tft_command = 18;
   }
   #endif
 }
@@ -1288,6 +1316,7 @@ void AnycubicTouchscreenClass::GetCommandFromTFT() {
                 } else {
                   SEND_PGM_VAL("A20V ", feedrate_percentage);
                   SENDLINE_PGM("");
+                  time_last_cyclic_tft_command = millis();
                 }
               }
               break;
@@ -2061,6 +2090,29 @@ void AnycubicTouchscreenClass::GetCommandFromTFT() {
     if (TFTbuflen) {
       TFTbuflen  = (TFTbuflen - 1);
       TFTbufindr = (TFTbufindr + 1) % TFTBUFSIZE;
+    }
+
+    // In case of too short time after last cyclic tft command it has to be
+    // wait to avoid missing action after acyclic command by the tft.
+    if ( (delayed_tft_command > 0) && ( millis() - time_last_cyclic_tft_command >= WAIT_MS_UNTIL_ACYCLIC_SEND ) ) {
+      switch (delayed_tft_command) {
+        case 23: {
+          SENDLINE_DBG_PGM("J23", "TFT Serial Debug: delayed J23");
+          delayed_tft_command = 0;
+          break;
+        }
+        case 18: {
+          SENDLINE_DBG_PGM("J18", "TFT Serial Debug: delayed J18");
+          delayed_tft_command = 0;
+          break;
+        }
+        case 118: {
+          SENDLINE_DBG_PGM("J23", "TFT Serial Debug: delayed J23");
+          SENDLINE_DBG_PGM("J18", "TFT Serial Debug: delayed J18");
+          delayed_tft_command = 0;
+          break;
+        }
+      }
     }
   }
 
