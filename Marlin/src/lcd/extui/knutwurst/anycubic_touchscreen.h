@@ -28,6 +28,7 @@
 #define TFT_MAX_CMD_SIZE           96
 #define MSG_MY_VERSION             CUSTOM_BUILD_VERSION
 #define MAX_PRINTABLE_FILENAME_LEN 26
+#define WAIT_MS_UNTIL_ACYCLIC_SEND 500
 
 enum AnycubicMediaPrintState {
   AMPRINTSTATE_NOT_PRINTING,
@@ -138,7 +139,6 @@ enum AnycubicMediaPauseState {
   #define SM_BLTZ_EXIT_L     "<SAVE and EXIT>"
   #define SM_HS_DISABLE_L    "<Disable HiSpeed Mode>"
   #define SM_HS_ENABLE_L     "<Enable HiSpeed Mode>"
-  #define WAIT_MS_UNTIL_ACYCLIC_SEND 500
 #endif // !KNUTWURST_DGUS2_TFT
 
 #if ENABLED(KNUTWURST_DGUS2_TFT)
