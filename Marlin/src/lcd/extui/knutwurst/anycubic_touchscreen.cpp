@@ -78,7 +78,8 @@ static void sendLine_P(PGM_P str) {
 
 AnycubicMediaPrintState AnycubicTouchscreenClass::mediaPrintingState = AMPRINTSTATE_NOT_PRINTING;
 AnycubicMediaPauseState AnycubicTouchscreenClass::mediaPauseState    = AMPAUSESTATE_NOT_PAUSED;
-
+uint32_t AnycubicTouchscreenClass::time_last_cyclic_tft_command = 0;
+uint8_t AnycubicTouchscreenClass::delayed_tft_command = 0;
 
   #if ENABLED(POWER_OUTAGE_TEST)
 int           PowerInt                     = 6;
@@ -261,10 +262,13 @@ void AnycubicTouchscreenClass::ResumePrint() {
 
     // trigger the user message box
     DoFilamentRunoutCheck();
-
-    // re-enable the continue button
-    SENDLINE_DBG_PGM("J18", "TFT Serial Debug: Resume Print with filament sensor still "
-                            "tripped... J18");
+    if ( millis() - time_last_cyclic_tft_command >= WAIT_MS_UNTIL_ACYCLIC_SEND ) {
+      // re-enable the continue button
+      SENDLINE_DBG_PGM("J18", "TFT Serial Debug: Resume Print with filament sensor still "
+                              "tripped... J18");
+    }
+    else
+      delayed_tft_command = 18;
     return;
   }
     #endif
@@ -1000,7 +1004,6 @@ void AnycubicTouchscreenClass::FilamentRunout() {
   DoFilamentRunoutCheck();
 }
 
-
 void AnycubicTouchscreenClass::DoFilamentRunoutCheck() {
   #if ENABLED(FILAMENT_RUNOUT_SENSOR)
   // NOTE: getFilamentRunoutState() only returns the runout state if the job is
@@ -1012,9 +1015,12 @@ void AnycubicTouchscreenClass::DoFilamentRunoutCheck() {
       // play tone to indicate filament is out
       injectCommands(F("\nM300 P200 S1567\nM300 P200 S1174\nM300 P200 "
                        "S1567\nM300 P200 S1174\nM300 P2000 S1567"));
-
-      // tell the user that the filament has run out and wait
-      SENDLINE_DBG_PGM("J23", "TFT Serial Debug: Blocking filament prompt... J23");
+      if ( millis() - time_last_cyclic_tft_command >= WAIT_MS_UNTIL_ACYCLIC_SEND ) {
+        // tell the user that the filament has run out and wait
+        SENDLINE_DBG_PGM("J23", "TFT Serial Debug: Blocking filament prompt... J23");
+      }
+      else
+        delayed_tft_command = 23;
     } else {
       SENDLINE_DBG_PGM("J15", "TFT Serial Debug: Non blocking filament runout... J15");
     }
@@ -1042,29 +1048,49 @@ void AnycubicTouchscreenClass::UserConfirmRequired(const char* const msg) {
   if (strcmp_P(msg, PSTR("Nozzle Parked")) == 0) {
     mediaPrintingState = AMPRINTSTATE_PAUSED;
     mediaPauseState    = AMPAUSESTATE_PARKED;
-    // enable continue button
-    SENDLINE_DBG_PGM("J18", "TFT Serial Debug: UserConfirm SD print paused done... J18");
+    if ( millis() - time_last_cyclic_tft_command >= WAIT_MS_UNTIL_ACYCLIC_SEND ) {
+      // enable continue button
+      SENDLINE_DBG_PGM("J18", "TFT Serial Debug: UserConfirm SD print paused done... J18");
+    }
+    else
+      delayed_tft_command = 18;
   } else if (strcmp_P(msg, PSTR("Load Filament")) == 0) {
     mediaPrintingState = AMPRINTSTATE_PAUSED;
     mediaPauseState    = AMPAUSESTATE_FILAMENT_OUT;
-    // enable continue button
-    SENDLINE_DBG_PGM("J18", "TFT Serial Debug: UserConfirm Filament is out... J18");
-    SENDLINE_DBG_PGM("J23", "TFT Serial Debug: UserConfirm Blocking filament prompt... J23");
+    if ( millis() - time_last_cyclic_tft_command >= WAIT_MS_UNTIL_ACYCLIC_SEND ) {
+      // enable continue button
+      SENDLINE_DBG_PGM("J18", "TFT Serial Debug: UserConfirm Filament is out... J18");
+      SENDLINE_DBG_PGM("J23", "TFT Serial Debug: UserConfirm Blocking filament prompt... J23");
+    }
+    else
+      delayed_tft_command = 118;
   } else if (strcmp_P(msg, PSTR("Filament Purging...")) == 0) {
     mediaPrintingState = AMPRINTSTATE_PAUSED;
     mediaPauseState    = AMPAUSESTATE_FILAMENT_PURGING;
-    // enable continue button
-    SENDLINE_DBG_PGM("J18", "TFT Serial Debug: UserConfirm Filament is purging... J18");
+    if ( millis() - time_last_cyclic_tft_command >= WAIT_MS_UNTIL_ACYCLIC_SEND ) {
+      // enable continue button
+      SENDLINE_DBG_PGM("J18", "TFT Serial Debug: UserConfirm Filament is purging... J18");
+    }
+    else
+      delayed_tft_command = 18;
   } else if (strcmp_P(msg, PSTR("HeaterTimeout")) == 0) {
     mediaPrintingState = AMPRINTSTATE_PAUSED;
     mediaPauseState    = AMPAUSESTATE_HEATER_TIMEOUT;
-    // enable continue button
-    SENDLINE_DBG_PGM("J18", "TFT Serial Debug: UserConfirm SD Heater timeout... J18");
+    if ( millis() - time_last_cyclic_tft_command >= WAIT_MS_UNTIL_ACYCLIC_SEND ) {
+      // enable continue button
+      SENDLINE_DBG_PGM("J18", "TFT Serial Debug: UserConfirm SD Heater timeout... J18");
+    }
+    else
+      delayed_tft_command = 18;
   } else if (strcmp_P(msg, PSTR("Reheat finished.")) == 0) {
     mediaPrintingState = AMPRINTSTATE_PAUSED;
     mediaPauseState    = AMPAUSESTATE_REHEAT_FINISHED;
-    // enable continue button
-    SENDLINE_DBG_PGM("J18", "TFT Serial Debug: UserConfirm SD Reheat done... J18");
+    if ( millis() - time_last_cyclic_tft_command >= WAIT_MS_UNTIL_ACYCLIC_SEND ) {
+      // enable continue button
+      SENDLINE_DBG_PGM("J18", "TFT Serial Debug: UserConfirm SD Reheat done... J18");
+    }
+    else
+      delayed_tft_command = 18;
   }
   #endif
 }
@@ -1107,6 +1133,7 @@ void AnycubicTouchscreenClass::GetCommandFromTFT() {
             case 4: // A4 GET FAN SPEED
               SEND_PGM_VAL("A4V ", int(getActualFan_percent(FAN0)));
               break;
+
             case 5: // A5 GET CURRENT COORDINATE
               SEND_PGM("A5V X: ");
               LCD_SERIAL.print(current_position[X_AXIS]);
@@ -1289,6 +1316,7 @@ void AnycubicTouchscreenClass::GetCommandFromTFT() {
                 } else {
                   SEND_PGM_VAL("A20V ", feedrate_percentage);
                   SENDLINE_PGM("");
+                  time_last_cyclic_tft_command = millis();
                 }
               }
               break;
@@ -1654,7 +1682,7 @@ void AnycubicTouchscreenClass::GetCommandFromTFT() {
               }
               break;
 
-  #endif
+  #endif // if ENABLED(KNUTWURST_CHIRON)
 
   #if ENABLED(KNUTWURST_4MAXP2)
 
@@ -1701,7 +1729,6 @@ void AnycubicTouchscreenClass::GetCommandFromTFT() {
               SENDLINE_PGM("");
               break;
   #endif // #if ENABLED(KNUTWURST_4MAXP2)
-
 
             case 32: // a32 clean leveling beep flag
               break;
@@ -1840,143 +1867,145 @@ void AnycubicTouchscreenClass::GetCommandFromTFT() {
                 } else {
                   Laser_printer_st.pic_vector = 0;
                 }
-                break;
-                case 37:
-                  if (CodeSeen('S')) {
-                    int coorvalue;
-                    coorvalue = CodeValueInt();
-                    if (coorvalue == 0) {
-                      Laser_printer_st.pic_x_mirror = 0;
-                    } else if (coorvalue == 1) {
-                      Laser_printer_st.pic_x_mirror = 1; // x
-                    }
-                  }
-                  break;
+              }
+              break;
 
-                case 38:
-                  if (CodeSeen('S')) {
-                    int coorvalue;
-                    coorvalue                       = CodeValueInt();
-                    Laser_printer_st.pic_laser_time = coorvalue;
-                  }
-                  break;
+            case 37:
+              if (CodeSeen('S')) {
+                int coorvalue;
+                coorvalue = CodeValueInt();
+                if (coorvalue == 0) {
+                  Laser_printer_st.pic_x_mirror = 0;
+                } else if (coorvalue == 1) {
+                  Laser_printer_st.pic_x_mirror = 1; // x
+                }
+              }
+              break;
 
-                case 39:
-                  if (CodeSeen('S')) { // A39
-                    float coorvalue;
-                    coorvalue                     = CodeValue();
-                    Laser_printer_st.laser_height = coorvalue;
-                    SEND_PGM("laser_height = ");
-                    LCD_SERIAL.print(Laser_printer_st.laser_height);
-                    SENDLINE_PGM("");
-                  }
-                  break;
+            case 38:
+              if (CodeSeen('S')) {
+                int coorvalue;
+                coorvalue                       = CodeValueInt();
+                Laser_printer_st.pic_laser_time = coorvalue;
+              }
+              break;
 
-                case 40:
-                  if (CodeSeen('S')) { // A40
-                    float coorvalue;
-                    coorvalue                           = CodeValue();
-                    Laser_printer_st.pic_pixel_distance = coorvalue;
-                  }
-                  break;
+            case 39:
+              if (CodeSeen('S')) { // A39
+                float coorvalue;
+                coorvalue                     = CodeValue();
+                Laser_printer_st.laser_height = coorvalue;
+                SEND_PGM("laser_height = ");
+                LCD_SERIAL.print(Laser_printer_st.laser_height);
+                SENDLINE_PGM("");
+              }
+              break;
 
-                case 41:
-                  if (CodeSeen('S')) {
-                    float coorvalue;
-                    coorvalue                 = CodeValue();
-                    Laser_printer_st.x_offset = coorvalue;
-                  }
-                  break;
+            case 40:
+              if (CodeSeen('S')) { // A40
+                float coorvalue;
+                coorvalue                           = CodeValue();
+                Laser_printer_st.pic_pixel_distance = coorvalue;
+              }
+              break;
 
-                case 42:
-                  if (CodeSeen('S')) {
-                    float coorvalue;
-                    coorvalue                 = CodeValue();
-                    Laser_printer_st.y_offset = coorvalue;
-                  }
-                  break;
+            case 41:
+              if (CodeSeen('S')) {
+                float coorvalue;
+                coorvalue                 = CodeValue();
+                Laser_printer_st.x_offset = coorvalue;
+              }
+              break;
 
-                case 43:
-                  if (CodeSeen('S')) { // y
-                    int coorvalue;
-                    coorvalue = CodeValueInt();
-                    if (coorvalue == 0) {
-                      Laser_printer_st.pic_y_mirror = 0;
-                    } else if (coorvalue == 1) {
-                      Laser_printer_st.pic_y_mirror = 1;
-                    }
-                  }
-                  break;
+            case 42:
+              if (CodeSeen('S')) {
+                float coorvalue;
+                coorvalue                 = CodeValue();
+                Laser_printer_st.y_offset = coorvalue;
+              }
+              break;
 
-                case 44:
-                  send_laser_param();
-                  break;
+            case 43:
+              if (CodeSeen('S')) { // y
+                int coorvalue;
+                coorvalue = CodeValueInt();
+                if (coorvalue == 0) {
+                  Laser_printer_st.pic_y_mirror = 0;
+                } else if (coorvalue == 1) {
+                  Laser_printer_st.pic_y_mirror = 1;
+                }
+              }
+              break;
 
-                case 49: // A49
-                  laser_on_off = 0;
-                  WRITE(HEATER_0_PIN, 0);
-                  break;
+           case 44:
+              send_laser_param();
+              break;
 
-                case 50: // A50
-                  if (laser_on_off == 0) {
-                    laser_on_off = 1;
-                  } else {
-                    laser_on_off = 0;
-                    WRITE(HEATER_0_PIN, 0);
-                  }
-                  break;
+            case 49: // A49
+              laser_on_off = 0;
+              WRITE(HEATER_0_PIN, 0);
+              break;
+              
+            case 50: // A50
+              if (laser_on_off == 0) {
+                laser_on_off = 1;
+              } else {
+                laser_on_off = 0;
+                WRITE(HEATER_0_PIN, 0);
+              }
+              break;
   #endif // if ENABLED(KNUTWURST_MEGA_P_LASER)
 
   #if ENABLED(KNUTWURST_MEGA_P)
-                case 51:
-                  if (CodeSeen('H')) {
-                    injectCommands(F(
-                      "G1 Z5 F500\n"
-                      "G1 X30 Y30 F5000\n"
-                      "G1 Z0.15 F300"
-                    ));
-                  } else if (CodeSeen('I')) {
-                    injectCommands(F(
-                      "G1 Z5 F500\n"
-                      "G1 X190 Y30 F5000\n"
-                      "G1 Z0.15 F300"
-                    ));
-                  } else if (CodeSeen('J')) {
-                    injectCommands(F(
-                      "G1 Z5 F500\n"
-                      "G1 X190 Y190 F5000\n"
-                      "G1 Z0.15 F300"
-                    ));
-                  } else if (CodeSeen('K')) {
-                    injectCommands(F(
-                      "G1 Z5 F500\n"
-                      "G1 X30 Y190 F5000\n"
-                      "G1 Z0.15 F300"
-                    ));
-                  } else if (CodeSeen('L')) {
-                    injectCommands(F("G1 X100 Y100 Z50 F5000"));
-                  }
-                  break;
+            case 51:
+              if (CodeSeen('H')) {
+                injectCommands(F(
+                  "G1 Z5 F500\n"
+                  "G1 X30 Y30 F5000\n"
+                  "G1 Z0.15 F300"
+                ));
+              } else if (CodeSeen('I')) {
+                injectCommands(F(
+                  "G1 Z5 F500\n"
+                  "G1 X190 Y30 F5000\n"
+                  "G1 Z0.15 F300"
+                ));
+              } else if (CodeSeen('J')) {
+                injectCommands(F(
+                  "G1 Z5 F500\n"
+                  "G1 X190 Y190 F5000\n"
+                  "G1 Z0.15 F300"
+                ));
+              } else if (CodeSeen('K')) {
+                injectCommands(F(
+                  "G1 Z5 F500\n"
+                  "G1 X30 Y190 F5000\n"
+                  "G1 Z0.15 F300"
+                ));
+              } else if (CodeSeen('L')) {
+                injectCommands(F("G1 X100 Y100 Z50 F5000"));
+              }
+              break;
   #endif
 
-                default:
-                  break;
-              }
-          }
-          TFTbufindw  = (TFTbufindw + 1) % TFTBUFSIZE;
-          TFTbuflen  += 1;
+            default:
+              break;
+          } // switch
         }
-        serial3_count = 0; // clear buffer
-      } else {
-        if (serial3_char == ';') {
-          TFTcomment_mode = true;
-        }
-        if (!TFTcomment_mode) {
-          TFTcmdbuffer[TFTbufindw][serial3_count++] = serial3_char;
-        }
+        TFTbufindw  = (TFTbufindw + 1) % TFTBUFSIZE;
+        TFTbuflen  += 1;
+      } // if (!TFTcomment_mode)
+      serial3_count = 0; // clear buffer
+    } else {
+      if (serial3_char == ';') {
+        TFTcomment_mode = true;
+      }
+      if (!TFTcomment_mode) {
+        TFTcmdbuffer[TFTbufindw][serial3_count++] = serial3_char;
       }
     }
-  }
+  } // while
+}
 
   #if ENABLED(KNUTWURST_MEGA_P_LASER)
   void prepare_laser_print() {
@@ -2061,6 +2090,29 @@ void AnycubicTouchscreenClass::GetCommandFromTFT() {
     if (TFTbuflen) {
       TFTbuflen  = (TFTbuflen - 1);
       TFTbufindr = (TFTbufindr + 1) % TFTBUFSIZE;
+    }
+
+    // In case of too short time after last cyclic tft command it has to be
+    // wait to avoid missing action after acyclic command by the tft.
+    if ( (delayed_tft_command > 0) && ( millis() - time_last_cyclic_tft_command >= WAIT_MS_UNTIL_ACYCLIC_SEND ) ) {
+      switch (delayed_tft_command) {
+        case 23: {
+          SENDLINE_DBG_PGM("J23", "TFT Serial Debug: delayed J23");
+          delayed_tft_command = 0;
+          break;
+        }
+        case 18: {
+          SENDLINE_DBG_PGM("J18", "TFT Serial Debug: delayed J18");
+          delayed_tft_command = 0;
+          break;
+        }
+        case 118: {
+          SENDLINE_DBG_PGM("J23", "TFT Serial Debug: delayed J23");
+          SENDLINE_DBG_PGM("J18", "TFT Serial Debug: delayed J18");
+          delayed_tft_command = 0;
+          break;
+        }
+      }
     }
   }
 
