@@ -1841,126 +1841,126 @@ void AnycubicTouchscreenClass::GetCommandFromTFT() {
               }
               break;
 
-                case 37:
-                  if (CodeSeen('S')) {
-                    int coorvalue;
-                    coorvalue = CodeValueInt();
-                    if (coorvalue == 0) {
-                      Laser_printer_st.pic_x_mirror = 0;
-                    } else if (coorvalue == 1) {
-                      Laser_printer_st.pic_x_mirror = 1; // x
-                    }
-                  }
-                  break;
+            case 37:
+              if (CodeSeen('S')) {
+                int coorvalue;
+                coorvalue = CodeValueInt();
+                if (coorvalue == 0) {
+                  Laser_printer_st.pic_x_mirror = 0;
+                } else if (coorvalue == 1) {
+                  Laser_printer_st.pic_x_mirror = 1; // x
+                }
+              }
+              break;
 
-                case 38:
-                  if (CodeSeen('S')) {
-                    int coorvalue;
-                    coorvalue                       = CodeValueInt();
-                    Laser_printer_st.pic_laser_time = coorvalue;
-                  }
-                  break;
+            case 38:
+              if (CodeSeen('S')) {
+                int coorvalue;
+                coorvalue                       = CodeValueInt();
+                Laser_printer_st.pic_laser_time = coorvalue;
+              }
+              break;
 
-                case 39:
-                  if (CodeSeen('S')) { // A39
-                    float coorvalue;
-                    coorvalue                     = CodeValue();
-                    Laser_printer_st.laser_height = coorvalue;
-                    SEND_PGM("laser_height = ");
-                    LCD_SERIAL.print(Laser_printer_st.laser_height);
-                    SENDLINE_PGM("");
-                  }
-                  break;
+            case 39:
+              if (CodeSeen('S')) { // A39
+                float coorvalue;
+                coorvalue                     = CodeValue();
+                Laser_printer_st.laser_height = coorvalue;
+                SEND_PGM("laser_height = ");
+                LCD_SERIAL.print(Laser_printer_st.laser_height);
+                SENDLINE_PGM("");
+              }
+              break;
 
-                case 40:
-                  if (CodeSeen('S')) { // A40
-                    float coorvalue;
-                    coorvalue                           = CodeValue();
-                    Laser_printer_st.pic_pixel_distance = coorvalue;
-                  }
-                  break;
+            case 40:
+              if (CodeSeen('S')) { // A40
+                float coorvalue;
+                coorvalue                           = CodeValue();
+                Laser_printer_st.pic_pixel_distance = coorvalue;
+              }
+              break;
 
-                case 41:
-                  if (CodeSeen('S')) {
-                    float coorvalue;
-                    coorvalue                 = CodeValue();
-                    Laser_printer_st.x_offset = coorvalue;
-                  }
-                  break;
+            case 41:
+              if (CodeSeen('S')) {
+                float coorvalue;
+                coorvalue                 = CodeValue();
+                Laser_printer_st.x_offset = coorvalue;
+              }
+              break;
 
-                case 42:
-                  if (CodeSeen('S')) {
-                    float coorvalue;
-                    coorvalue                 = CodeValue();
-                    Laser_printer_st.y_offset = coorvalue;
-                  }
-                  break;
+            case 42:
+              if (CodeSeen('S')) {
+                float coorvalue;
+                coorvalue                 = CodeValue();
+                Laser_printer_st.y_offset = coorvalue;
+              }
+              break;
 
-                case 43:
-                  if (CodeSeen('S')) { // y
-                    int coorvalue;
-                    coorvalue = CodeValueInt();
-                    if (coorvalue == 0) {
-                      Laser_printer_st.pic_y_mirror = 0;
-                    } else if (coorvalue == 1) {
-                      Laser_printer_st.pic_y_mirror = 1;
-                    }
-                  }
-                  break;
+            case 43:
+              if (CodeSeen('S')) { // y
+                int coorvalue;
+                coorvalue = CodeValueInt();
+                if (coorvalue == 0) {
+                  Laser_printer_st.pic_y_mirror = 0;
+                } else if (coorvalue == 1) {
+                  Laser_printer_st.pic_y_mirror = 1;
+                }
+              }
+              break;
 
-                case 44:
-                  send_laser_param();
-                  break;
+           case 44:
+              send_laser_param();
+              break;
 
-                case 49: // A49
-                  laser_on_off = 0;
-                  WRITE(HEATER_0_PIN, 0);
-                  break;
-
-                case 50: // A50
-                  if (laser_on_off == 0) {
-                    laser_on_off = 1;
-                  } else {
-                    laser_on_off = 0;
-                    WRITE(HEATER_0_PIN, 0);
-                  }
-                  break;
+            case 49: // A49
+              laser_on_off = 0;
+              WRITE(HEATER_0_PIN, 0);
+              break;
+              
+            case 50: // A50
+              if (laser_on_off == 0) {
+                laser_on_off = 1;
+              } else {
+                laser_on_off = 0;
+                WRITE(HEATER_0_PIN, 0);
+              }
+              break;
   #endif // if ENABLED(KNUTWURST_MEGA_P_LASER)
 
   #if ENABLED(KNUTWURST_MEGA_P)
-                case 51:
-                  if (CodeSeen('H')) {
-                    injectCommands(F(
-                      "G1 Z5 F500\n"
-                      "G1 X30 Y30 F5000\n"
-                      "G1 Z0.15 F300"
-                    ));
-                  } else if (CodeSeen('I')) {
-                    injectCommands(F(
-                      "G1 Z5 F500\n"
-                      "G1 X190 Y30 F5000\n"
-                      "G1 Z0.15 F300"
-                    ));
-                  } else if (CodeSeen('J')) {
-                    injectCommands(F(
-                      "G1 Z5 F500\n"
-                      "G1 X190 Y190 F5000\n"
-                      "G1 Z0.15 F300"
-                    ));
-                  } else if (CodeSeen('K')) {
-                    injectCommands(F(
-                      "G1 Z5 F500\n"
-                      "G1 X30 Y190 F5000\n"
-                      "G1 Z0.15 F300"
-                    ));
-                  } else if (CodeSeen('L')) {
-                    injectCommands(F("G1 X100 Y100 Z50 F5000"));
-                  }
-                  break;
+            case 51:
+              if (CodeSeen('H')) {
+                injectCommands(F(
+                  "G1 Z5 F500\n"
+                  "G1 X30 Y30 F5000\n"
+                  "G1 Z0.15 F300"
+                ));
+              } else if (CodeSeen('I')) {
+                injectCommands(F(
+                  "G1 Z5 F500\n"
+                  "G1 X190 Y30 F5000\n"
+                  "G1 Z0.15 F300"
+                ));
+              } else if (CodeSeen('J')) {
+                injectCommands(F(
+                  "G1 Z5 F500\n"
+                  "G1 X190 Y190 F5000\n"
+                  "G1 Z0.15 F300"
+                ));
+              } else if (CodeSeen('K')) {
+                injectCommands(F(
+                  "G1 Z5 F500\n"
+                  "G1 X30 Y190 F5000\n"
+                  "G1 Z0.15 F300"
+                ));
+              } else if (CodeSeen('L')) {
+                injectCommands(F("G1 X100 Y100 Z50 F5000"));
+              }
+              break;
   #endif
 
-                default:
-                  break;
+            default:
+              break;
           } // switch
         }
         TFTbufindw  = (TFTbufindw + 1) % TFTBUFSIZE;
