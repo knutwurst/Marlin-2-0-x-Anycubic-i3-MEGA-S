@@ -24,6 +24,10 @@
 
 #if HAS_PRUSA_MMU2
 
+/**
+ * mmu2.cpp - Support for Průša MMU2 and MMU2S
+ */
+
 #include "mmu2.h"
 #include "../../lcd/menu/menu_mmu2.h"
 
@@ -39,7 +43,7 @@ MMU2 mmu2;
 #include "../../MarlinCore.h"
 
 #if ENABLED(HOST_PROMPT_SUPPORT)
-  #include "../../feature/host_actions.h"
+  #include "../host_actions.h"
 #endif
 
 #if ENABLED(EXTENSIBLE_UI)

@@ -113,7 +113,7 @@
 // #define FAN_SOFT_PWM_REQUIRED // check if needed
 
 // NeoPixel Rings
-#define NEOPIXEL_PIN                          14
+#define BOARD_NEOPIXEL_PIN                    14
 #define NEOPIXEL2_PIN                         27
 
 // SPI

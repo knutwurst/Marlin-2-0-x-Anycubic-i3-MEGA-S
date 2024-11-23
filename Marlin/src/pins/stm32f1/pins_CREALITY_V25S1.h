@@ -71,6 +71,8 @@
 #elif ENABLED(PROBE_ACTIVATION_SWITCH)
   #define PROBE_TARE_PIN                    PC14
   #define PROBE_ACTIVATION_SWITCH_PIN       PB2
+#elif ENABLED(PROBE_ENABLE_DISABLE) && !defined(PROBE_ENABLE_PIN)
+  #define PROBE_ENABLE_PIN                  PC14
 #endif
 
 //

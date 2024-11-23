@@ -32,7 +32,7 @@
   #include "../../feature/caselight.h"
 #endif
 
-#if ENABLED(HAS_STM32_UID) && !defined(MACHINE_UUID)
+#if !defined(MACHINE_UUID) && ENABLED(HAS_STM32_UID)
   #include "../../libs/hex_print.h"
 #endif
 
@@ -69,24 +69,32 @@ void GcodeSuite::M115() {
     #if NUM_AXES != XYZ
       " AXIS_COUNT:" STRINGIFY(NUM_AXES)
     #endif
+    #if defined(MACHINE_UUID) || ENABLED(HAS_STM32_UID)
+      " UUID:"
+    #endif
     #ifdef MACHINE_UUID
-      " UUID:" MACHINE_UUID
+      MACHINE_UUID
     #endif
   );
 
-  // STM32UID:111122223333
-  #if ENABLED(HAS_STM32_UID) && !defined(MACHINE_UUID)
-    // STM32 based devices output the CPU device serial number
-    // Used by LumenPnP / OpenPNP to keep track of unique hardware/configurations
-    // https://github.com/opulo-inc/lumenpnp
-    // Although this code should work on all STM32 based boards
-    SERIAL_ECHOPGM(" UUID:");
-    uint32_t *uid_address = (uint32_t*)UID_BASE;
-    for (uint8_t i = 0; i < 3; ++i) {
-      const uint32_t UID = uint32_t(READ_REG(*(uid_address)));
-      uid_address += 4U;
-      for (int B = 24; B >= 0; B -= 8) print_hex_byte(UID >> B);
-    }
+  #if !defined(MACHINE_UUID) && ENABLED(HAS_STM32_UID)
+    /**
+     * STM32-based devices have a 96-bit CPU device serial number.
+     * Used by LumenPnP / OpenPNP to keep track of unique hardware/configurations.
+     * https://github.com/opulo-inc/lumenpnp
+     * This code should work on all STM32-based boards.
+     */
+    #if ENABLED(STM32_UID_SHORT_FORM)
+      const uint32_t * const UID = (uint32_t*)UID_BASE;
+      for (uint8_t i = 0; i < 3; i++) print_hex_long(UID[i]);
+    #else
+      const uint16_t * const UID = (uint16_t*)UID_BASE; // Little-endian!
+      SERIAL_ECHOPGM("CEDE2A2F-");
+      for (uint8_t i = 1; i <= 6; i++) {
+        print_hex_word(UID[(i % 2) ? i : i - 2]);       // 1111-0000-3333-222255554444
+        if (i <= 3) SERIAL_CHAR('-');
+      }
+    #endif
   #endif
 
   SERIAL_EOL();

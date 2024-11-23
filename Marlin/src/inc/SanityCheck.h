@@ -3857,8 +3857,6 @@ static_assert(_PLUS_TEST(3), "DEFAULT_MAX_ACCELERATION values must be positive."
     #error "Input Shaping is not compatible with SCARA kinematics."
   #elif ENABLED(TPARA)
     #error "Input Shaping is not compatible with TPARA kinematics."
-  #elif ENABLED(POLAR)
-    #error "Input Shaping is not compatible with POLAR kinematics."
   #elif ENABLED(POLARGRAPH)
     #error "Input Shaping is not compatible with POLARGRAPH kinematics."
   #elif ENABLED(DIRECT_STEPPING)

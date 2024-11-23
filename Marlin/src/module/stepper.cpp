@@ -149,7 +149,7 @@ Stepper stepper; // Singleton
 
 #if HAS_MOTOR_CURRENT_SPI || HAS_MOTOR_CURRENT_PWM
   bool Stepper::initialized; // = false
-  uint32_t Stepper::motor_current_setting[MOTOR_CURRENT_COUNT]; // Initialized by settings.load()
+  uint32_t Stepper::motor_current_setting[MOTOR_CURRENT_COUNT]; // Initialized by settings.load
   #if HAS_MOTOR_CURRENT_SPI
     constexpr uint32_t Stepper::digipot_count[];
   #endif

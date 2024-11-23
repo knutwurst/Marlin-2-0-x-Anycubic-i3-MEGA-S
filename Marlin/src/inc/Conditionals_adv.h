@@ -1216,11 +1216,6 @@
   #define NO_EEPROM_SELECTED 1
 #endif
 
-// Flag whether hex_print.cpp is used
-#if ANY(AUTO_BED_LEVELING_UBL, M100_FREE_MEMORY_WATCHER, DEBUG_GCODE_PARSER, TMC_DEBUG, MARLIN_DEV_MODE, DEBUG_CARDREADER, M20_TIMESTAMP_SUPPORT)
-  #define NEED_HEX_PRINT 1
-#endif
-
 // Flags for Case Light having a color property or a single pin
 #if ENABLED(CASE_LIGHT_ENABLE)
   #if ANY(CASE_LIGHT_USE_NEOPIXEL, CASE_LIGHT_USE_RGB_LED)
@@ -1251,15 +1246,13 @@
  * LCD_SERIAL_PORT must be defined ahead of HAL.h and
  * currently HAL.h must be included ahead of pins.h.
  */
-#ifndef LCD_SERIAL_PORT
-  #if HAS_DWIN_E3V2 || IS_DWIN_MARLINUI || HAS_DGUS_LCD
-    #if MB(BTT_SKR_MINI_E3_V1_0, BTT_SKR_MINI_E3_V1_2, BTT_SKR_MINI_E3_V2_0, BTT_SKR_MINI_E3_V3_0, BTT_SKR_E3_TURBO, BTT_OCTOPUS_V1_1)
-      #define LCD_SERIAL_PORT 1
-    #elif MB(CREALITY_V24S1_301, CREALITY_V24S1_301F4, CREALITY_V423, MKS_ROBIN)
-      #define LCD_SERIAL_PORT 2 // Creality Ender3S1, MKS Robin
-    #else
-      #define LCD_SERIAL_PORT 3 // Other boards
-    #endif
+#if LCD_IS_SERIAL_HOST && !defined(LCD_SERIAL_PORT)
+  #if MB(MKS_MONSTER8_V1, BTT_SKR_MINI_E3_V1_0, BTT_SKR_MINI_E3_V1_2, BTT_SKR_MINI_E3_V2_0, BTT_SKR_MINI_E3_V3_0, BTT_SKR_MINI_E3_V3_0_1, BTT_SKR_E3_TURBO, BTT_OCTOPUS_V1_1, BTT_SKR_V3_0, BTT_SKR_V3_0_EZ)
+    #define LCD_SERIAL_PORT 1
+  #elif MB(CREALITY_V24S1_301, CREALITY_V24S1_301F4, CREALITY_F401RE, CREALITY_V423, MKS_ROBIN)
+    #define LCD_SERIAL_PORT 2 // Creality Ender3S1, MKS Robin
+  #else
+    #define LCD_SERIAL_PORT 3 // Other boards
   #endif
   #ifdef LCD_SERIAL_PORT
     #define AUTO_ASSIGNED_LCD_SERIAL 1

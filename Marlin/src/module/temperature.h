@@ -155,12 +155,14 @@ typedef struct { float p, i, d, c, f; } raw_pidcf_t;
   #define scalePID_d(d)   ( float(d) / PID_dT )
   #define unscalePID_d(d) ( float(d) * PID_dT )
 
-  /// @brief The default PID class, only has Kp, Ki, Kd, other classes extend this one
-  /// @tparam MIN_POW output when current is above target by functional_range
-  /// @tparam MAX_POW output when current is below target by functional_range
-  /// @details This class has methods for Kc and Kf terms, but returns constant default values
-  /// PID classes that implement these features are expected to override these methods
-  /// Since the finally used PID class is typedef-d, there is no need to use virtual functions
+  /**
+   * @brief The default PID class, only has Kp, Ki, Kd, other classes extend this one
+   * @tparam MIN_POW output when current is above target by functional_range
+   * @tparam MAX_POW output when current is below target by functional_range
+   * @details This class has methods for Kc and Kf terms, but returns constant default values.
+   *          PID classes that implement these features are expected to override these methods.
+   *          Since the eventual PID class is typedef-d, there is no need to use virtual functions.
+   */
   template<int MIN_POW, int MAX_POW>
   struct PID_t {
     protected:
@@ -283,11 +285,11 @@ typedef struct { float p, i, d, c, f; } raw_pidcf_t;
       }
   };
 
-  /// @brief Fan scaled PID, this class implements the get_fan_scale_output() method
-  /// @tparam MIN_POW @see PID_t
-  /// @tparam MAX_POW @see PID_t
-  /// @tparam SCALE_MIN_SPEED parameter from Configuration_adv.h
-  /// @tparam SCALE_LIN_FACTOR parameter from Configuration_adv.h
+  // @brief Fan scaled PID, this class implements the get_fan_scale_output() method
+  // @tparam MIN_POW @see PID_t
+  // @tparam MAX_POW @see PID_t
+  // @tparam SCALE_MIN_SPEED parameter from Configuration_adv.h
+  // @tparam SCALE_LIN_FACTOR parameter from Configuration_adv.h
   template<int MIN_POW, int MAX_POW, int SCALE_MIN_SPEED, int SCALE_LIN_FACTOR>
   struct PIDF_t : public PID_t<MIN_POW, MAX_POW> {
     private:
@@ -424,7 +426,7 @@ typedef struct HeaterInfo : public TempInfo {
 // A heater with PID stabilization
 template<typename T>
 struct PIDHeaterInfo : public HeaterInfo {
-  T pid;  // Initialized by settings.load()
+  T pid;  // Initialized by settings.load
 };
 
 #if ENABLED(MPCTEMP)

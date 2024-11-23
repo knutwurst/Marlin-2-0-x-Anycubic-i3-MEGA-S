@@ -84,6 +84,13 @@
 #define Z_MAX_PIN                           PC4
 
 //
+// Probe enable
+//
+#if ENABLED(PROBE_ENABLE_DISABLE) && !defined(PROBE_ENABLE_PIN)
+  #define PROBE_ENABLE_PIN            SERVO0_PIN
+#endif
+
+//
 // Steppers
 //
 #define X_ENABLE_PIN                        PE4
@@ -148,19 +155,10 @@
   //#define E1_HARDWARE_SERIAL MSerial1
 
   #define X_SERIAL_TX_PIN                   PD5
-  #define X_SERIAL_RX_PIN                   PD5
-
   #define Y_SERIAL_TX_PIN                   PD7
-  #define Y_SERIAL_RX_PIN                   PD7
-
   #define Z_SERIAL_TX_PIN                   PD4
-  #define Z_SERIAL_RX_PIN                   PD4
-
   #define E0_SERIAL_TX_PIN                  PD9
-  #define E0_SERIAL_RX_PIN                  PD9
-
   #define E1_SERIAL_TX_PIN                  PD8
-  #define E1_SERIAL_RX_PIN                  PD8
 
   // Reduce baud rate to improve software serial reliability
   #ifndef TMC_BAUD_RATE
@@ -221,10 +219,14 @@
   #define WIFI_IO1_PIN                      PC7
   #define WIFI_RESET_PIN                    PE9
 
+  //
+  // MKS Testing for code in lcd/extui/mks_ui
+  //
   #if ENABLED(MKS_TEST)
     #define MKS_TEST_POWER_LOSS_PIN         PA2   // PW_DET
     #define MKS_TEST_PS_ON_PIN              PB2   // PW_OFF
   #endif
+
 #else
   //#define POWER_LOSS_PIN                  PA2   // PW_DET
   //#define PS_ON_PIN                       PB2   // PW_OFF
@@ -289,8 +291,7 @@
 
 /**
  * Note: MKS Robin TFT screens use various TFT controllers.
- * If the screen stays white, disable 'LCD_RESET_PIN'
- * to let the bootloader init the screen.
+ * If the screen stays white, disable 'LCD_RESET_PIN' to let the bootloader init the screen.
  */
 
 #if ENABLED(TFT_CLASSIC_UI)

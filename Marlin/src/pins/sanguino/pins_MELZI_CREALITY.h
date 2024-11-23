@@ -23,8 +23,7 @@
 
 /**
  * Melzi (Creality) pin assignments
- * Schematic: https://green-candy.osdn.jp/external/MarlinFW/board_schematics/Melzi%20(Creality)/CR-10%20Schematic.pdf
- * Origin: https://github.com/Creality3DPrinting/CR10-Melzi-1.1.2/blob/master/Circuit%20diagram/Motherboard/CR-10%20Schematic.pdf
+ * Schematic: https://github.com/Creality3DPrinting/CR10-Melzi-1.1.2/blob/master/Circuit%20diagram/Motherboard/CR-10%20Schematic.pdf
  * ATmega1284P
  *
  * The Creality board needs a bootloader installed before Marlin can be uploaded.
@@ -102,7 +101,7 @@
 #endif
 #if PIN_EXISTS(BEEPER) && (SERVO0_PIN == BEEPER_PIN || FIL_RUNOUT_PIN == BEEPER_PIN)
   #undef BEEPER_PIN
-  #define BEEPER_PIN -1
+  #define BEEPER_PIN                          -1
 #endif
 
 /**
@@ -112,13 +111,13 @@
   PIN:   3   Port: B3        Z_STEP_PIN       protected
   PIN:   4   Port: B4        AVR_SS_PIN       protected
   .                          FAN0_PIN         protected
-  .                          SD_SS_PIN        protected
+  .                       SD_SS_PIN           protected
   PIN:   5   Port: B5        AVR_MOSI_PIN     Output = 1
-  .                          SD_MOSI_PIN      Output = 1
+  .                       SD_MOSI_PIN         Output = 1
   PIN:   6   Port: B6        AVR_MISO_PIN     Input  = 0    TIMER3A   PWM:     0    WGM: 1    COM3A: 0    CS: 3    TCCR3A: 1    TCCR3B: 3    TIMSK3: 0
-  .                          SD_MISO_PIN      Input  = 0
+  .                       SD_MISO_PIN         Input  = 0
   PIN:   7   Port: B7        AVR_SCK_PIN      Output = 0    TIMER3B   PWM:     0    WGM: 1    COM3B: 0    CS: 3    TCCR3A: 1    TCCR3B: 3    TIMSK3: 0
-  .                          SD_SCK_PIN       Output = 0
+  .                       SD_SCK_PIN          Output = 0
   PIN:   8   Port: D0        RXD              Input  = 1
   PIN:   9   Port: D1        TXD              Input  = 0
   PIN:  10   Port: D2        BTN_EN2          Input  = 1

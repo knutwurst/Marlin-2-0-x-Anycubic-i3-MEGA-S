@@ -112,16 +112,17 @@
 // TFT with FSMC interface
 //
 #if HAS_FSMC_TFT
-  #define LCD_BACKLIGHT_PIN                 PF11
+  #define LCD_USE_DMA_FSMC
   #define FSMC_CS_PIN                       PD7
   #define FSMC_RS_PIN                       PG0
 
-  #define LCD_USE_DMA_FSMC                        // Use DMA transfers to send data to the TFT
   #define FSMC_DMA_DEV                      DMA2
   #define FSMC_DMA_CHANNEL               DMA_CH5
 
   #define TFT_CS_PIN                 FSMC_CS_PIN
   #define TFT_RS_PIN                 FSMC_RS_PIN
+
+  #define LCD_BACKLIGHT_PIN                 PF11
 #endif
 
 //

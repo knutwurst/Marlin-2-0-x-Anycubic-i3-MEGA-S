@@ -250,12 +250,7 @@ void LevelingBilinear::print_leveling_grid(const bed_mesh_t* _z_values/*=nullptr
             if ((ty && y == (GRID_MAX_POINTS_Y) - 1) || (tx && x == (GRID_MAX_POINTS_X) - 1))
               continue;
             z_values_virt[x * (BILINEAR_SUBDIVISIONS) + tx][y * (BILINEAR_SUBDIVISIONS) + ty] =
-              virt_2cmr(
-                x + 1,
-                y + 1,
-                (float)tx / (BILINEAR_SUBDIVISIONS),
-                (float)ty / (BILINEAR_SUBDIVISIONS)
-              );
+              virt_2cmr(x + 1, y + 1, (float)tx / (BILINEAR_SUBDIVISIONS), (float)ty / (BILINEAR_SUBDIVISIONS));
           }
   }
 

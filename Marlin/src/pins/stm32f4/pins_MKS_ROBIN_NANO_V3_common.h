@@ -65,6 +65,13 @@
 #define Z_MAX_PIN                    E0_DIAG_PIN
 
 //
+// Probe enable
+//
+#if ENABLED(PROBE_ENABLE_DISABLE) && !defined(PROBE_ENABLE_PIN)
+  #define PROBE_ENABLE_PIN            SERVO0_PIN
+#endif
+
+//
 // Steppers
 //
 #define X_ENABLE_PIN                        PE4
@@ -93,19 +100,10 @@
   // No Hardware serial for steppers
   //
   #define X_SERIAL_TX_PIN                   PD5
-  #define X_SERIAL_RX_PIN        X_SERIAL_TX_PIN
-
   #define Y_SERIAL_TX_PIN                   PD7
-  #define Y_SERIAL_RX_PIN        Y_SERIAL_TX_PIN
-
   #define Z_SERIAL_TX_PIN                   PD4
-  #define Z_SERIAL_RX_PIN        Z_SERIAL_TX_PIN
-
   #define E0_SERIAL_TX_PIN                  PD9
-  #define E0_SERIAL_RX_PIN      E0_SERIAL_TX_PIN
-
   #define E1_SERIAL_TX_PIN                  PD8
-  #define E1_SERIAL_RX_PIN      E1_SERIAL_TX_PIN
 
   // Reduce baud rate to improve software serial reliability
   #ifndef TMC_BAUD_RATE
@@ -188,25 +186,27 @@
   #define KILL_PIN_STATE                    HIGH
 #endif
 
-// Random Info
-#define USB_SERIAL              -1  // USB Serial
-#define WIFI_SERIAL              3  // USART3
-#define MKS_WIFI_MODULE_SERIAL   1  // USART1
-#define MKS_WIFI_MODULE_SPI      2  // SPI2
-
 #ifndef SDCARD_CONNECTION
   #define SDCARD_CONNECTION              ONBOARD
 #endif
 
-// MKS WIFI MODULE
+//
+// MKS WiFi Module
+//
 #if ENABLED(MKS_WIFI_MODULE)
   #define WIFI_IO0_PIN                      PC13
   #define WIFI_IO1_PIN                      PC7
   #define WIFI_RESET_PIN                    PE9
+  #define MKS_WIFI_MODULE_SERIAL               1  // USART1
+  #define MKS_WIFI_MODULE_SPI                  2  // SPI2
+#else
+  #define WIFI_SERIAL_PORT                     3  // USART3
 #endif
 
-// MKS TEST
-#if ENABLED(MKS_TEST)
+//
+// MKS Testing for code in lcd/extui/mks_ui
+//
+#if ALL(TFT_LVGL_UI, MKS_TEST)
   #define MKS_TEST_POWER_LOSS_PIN           PA13  // PW_DET
   #define MKS_TEST_PS_ON_PIN                PB2   // PW_OFF
 #endif

@@ -21,6 +21,10 @@
  */
 #pragma once
 
+/**
+ * mmu2.h - Support for Průša MMU2 and MMU2S
+ */
+
 #include "../../inc/MarlinConfig.h"
 
 #if HAS_FILAMENT_SENSOR
