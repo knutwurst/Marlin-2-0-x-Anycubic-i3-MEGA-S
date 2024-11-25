@@ -112,7 +112,7 @@
 
 // Macros for bit masks
 #undef _BV
-#define _BV(n) (1<<(n))
+#define _BV(b) (1 << (b))
 #define TEST(n,b) (!!((n)&_BV(b)))
 #define SET_BIT_TO(N,B,TF) do{ if (TF) SBI(N,B); else CBI(N,B); }while(0)
 #ifndef SBI
@@ -134,7 +134,8 @@
 #define HYPOT2(x,y) (sq(x)+sq(y))
 #define NORMSQ(x,y,z) (sq(x)+sq(y)+sq(z))
 
-#define CIRCLE_AREA(R) (float(M_PI) * sq(float(R)))
+#define FLOAT_SQ(I) sq(float(I))
+#define CIRCLE_AREA(R) (float(M_PI) * FLOAT_SQ(R))
 #define CIRCLE_CIRC(R) (2 * float(M_PI) * float(R))
 
 #define SIGN(a) ({__typeof__(a) _a = (a); (_a>0)-(_a<0);})
@@ -240,7 +241,11 @@
 #define _DIS_1(O)           NOT(_ENA_1(O))
 #define ENABLED(V...)       DO(ENA,&&,V)
 #define DISABLED(V...)      DO(DIS,&&,V)
+#define ANY(V...)          !DISABLED(V)
+#define ALL(V...)           ENABLED(V)
+#define NONE(V...)          DISABLED(V)
 #define COUNT_ENABLED(V...) DO(ENA,+,V)
+#define MANY(V...)          (COUNT_ENABLED(V) > 1)
 
 // Ternary pre-compiler macros conceal non-emitted content from the compiler
 #define TERN(O,A,B)         _TERN(_ENA_1(O),B,A)    // OPTION ? 'A' : 'B'
@@ -250,6 +255,7 @@
 #define _TERN(E,V...)       __TERN(_CAT(T_,E),V)    // Prepend 'T_' to get 'T_0' or 'T_1'
 #define __TERN(T,V...)      ___TERN(_CAT(_NO,T),V)  // Prepend '_NO' to get '_NOT_0' or '_NOT_1'
 #define ___TERN(P,V...)     THIRD(P,V)              // If first argument has a comma, A. Else B.
+#define IF_DISABLED(O,A)    TERN(O,,A)
 
 // Macros to conditionally emit array items and function arguments
 #define _OPTITEM(A...)      A,
@@ -270,15 +276,8 @@
 #define MUL_TERN(O,B,A)     ((B) MUL_TERN1(O,A))    // ((B) (OPTION ? '* (A)' : '<nul>'))
 #define DIV_TERN(O,B,A)     ((B) DIV_TERN1(O,A))    // ((B) (OPTION ? '/ (A)' : '<nul>'))
 
-#define IF_ENABLED          TERN_
-#define IF_DISABLED(O,A)    TERN(O,,A)
-
-#define ANY(V...)          !DISABLED(V)
-#define NONE(V...)          DISABLED(V)
-#define ALL(V...)           ENABLED(V)
 #define BOTH(V1,V2)         ALL(V1,V2)
 #define EITHER(V1,V2)       ANY(V1,V2)
-#define MANY(V...)          (COUNT_ENABLED(V) > 1)
 
 // Macros to support pins/buttons exist testing
 #define PIN_EXISTS(PN)      (defined(PN##_PIN) && PN##_PIN >= 0)

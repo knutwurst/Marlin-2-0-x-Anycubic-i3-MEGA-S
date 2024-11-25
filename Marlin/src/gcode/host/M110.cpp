@@ -25,6 +25,9 @@
 
 /**
  * M110: Set Current Line Number
+ *
+ * Parameters:
+ *   N<int>  Number to set as last-processed command
  */
 void GcodeSuite::M110() {
 

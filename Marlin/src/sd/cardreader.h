@@ -21,6 +21,10 @@
  */
 #pragma once
 
+/**
+ * cardreader.h - SD card / USB flash drive file handling interface
+ */
+
 #include "../inc/MarlinConfig.h"
 
 #if HAS_MEDIA
@@ -69,19 +73,19 @@ extern const char M23_STR[], M24_STR[];
 #endif
 
 typedef struct {
-  bool saving:1,
-       logging:1,
-       sdprinting:1,
-       sdprintdone:1,
-       mounted:1,
-       filenameIsDir:1,
-       workDirIsRoot:1,
-       abort_sd_printing:1
+  bool saving:1,                // Receiving a G-code file or logging commands during a print
+       logging:1,               // Log enqueued commands to the open file. See GCodeQueue::advance()
+       sdprinting:1,            // Actively printing from the open file
+       sdprintdone:1,           // The active job has reached the end, 100%
+       mounted:1,               // The card or flash drive is mounted and ready to read/write
+       filenameIsDir:1,         // The working item is a directory
+       workDirIsRoot:1,         // The working directory is / so there's no parent
+       abort_sd_printing:1      // Abort by calling abortSDPrinting() at the main loop()
        #if DO_LIST_BIN_FILES
-         , filenameIsBin:1
+         , filenameIsBin:1      // The working item is a BIN file
        #endif
        #if ENABLED(BINARY_FILE_TRANSFER)
-         , binary_mode:1
+         , binary_mode:1        // Use the serial line buffer as BinaryStream input
        #endif
     ;
 } card_flags_t;

@@ -23,8 +23,7 @@
 
 //
 // FYSETC F6 1.3 (and 1.4) pin assignments
-// Schematic (1.3): https://green-candy.osdn.jp/external/MarlinFW/board_schematics/RAMPS/FYSETC%20F6%201.3/F6_V13.pdf
-// Origin: https://github.com/FYSETC/FYSETC-F6/blob/master/Hardware/V1.3/F6_V13.pdf
+// Schematic: https://github.com/FYSETC/FYSETC-F6/blob/master/Hardware/V1.3/F6_V13.pdf
 // ATmega2560
 //
 
@@ -253,7 +252,7 @@
   #define DOGLCD_A0                  LCD_PINS_DC
 
   #undef KILL_PIN
-  #define NEOPIXEL_PIN               EXP1_07_PIN
+  #define BOARD_NEOPIXEL_PIN         EXP1_07_PIN
 
 #else
   #define BEEPER_PIN                 EXP1_01_PIN

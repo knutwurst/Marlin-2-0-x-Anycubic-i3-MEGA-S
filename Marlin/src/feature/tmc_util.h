@@ -335,7 +335,7 @@ void test_tmc_connection(LOGICAL_AXIS_DECL(const bool, true));
     void tmc_set_report_interval(const uint16_t update_interval);
   #endif
   void tmc_report_all(LOGICAL_AXIS_DECL(const bool, true));
-  void tmc_get_registers(LOGICAL_AXIS_ARGS(const bool));
+  void tmc_get_registers(LOGICAL_AXIS_ARGS_LC(const bool));
 #endif
 
 /**

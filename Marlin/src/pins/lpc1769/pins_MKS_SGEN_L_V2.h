@@ -23,8 +23,7 @@
 
 /**
  * MKS SGen-L V2 pin assignments
- * Schematic: https://green-candy.osdn.jp/external/MarlinFW/board_schematics/MKS%20SGEN_L%20V2/MKS%20SGEN_L%20V2.0_003%20SCH.pdf
- * Origin: https://github.com/makerbase-mks/MKS-SGEN_L-V2/blob/master/Hardware/MKS%20SGEN_L%20V2.0_003/MKS%20SGEN_L%20V2.0_003%20SCH.pdf
+ * Schematic: https://github.com/makerbase-mks/MKS-SGEN_L-V2/blob/master/Hardware/MKS%20SGEN_L%20V2.0_003/MKS%20SGEN_L%20V2.0_003%20SCH.pdf
  */
 
 #include "env_validate.h"
@@ -104,6 +103,13 @@
 #endif
 
 //
+// Probe enable
+//
+#if ENABLED(PROBE_ENABLE_DISABLE) && !defined(PROBE_ENABLE_PIN)
+  #define PROBE_ENABLE_PIN            SERVO0_PIN
+#endif
+
+//
 // Filament Runout Sensor
 //
 #define FIL_RUNOUT_PIN                     P1_28  // X+
@@ -180,19 +186,10 @@
   //#define E4_HARDWARE_SERIAL Serial1
 
   #define X_SERIAL_TX_PIN                  P1_01
-  #define X_SERIAL_RX_PIN        X_SERIAL_TX_PIN
-
   #define Y_SERIAL_TX_PIN                  P1_08
-  #define Y_SERIAL_RX_PIN        Y_SERIAL_TX_PIN
-
   #define Z_SERIAL_TX_PIN                  P1_10
-  #define Z_SERIAL_RX_PIN        Z_SERIAL_TX_PIN
-
   #define E0_SERIAL_TX_PIN                 P1_15
-  #define E0_SERIAL_RX_PIN      E0_SERIAL_TX_PIN
-
   #define E1_SERIAL_TX_PIN                 P1_17
-  #define E1_SERIAL_RX_PIN      E1_SERIAL_TX_PIN
 
   // Reduce baud rate to improve software serial reliability
   #ifndef TMC_BAUD_RATE

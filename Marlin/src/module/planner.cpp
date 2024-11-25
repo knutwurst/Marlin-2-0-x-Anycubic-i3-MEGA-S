@@ -129,7 +129,7 @@ volatile uint8_t Planner::block_buffer_head,    // Index of the next block to be
 uint16_t Planner::cleaning_buffer_counter;      // A counter to disable queuing of blocks
 uint8_t Planner::delay_before_delivering;       // Delay block delivery so initial blocks in an empty queue may merge
 
-planner_settings_t Planner::settings;           // Initialized by settings.load()
+planner_settings_t Planner::settings;           // Initialized by settings.load
 
 /**
  * Set up inline block variables
@@ -190,7 +190,7 @@ float Planner::mm_per_step[DISTINCT_AXES];      // (mm) Millimeters per step
     matrix_3x3 Planner::bed_level_matrix; // Transform to compensate for bed level
   #endif
   #if ENABLED(ENABLE_LEVELING_FADE_HEIGHT)
-    float Planner::z_fade_height,      // Initialized by settings.load()
+    float Planner::z_fade_height,      // Initialized by settings.load
           Planner::inverse_z_fade_height,
           Planner::last_fade_z;
   #endif
@@ -199,7 +199,7 @@ float Planner::mm_per_step[DISTINCT_AXES];      // (mm) Millimeters per step
 #endif
 
 #if ENABLED(SKEW_CORRECTION)
-  skew_factor_t Planner::skew_factor; // Initialized by settings.load()
+  skew_factor_t Planner::skew_factor; // Initialized by settings.load
 #endif
 
 #if ENABLED(AUTOTEMP)
@@ -229,7 +229,7 @@ float Planner::previous_nominal_speed;
 #endif
 
 #if ENABLED(LIN_ADVANCE)
-  float Planner::extruder_advance_K[DISTINCT_E]; // Initialized by settings.load()
+  float Planner::extruder_advance_K[DISTINCT_E]; // Initialized by settings.load
 #endif
 
 #if HAS_POSITION_FLOAT

@@ -65,6 +65,13 @@
 #endif
 
 //
+// Probe enable
+//
+#if ENABLED(PROBE_ENABLE_DISABLE) && !defined(PROBE_ENABLE_PIN)
+  #define PROBE_ENABLE_PIN            SERVO0_PIN
+#endif
+
+//
 // Steppers
 //
 #define X_STEP_PIN                          PC0
@@ -100,16 +107,9 @@
   //#define E0_HARDWARE_SERIAL MSerial1
 
   #define X_SERIAL_TX_PIN                   PC7
-  #define X_SERIAL_RX_PIN                   PC7
-
   #define Y_SERIAL_TX_PIN                   PD2
-  #define Y_SERIAL_RX_PIN                   PD2
-
   #define Z_SERIAL_TX_PIN                   PC12
-  #define Z_SERIAL_RX_PIN                   PC12
-
   #define E0_SERIAL_TX_PIN                  PC11
-  #define E0_SERIAL_RX_PIN                  PC11
 
   // Reduce baud rate to improve software serial reliability
   #ifndef TMC_BAUD_RATE
@@ -245,8 +245,8 @@
 #endif
 
 // LED driving pin
-#ifndef NEOPIXEL_PIN
-  #define NEOPIXEL_PIN                      PA2
+#ifndef BOARD_NEOPIXEL_PIN
+  #define BOARD_NEOPIXEL_PIN                PA2
 #endif
 
 //
@@ -254,7 +254,7 @@
 //
 #define SDCARD_CONNECTION                ONBOARD
 #define SPI_DEVICE                             2  // Maple
-#define ONBOARD_SPI_DEVICE                     2
+#define ONBOARD_SPI_DEVICE                     2  // Maple
 #define SDSS                           SD_SS_PIN
 #define ONBOARD_SD_CS_PIN              SD_SS_PIN
 #define SD_DETECT_PIN                EXP2_07_PIN
