@@ -145,6 +145,10 @@ void AnycubicTouchscreenClass::Setup() {
   setup_OutageTestPin();
   setup_PowerOffPin();
 
+  #if ENABLED(KNUTWURST_MEGA_P)
+    laser_init();
+  #endif
+
   SENDLINE_DBG_PGM("J12", "TFT Serial Debug: Ready... J12");
 
   CheckHeaterError();
@@ -157,52 +161,338 @@ void AnycubicTouchscreenClass::Setup() {
   #endif
 }
 
-  #if ENABLED(KNUTWURST_MEGA_P_LASER)
-PRINTER_STRUCT Laser_printer_st = {0};
-BMP_HEAD       st_bmp           = {0};
+#if ENABLED(KNUTWURST_MEGA_P)
+  /*
+   * The following block is used for the integrated Laser engaving feature in the anycubic touchscreen.
+   * It's currently only supported by the Anycubic MEGA Pro.
+   */
 
-void laser_init() {
-  Laser_printer_st.pic_pixel_distance = PIC_FIXED;
-  Laser_printer_st.laser_height       = 50;
-  Laser_printer_st.x_offset           = 0;
-  Laser_printer_st.x_offset           = 0;
+  static char laser_print_step = 0;
+  static float x_start, y_start;
+  static float x_end, y_end;
 
-  Laser_printer_st.pic_vector     = 0;
-  Laser_printer_st.pic_x_mirror   = 1;
-  Laser_printer_st.pic_y_mirror   = 0;
-  Laser_printer_st.pic_laser_time = 15;
+  /**
+   * Initialize Anycubic laser feature.
+   */
+  void AnycubicTouchscreenClass::laser_init() {
+    laser_printer_st.pic_pixel_distance = PIC_FIXED;
+    laser_printer_st.laser_height       = 50;
+    laser_printer_st.x_offset           = 0;
+    laser_printer_st.x_offset           = 0;
 
-  send_laser_param();
-}
+    laser_printer_st.pic_vector     = 0;
+    laser_printer_st.pic_x_mirror   = 1;
+    laser_printer_st.pic_y_mirror   = 0;
+    laser_printer_st.pic_laser_time = 15;
 
-void send_pic_param() {
-  SEND_PGM("A45V W");
-  LCD_SERIAL.print(Laser_printer_st.pic_width);
-  SEND_PGM(" H");
-  LCD_SERIAL(Laser_printer_st.pic_height);
-  SENDLINE_PGM(" ");
-}
+    send_laser_param();
+  }
 
-void send_laser_param() {
-  SEND_PGM("A44V A");
-  LCD_SERIAL.print(Laser_printer_st.pic_vector);
-  SEND_PGM(" B");
-  LCD_SERIAL.print(Laser_printer_st.pic_laser_time);
-  SEND_PGM(" C");
-  LCD_SERIAL.print(Laser_printer_st.laser_height);
-  SEND_PGM(" D");
-  LCD_SERIAL.print(Laser_printer_st.pic_pixel_distance);
-  SEND_PGM(" E");
-  LCD_SERIAL.print(Laser_printer_st.x_offset);
-  SEND_PGM(" F");
-  LCD_SERIAL.print(Laser_printer_st.y_offset);
-  SEND_PGM(" G");
-  LCD_SERIAL.print(Laser_printer_st.pic_x_mirror);
-  SEND_PGM(" H");
-  LCD_SERIAL.print(Laser_printer_st.pic_y_mirror);
-  SENDLINE_PGM(" ");
-}
-  #endif // if ENABLED(KNUTWURST_MEGA_P_LASER)
+  /**
+   * Send picture parameters for the BMP laser engraving feature to the TFT.
+   */
+  void AnycubicTouchscreenClass::send_pic_param() {
+    SEND_PGM("A45V W"); LCD_SERIAL.print(laser_printer_st.pic_width);
+    SEND_PGM(    " H"); LCD_SERIAL.print(laser_printer_st.pic_height);
+    SENDLINE_PGM(" ");
+  }
+
+  /**
+   * Send laser parameters to the TFT.
+   */
+  void AnycubicTouchscreenClass::send_laser_param() {
+    SEND_PGM("A44V A"); LCD_SERIAL.print(laser_printer_st.pic_vector);
+    SEND_PGM(    " B"); LCD_SERIAL.print(laser_printer_st.pic_laser_time);
+    SEND_PGM(    " C"); LCD_SERIAL.print(laser_printer_st.laser_height);
+    SEND_PGM(    " D"); LCD_SERIAL.print(laser_printer_st.pic_pixel_distance);
+    SEND_PGM(    " E"); LCD_SERIAL.print(laser_printer_st.x_offset);
+    SEND_PGM(    " F"); LCD_SERIAL.print(laser_printer_st.y_offset);
+    SEND_PGM(    " G"); LCD_SERIAL.print(laser_printer_st.pic_x_mirror);
+    SEND_PGM(    " H"); LCD_SERIAL.print(laser_printer_st.pic_y_mirror);
+    SENDLINE_PGM(" ");
+  }
+
+  /**
+   * Read pixel gray level from BMP.
+   *
+   * @param gray Pointer to gray value.
+   * @param y    Y coordinate.
+   * @param x    X coordinate.
+   */
+  void AnycubicTouchscreenClass::read_bmp(unsigned char *gray, unsigned int y, unsigned int x) {
+    unsigned char red_t, green_t, blue_t;
+    unsigned int temp;
+    float Y;
+    unsigned char buffer[4];
+
+    if (laser_printer_st.pic_bit == 32) {
+      laser_printer_st.pic_ptr = (laser_printer_st.pic_height - y - 1) * laser_printer_st.pic_real_width + x * 4 + laser_printer_st.pic_start;
+      card.setIndex( laser_printer_st.pic_ptr);
+
+      card.read(buffer, 4);
+      Y     = buffer[2] * 0.212671f + buffer[1] * 0.715160f + buffer[0] * 0.072169f; // Y=0.212671*R + 0.715160*G + 0.072169*B,???????;  Gray = (R*299 + G*587 + B*114 + 500) / 1000
+      *gray = 0xff - (unsigned char)Y;
+    }
+    else if (laser_printer_st.pic_bit == 24) {
+      laser_printer_st.pic_ptr = (unsigned long)(laser_printer_st.pic_height - y - 1) * laser_printer_st.pic_real_width + x * 3 + laser_printer_st.pic_start;
+      card.setIndex( laser_printer_st.pic_ptr);
+      card.read(buffer, 3);
+
+      Y     = buffer[2] * 0.212671f + buffer[1] * 0.715160f + buffer[0] * 0.072169f; // Y=0.212671*R + 0.715160*G + 0.072169*B,???????;
+      *gray = 0xff - (unsigned char)Y;
+    }
+    else if (laser_printer_st.pic_bit == 16) {
+      laser_printer_st.pic_ptr = (laser_printer_st.pic_height - y - 1) * laser_printer_st.pic_real_width + x * 2 + laser_printer_st.pic_start;
+      card.setIndex( laser_printer_st.pic_ptr);
+      card.read(buffer, 2);
+      temp    = (buffer[1] << 8) + buffer[0];
+      red_t   = (temp & 0xf800) >> 8;
+      green_t = (temp & 0x07e0) >> 3;
+      blue_t  = (temp & 0x001f) << 3;
+      Y       = (red_t * 77 + green_t * 150 + blue_t * 29) / 256;
+      // Y=((buffer[1]&0xf8)>>3)*0.212671 + (((buffer[1]&0x07)>>3)+((buffer[0]&0xE0)>>5))*0.715160 +((buffer[0]&0x1f)>>3)*0.072169; // Y=0.212671*R + 0.715160*G + 0.072169*B,???????;
+      *gray = 0xff - (unsigned char)Y;
+    }
+  }
+
+  void AnycubicTouchscreenClass::prepare_laser_print() {
+    if (laser_print_step == 0) {
+      SERIAL_ECHOLNPGM("prepare_laser_print() step 0");
+      // Home axis.
+      queue.enqueue_now_P(PSTR("G28"));
+      // Move to laser height.
+      char value[30];
+      sprintf_P(value, PSTR("G1 Z%s F500"), ftostr42_52(laser_printer_st.laser_height));
+      queue.enqueue_one_now(value);
+      laser_print_step = 1;
+    }
+    else if (laser_print_step == 1) {
+      SERIAL_ECHOLNPGM("prepare_laser_print() step 1");
+      // Wait for homing and initialization to finish.
+      if (commandsInQueue()) return;
+      SERIAL_ECHOLNPGM("prepare_laser_print() step 1 complete");
+      laser_print_step = 2;
+    }
+    else if (laser_print_step == 2) {
+      SERIAL_ECHOLNPGM("prepare_laser_print() step 2");
+      // Start the actual engraving process.
+      laser_print_picture();
+      // Clean up after laser has finished.
+      laser_print_step = 0;
+      card.fileHasFinished();
+      card.autofile_check();
+      en_continue = 0;
+    }
+  }
+
+  void AnycubicTouchscreenClass::laser_print_picture() {
+    SERIAL_ECHOLNPGM("DEBUG: laser_print_picture()");
+    unsigned char Y;
+    unsigned long time;
+    static int i, j;
+    int ftemp;
+    static char laser_counter = 0;
+    static char cvalue[30];
+
+    int x_max = laser_printer_st.pic_width, y_max = laser_printer_st.pic_height;
+
+    WRITE(HEATER_0_PIN, 0);
+
+    laser_status  = 1;
+    laser_counter = 0;
+
+    if (laser_printer_st.pic_vector == 0)
+      ftemp = LASER_PRINT_SPEED;
+    else
+      ftemp = 2 * LASER_PRINT_SPEED;
+
+    if (laser_printer_st.pic_x_mirror == 1) {
+      x_start = MAX_X_SIZE / 2  + LASER_X_OFFSET + (laser_printer_st.pic_width * laser_printer_st.pic_pixel_distance) / 2;
+      x_end   = MAX_X_SIZE / 2  + LASER_X_OFFSET - (laser_printer_st.pic_width * laser_printer_st.pic_pixel_distance) / 2;
+    }
+    else {
+      x_end   = MAX_X_SIZE / 2  + LASER_X_OFFSET + (laser_printer_st.pic_width * laser_printer_st.pic_pixel_distance) / 2;
+      x_start = MAX_X_SIZE / 2  + LASER_X_OFFSET - (laser_printer_st.pic_width * laser_printer_st.pic_pixel_distance) / 2;
+    }
+
+    if (laser_printer_st.pic_y_mirror == 1) {
+      y_start = MAX_Y_SIZE / 2  + LASER_Y_OFFSET + (laser_printer_st.pic_height * laser_printer_st.pic_pixel_distance) / 2;
+      y_end   = MAX_Y_SIZE / 2  + LASER_Y_OFFSET - (laser_printer_st.pic_height * laser_printer_st.pic_pixel_distance) / 2;
+    }
+    else {
+      y_end   = MAX_Y_SIZE / 2  + LASER_Y_OFFSET + (laser_printer_st.pic_height * laser_printer_st.pic_pixel_distance) / 2;
+      y_start = MAX_Y_SIZE / 2  + LASER_Y_OFFSET - (laser_printer_st.pic_height * laser_printer_st.pic_pixel_distance) / 2;
+    }
+
+    SENDLINE_PGM("J29");// hotend heating
+    SENDLINE_PGM("J29");// hotend heating
+
+    for (i = 0; i < y_max; i++) {
+      if (laser_printer_st.pic_y_mirror == 0)
+        sprintf_P(cvalue, PSTR("G1 Y%sF%i"), ftostr42_52(y_start + i * laser_printer_st.pic_pixel_distance), ftemp);
+      else
+        sprintf_P(cvalue, PSTR("G1 Y%sF%i"), ftostr42_52(y_start - i * laser_printer_st.pic_pixel_distance), ftemp);
+
+      if (i % 2 == 0) {
+        for (j = 0; j < x_max; j++) {
+          read_bmp(&Y, i, j);
+          if (Y > MIN_GRAY_VLAUE) {
+            if (laser_printer_st.pic_x_mirror == 1)
+              sprintf_P(cvalue, PSTR("G1 X%sF%i"), ftostr42_52(x_start - j * laser_printer_st.pic_pixel_distance), ftemp);
+            else
+              sprintf_P(cvalue, PSTR("G1 X%sF%i"), ftostr42_52(x_start + j * laser_printer_st.pic_pixel_distance), ftemp);
+            queue.enqueue_one_now(cvalue);
+            while (commandsInQueue()) idle();
+
+            WRITE(HEATER_0_PIN, 1);
+            if (laser_printer_st.pic_vector == 0) {
+              time = Y * laser_printer_st.pic_laser_time;
+              while (time--) WRITE(HEATER_0_PIN, 1);
+              WRITE(HEATER_0_PIN, 0);
+            }
+          }
+          else {
+            WRITE(HEATER_0_PIN, 0);
+          }
+
+          TFTCommandScan();
+          while (laser_print_pause) {
+            TFTCommandScan();
+            if (laser_status == 0) return;
+          }
+          if (laser_status == 0) return;
+        }
+      }
+      else {
+        for (j = 0; j < x_max; j++) {
+          read_bmp(&Y, i, x_max - j);
+          if (Y > MIN_GRAY_VLAUE && j != 0) {
+            if (laser_printer_st.pic_x_mirror == 1)
+              sprintf_P(cvalue, PSTR("G1 X%sF%i"), ftostr42_52(x_end + j * laser_printer_st.pic_pixel_distance), ftemp);
+            else
+              sprintf_P(cvalue, PSTR("G1 X%.1fF%i"), ftostr42_52(x_end - j * laser_printer_st.pic_pixel_distance), ftemp);
+            queue.enqueue_one_now(cvalue);
+            while (commandsInQueue()) idle();
+            WRITE(HEATER_0_PIN, 1);
+            if (laser_printer_st.pic_vector == 0) {
+              time = Y * laser_printer_st.pic_laser_time;
+              while (time--) WRITE(HEATER_0_PIN, 1);
+              WRITE(HEATER_0_PIN, 0);
+            }
+
+            if (laser_counter != 20) {
+              laser_counter = 20;
+              SENDLINE_PGM("J30");
+              SENDLINE_PGM("J30");
+            }
+          }
+          else {
+            WRITE(HEATER_0_PIN, 0);
+          }
+
+          CommandScan();
+          while (laser_print_pause)
+          {
+            CommandScan();
+            if (laser_status == 0) return;
+          }
+          if (laser_status == 0) return;
+        }
+      }
+    }
+    laser_status = 0;
+  }
+
+  /**
+   * Handle laser indication.
+   */
+  void AnycubicTouchscreenClass::laser_indicate() {
+    static unsigned char laser_indicate_step = 0;
+    static unsigned char laser_indicate_on   = 0;
+    static char cvalue[30];
+
+    if (laser_on_off == 1 && laser_indicate_on == 0 && laser_indicate_step == 3) {
+      // Activate the laser and start indication routine.
+      sprintf_P(cvalue, PSTR("M3 S%i"), LASER_INDICATE_LEVEL);
+      queue.enqueue_one_now(cvalue);
+      laser_indicate_on = 1;
+    }
+    else if (laser_on_off == 0 && (laser_indicate_on == 1 || laser_indicate_step > 0)) {
+      // Deactivate the laser.
+      queue.enqueue_now_P(PSTR("M5"));
+      laser_indicate_step = 0;
+      laser_indicate_on   = 0;
+      return;
+    }
+    else if (laser_on_off == 0) {
+      // Indication not active and laser is off, nothing to do.
+      return;
+    }
+
+    if (file_type == 0) return;
+
+    if (laser_indicate_step == 0) {
+      // Home X and Y axis and initialize start/end coordinates for given picture.
+      queue.enqueue_now_P(PSTR("G28 X0 Y0"));
+
+      if (laser_printer_st.pic_x_mirror == 1) {
+        x_start = MAX_X_SIZE / 2 + LASER_X_OFFSET + (laser_printer_st.pic_width * laser_printer_st.pic_pixel_distance) / 2;
+        x_end   = MAX_X_SIZE / 2  + LASER_X_OFFSET - (laser_printer_st.pic_width * laser_printer_st.pic_pixel_distance) / 2;
+      }
+      else {
+        x_end   = MAX_X_SIZE / 2  + LASER_X_OFFSET + (laser_printer_st.pic_width * laser_printer_st.pic_pixel_distance) / 2;
+        x_start = MAX_X_SIZE / 2 + LASER_X_OFFSET - (laser_printer_st.pic_width * laser_printer_st.pic_pixel_distance) / 2;
+      }
+
+      if (laser_printer_st.pic_y_mirror == 1) {
+        y_start = MAX_Y_SIZE / 2 + LASER_Y_OFFSET + (laser_printer_st.pic_height * laser_printer_st.pic_pixel_distance) / 2;
+        y_end   = MAX_Y_SIZE / 2 + LASER_Y_OFFSET - (laser_printer_st.pic_height * laser_printer_st.pic_pixel_distance) / 2;
+      }
+      else {
+        y_end   = MAX_Y_SIZE / 2 + LASER_Y_OFFSET + (laser_printer_st.pic_height * laser_printer_st.pic_pixel_distance) / 2;
+        y_start = MAX_Y_SIZE / 2 + LASER_Y_OFFSET - (laser_printer_st.pic_height * laser_printer_st.pic_pixel_distance) / 2;
+      }
+
+      laser_indicate_step = 1;
+    }
+    else if (laser_indicate_step == 1) {
+      // Wait for homing to finish.
+      if (commandsInQueue()) return;
+      // Move to first corner.
+      SERIAL_ECHOLNPGM("1 x=", x_end);
+      sprintf_P(cvalue, PSTR("G1 X%sF3600"), ftostr42_52(x_end));
+      queue.enqueue_one_now(cvalue);
+      laser_indicate_step = 2;
+    }
+    else if (laser_indicate_step == 2) {
+      // Wait for previous move to finish.
+      if (commandsInQueue()) return;
+      // Move to second corner.
+      SERIAL_ECHOLNPGM("2 y=", y_end);
+      sprintf_P(cvalue, PSTR("G1 Y%sF3600"), ftostr42_52(y_end));
+      queue.enqueue_one_now(cvalue);
+      laser_indicate_step = 3;
+    }
+    else if (laser_indicate_step == 3) {
+      // Wait for previous move to finish.
+      if (commandsInQueue()) return;
+      // Move to third corner.
+      SERIAL_ECHOLNPGM("3 x=", x_start);
+      sprintf_P(cvalue, PSTR("G1 X%sF3600"), ftostr42_52(x_start));
+      queue.enqueue_one_now(cvalue);
+      laser_indicate_step = 4;
+    }
+    else if (laser_indicate_step == 4) {
+      // Wait for previous move to finish.
+      if (commandsInQueue()) return;
+      // Move to fourth corner.
+      SERIAL_ECHOLNPGM("4 y=", y_start);
+      sprintf_P(cvalue, PSTR("G1 Y%sF3600"), ftostr42_52(y_start));
+      queue.enqueue_one_now(cvalue);
+      laser_indicate_step = 1;
+    }
+  }
+#endif // if ENABLED(KNUTWURST_MEGA_P)
 
 void AnycubicTouchscreenClass::KillTFT() { SENDLINE_DBG_PGM("J11", "TFT Serial Debug: Kill command... J11"); }
 
@@ -1197,10 +1487,24 @@ void AnycubicTouchscreenClass::GetCommandFromTFT() {
                 ResumePrint();
               }
   #endif
+  #if ENABLED(KNUTWURST_MEGA_P)
+              laser_print_pause = 0;
+  #endif
               break;
 
             case 11: // A11 stop sd print
-              TERN_(SDSUPPORT, StopPrint());
+  #if ENABLED(SDSUPPORT)
+              StopPrint();
+    #if ENABLED(KNUTWURST_MEGA_P)
+              laser_print_step = 0;
+              if (laser_status == 1) {
+                WRITE(HEATER_0_PIN, 0);
+                laser_status      = 0;
+                laser_print_step  = 0;
+                laser_print_pause = 0;
+              }
+    #endif
+  #endif
               break;
 
             case 12: // A12 kill
@@ -1227,9 +1531,50 @@ void AnycubicTouchscreenClass::GetCommandFromTFT() {
                   if (starpos) {
                     *(starpos - 1) = '\0';
                   }
+    #if ENABLED(KNUTWURST_MEGA_P)
+                  file_type = 0;
+                  if (strstr(TFTstrchr_pointer, ".bmp")) file_type = 1;
+    #endif
                   strcpy(currentFileOrDirectory, TFTstrchr_pointer + 4);
                   SENDLINE_DBG_PGM_VAL("J20", "TFT Serial Debug: File Selected... J20 ",
                                        currentFileOrDirectory); // J20 File Selected
+
+    #if ENABLED(KNUTWURST_MEGA_P)
+                  // Check if the file opened is a BMP. In this case, initialize the laser feature.
+                  if (file_type == 1) {
+                    laser_printer_st.pic_dir = 0;
+                    card.read(&st_bmp, sizeof(st_bmp));
+                    laser_printer_st.pic_file_size = (unsigned long)st_bmp.bfSize[0] + (unsigned long)st_bmp.bfSize[1] * 256 + (unsigned long)st_bmp.bfSize[2] * 256 * 256 + (unsigned long)st_bmp.bfSize[3] * 256 * 256 * 256;
+                    laser_printer_st.pic_width     = (unsigned int)st_bmp.biWidth[0] + (unsigned int)st_bmp.biWidth[1] * 256;
+                    laser_printer_st.pic_width_odd = laser_printer_st.pic_width % 2;
+                    laser_printer_st.pic_height    = (unsigned int)st_bmp.biHeight[0] + (unsigned int)st_bmp.biHeight[1] * 256;
+                    if (laser_printer_st.pic_height > 30000) {
+                      laser_printer_st.pic_height = 65536 - laser_printer_st.pic_height;
+                      laser_printer_st.pic_dir    = 1;
+                    }
+                    laser_printer_st.pic_bit        = st_bmp.biBitCount[0];
+                    laser_printer_st.pic_start      = 54;
+                    laser_printer_st.pic_ptr        = laser_printer_st.pic_width * laser_printer_st.pic_height * laser_printer_st.pic_bit / 8 + laser_printer_st.pic_start;
+                    laser_printer_st.pic_real_width = (((laser_printer_st.pic_width * laser_printer_st.pic_bit) + 31) >> 5) << 2;
+                    card.setIndex(54);
+
+                    SERIAL_ECHOPGM("file size:  ", laser_printer_st.pic_file_size);
+                    SERIAL_EOL();
+                    SERIAL_ECHOPGM("pic_width:  ", laser_printer_st.pic_width);
+                    SERIAL_EOL();
+                    SERIAL_ECHOPGM("pic_height: ", laser_printer_st.pic_height);
+                    SERIAL_EOL();
+                    SERIAL_ECHOPGM("pic_bit:	", (int)laser_printer_st.pic_bit);
+                    SERIAL_EOL();
+                    SERIAL_ECHOPGM("pic_ptr:	", laser_printer_st.pic_ptr);
+                    SERIAL_EOL();
+                    SERIAL_ECHOPGM("real_widht: ", laser_printer_st.pic_real_width);
+                    SERIAL_EOL();
+
+                    SENDLINE_PGM("");
+                    send_pic_param();
+                  }
+    #endif
                 }
               }
   #endif
@@ -1240,6 +1585,9 @@ void AnycubicTouchscreenClass::GetCommandFromTFT() {
               if (!isPrinting()) {
                 StartPrint();
               }
+    #if ENABLED(KNUTWURST_MEGA_P)
+              laser_on_off = 0;
+    #endif
   #endif
               break;
 
@@ -1843,13 +2191,8 @@ void AnycubicTouchscreenClass::GetCommandFromTFT() {
               break;
 
   #endif
-  #if ENABLED(KNUTWURST_DGUS2_TFT)
-            case 50:
-              SENDLINE_PGM("J38 ");
-              break;
-  #endif
 
-  #if ENABLED(KNUTWURST_MEGA_P_LASER)
+  #if ENABLED(KNUTWURST_MEGA_P)
             case 34: // Continuous printing
               en_continue = 1;
               break;
@@ -1860,12 +2203,11 @@ void AnycubicTouchscreenClass::GetCommandFromTFT() {
 
             case 36:
               if (CodeSeen('S')) {
-                int coorvalue;
-                coorvalue = CodeValueInt();
+                int coorvalue = CodeValueInt();
                 if (coorvalue != 0) {
-                  Laser_printer_st.pic_vector = 1;
+                  laser_printer_st.pic_vector = 1;
                 } else {
-                  Laser_printer_st.pic_vector = 0;
+                  laser_printer_st.pic_vector = 0;
                 }
               }
               break;
@@ -1875,88 +2217,80 @@ void AnycubicTouchscreenClass::GetCommandFromTFT() {
                 int coorvalue;
                 coorvalue = CodeValueInt();
                 if (coorvalue == 0) {
-                  Laser_printer_st.pic_x_mirror = 0;
+                  laser_printer_st.pic_x_mirror = 0;
                 } else if (coorvalue == 1) {
-                  Laser_printer_st.pic_x_mirror = 1; // x
+                  laser_printer_st.pic_x_mirror = 1;
                 }
               }
               break;
 
             case 38:
               if (CodeSeen('S')) {
-                int coorvalue;
-                coorvalue                       = CodeValueInt();
-                Laser_printer_st.pic_laser_time = coorvalue;
+                int coorvalue = CodeValueInt();
+                laser_printer_st.pic_laser_time = coorvalue;
               }
               break;
 
             case 39:
               if (CodeSeen('S')) { // A39
-                float coorvalue;
-                coorvalue                     = CodeValue();
-                Laser_printer_st.laser_height = coorvalue;
-                SEND_PGM("laser_height = ");
-                LCD_SERIAL.print(Laser_printer_st.laser_height);
-                SENDLINE_PGM("");
+                float coorvalue = CodeValue();
+                laser_printer_st.laser_height = coorvalue;
+                SERIAL_ECHOPGM("laser_height = ");
+                SERIAL_ECHOLN(laser_printer_st.laser_height);
               }
               break;
 
             case 40:
               if (CodeSeen('S')) { // A40
-                float coorvalue;
-                coorvalue                           = CodeValue();
-                Laser_printer_st.pic_pixel_distance = coorvalue;
+                float coorvalue = CodeValue();
+                laser_printer_st.pic_pixel_distance = coorvalue;
               }
               break;
 
             case 41:
               if (CodeSeen('S')) {
-                float coorvalue;
-                coorvalue                 = CodeValue();
-                Laser_printer_st.x_offset = coorvalue;
+                float coorvalue = CodeValue();
+                laser_printer_st.x_offset = coorvalue;
               }
               break;
 
             case 42:
               if (CodeSeen('S')) {
-                float coorvalue;
-                coorvalue                 = CodeValue();
-                Laser_printer_st.y_offset = coorvalue;
+                float coorvalue = CodeValue();
+                laser_printer_st.y_offset = coorvalue;
               }
               break;
 
             case 43:
               if (CodeSeen('S')) { // y
-                int coorvalue;
-                coorvalue = CodeValueInt();
+                int coorvalue = CodeValueInt();
                 if (coorvalue == 0) {
-                  Laser_printer_st.pic_y_mirror = 0;
+                  laser_printer_st.pic_y_mirror = 0;
                 } else if (coorvalue == 1) {
-                  Laser_printer_st.pic_y_mirror = 1;
+                  laser_printer_st.pic_y_mirror = 1;
                 }
               }
               break;
 
-           case 44:
+            case 44:
               send_laser_param();
               break;
 
             case 49: // A49
               laser_on_off = 0;
-              WRITE(HEATER_0_PIN, 0);
+              injectCommands(F("M5"));
               break;
-              
-            case 50: // A50
+
+            case 50:
               if (laser_on_off == 0) {
                 laser_on_off = 1;
-              } else {
+              }
+              else {
                 laser_on_off = 0;
-                WRITE(HEATER_0_PIN, 0);
+                injectCommands(F("M5"));
               }
               break;
-  #endif // if ENABLED(KNUTWURST_MEGA_P_LASER)
 
-  #if ENABLED(KNUTWURST_MEGA_P)
             case 51:
               if (CodeSeen('H')) {
                 injectCommands(F(
@@ -1964,37 +2298,45 @@ void AnycubicTouchscreenClass::GetCommandFromTFT() {
                   "G1 X30 Y30 F5000\n"
                   "G1 Z0.15 F300"
                 ));
-              } else if (CodeSeen('I')) {
+              }
+              else if (CodeSeen('I')) {
                 injectCommands(F(
                   "G1 Z5 F500\n"
-                  "G1 X190 Y30 F5000\n"
+                   "G1 X190 Y30 F5000\n"
                   "G1 Z0.15 F300"
                 ));
-              } else if (CodeSeen('J')) {
+              }
+              else if (CodeSeen('J')) {
                 injectCommands(F(
                   "G1 Z5 F500\n"
                   "G1 X190 Y190 F5000\n"
                   "G1 Z0.15 F300"
                 ));
-              } else if (CodeSeen('K')) {
+              }
+              else if (CodeSeen('K')) {
                 injectCommands(F(
                   "G1 Z5 F500\n"
                   "G1 X30 Y190 F5000\n"
                   "G1 Z0.15 F300"
                 ));
-              } else if (CodeSeen('L')) {
+              }
+              else if (CodeSeen('L')) {
                 injectCommands(F("G1 X100 Y100 Z50 F5000"));
               }
               break;
-  #endif
 
+  #elif ENABLED(KNUTWURST_DGUS2_TFT)
+            case 50:
+              SENDLINE_PGM("J38 ");
+              break;
+  #endif
             default:
               break;
-          } // switch
+          }
         }
         TFTbufindw  = (TFTbufindw + 1) % TFTBUFSIZE;
         TFTbuflen  += 1;
-      } // if (!TFTcomment_mode)
+      }
       serial3_count = 0; // clear buffer
     } else {
       if (serial3_char == ';') {
@@ -2006,42 +2348,6 @@ void AnycubicTouchscreenClass::GetCommandFromTFT() {
     }
   } // while
 }
-
-  #if ENABLED(KNUTWURST_MEGA_P_LASER)
-  void prepare_laser_print() {
-    static unsigned long times = 0;
-
-    if (times > 100) {
-      times--;
-      return;
-    }
-    times = 10000;
-
-    if (laser_print_steps == 0) {
-      cvalue[0] = 0;
-      while (planner.blocks_queued())
-        ;
-      queue.enqueue_now_P(PSTR("G28"));
-      sprintf_P(cvalue, PSTR("G1 Z%i F500"), (int)Laser_printer_st.laser_height);
-
-      SERIAL_PROTOCOLLN(cvalue);
-      enqueue_and_echo_command_now(cvalue);
-      laser_print_steps = 1;
-      times             = 120000;
-    } else if (laser_print_steps == 1) {
-      if (planner.blocks_queued()) {
-        return;
-      }
-      laser_print_steps = 2;
-    } else if (laser_print_steps == 2) {
-      Laset_print_picture();
-      laser_print_steps = 0;
-      card.printingHasFinished();
-      card.checkautostart(true);
-      en_continue = 0;
-    }
-  }
-  #endif
 
   #if ENABLED(KNUTWURST_4MAXP2)
   void PowerDown() {
@@ -2083,6 +2389,17 @@ void AnycubicTouchscreenClass::GetCommandFromTFT() {
     }
   #endif
 
+  #if ENABLED(KNUTWURST_MEGA_P)
+    laser_indicate();
+    if (file_type == 1 && card.isPrinting()) {
+      prepare_laser_print();
+    }
+  #endif
+
+    TFTCommandScan();
+  }
+
+  void AnycubicTouchscreenClass::TFTCommandScan() {
     if (TFTbuflen < (TFTBUFSIZE - 1)) {
       GetCommandFromTFT();
     }

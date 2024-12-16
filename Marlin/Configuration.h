@@ -63,17 +63,6 @@
 #endif
 
 /*
- * This enables the integrated Laser engaving feature
- * in the anycubic touchscreen. It's currently only
- * supported by the Anycubic MEGA Pro and therefore it
- * is automatically set if the MEGA_P is enabled.
- *
- */
-#if ENABLED(KNUTWURST_MEGA_P)
-// #define KNUTWURST_MEGA_P_LASER
-#endif
-
-/*
  * To ensure the correct endstop configuration,
  * this has to be enabled to alter the motherboard
  * configuration for the 4MAX printer family
