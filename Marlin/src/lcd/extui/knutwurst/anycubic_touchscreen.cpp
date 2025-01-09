@@ -124,11 +124,12 @@ void AnycubicTouchscreenClass::Setup() {
 
   currentTouchscreenSelection[0] = 0;
   currentFileOrDirectory[0]      = '\0';
-  SpecialMenu                    = false;
-  MMLMenu                        = false;
-  FlowMenu                       = false;
-  BLTouchMenu                    = false;
-  LevelMenu                      = false;
+  SpecialMenu                    = false; //dsl Special Menu
+  ManualMeshLevelMenu            = false; //dsl Manual Mesh Level Menu
+  FlowMenu                       = false; //dsl Flow Menu
+  ProbeMenu                      = false; //dsl Probe Menu
+  Manual4PntLevelMenu            = false; //dsl Easy 4 Point Level Menu
+  TestMenu                       = false; //dsl new Test Menu
   CaseLight                      = false;
   currentFlowRate                = 100;
   flowRateBuffer                 = SM_FLOW_DISP_L;
@@ -226,6 +227,7 @@ void AnycubicTouchscreenClass::PausePrint() {
   #ifdef SDSUPPORT
   if (isPrintingFromMedia() && mediaPrintingState != AMPRINTSTATE_STOP_REQUESTED &&
       mediaPauseState == AMPAUSESTATE_NOT_PAUSED) {
+
     mediaPrintingState = AMPRINTSTATE_PAUSE_REQUESTED;
     mediaPauseState    = AMPAUSESTATE_NOT_PAUSED;                               // need the userconfirm method to
                                                                                 // update pause state
@@ -289,6 +291,8 @@ void AnycubicTouchscreenClass::ResumePrint() {
   #endif
 }
 
+bool do_big_step = true; //dsl
+
 int AnycubicTouchscreenClass::CodeValueInt() {
   return (atoi(&TFTcmdbuffer[TFTbufindr][TFTstrchr_pointer - TFTcmdbuffer[TFTbufindr] + 1]));
 }
@@ -303,180 +307,396 @@ bool AnycubicTouchscreenClass::CodeSeen(char code) {
 }
 
 void AnycubicTouchscreenClass::HandleSpecialMenu() {
-  #if ENABLED(KNUTWURST_SPECIAL_MENU)
-    #ifdef ANYCUBIC_TFT_DEBUG
+#if ENABLED(KNUTWURST_SPECIAL_MENU)
+
+  #ifdef ANYCUBIC_TFT_DEBUG
   SERIAL_ECHOPGM("TFT Serial Debug: Special Menu Selection: ", currentTouchscreenSelection);
   SERIAL_EOL();
-    #endif
+  #endif 
+  
   if ((strcasestr_P(currentTouchscreenSelection, PSTR(SM_SPECIAL_MENU_L)) != NULL) ||
       (strcasestr_P(currentTouchscreenSelection, PSTR(SM_SPECIAL_MENU_S)) != NULL)) {
+    SERIAL_ECHOLNPGM("Special Menu: Enter"); //dsl
+
     SpecialMenu = true;
+    ENTER_MENU_SOUND //dsl
+
   } else if ((strcasestr_P(currentTouchscreenSelection, PSTR(SM_PID_HOTEND_L)) != NULL) ||
              (strcasestr_P(currentTouchscreenSelection, PSTR(SM_PID_HOTEND_S)) != NULL)) {
-    SERIAL_ECHOLNPGM("Special Menu: PID Tune Hotend");
+    SERIAL_ECHOLNPGM("Special Menu: Tune Hotend 215C"); //dsl
 
     #if ANY(KNUTWURST_MEGA, KNUTWURST_MEGA_S, KNUTWURST_MEGA_P)
     injectCommands(F("G28\nG90\nG1 Z20\nG1 X110 Y110 F4000\nG1 Z5\nM106 "
                      "S172\nG4 P500\nM303 E0 S215 C15 U1\nG4 "
-                     "P500\nM107\nG28\nG1 Z10\nM84\nM500\nM300 S440 P200\nM300 "
+                     //dsl "P500\nM107\nG28\nG1 Z10\nM84\nM500\nM300 S440 P200\nM300 " //dsl save now ???
+                     "P500\nM107\nG28\nG1 Z10\nM84\nM300 S440 P200\nM300 " //dsl don't save now 
                      "S660 P250\nM300 S880 P300"));
-    #endif
+    #endif 
 
     #if ENABLED(KNUTWURST_MEGA_X)
     injectCommands(F("G28\nG90\nG1 Z20\nG1 X155 Y155 F4000\nG1 Z5\nM106 "
                      "S172\nG4 P500\nM303 E0 S215 C15 U1\nG4 "
-                     "P500\nM107\nG28\nG1 Z10\nM84\nM500\nM300 S440 P200\nM300 "
+                     //dsl "P500\nM107\nG28\nG1 Z10\nM84\nM500\nM300 S440 P200\nM300 " //dsl save now ???
+                     "P500\nM107\nG28\nG1 Z10\nM84\nM300 S440 P200\nM300 " //dsl don't save now 
                      "S660 P250\nM300 S880 P300"));
-    #endif
+    #endif 
 
     #if ENABLED(KNUTWURST_CHIRON)
     injectCommands(F("G28\nG90\nG1 Z20\nG1 X205 Y205 F4000\nG1 Z5\nM106 "
                      "S172\nG4 P500\nM303 E0 S215 C15 U1\nG4 "
-                     "P500\nM107\nG28\nG1 Z10\nM84\nM500\nM300 S440 P200\nM300 "
+                     //dsl "P500\nM107\nG28\nG1 Z10\nM84\nM500\nM300 S440 P200\nM300 " //dsl save now ???
+                     "P500\nM107\nG28\nG1 Z10\nM84\nM300 S440 P200\nM300 " //dsl don't save now 
                      "S660 P250\nM300 S880 P300"));
-    #endif
+    #endif 
 
     #if ENABLED(KNUTWURST_4MAXP2)
     injectCommands(F("G28\nG90\nG1 Z20\nG1 X105 Y135 F4000\nG1 Z5\nM106 "
                      "S172\nG4 P500\nM303 E0 S215 C15 U1\nG4 "
-                     "P500\nM107\nG28\nG1 Z10\nM84\nM500\nM300 S440 P200\nM300 "
-                     "S660 P250\nM300 S880 P300"));
-    #endif
+                    //dsl "P500\nM107\nG28\nG1 Z10\nM84\nM500\nM300 S440 P200\nM300 "
+                     "P500\nM107\nG28\nG1 Z10\nM84\nM300 S440 P200\nM300 " //dsl don't save now
+                     "S660 P250\nM300 S880 P300")); 
+    #endif 
 
-    BUZZ(200, 1108);
-    BUZZ(200, 1661);
-    BUZZ(200, 1108);
-    BUZZ(600, 1661);
-  } else if ((strcasestr_P(currentTouchscreenSelection, PSTR(SM_PID_BED_L)) != NULL) ||
+  }
+  
+  else if ((strcasestr_P(currentTouchscreenSelection, PSTR(SM_PID_BED_L)) != NULL) ||
              (strcasestr_P(currentTouchscreenSelection, PSTR(SM_PID_BED_S)) != NULL)) {
-    SERIAL_ECHOLNPGM("Special Menu: PID Tune Ultrabase");
-    BUZZ(200, 1108);
-    BUZZ(200, 1661);
-    BUZZ(200, 1108);
-    BUZZ(600, 1661);
-    injectCommands(F("M303 E-1 S60 C6 U1\nM500\nM300 S440 P200\nM300 S660 "
-                     "P250\nM300 S880 P300"));
-    BUZZ(200, 1108);
-    BUZZ(200, 1661);
-    BUZZ(200, 1108);
-    BUZZ(600, 1661);
-  } else if ((strcasestr_P(currentTouchscreenSelection, PSTR(SM_SAVE_EEPROM_L)) != NULL) ||
+    SERIAL_ECHOLNPGM("Special Menu: Tune Bed 60C"); //dsl
+
+    //injectCommands(F("M303 E-1 S60 C6 U1\nM500\nM300 S440 P200\nM300 S660 "
+    injectCommands(F("M303 E-1 S60 C6 U1\nM300 S440 P200\nM300 S660 "
+                     "P250\nM300 S880 P300")); //dsl don't save now
+
+  } 
+  
+  else if ((strcasestr_P(currentTouchscreenSelection, PSTR(SM_SAVE_EEPROM_L)) != NULL) ||
              (strcasestr_P(currentTouchscreenSelection, PSTR(SM_SAVE_EEPROM_S)) != NULL)) {
     SERIAL_ECHOLNPGM("Special Menu: Save EEPROM");
-    injectCommands(F("M500"));
-    BUZZ(105, 1108);
-    BUZZ(210, 1661);
-  } else if ((strcasestr_P(currentTouchscreenSelection, PSTR(SM_LOAD_DEFAULTS_L)) != NULL) ||
+
+    injectCommands(F("M500")); //dsl save all Memory to EEPROM
+    ENTER_MENU_SOUND //dsl
+  } 
+  
+  else if ((strcasestr_P(currentTouchscreenSelection, PSTR(SM_LOAD_DEFAULTS_L)) != NULL) ||
              (strcasestr_P(currentTouchscreenSelection, PSTR(SM_LOAD_DEFAULTS_S)) != NULL)) {
     SERIAL_ECHOLNPGM("Special Menu: Load FW Defaults");
-    injectCommands(F("M502"));
-    BUZZ(105, 1661);
-    BUZZ(210, 1108);
-  } else if ((strcasestr_P(currentTouchscreenSelection, PSTR(SM_PREHEAT_BED_L)) != NULL) ||
+
+    injectCommands(F("M502")); // load Memory with Factory EEPROM Defaults
+    ENTER_MENU_SOUND //dsl
+  } 
+  
+  else if ((strcasestr_P(currentTouchscreenSelection, PSTR(SM_LOAD_LAST_L)) != NULL) ||
+             (strcasestr_P(currentTouchscreenSelection, PSTR(SM_LOAD_LAST_S)) != NULL)) {
+    SERIAL_ECHOLNPGM("Special Menu: Load FW Defaults");
+
+    injectCommands(F("M501")); // load Memory from Last stored EEPROM
+    ENTER_MENU_SOUND //dsl
+  } 
+
+  else if ((strcasestr_P(currentTouchscreenSelection, PSTR(SM_PREHEAT_BED_L)) != NULL) ||
              (strcasestr_P(currentTouchscreenSelection, PSTR(SM_PREHEAT_BED_S)) != NULL)) {
-    SERIAL_ECHOLNPGM("Special Menu: Preheat Ultrabase");
-    injectCommands(F("M140 S60"));
+    SERIAL_ECHOLNPGM("Special Menu & Auto MeshLeveling Menu: Preheat Bed 60C");
+
+    injectCommands(F("M140 S60")); // 60C high enough to cause expansion for mesh leveling
+    ENTER_MENU_SOUND //dsl  
   }
 
-    #if NONE(KNUTWURST_BLTOUCH, KNUTWURST_CHIRON)
-  else if ((strcasestr_P(currentTouchscreenSelection, PSTR(SM_MESH_MENU_L)) != NULL) ||
-           (strcasestr_P(currentTouchscreenSelection, PSTR(SM_MESH_MENU_S)) != NULL)) {
-    MMLMenu = true;
-    SERIAL_ECHOLNPGM("Special Menu: Manual Med Leveling + disable soft endstops");
+  #if NONE(KNUTWURST_BLTOUCH, KNUTWURST_CHIRON)
+  else if ((strcasestr_P(currentTouchscreenSelection, PSTR(SM_MMLVL_MENU_L)) != NULL) ||
+           (strcasestr_P(currentTouchscreenSelection, PSTR(SM_MMLVL_MENU_S)) != NULL)) {
+    ManualMeshLevelMenu = true;
+    SERIAL_ECHOLNPGM("Special Menu: Manual Med Leveling Menu: Enter + disable soft endstops");
     setSoftEndstopState(false);
-  } else if ((strcasestr_P(currentTouchscreenSelection, PSTR(SM_MESH_START_L)) != NULL) ||
-             (strcasestr_P(currentTouchscreenSelection, PSTR(SM_MESH_START_S)) != NULL)) {
-    SERIAL_ECHOLNPGM("Special Menu: Start Mesh Leveling");
+  } else if ((strcasestr_P(currentTouchscreenSelection, PSTR(SM_MMLVL_START_L)) != NULL) ||
+             (strcasestr_P(currentTouchscreenSelection, PSTR(SM_MMLVL_START_S)) != NULL)) {
+    SERIAL_ECHOLNPGM("Special Menu: Manual Med Leveling Menu: Start Mesh");
     injectCommands(F("G28\nG29 S1"));
-  } else if ((strcasestr_P(currentTouchscreenSelection, PSTR(SM_MESH_NEXT_L)) != NULL) ||
-             (strcasestr_P(currentTouchscreenSelection, PSTR(SM_MESH_NEXT_S)) != NULL)) {
-    SERIAL_ECHOLNPGM("Special Menu: Next Mesh Point");
+  } else if ((strcasestr_P(currentTouchscreenSelection, PSTR(SM_MMLVL_NEXT_L)) != NULL) ||
+             (strcasestr_P(currentTouchscreenSelection, PSTR(SM_MMLVL_NEXT_S)) != NULL)) {
+    SERIAL_ECHOLNPGM("Special Menu: Manual Med Leveling Menu: Next Mesh Point");
     injectCommands(F("G29 S2"));
   } else if ((strcasestr_P(currentTouchscreenSelection, PSTR(SM_Z_UP_01_L)) != NULL) ||
              (strcasestr_P(currentTouchscreenSelection, PSTR(SM_Z_UP_01_S)) != NULL)) {
-    SERIAL_ECHOLNPGM("Special Menu: Z Up 0.1");
+    SERIAL_ECHOLNPGM("Special Menu: Manual Med Leveling Menu: Z Up 0.1");
     injectCommands(F("G91\nG1 Z+0.1\nG90"));
   } else if ((strcasestr_P(currentTouchscreenSelection, PSTR(SM_Z_DN_01_L)) != NULL) ||
              (strcasestr_P(currentTouchscreenSelection, PSTR(SM_Z_DN_01_S)) != NULL)) {
-    SERIAL_ECHOLNPGM("Special Menu: Z Down 0.1");
+    SERIAL_ECHOLNPGM("Special Menu: Manual Med Leveling Menu: Z Down 0.1");
     injectCommands(F("G91\nG1 Z-0.1\nG90"));
   } else if ((strcasestr_P(currentTouchscreenSelection, PSTR(SM_Z_UP_002_L)) != NULL) ||
              (strcasestr_P(currentTouchscreenSelection, PSTR(SM_Z_UP_002_S)) != NULL)) {
-    SERIAL_ECHOLNPGM("Special Menu: Z Up 0.02");
+    SERIAL_ECHOLNPGM("Special Menu: Manual Med Leveling Menu: Z Up 0.02");
     injectCommands(F("G91\nG1 Z+0.02\nG90"));
   } else if ((strcasestr_P(currentTouchscreenSelection, PSTR(SM_Z_DN_002_L)) != NULL) ||
              (strcasestr_P(currentTouchscreenSelection, PSTR(SM_Z_DN_002_S)) != NULL)) {
-    SERIAL_ECHOLNPGM("Special Menu: Z Down 0.02");
+    SERIAL_ECHOLNPGM("Special Menu: Manual Med Leveling Menu: Z Down 0.02");
     injectCommands(F("G91\nG1 Z-0.02\nG90"));
   } else if ((strcasestr_P(currentTouchscreenSelection, PSTR(SM_Z_UP_001_L)) != NULL) ||
              (strcasestr_P(currentTouchscreenSelection, PSTR(SM_Z_UP_001_S)) != NULL)) {
-    SERIAL_ECHOLNPGM("Special Menu: Z Up 0.01");
+    SERIAL_ECHOLNPGM("Special Menu: Manual Med Leveling Menu: Z Up 0.01");
     injectCommands(F("G91\nG1 Z+0.03\nG4 P250\nG1 Z-0.02\nG90"));
   } else if ((strcasestr_P(currentTouchscreenSelection, PSTR(SM_Z_DN_001_L)) != NULL) ||
              (strcasestr_P(currentTouchscreenSelection, PSTR(SM_Z_DN_001_S)) != NULL)) {
-    SERIAL_ECHOLNPGM("Special Menu: Z Down 0.01");
+    SERIAL_ECHOLNPGM("Special Menu: Manual Med Leveling Menu: Z Down 0.01");
     injectCommands(F("G91\nG1 Z+0.02\nG4 P250\nG1 Z-0.03\nG90"));
   }
-    #endif // if NONE(KNUTWURST_BLTOUCH, KNUTWURST_CHIRON)
+  #endif // if NONE(KNUTWURST_BLTOUCH, KNUTWURST_CHIRON)
 
-    #if ENABLED(KNUTWURST_BLTOUCH)
-  else if ((strcasestr_P(currentTouchscreenSelection, PSTR(SM_BLTOUCH_L)) != NULL) ||
-           (strcasestr_P(currentTouchscreenSelection, PSTR(SM_BLTOUCH_S)) != NULL)) {
-    SERIAL_ECHOLNPGM("Special Menu: BLTouch Leveling");
-    injectCommands(F("G28\nG29\nG90\nM300 S440 P200\nM300 S660 P250\nM300 S880 P300\nG1 Z30 "
-                     "F4000\nG1 X0 F4000\nG91\nM84\nM420 S1"));
-    BUZZ(105, 1108);
-    BUZZ(210, 1661);
+  #if ENABLED(KNUTWURST_BLTOUCH)
+
+  else if ((strcasestr_P(currentTouchscreenSelection, PSTR(SM_AUTOMESH_MENU_L)) != NULL) || //dsl
+           (strcasestr_P(currentTouchscreenSelection, PSTR(SM_AUTOMESH_MENU_S)) != NULL)) { //dsl
+    SERIAL_ECHOLNPGM("Special Menu: Auto Mesh Leveling Menu: Enter"); //dsl
+
+    AutoMeshLevelMenu = true; //dsl
+    ENTER_MENU_SOUND //dsl
   }
-    #endif
 
-    #if ENABLED(KNUTWURST_CHIRON)
+  else if ((strcasestr_P(currentTouchscreenSelection, PSTR(SM_HEAT_BED_L)) != NULL) || //dsl
+           (strcasestr_P(currentTouchscreenSelection, PSTR(SM_HEAT_BED_S)) != NULL)) { //dsl
+    SERIAL_ECHOLNPGM("Special Menu: Auto MeshLeveling Menu: Heat Bed 60C"); //dsl
+
+    if( HeatBed == false) { //dsl
+      injectCommands(F("M140 S60\nM300 S440 P200\nM300 S660 P250\nM300 S880 P300")); //dsl 60C and ON sound
+       HeatBed = true; //dsl
+       } 
+       else { //dsl
+      injectCommands(F("M140 S0\nM300 S880 P200\nM300 S660 P200\nM300 S440 P200")); //dsl 0C and OFF sound
+      HeatBed = false; //dsl
+       }
+
+  }
+
+  else if ((strcasestr_P(currentTouchscreenSelection, PSTR(SM_PROBE_ENA_HS_L)) != NULL) || //dsl
+           (strcasestr_P(currentTouchscreenSelection, PSTR(SM_PROBE_ENA_HS_S)) != NULL)) { //dsl
+    SERIAL_ECHOLNPGM("Special Menu: Auto MeshLeveling Menu: Enable High Speed Probe"); //dsl
+ 
+    if( EnableHighSpeedProbe == false) { //dsl
+      injectCommands(F("M401 S1\nM300 S440 P200\nM300 S660 P250\nM300 S880 P300")); //dsl Enable Highspeed Probe Mesh 
+       EnableHighSpeedProbe= true; //dsl
+       } 
+       else { //dsl
+      injectCommands(F("M401 S0\nM300 S880 P200\nM300 S660 P200\nM300 S440 P200")); //dsl Disable Highspeed Probe Mesh 
+      EnableHighSpeedProbe= false; //dsl
+       }
+
+  }
+
+  else if ((strcasestr_P(currentTouchscreenSelection, PSTR(SM_ENA_FADE_MESH_L)) != NULL) || //dsl
+           (strcasestr_P(currentTouchscreenSelection, PSTR(SM_ENA_FADE_MESH_S)) != NULL)) { //dsl
+    SERIAL_ECHOLNPGM("Special Menu: Auto MeshLeveling Menu: Enable Fade"); //dsl
+
+   if( EnableMeshFade == false) { //dsl
+      injectCommands(F("M420 Z5\nM300 S440 P200\nM300 S660 P250\nM300 S880 P300")); //dsl enable and enable sound
+       EnableMeshFade = true; //dsl
+       } 
+       else { //dsl
+      injectCommands(F("M420 Z0\nM300 S880 P200\nM300 S660 P200\nM300 S440 P200")); //dsl disable and disable sound
+      EnableMeshFade = false; //dsl
+       }
+
+  } 
+
+  else if ((strcasestr_P(currentTouchscreenSelection, PSTR(SM_START_MESH_L)) != NULL) || //dsl
+           (strcasestr_P(currentTouchscreenSelection, PSTR(SM_START_MESH_S)) != NULL)) { //dsl
+    SERIAL_ECHOLNPGM("Special Menu: Auto MeshLeveling Menu: Start Mesh Leveling"); //dsl
+
+    ENTER_MENU_SOUND //dsl
+    injectCommands(F("G28\nG29\nG90\nG1 Z20 F100\nG1 X125 Y159 F4000\nM84\nM420 S1")); //dsl move to probe center, stay in absolute move mode
+
+                    
+  }
+
+  else if ((strcasestr_P(currentTouchscreenSelection, PSTR(SM_MESH_LVL_EXIT_L)) != NULL) || //dsl
+           (strcasestr_P(currentTouchscreenSelection, PSTR(SM_MESH_LVL_EXIT_S)) != NULL)) { //dsl
+    SERIAL_ECHOLNPGM("Special Menu: Auto Mesh Leveling Menu: Exit"); //dsl
+
+    AutoMeshLevelMenu = false; //dsl
+    EXIT_MENU_SOUND //dsl
+  }
+
+  else if ((strcasestr_P(currentTouchscreenSelection, PSTR(SM_TEST_MENU_L)) != NULL) || //dsl
+           (strcasestr_P(currentTouchscreenSelection, PSTR(SM_TEST_MENU_S)) != NULL)) { //dsl
+    SERIAL_ECHOLNPGM("Special Menu: Test Menu: Enter"); //dsl
+
+    TestMenu = true; //dsl
+    ENTER_MENU_SOUND //dsl
+  }
+
+  else if ((strcasestr_P(currentTouchscreenSelection, PSTR(SM_TEST_ZOFFDISP_L)) != NULL) || //dsl
+           (strcasestr_P(currentTouchscreenSelection, PSTR(SM_TEST_ZOFFDISP_S)) != NULL)) { //dsl
+    SERIAL_ECHOLNPGM("Special Menu: Test Menu: Z Offset Display"); //dsl
+
+  }
+
+  else if ((strcasestr_P(currentTouchscreenSelection, PSTR(SM_TEST_NOZZLE_L)) != NULL) || //dsl
+           (strcasestr_P(currentTouchscreenSelection, PSTR(SM_TEST_NOZZLE_S)) != NULL)) { //dsl
+    SERIAL_ECHOLNPGM("Special Menu: Test Menu: Test Nozzle"); //dsl
+
+    injectCommands(F("G90\nG1 F400 Z0.2")); //dsl Absolute move Z=0.2
+    
+    
+  }
+
+  else if ((strcasestr_P(currentTouchscreenSelection, PSTR(SM_TEST_NOZ_UP_L)) != NULL) || //dsl
+           (strcasestr_P(currentTouchscreenSelection, PSTR(SM_TEST_NOZ_UP_S)) != NULL)) { //dsl
+    SERIAL_ECHOLNPGM("Special Menu: Test Menu: Nozzle Up"); //dsl
+
+    injectCommands(F("G91\nG1 F400 Z0.02"));  //dsl Relative mode, Move +0.02mm, Absolute mode
+    setZOffset_mm(getZOffset_mm() + 0.02F);   //dsl Update the zoffset variable and display   
+
+    
+  }
+
+  else if ((strcasestr_P(currentTouchscreenSelection, PSTR(SM_TEST_NOZ_DN_L)) != NULL) || //dsl
+           (strcasestr_P(currentTouchscreenSelection, PSTR(SM_TEST_NOZ_DN_S)) != NULL)) { //dsl
+    SERIAL_ECHOLNPGM("Special Menu: Test Menu: Nozzle Down"); //dsl
+
+    injectCommands(F("G91\nG1 F400 Z-0.02"));  //dsl Relative mode, Move -0.02mm, Absolute mode
+    setZOffset_mm(getZOffset_mm() - 0.02F);    //dsl Update the zoffset variable and display   
+    
+     
+  }
+
+  else if ((strcasestr_P(currentTouchscreenSelection, PSTR(SM_TEST_PRT_PLA_L)) != NULL) || //dsl
+           (strcasestr_P(currentTouchscreenSelection, PSTR(SM_TEST_PRT_PLA_S)) != NULL)) { //dsl
+    SERIAL_ECHOLNPGM("Special Menu: Test Menu: Test PLA: Enter"); //dsl
+
+    
+
+    uint16_t r = GRID_MAX_POINTS_Y * GRID_MAX_POINTS_X ; //dsl
+    char zCmds[64] = "";   //dsl
+    sprintf_P(zCmds, PSTR("G26 H210 B60 L0.2 P5 R%u"),r); //dsl 
+    SERIAL_ECHOLN(zCmds);  //dsl
+    injectCommands(zCmds); //dsl
+
+    SERIAL_ECHOLNPGM("Special Menu: Test Menu: Test PLA: Return"); //dsl
+  }
+
+  else if ((strcasestr_P(currentTouchscreenSelection, PSTR(SM_TEST_PRT_ABS_L)) != NULL) || //dsl
+           (strcasestr_P(currentTouchscreenSelection, PSTR(SM_TEST_PRT_ABS_S)) != NULL)) { //dsl
+    SERIAL_ECHOLNPGM("Special Menu: Test Menu: Test ABS: Enter"); //dsl
+
+    
+
+    uint16_t r = GRID_MAX_POINTS_Y * GRID_MAX_POINTS_X ; //dsl
+    char zCmds[64] = "";   //dsl
+    sprintf_P(zCmds, PSTR("G26 H240 B100 L0.2 P5 R%u"),r); //dsl
+    SERIAL_ECHOLN(zCmds);  //dsl
+    injectCommands(zCmds); //dsl 
+
+    SERIAL_ECHOLNPGM("Special Menu: Test Menu: Test ABS: Return"); //dsl
+    
+  }
+
+  else if ((strcasestr_P(currentTouchscreenSelection, PSTR(SM_TEST_PRT_TPU_L)) != NULL) || //dsl
+           (strcasestr_P(currentTouchscreenSelection, PSTR(SM_TEST_PRT_TPU_S)) != NULL)) { //dsl
+    SERIAL_ECHOLNPGM("Special Menu: Test Menu: Test TPU: Enter"); //dsl
+
+    
+
+    uint16_t r = GRID_MAX_POINTS_Y * GRID_MAX_POINTS_X ; //dsl
+    char zCmds[64] = "";   //dsl
+    sprintf_P(zCmds, PSTR("G26 H230 B40 L0.2 P5 R%u"),r); //dsl
+    SERIAL_ECHOLN(zCmds);  //dsl
+    injectCommands(zCmds); //dsl 
+
+    SERIAL_ECHOLNPGM("Special Menu: Test Menu: Test TPU: Return"); //dsl
+
+  }
+
+  else if ((strcasestr_P(currentTouchscreenSelection, PSTR(SM_TESTMENU_EXIT_L)) != NULL) || //dsl
+           (strcasestr_P(currentTouchscreenSelection, PSTR(SM_TESTMENU_EXIT_S)) != NULL)) { //dsl
+    SERIAL_ECHOLNPGM("Special Menu: Test Menu: Exit"); //dsl
+
+    TestMenu = false; //dsl
+    EXIT_MENU_SOUND //dsl
+
+  }  
+
+  #endif //dsl #if ENABLED(KNUTWURST_BLTOUCH)
+
+  #if ENABLED(KNUTWURST_CHIRON)
   else if ((strcasestr_P(currentTouchscreenSelection, PSTR(SM_RESETLV_L)) != NULL) ||
            (strcasestr_P(currentTouchscreenSelection, PSTR(SM_RESETLV_S)) != NULL)) {
     SERIAL_ECHOLNPGM("Special Menu: initializeGrid()");
     injectCommands(F("M501\nM420 S1"));
-    BUZZ(105, 1108);
-    BUZZ(210, 1661);
+    
   }
-    #endif
+  #endif
 
-  else if ((strcasestr_P(currentTouchscreenSelection, PSTR(SM_PAUSE_L)) != NULL) ||
-           (strcasestr_P(currentTouchscreenSelection, PSTR(SM_PAUSE_L)) != NULL)) {
+  else if ((strcasestr_P(currentTouchscreenSelection, PSTR(SM_FIL_PAUSE_L)) != NULL) ||
+           (strcasestr_P(currentTouchscreenSelection, PSTR(SM_FIL_PAUSE_L)) != NULL)) {
     SERIAL_ECHOLNPGM("Special Menu: Fil. Change Pause");
-    injectCommands(F("M600"));
-  } else if ((strcasestr_P(currentTouchscreenSelection, PSTR(SM_RESUME_L)) != NULL) ||
-             (strcasestr_P(currentTouchscreenSelection, PSTR(SM_RESUME_S)) != NULL)) {
+
+    injectCommands(F("M600")); 
+          
+
+  } 
+  
+  else if ((strcasestr_P(currentTouchscreenSelection, PSTR(SM_FIL_RESUME_L)) != NULL) ||
+             (strcasestr_P(currentTouchscreenSelection, PSTR(SM_FIL_RESUME_S)) != NULL)) {
     SERIAL_ECHOLNPGM("Special Menu: Fil. Change Resume");
+
+    
     ResumePrint();
-  } else if ((strcasestr_P(currentTouchscreenSelection, PSTR(SM_DIS_FILSENS_L)) != NULL) ||
+
+  } 
+  
+  else if ((strcasestr_P(currentTouchscreenSelection, PSTR(SM_DIS_FILSENS_L)) != NULL) ||
              (strcasestr_P(currentTouchscreenSelection, PSTR(SM_DIS_FILSENS_S)) != NULL)) {
     SERIAL_ECHOLNPGM("Special Menu: Disable Filament Sensor");
-    injectCommands(F("M412 H0 S0\nM500"));
-    BUZZ(210, 1661);
-    BUZZ(105, 1108);
-  } else if ((strcasestr_P(currentTouchscreenSelection, PSTR(SM_EN_FILSENS_L)) != NULL) ||
+
+    //dsl injectCommands(F("M412 H0 S0\nM500"));
+    injectCommands(F("M412 H0 S0")); //dsl don't save to EEPROM now
+    
+
+  } 
+  
+  else if ((strcasestr_P(currentTouchscreenSelection, PSTR(SM_EN_FILSENS_L)) != NULL) ||
              (strcasestr_P(currentTouchscreenSelection, PSTR(SM_EN_FILSENS_S)) != NULL)) {
     SERIAL_ECHOLNPGM("Special Menu: Enable Filament Sensor");
-    injectCommands(F("M412 H0 S1\nM500"));
-    BUZZ(105, 1108);
-    BUZZ(210, 1661);
-  } else if ((strcasestr_P(currentTouchscreenSelection, PSTR(SM_EXIT_L)) != NULL) ||
-             (strcasestr_P(currentTouchscreenSelection, PSTR(SM_EXIT_S)) != NULL)) {
-    SpecialMenu = false;
-  } else if ((strcasestr_P(currentTouchscreenSelection, PSTR(SM_BACK_L)) != NULL) ||
-             (strcasestr_P(currentTouchscreenSelection, PSTR(SM_BACK_S)) != NULL)) {
-    SERIAL_ECHOLNPGM("Special Menu: Exit Manual Bed Leveling + enable soft endstops");
-    setSoftEndstopState(true);
-    MMLMenu = false;
-  } else if ((strcasestr_P(currentTouchscreenSelection, PSTR(SM_FLOWMENU_L)) != NULL) ||
-             (strcasestr_P(currentTouchscreenSelection, PSTR(SM_FLOWMENU_S)) != NULL)) {
-    SERIAL_ECHOLNPGM("Special Menu: Enter Flow Menu");
-    FlowMenu = true;
-  } else if ((strcasestr_P(currentTouchscreenSelection, PSTR(SM_FLOW_UP_L)) != NULL) ||
-             (strcasestr_P(currentTouchscreenSelection, PSTR(SM_FLOW_UP_S)) != NULL)) {
-    SERIAL_ECHOLNPGM("Special Menu: Flow UP");
-    currentFlowRate = currentFlowRate + 1;
 
+    //dsl injectCommands(F("M412 H0 S1\nM500"));
+    injectCommands(F("M412 H0 S1")); //dsl don't save to EEPROM now
+
+    
+
+  } 
+  
+  else if ((strcasestr_P(currentTouchscreenSelection, PSTR(SM_SPECMENU_EXIT_L)) != NULL) ||
+             (strcasestr_P(currentTouchscreenSelection, PSTR(SM_SPECMENU_EXIT_S)) != NULL)) {
+    SERIAL_ECHOLNPGM("Special Menu: EXIT"); //dsl
+
+    SpecialMenu = false;
+    EXIT_MENU_SOUND //dsl
+
+  } 
+  
+  else if ((strcasestr_P(currentTouchscreenSelection, PSTR(SM_MMLVL_EXIT_L)) != NULL) || //dsl
+             (strcasestr_P(currentTouchscreenSelection, PSTR(SM_MMLVL_EXIT_S)) != NULL)) { //dsl
+    SERIAL_ECHOLNPGM("Special Menu: Manual Mesh Bed Leveling: Exit + enable soft endstops"); //dsl
+
+    setSoftEndstopState(true);
+    ManualMeshLevelMenu = false; //dsl
+    EXIT_MENU_SOUND //dsl
+
+  } 
+  
+  else if ((strcasestr_P(currentTouchscreenSelection, PSTR(SM_FLOWMENU_L)) != NULL) ||
+             (strcasestr_P(currentTouchscreenSelection, PSTR(SM_FLOWMENU_S)) != NULL)) {
+    SERIAL_ECHOLNPGM("Special Menu: Flow Menu: Enter"); //dsl
+
+    FlowMenu = true;
+    ENTER_MENU_SOUND //dsl
+
+  } 
+  
+  else if ((strcasestr_P(currentTouchscreenSelection, PSTR(SM_FLOW_UP_L)) != NULL) ||
+             (strcasestr_P(currentTouchscreenSelection, PSTR(SM_FLOW_UP_S)) != NULL)) {
+    SERIAL_ECHOLNPGM("Special Menu: Flow Menu: Flow UP");
+
+    currentFlowRate = currentFlowRate + 1;
     if (currentFlowRate > 800) {
       currentFlowRate = 800;
     }
@@ -485,11 +705,15 @@ void AnycubicTouchscreenClass::HandleSpecialMenu() {
     sprintf_P(value, PSTR("M221 S%i"), currentFlowRate);
     queue.enqueue_one_now(value);
 
-  } else if ((strcasestr_P(currentTouchscreenSelection, PSTR(SM_FLOW_DN_L)) != NULL) ||
-             (strcasestr_P(currentTouchscreenSelection, PSTR(SM_FLOW_DN_S)) != NULL)) {
-    SERIAL_ECHOLNPGM("Special Menu: Flow Down");
-    currentFlowRate = currentFlowRate - 1;
+    
 
+  } 
+  
+  else if ((strcasestr_P(currentTouchscreenSelection, PSTR(SM_FLOW_DN_L)) != NULL) ||
+             (strcasestr_P(currentTouchscreenSelection, PSTR(SM_FLOW_DN_S)) != NULL)) {
+    SERIAL_ECHOLNPGM("Special Menu: Flow Menu: Flow Down");
+
+    currentFlowRate = currentFlowRate - 1;
     if (currentFlowRate < 1) {
       currentFlowRate = 1;
     }
@@ -497,62 +721,132 @@ void AnycubicTouchscreenClass::HandleSpecialMenu() {
     char value[30];
     sprintf_P(value, PSTR("M221 S%i"), currentFlowRate);
     queue.enqueue_one_now(value);
-  } else if ((strcasestr_P(currentTouchscreenSelection, PSTR(SM_FLOW_EXIT_L)) != NULL) ||
+
+    
+
+  } 
+  
+  else if ((strcasestr_P(currentTouchscreenSelection, PSTR(SM_FLOW_EXIT_L)) != NULL) ||
              (strcasestr_P(currentTouchscreenSelection, PSTR(SM_FLOW_EXIT_S)) != NULL)) {
-    SERIAL_ECHOLNPGM("Special Menu: Exit Flow Menu");
+    SERIAL_ECHOLNPGM("Special Menu: Flow Menu: Exit");
+
     FlowMenu = false;
+    EXIT_MENU_SOUND //dsl
+
   }
 
-    #if ENABLED(KNUTWURST_BLTOUCH)
-  else if ((strcasestr_P(currentTouchscreenSelection, PSTR(SM_BLTZMENU_L)) != NULL) ||
-           (strcasestr_P(currentTouchscreenSelection, PSTR(SM_BLTZMENU_S)) != NULL)) {
-    SERIAL_ECHOLNPGM("Special Menu: Enter BLTouch Menu + disable SoftEndstops");
-    BLTouchMenu = true;
-    setSoftEndstopState(false);
-  } else if ((strcasestr_P(currentTouchscreenSelection, PSTR(SM_BLTZ_UP_L)) != NULL) ||
-             (strcasestr_P(currentTouchscreenSelection, PSTR(SM_BLTZ_UP_S)) != NULL)) {
-    SERIAL_ECHOLNPGM("Special Menu: Offset UP");
-    setZOffset_mm(getZOffset_mm() + 0.01F);
-  } else if ((strcasestr_P(currentTouchscreenSelection, PSTR(SM_BLTZ_DN_L)) != NULL) ||
-             (strcasestr_P(currentTouchscreenSelection, PSTR(SM_BLTZ_DN_S)) != NULL)) {
-    SERIAL_ECHOLNPGM("Special Menu: Offset Down");
-    setZOffset_mm(getZOffset_mm() - 0.01F);
-  } else if ((strcasestr_P(currentTouchscreenSelection, PSTR(SM_HS_ENABLE_L)) != NULL) ||
-             (strcasestr_P(currentTouchscreenSelection, PSTR(SM_HS_ENABLE_S)) != NULL)) {
-    SERIAL_ECHOLNPGM("Special Menu: HighSpeed Mode ENABLED");
-    injectCommands(F("M401 S1\nM500"));
-    BUZZ(105, 1108);
-    BUZZ(210, 1661);
-  } else if ((strcasestr_P(currentTouchscreenSelection, PSTR(SM_HS_DISABLE_L)) != NULL) ||
-             (strcasestr_P(currentTouchscreenSelection, PSTR(SM_HS_DISABLE_S)) != NULL)) {
-    SERIAL_ECHOLNPGM("Special Menu: HighSpeed Mode DISABLED!");
-    injectCommands(F("M401 S0\nM500"));
-    BUZZ(210, 1661);
-    BUZZ(105, 1108);
-  } else if ((strcasestr_P(currentTouchscreenSelection, PSTR(SM_BLTZ_EXIT_L)) != NULL) ||
-             (strcasestr_P(currentTouchscreenSelection, PSTR(SM_BLTZ_EXIT_S)) != NULL)) {
-    SERIAL_ECHOLNPGM("Special Menu: Exit BLTouch Menu & Save EEPROM");
+  #if ENABLED(KNUTWURST_BLTOUCH)
+
+  else if ((strcasestr_P(currentTouchscreenSelection, PSTR(SM_PROBE_MENU_L)) != NULL) || //dsl
+           (strcasestr_P(currentTouchscreenSelection, PSTR(SM_PROBE_MENU_S)) != NULL)) { //dsl
+     SERIAL_ECHOLNPGM("Special Menu: Probe Menu: Enter + disable SoftEndstops");  //dsl
+     ENTER_MENU_SOUND //dsl
+
+     injectCommands(F("G28\nM420 S0 ")); //dsl Home to assure endstops are known and disable leveling
+
+     ProbeMenu = true; //dsl
+     setSoftEndstopState(false); // turn Endstops back ON after exit
+    
+  } 
+
+  else if ((strcasestr_P(currentTouchscreenSelection, PSTR(SM_PRB_DN_L)) != NULL) || //dsl
+             (strcasestr_P(currentTouchscreenSelection, PSTR(SM_PRB_DN_S)) != NULL)) { //dsl
+    SERIAL_ECHOLNPGM("Special Menu: Probe Menu: Probe Down to paper: Enter"); //dsl 
+
+    //dsl constexpr float n_p_offset[3] = NOZZLE_TO_PROBE_OFFSET;
+    //dsl float probeXOffset = n_p_offset[0];
+    //dsl float probeYOffset = n_p_offset[1];
+    //dsl char zCmds[256] = "";
+    //dsl sprintf_P(zCmds, PSTR("M851 Z0\nG90\nG1 F1000 X150 Y100 Z15\nM401\nG38.2 F100 Z0\nG60 S0\nM402\nG91\nG1 F100 X%i Y%i\nG90\nG61 S0 Z"),int(probeXOffset),int(probeYOffset)); //dsl
+    //dsl SERIAL_ECHOLN(zCmds); //dsl doesn't come out on the terminal
+    //dsl injectCommands(zCmds);
+    injectCommands(F("M851 Z0\nG90\nG1 F4000 X125 Y159 Z15\nM401\nG38.2 F400 Z0\n" //dsl
+                    "G60 S0\nM402\nG91\nG1 F4000 X+10 Y-45\nG90\nG61 F400 S0 Z")); //dsl
+                    //dsl "M851 Z0 "                     Reset the Nozzle to Probe Offset
+                    //dsl "G90\nG1 F1000 X150 Y100 Z15 " Move to safe X, Y & Z level
+                    //dsl "M401 "                        Deploy BLTouch Probe
+                    //dsl "G38.2 F100 Z0 "               Move down until probe triggers and stops
+                    //dsl "G60 S0 "                      Save level in slot 0 where the probe stopped
+                    //dsl "M402 "                        Stow the BLTouch probe. Probe moves after Stowing as a side affect
+                    //dsl "G91\nG1 F100 X+10 Y-54\nG90 " Relative move nozzle to where probe was
+                    //dsl "G61 S0 Z"                    Move probe to the saved slot 0 level, awaiting Nozzle to move down to touch the Layer
+
+    do_big_step = true; //dsl start nozzle move with big steps down  
+
+    SERIAL_ECHOLNPGM("Special Menu: Probe Menu: Probe Down to paper: Return"); //dsl 
+    
+  }
+
+  else if ((strcasestr_P(currentTouchscreenSelection, PSTR(SM_NOZ_UP_L)) != NULL) || //dsl
+           (strcasestr_P(currentTouchscreenSelection, PSTR(SM_NOZ_UP_S)) != NULL)) { //dsl
+    SERIAL_ECHOLNPGM("Special Menu: Probe Menu: Nozzle UP to paper"); //dsl
+
+    if(do_big_step){                                 //dsl
+      injectCommands(F("G91\nG1 F400 Z0.1\nG90"));  //dsl Relative mode, Move +0.1mm, Absolute mode
+      setZOffset_mm(getZOffset_mm() + 0.1F);         //dsl Update the zoffset variable and display 
+    } 
+    else{
+      injectCommands(F("G91\nG1 F400 Z0.02\nG90"));  //dsl Relative mode, Move +0.02mm, Absolute mode
+      setZOffset_mm(getZOffset_mm() + 0.02F);        //dsl Update the zoffset variable and display   
+    }     
+    do_big_step = false;  //dsl after any up means the nozzle must have touched the paper, so change to small steps up and down 
+    
+    
+
+  } 
+
+  else if ((strcasestr_P(currentTouchscreenSelection, PSTR(SM_NOZ_DN_L)) != NULL) || //dsl
+             (strcasestr_P(currentTouchscreenSelection, PSTR(SM_NOZ_DN_S)) != NULL)) { //dsl
+    SERIAL_ECHOLNPGM("Special Menu: Probe Menu: Nozzle Down to paper"); //dsl
+
+    if( do_big_step){                                //dsl
+      injectCommands(F("G91\nG1 F400 Z-0.1\nG90")); //dsl Relative mode, Move -0.1mm, Absolute mode
+      setZOffset_mm(getZOffset_mm() - 0.1F);         //dsl Update the zoffset variable and display
+    }
+    else{                                            //dsl
+      injectCommands(F("G91\nG1 F400 Z-0.02\nG90")); //dsl Relative mode, Move -0.02mm, Absolute mode
+      setZOffset_mm(getZOffset_mm() - 0.02F);        //dsl Update the zoffset variable and display
+    }
+
+    
+
+  } 
+
+  else if ((strcasestr_P(currentTouchscreenSelection, PSTR(SM_PROBE_EXIT_L)) != NULL) || //dsl
+             (strcasestr_P(currentTouchscreenSelection, PSTR(SM_PROBE_EXIT_S)) != NULL)) { //dsl
+    SERIAL_ECHOLNPGM("Special Menu: Probe Menu: Exit"); //dsl
+
     setSoftEndstopState(true);
-    injectCommands(F("M500"));
-    BUZZ(105, 1108);
-    BUZZ(210, 1661);
-    BLTouchMenu = false;
+    //dsl injectCommands(F("M500\nG90\nG1 F4000 X150 Y100 Z20")); //dsl save and make sure at safe level
+    injectCommands(F("G90\nG1 F4000 X125 Y159 Z20")); //dsl make sure at safe level, Not saved to EEPROM
+    
+    ProbeMenu = false; //dsl
+    EXIT_MENU_SOUND //dsl
+
   }
+  #endif //dsl#if ENABLED(KNUTWURST_BLTOUCH)
 
+  else if ((strcasestr_P(currentTouchscreenSelection, PSTR(SM_4PLVL_MENU_L)) != NULL) || //dsl
+           (strcasestr_P(currentTouchscreenSelection, PSTR(SM_4PLVL_MENU_S)) != NULL)) { //dsl
+    SERIAL_ECHOLNPGM("Special Menu: 4 Point Level Menu: Enter"); //dsl
 
-    #endif
-  else if ((strcasestr_P(currentTouchscreenSelection, PSTR(SM_EZLVL_MENU_L)) != NULL) ||
-           (strcasestr_P(currentTouchscreenSelection, PSTR(SM_EZLVL_MENU_S)) != NULL)) {
-    SERIAL_ECHOLNPGM("Special Menu: Enter Easy Level Menu");
-    LevelMenu = true;
-    injectCommands(F("G28\nM420 S0\nG90\nG1 Z5\nG1 X15 Y15 F4000\nG1 Z0"));
-  } else if ((strcasestr_P(currentTouchscreenSelection, PSTR(SM_EZLVL_P1_L)) != NULL) ||
-             (strcasestr_P(currentTouchscreenSelection, PSTR(SM_EZLVL_P1_S)) != NULL)) {
-    SERIAL_ECHOLNPGM("Special Menu: Easy Level POINT 1");
+    Manual4PntLevelMenu = true; //dsl
+    injectCommands(F("G28\nM420 S0\nG90\nG1 Z5\nG1 X15 Y15 F4000\nG1 F400 Z0")); //dsl added F4000, nozzle was crashing
+
+  } 
+  
+  else if ((strcasestr_P(currentTouchscreenSelection, PSTR(SM_4PLVL_P1_L)) != NULL) || //dsl
+             (strcasestr_P(currentTouchscreenSelection, PSTR(SM_4PLVL_P1_S)) != NULL)) { //dsl
+    SERIAL_ECHOLNPGM("Special Menu: 4 Point Level Menu: POINT 1 to paper"); //dsl
+
     injectCommands(F("G90\nG1 Z5\nG1 X15 Y15 F4000\nG1 Z0"));
-  } else if ((strcasestr_P(currentTouchscreenSelection, PSTR(SM_EZLVL_P2_L)) != NULL) ||
-             (strcasestr_P(currentTouchscreenSelection, PSTR(SM_EZLVL_P2_S)) != NULL)) {
-    SERIAL_ECHOLNPGM("Special Menu: Easy Level POINT 2");
+
+  } 
+  
+  else if ((strcasestr_P(currentTouchscreenSelection, PSTR(SM_4PLVL_P2_L)) != NULL) || //dsl
+             (strcasestr_P(currentTouchscreenSelection, PSTR(SM_4PLVL_P2_S)) != NULL)) { //dsl
+    SERIAL_ECHOLNPGM("Special Menu: 4 Point Level Menu: POINT 2 to paper"); //dsl
+
     #if ANY(KNUTWURST_MEGA, KNUTWURST_MEGA_S, KNUTWURST_MEGA_P)
     injectCommands(F("G90\nG1 Z5\nG1 X205 Y15 F4000\nG1 Z0"));
     #endif
@@ -568,9 +862,13 @@ void AnycubicTouchscreenClass::HandleSpecialMenu() {
     #if ENABLED(KNUTWURST_4MAXP2)
     injectCommands(F("G90\nG1 Z5\nG1 X255 Y15 F4000\nG1 Z0"));
     #endif
-  } else if ((strcasestr_P(currentTouchscreenSelection, PSTR(SM_EZLVL_P3_L)) != NULL) ||
-             (strcasestr_P(currentTouchscreenSelection, PSTR(SM_EZLVL_P3_S)) != NULL)) {
-    SERIAL_ECHOLNPGM("Special Menu: Easy Level POINT 3");
+  
+  } 
+  
+  else if ((strcasestr_P(currentTouchscreenSelection, PSTR(SM_4PLVL_P3_L)) != NULL) || //dsl
+             (strcasestr_P(currentTouchscreenSelection, PSTR(SM_4PLVL_P3_S)) != NULL)) { //dsl
+    SERIAL_ECHOLNPGM("Special Menu: 4 Point Level Menu: POINT 3 to papaer"); //dsl
+
     #if ANY(KNUTWURST_MEGA, KNUTWURST_MEGA_S, KNUTWURST_MEGA_P)
     injectCommands(F("G90\nG1 Z5\nG1 X205 Y200 F4000\nG1 Z0"));
     #endif
@@ -586,9 +884,13 @@ void AnycubicTouchscreenClass::HandleSpecialMenu() {
     #if ENABLED(KNUTWURST_4MAXP2)
     injectCommands(F("G90\nG1 Z5\nG1 X255 Y195 F4000\nG1 Z0"));
     #endif
-  } else if ((strcasestr_P(currentTouchscreenSelection, PSTR(SM_EZLVL_P4_L)) != NULL) ||
-             (strcasestr_P(currentTouchscreenSelection, PSTR(SM_EZLVL_P4_S)) != NULL)) {
-    SERIAL_ECHOLNPGM("Special Menu: Easy Level POINT 4");
+
+  } 
+  
+  else if ((strcasestr_P(currentTouchscreenSelection, PSTR(SM_4PLVL_P4_L)) != NULL) || //dsl
+             (strcasestr_P(currentTouchscreenSelection, PSTR(SM_4PLVL_P4_S)) != NULL)) { //dsl
+    SERIAL_ECHOLNPGM("Special Menu: 4 Point Level Menu: POINT 4 to paper"); //dsl
+
     #if ANY(KNUTWURST_MEGA, KNUTWURST_MEGA_S, KNUTWURST_MEGA_P)
     injectCommands(F("G90\nG1 Z5\nG1 X15 Y200 F4000\nG1 Z0"));
     #endif
@@ -604,13 +906,19 @@ void AnycubicTouchscreenClass::HandleSpecialMenu() {
     #if ENABLED(KNUTWURST_4MAXP2)
     injectCommands(F("G90\nG1 Z5\nG1 X15 Y195 F4000\nG1 Z0"));
     #endif
-  } else if ((strcasestr_P(currentTouchscreenSelection, PSTR(SM_EZLVL_EXIT_L)) != NULL) ||
-             (strcasestr_P(currentTouchscreenSelection, PSTR(SM_EZLVL_EXIT_S)) != NULL)) {
-    SERIAL_ECHOLNPGM("Special Menu: Exit Easy Level Menu");
-    LevelMenu = false;
-    injectCommands(F("G90\nG1 Z10\nG1 X15 Y15 F4000\nM420 S1"));
+
+  } 
+  
+  else if ((strcasestr_P(currentTouchscreenSelection, PSTR(SM_4PLVL_EXIT_L)) != NULL) || //dsl
+             (strcasestr_P(currentTouchscreenSelection, PSTR(SM_4PLVL_EXIT_S)) != NULL)) { //dsl
+    SERIAL_ECHOLNPGM("Special Menu: Exit 4 Point Level Menu"); //dsl
+
+    Manual4PntLevelMenu = false; //dsl
+    injectCommands(F("G90\nG1 Z10\nG1 X125 Y159 F4000\nM420 S1")); //dsl
+
+    EXIT_MENU_SOUND //dsl
   }
-  #endif // if ENABLED(KNUTWURST_SPECIAL_MENU)
+#endif // if ENABLED(KNUTWURST_SPECIAL_MENU)
 }
 
 
@@ -647,12 +955,14 @@ void AnycubicTouchscreenClass::RenderCurrentFileList() {
 }
 
 void AnycubicTouchscreenClass::RenderSpecialMenu(uint16_t selectedNumber) {
-  #if ENABLED(KNUTWURST_SPECIAL_MENU)
-  if (MMLMenu) {
+#if ENABLED(KNUTWURST_SPECIAL_MENU)
+  
+  if (ManualMeshLevelMenu) {
     switch (selectedNumber) {
+
       case 0: // Page 1
-        SENDLINE_PGM(SM_MESH_START_S);
-        SENDLINE_PGM(SM_MESH_START_L);
+        SENDLINE_PGM(SM_MMLVL_START_S);
+        SENDLINE_PGM(SM_MMLVL_START_L);
         SENDLINE_PGM(SM_Z_UP_01_S);
         SENDLINE_PGM(SM_Z_UP_01_L);
         SENDLINE_PGM(SM_Z_DN_01_S);
@@ -668,21 +978,21 @@ void AnycubicTouchscreenClass::RenderSpecialMenu(uint16_t selectedNumber) {
         SENDLINE_PGM(SM_Z_UP_001_L);
         SENDLINE_PGM(SM_Z_DN_001_S);
         SENDLINE_PGM(SM_Z_DN_001_L);
-        SENDLINE_PGM(SM_MESH_NEXT_S);
-        SENDLINE_PGM(SM_MESH_NEXT_L);
+        SENDLINE_PGM(SM_MMLVL_NEXT_S);
+        SENDLINE_PGM(SM_MMLVL_NEXT_L);
         break;
 
       case 8: // Page 2
-        SENDLINE_PGM(SM_SAVE_EEPROM_S);
-        SENDLINE_PGM(SM_SAVE_EEPROM_L);
-        SENDLINE_PGM(SM_BACK_S);
-        SENDLINE_PGM(SM_BACK_L);
+        SENDLINE_PGM(SM_MMLVL_EXIT_S);
+        SENDLINE_PGM(SM_MMLVL_EXIT_L);
         break;
 
       default:
         break;
     }
-  } else if (FlowMenu) {
+  } 
+  
+  else if (FlowMenu) {
     flowRateBuffer = SM_FLOW_DISP_L;
     flowRateBuffer.replace("XXX", String(currentFlowRate));
 
@@ -701,135 +1011,202 @@ void AnycubicTouchscreenClass::RenderSpecialMenu(uint16_t selectedNumber) {
       default:
         break;
     }
-  } else if (BLTouchMenu) {
-    zOffsetBuffer = SM_BLTZ_DISP_L;
+  } 
+  
+  else if (ProbeMenu) {
+
+    zOffsetBuffer = SM_ZOFF_DISP_L; //dsl
+    zOffsetBuffer.replace("XXXXX", String(getZOffset_mm()));
 
     #ifdef ANYCUBIC_TFT_DEBUG
     SERIAL_ECHOPGM("TFT Serial Debug: Current getZOffset_mm(): ", getZOffset_mm());
     SERIAL_EOL();
     #endif
 
+    switch (selectedNumber) {
+      case 0: // Page 1
+        SENDLINE_PGM(SM_ZOFF_DISP_S); //dsl
+        SENDLINE(zOffsetBuffer.c_str());
+        SENDLINE_PGM(SM_PRB_DN_S); //dsl
+        SENDLINE_PGM(SM_PRB_DN_L); //dsl
+        SENDLINE_PGM(SM_NOZ_UP_S); //dsl
+        SENDLINE_PGM(SM_NOZ_UP_L); //dsl
+        SENDLINE_PGM(SM_NOZ_DN_S); //dsl
+        SENDLINE_PGM(SM_NOZ_DN_L); //dsl
+        break;
+
+      case 4: // Page 2
+        SENDLINE_PGM(SM_PROBE_EXIT_S);
+        SENDLINE_PGM(SM_PROBE_EXIT_L);
+        break;
+
+      default:
+        break;
+    }
+  } 
+  
+  else if (Manual4PntLevelMenu) {
+    switch (selectedNumber) {
+      case 0: // Page 1
+        SENDLINE_PGM(SM_4PLVL_P1_S); //dsl
+        SENDLINE_PGM(SM_4PLVL_P1_L); //dsl
+        SENDLINE_PGM(SM_4PLVL_P2_S); //dsl
+        SENDLINE_PGM(SM_4PLVL_P2_L); //dsl
+        SENDLINE_PGM(SM_4PLVL_P3_S); //dsl
+        SENDLINE_PGM(SM_4PLVL_P3_L); //dsl
+        SENDLINE_PGM(SM_4PLVL_P4_S); //dsl
+        SENDLINE_PGM(SM_4PLVL_P4_L); //dsl
+        break;
+
+      case 4: // Page 2
+        SENDLINE_PGM(SM_4PLVL_EXIT_S); //dsl
+        SENDLINE_PGM(SM_4PLVL_EXIT_L); //dsl
+        break;
+
+      default:
+        break;
+    }
+
+  }
+
+  else if (AutoMeshLevelMenu) {
+    switch (selectedNumber) {
+      case 0: // Page 1
+        SENDLINE_PGM(SM_HEAT_BED_S);      //dsl
+        SENDLINE_PGM(SM_HEAT_BED_L);      //dsl
+        SENDLINE_PGM(SM_PROBE_ENA_HS_S);  //dsl
+        SENDLINE_PGM(SM_PROBE_ENA_HS_L);  //dsl
+        SENDLINE_PGM(SM_ENA_FADE_MESH_S); //dsl
+        SENDLINE_PGM(SM_ENA_FADE_MESH_L); //dsl
+        SENDLINE_PGM(SM_START_MESH_S);    //dsl
+        SENDLINE_PGM(SM_START_MESH_L);    //dsl
+        break;
+
+      case 4: // Page 2
+        SENDLINE_PGM(SM_MESH_LVL_EXIT_S); //dsl
+        SENDLINE_PGM(SM_MESH_LVL_EXIT_L); //dsl
+        break;
+
+      default:
+        break;
+    }
+  } 
+  
+  else if (TestMenu) {
+
+    zOffsetBuffer = SM_TEST_ZOFFDISP_L; //dsl
     zOffsetBuffer.replace("XXXXX", String(getZOffset_mm()));
 
     switch (selectedNumber) {
       case 0: // Page 1
-        SENDLINE_PGM(SM_BLTZ_DISP_S);
-        SENDLINE(zOffsetBuffer.c_str());
-        SENDLINE_PGM(SM_BLTZ_UP_S);
-        SENDLINE_PGM(SM_BLTZ_UP_L);
-        SENDLINE_PGM(SM_BLTZ_DN_S);
-        SENDLINE_PGM(SM_BLTZ_DN_L);
-        SENDLINE_PGM(SM_BLTOUCH_S);
-        SENDLINE_PGM(SM_BLTOUCH_L);
+        SENDLINE_PGM(SM_TEST_ZOFFDISP_S);   //dsl
+        SENDLINE(zOffsetBuffer.c_str());//dsl
+        SENDLINE_PGM(SM_TEST_NOZZLE_S); //dsl
+        SENDLINE_PGM(SM_TEST_NOZZLE_L); //dsl
+        SENDLINE_PGM(SM_TEST_NOZ_UP_S); //dsl
+        SENDLINE_PGM(SM_TEST_NOZ_UP_L); //dsl
+        SENDLINE_PGM(SM_TEST_NOZ_DN_S); //dsl
+        SENDLINE_PGM(SM_TEST_NOZ_DN_L); //dsl
         break;
 
       case 4: // Page 2
-        SENDLINE_PGM(SM_HS_ENABLE_S);
-        SENDLINE_PGM(SM_HS_ENABLE_L);
-        SENDLINE_PGM(SM_HS_DISABLE_S);
-        SENDLINE_PGM(SM_HS_DISABLE_L);
-        SENDLINE_PGM(SM_BLTZ_EXIT_S);
-        SENDLINE_PGM(SM_BLTZ_EXIT_L);
-        break;
-
-      default:
-        break;
-    }
-  } else if (LevelMenu) {
-    switch (selectedNumber) {
-      case 0: // Page 1
-        SENDLINE_PGM(SM_EZLVL_P1_S);
-        SENDLINE_PGM(SM_EZLVL_P1_L);
-        SENDLINE_PGM(SM_EZLVL_P2_S);
-        SENDLINE_PGM(SM_EZLVL_P2_L);
-        SENDLINE_PGM(SM_EZLVL_P3_S);
-        SENDLINE_PGM(SM_EZLVL_P3_L);
-        SENDLINE_PGM(SM_EZLVL_P4_S);
-        SENDLINE_PGM(SM_EZLVL_P4_L);
-        break;
-
-      case 4: // Page 2
-        SENDLINE_PGM(SM_EZLVL_EXIT_S);
-        SENDLINE_PGM(SM_EZLVL_EXIT_L);
-        break;
-
-      default:
-        break;
-    }
-  } else if (SpecialMenu) {
-    switch (selectedNumber) {
-      case 0: // Page 1
-        SENDLINE_PGM(SM_FLOWMENU_S);
-        SENDLINE_PGM(SM_FLOWMENU_L);
-        SENDLINE_PGM(SM_PREHEAT_BED_S);
-        SENDLINE_PGM(SM_PREHEAT_BED_L);
-        SENDLINE_PGM(SM_PAUSE_S);
-        SENDLINE_PGM(SM_PAUSE_L);
-        SENDLINE_PGM(SM_RESUME_S);
-        SENDLINE_PGM(SM_RESUME_L);
-        break;
-
-    #if NONE(KNUTWURST_BLTOUCH, KNUTWURST_CHIRON)
-      case 4: // Page 2 for Manual Mesh Bed Level
-        SENDLINE_PGM(SM_EZLVL_MENU_S);
-        SENDLINE_PGM(SM_EZLVL_MENU_L);
-        SENDLINE_PGM(SM_MESH_MENU_S);
-        SENDLINE_PGM(SM_MESH_MENU_L);
-        SENDLINE_PGM(SM_PID_HOTEND_S);
-        SENDLINE_PGM(SM_PID_HOTEND_L);
-        SENDLINE_PGM(SM_PID_BED_S);
-        SENDLINE_PGM(SM_PID_BED_L);
-        break;
-    #endif
-
-    #if ENABLED(KNUTWURST_BLTOUCH)
-      case 4: // Page 2 for BLTouch
-        SENDLINE_PGM(SM_EZLVL_MENU_S);
-        SENDLINE_PGM(SM_EZLVL_MENU_L);
-        SENDLINE_PGM(SM_BLTZMENU_S);
-        SENDLINE_PGM(SM_BLTZMENU_L);
-        SENDLINE_PGM(SM_PID_HOTEND_S);
-        SENDLINE_PGM(SM_PID_HOTEND_L);
-        SENDLINE_PGM(SM_PID_BED_S);
-        SENDLINE_PGM(SM_PID_BED_L);
-        break;
-    #endif
-
-    #if ENABLED(KNUTWURST_CHIRON)
-      case 4: // Page 2 for Chiron ABL
-        SENDLINE_PGM(SM_EZLVL_MENU_S);
-        SENDLINE_PGM(SM_EZLVL_MENU_L);
-        SENDLINE_PGM(SM_RESETLV_S);
-        SENDLINE_PGM(SM_RESETLV_L);
-        SENDLINE_PGM(SM_PID_HOTEND_S);
-        SENDLINE_PGM(SM_PID_HOTEND_L);
-        SENDLINE_PGM(SM_PID_BED_S);
-        SENDLINE_PGM(SM_PID_BED_L);
-        break;
-    #endif
-
-      case 8: // Page 3
-        SENDLINE_PGM(SM_LOAD_DEFAULTS_S);
-        SENDLINE_PGM(SM_LOAD_DEFAULTS_L);
-        SENDLINE_PGM(SM_SAVE_EEPROM_S);
-        SENDLINE_PGM(SM_SAVE_EEPROM_L);
-        SENDLINE_PGM(SM_DIS_FILSENS_S);
-        SENDLINE_PGM(SM_DIS_FILSENS_L);
-        SENDLINE_PGM(SM_EN_FILSENS_S);
-        SENDLINE_PGM(SM_EN_FILSENS_L);
-        break;
-
-      case 12: // Page 3
-        SENDLINE_PGM(SM_EXIT_S);
-        SENDLINE_PGM(SM_EXIT_L);
+        SENDLINE_PGM(SM_TEST_PRT_PLA_S); //dsl
+        SENDLINE_PGM(SM_TEST_PRT_PLA_L); //dsl
+        SENDLINE_PGM(SM_TEST_PRT_ABS_S); //dsl
+        SENDLINE_PGM(SM_TEST_PRT_ABS_L); //dsl
+        SENDLINE_PGM(SM_TEST_PRT_TPU_S); //dsl
+        SENDLINE_PGM(SM_TEST_PRT_TPU_L); //dsl
+        SENDLINE_PGM(SM_TESTMENU_EXIT_S);//dsl
+        SENDLINE_PGM(SM_TESTMENU_EXIT_L);//dsl
         break;
 
       default:
         break;
     }
   }
-  #endif // if ENABLED(KNUTWURST_SPECIAL_MENU)
-}
+
+  else if (SpecialMenu) {
+    switch (selectedNumber) {
+
+    #if NONE(KNUTWURST_BLTOUCH, KNUTWURST_CHIRON)
+      case 0: // Page 1 for Manual Mesh Bed Level
+        SENDLINE_PGM(SM_4PLVL_MENU_S); //dsl
+        SENDLINE_PGM(SM_4PLVL_MENU_L); //dsl
+        SENDLINE_PGM(SM_MMLVL_MENU_S);
+        SENDLINE_PGM(SM_MMLVL_MENU_L);
+        SENDLINE_PGM(SM_NOOP_S);
+        SENDLINE_PGM(SM_NOOP_L);
+        SENDLINE_PGM(SM_NOOP_S);
+        SENDLINE_PGM(SM_NOOP_L);
+        break;
+    #endif
+
+    #if ENABLED(KNUTWURST_CHIRON)
+      case 0: // Page 1 for Chiron ABL
+        SENDLINE_PGM(SM_4PLVL_MENU_S); //dsl
+        SENDLINE_PGM(SM_4PLVL_MENU_L); //dsl
+        SENDLINE_PGM(SM_RESETLV_S);
+        SENDLINE_PGM(SM_RESETLV_L);
+        SENDLINE_PGM(SM_NOOP_S);
+        SENDLINE_PGM(SM_NOOP_L);
+        SENDLINE_PGM(SM_NOOP_S);
+        SENDLINE_PGM(SM_NOOP_L);
+        break;
+    #endif
+
+    #if ENABLED(KNUTWURST_BLTOUCH)
+      case 0: // Page 1
+        SENDLINE_PGM(SM_4PLVL_MENU_S);    //dsl
+        SENDLINE_PGM(SM_4PLVL_MENU_L);    //dsl
+        SENDLINE_PGM(SM_PROBE_MENU_S);    //dsl
+        SENDLINE_PGM(SM_PROBE_MENU_L);    //dsl
+        SENDLINE_PGM(SM_AUTOMESH_MENU_S); //dsl
+        SENDLINE_PGM(SM_AUTOMESH_MENU_L); //dsl
+        SENDLINE_PGM(SM_TEST_MENU_S);     //dsl
+        SENDLINE_PGM(SM_TEST_MENU_L);     //dsl
+        break;
+    #endif
+
+      case 4: // Page 2
+        SENDLINE_PGM(SM_LOAD_DEFAULTS_S); //dsl
+        SENDLINE_PGM(SM_LOAD_DEFAULTS_L); //dsl
+        SENDLINE_PGM(SM_LOAD_LAST_S);     //dsl
+        SENDLINE_PGM(SM_LOAD_LAST_L);     //dsl
+        SENDLINE_PGM(SM_SAVE_EEPROM_S);   //dsl
+        SENDLINE_PGM(SM_SAVE_EEPROM_L);   //dsl
+        SENDLINE_PGM(SM_SPECMENU_EXIT_S); //dsl
+        SENDLINE_PGM(SM_SPECMENU_EXIT_L); //dsl
+        break;
+      case 8: // Page 3
+        SENDLINE_PGM(SM_FLOWMENU_S);
+        SENDLINE_PGM(SM_FLOWMENU_L);
+        SENDLINE_PGM(SM_PREHEAT_BED_S);
+        SENDLINE_PGM(SM_PREHEAT_BED_L);
+        SENDLINE_PGM(SM_FIL_PAUSE_S);
+        SENDLINE_PGM(SM_FIL_PAUSE_L);
+        SENDLINE_PGM(SM_FIL_RESUME_S);
+        SENDLINE_PGM(SM_FIL_RESUME_L);
+        break;
+
+      case 12: // Page 4       
+        SENDLINE_PGM(SM_DIS_FILSENS_S);
+        SENDLINE_PGM(SM_DIS_FILSENS_L);
+        SENDLINE_PGM(SM_EN_FILSENS_S);
+        SENDLINE_PGM(SM_EN_FILSENS_L);
+        SENDLINE_PGM(SM_PID_HOTEND_S);
+        SENDLINE_PGM(SM_PID_HOTEND_L);
+        SENDLINE_PGM(SM_PID_BED_S);
+        SENDLINE_PGM(SM_PID_BED_L);
+        break;
+
+      default:
+        break;
+    } 
+  } 
+
+#endif // if ENABLED(KNUTWURST_SPECIAL_MENU)
+
+}  
 
 void AnycubicTouchscreenClass::RenderCurrentFolder(uint16_t selectedNumber) {
   FileList currentFileList;
@@ -1582,7 +1959,7 @@ void AnycubicTouchscreenClass::GetCommandFromTFT() {
                 } else {
                   SENDLINE_DBG_PGM("J26", "TFT Serial Debug: Start auto leveling... J26");
                   // injectCommands(F("G28\nG29"));
-                  injectCommands(F("G28\nG29\nM500\nG90\nM300 S440 P200\nM300 "
+                  injectCommands(F("G28\nG29\nM500\nG90\nM300 S440 P200\nM300 " //dsl save now???
                                    "S660 P250\nM300 S880 P300\nG1 Z30 "
                                    "F4000\nG1 X5 F4000\nG91\nM84\nM420 S1"));
                   mediaPrintingState = AMPRINTSTATE_PROBING;
@@ -1604,7 +1981,7 @@ void AnycubicTouchscreenClass::GetCommandFromTFT() {
               else if (CodeSeen('D')) { // Save Z Offset tables and restore leveling state
                 if (!isPrinting()) {
                   setAxisPosition_mm(5.0, Z); // Lift nozzle before any further movements are made
-                  injectCommands(F("M500"));
+                  injectCommands(F("M500")); //dsl save now ???
     #if ENABLED(ANYCUBIC_TFT_DEBUG)
                   SERIAL_ECHOLNF(F("Mesh changes saved."));
     #endif

@@ -1450,7 +1450,7 @@
       #define XATC_Y_POSITION Y_CENTER      // (mm) Y position to probe
       #define XATC_Z_OFFSETS { 0, 0, 0 }    // Z offsets for X axis sample points
     #endif
-
+  
   #endif
 
   // Include a page of printer information in the LCD Main Menu
@@ -2216,12 +2216,13 @@
  * the probe to be unable to reach any points.
  */
 #if ENABLED(KNUTWURST_BLTOUCH)
-  #if PROBE_SELECTED && !IS_KINEMATIC
-    #define PROBING_MARGIN_LEFT  10
-    #define PROBING_MARGIN_RIGHT 10
-    #define PROBING_MARGIN_FRONT 10
-    #define PROBING_MARGIN_BACK  10
-  #endif
+  //dsl #if PROBE_SELECTED && !IS_KINEMATIC
+  //dsl Perform ABL with conservative border margin, I don't see where this is used in the code
+    #define PROBING_MARGIN_LEFT  20 //dsl
+    #define PROBING_MARGIN_RIGHT 20 //dsl
+    #define PROBING_MARGIN_FRONT 20 //dsl
+    #define PROBING_MARGIN_BACK  0  //dsl 
+  //dsl #endif
 #endif
 
 #if EITHER(MESH_BED_LEVELING, AUTO_BED_LEVELING_UBL)
@@ -2327,7 +2328,7 @@
 //
 // G60/G61 Position Save and Return
 //
-//#define SAVED_POSITIONS 1         // Each saved position slot costs 12 bytes
+#define SAVED_POSITIONS 2         //dsl Use by G60 S0 in Z-Offset routine, Each saved position slot costs 12 bytes
 
 //
 // G2/G3 Arc Support
@@ -2367,7 +2368,7 @@
  * and optionally G38.4 and G38.5 (probe away from target).
  * Set MULTIPLE_PROBING for G38 to probe more than once.
  */
-//#define G38_PROBE_TARGET
+#define G38_PROBE_TARGET 1 //dsl
 #if ENABLED(G38_PROBE_TARGET)
   //#define G38_PROBE_AWAY        // Include G38.4 and G38.5 to probe away from target
   #define G38_MINIMUM_MOVE 0.0275 // (mm) Minimum distance that will produce a move.

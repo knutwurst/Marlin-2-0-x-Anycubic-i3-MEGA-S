@@ -1169,6 +1169,10 @@
 
   // Radius around the center where the arm cannot reach
   #define MIDDLE_DEAD_ZONE_R   0  // (mm)
+
+  // Calculated from Calibration Guide and M360 / M114. See https://www.morgan3dp.com/morgan-calibration-guide/
+  #define THETA_HOMING_OFFSET  0
+  #define PSI_HOMING_OFFSET    0
 #endif
 
 // @section machine
@@ -1838,7 +1842,7 @@
  *     O-- FRONT --+
  */
 #if ENABLED(KNUTWURST_BLTOUCH)
-  #define NOZZLE_TO_PROBE_OFFSET { -2, -25, -0.4 } // https://www.thingiverse.com/thing:2824005
+  #define NOZZLE_TO_PROBE_OFFSET { 10, -54, 0 } //dsl ZOffset will be calculated using Special Menu Auto Level Probe and Nozzle Dn
   // #define NOZZLE_TO_PROBE_OFFSET { 29, -15, 0 } //X-Carriage
 #endif
 
@@ -2579,8 +2583,8 @@
 #if EITHER(AUTO_BED_LEVELING_LINEAR, AUTO_BED_LEVELING_BILINEAR)
 
   // Set the number of grid points per dimension.
-  #define GRID_MAX_POINTS_X 5
-  #define GRID_MAX_POINTS_Y GRID_MAX_POINTS_X
+  #define GRID_MAX_POINTS_X 5 
+  #define GRID_MAX_POINTS_Y 4
 
   // Probe along the Y axis, advancing X after each column
   //#define PROBE_Y_FIRST
@@ -2863,6 +2867,8 @@
 #define PREHEAT_2_TEMP_BED     90
 //#define PREHEAT_2_TEMP_CHAMBER 35
 #define PREHEAT_2_FAN_SPEED     0 // Value from 0 to 255
+
+// @section motion
 
 /**
  * @section nozzle park
@@ -3434,7 +3440,7 @@
 
 //
 // Cartesio UI
-// https://web.archive.org/web/20180605050442/mauk.cc/webshop/cartesio-shop/electronics/user-interface
+ // https://web.archive.org/web/20180605050442/mauk.cc/webshop/cartesio-shop/electronics/user-interface
 //
 //#define CARTESIO_UI
 

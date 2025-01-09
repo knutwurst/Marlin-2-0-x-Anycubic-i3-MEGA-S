@@ -58,133 +58,194 @@ enum AnycubicMediaPauseState {
 #define SM_PID_BED_S       "<PIDTU~2.GCO"
 #define SM_SAVE_EEPROM_S   "<SAVEE~1.GCO"
 #define SM_LOAD_DEFAULTS_S "<LOADF~1.GCO"
-#define SM_PREHEAT_BED_S   "<PREHE~1.GCO"
-#define SM_MESH_MENU_S     "<MESHL~1.GCO"
-#define SM_MESH_START_S    "<START~1.GCO"
-#define SM_MESH_NEXT_S     "<NEXTM~1.GCO"
+#define SM_LOAD_LAST_S     "<LOADLAS.GCO" //dsl
+#define SM_PREHEAT_BED_S   "<PREHEBD.GCO" //dsl
+#define SM_HEAT_BED_S      "<PREHEHT.GCO" //dsl
+#define SM_MMLVL_MENU_S    "<MESHL~1.GCO"
+#define SM_MMLVL_START_S   "<START~1.GCO"
+#define SM_MMLVL_NEXT_S    "<NEXTM~1.GCO"
 #define SM_Z_UP_01_S       "<ZUP01~1.GCO"
 #define SM_Z_DN_01_S       "<ZDOWN~1.GCO"
 #define SM_Z_UP_002_S      "<ZUP00~1.GCO"
 #define SM_Z_DN_002_S      "<ZDOWN~2.GCO"
 #define SM_Z_UP_001_S      "<ZUP00~2.GCO"
 #define SM_Z_DN_001_S      "<ZDOWN~3.GCO"
-#define SM_BLTOUCH_S       "<BLTOU~1.GCO"
+//dsl depricated #define SM_BLTOUCH_S       "<BLTOU~1.GCO"
 #define SM_RESETLV_S       "<RSTLV~1.GCO"
-#define SM_PAUSE_S         "<FILCH~2.GCO"
-#define SM_RESUME_S        "<FILCH~1.GCO"
+#define SM_FIL_PAUSE_S     "<FILCHPS.GCO" //dsl
+#define SM_FIL_RESUME_S    "<FILCHRS.GCO" //dsl
 #define SM_DIS_FILSENS_S   "<DISAB~1.GCO"
 #define SM_EN_FILSENS_S    "<ENABL~1.GCO"
-#define SM_EXIT_S          "<EXIT_~1.GCO"
-#define SM_BACK_S          "<BACK_~1.GCO"
+#define SM_SPECMENU_EXIT_S "<EXITSPE.GCO"
+#define SM_MMLVL_EXIT_S  "<EXITMMM.GCO"
 #define SM_FLOWMENU_S      "<SETFLO1.GCO"
 #define SM_FLOW_DISP_S     "<FLDISPL.GCO"
 #define SM_FLOW_UP_S       "<UPFLOW1.GCO"
 #define SM_FLOW_DN_S       "<DWNFLOW.GCO"
 #define SM_FLOW_EXIT_S     "<EXTFLW1.GCO"
-#define SM_EZLVL_MENU_S    "<EZLVLM1.GCO"
-#define SM_EZLVL_P1_S      "<EZLPA01.GCO"
-#define SM_EZLVL_P2_S      "<EZLPB01.GCO"
-#define SM_EZLVL_P3_S      "<EZLPC01.GCO"
-#define SM_EZLVL_P4_S      "<EZLPD01.GCO"
-#define SM_EZLVL_EXIT_S    "<EZLEXT1.GCO"
-#define SM_BLTZMENU_S      "<SETOFZ0.GCO"
-#define SM_BLTZ_DISP_S     "<OFZDSP0.GCO"
-#define SM_BLTZ_UP_S       "<UPOFFZ0.GCO"
-#define SM_BLTZ_DN_S       "<DOWNOFZ.GCO"
-#define SM_BLTZ_EXIT_S     "<EXTABLM.GCO"
-#define SM_HS_DISABLE_S    "<HSDISAB.GCO"
-#define SM_HS_ENABLE_S     "<HSENABL.GCO"
-
+#define SM_4PLVL_MENU_S    "<EZLVLM1.GCO" //dsl
+#define SM_4PLVL_P1_S      "<EZLPA01.GCO" //dsl
+#define SM_4PLVL_P2_S      "<EZLPB01.GCO" //dsl
+#define SM_4PLVL_P3_S      "<EZLPC01.GCO" //dsl
+#define SM_4PLVL_P4_S      "<EZLPD01.GCO" //dsl
+#define SM_4PLVL_EXIT_S    "<EZLEXT1.GCO" //dsl
+#define SM_PROBE_MENU_S    "<PRBOMNU.GCO" //dsl
+#define SM_ZOFF_DISP_S     "<OFZDSP0.GCO"
+#define SM_PRB_DN_S        "<PBOFFZ0.GCO" //dsl
+#define SM_NOZ_UP_S        "<UPOFFZ0.GCO" //dsl
+#define SM_NOZ_DN_S        "<DOWNOFZ.GCO" //dsl
+#define SM_PROBE_EXIT_S    "<EXTABLM.GCO" //dsl
+#define SM_PROBE_ENA_HS_S  "<HSENABL.GCO" //dsl
+#define SM_BABYSTEP_UP_B_S "<BSTPUPB.GCO" //dsl
+#define SM_BABYSTEP_UP_S_S "<BSTPUPS.GCO" //dsl
+#define SM_BABYSTEP_DN_B_S "<BSTPDNB.GCO" //dsl
+#define SM_BABYSTEP_DN_S_S "<BSTPDNS.GCO" //dsl
+#define SM_AUTOMESH_MENU_S "<MSHLVLM.GCO" //dsl
+#define SM_START_MESH_S    "<BLTLMNU.GCO" //dsl
+#define SM_ENA_FADE_MESH_S "<ENAFADE.GCO" //dsl
+#define SM_MESH_LVL_EXIT_S "<MSHEXIT.GCO" //dsl
+#define SM_TEST_MENU_S     "<TESTMNU.GCO" //dsl
+#define SM_TEST_ZOFFDISP_S "<TSTZOFF.GCO" //dsl
+#define SM_TEST_NOZZLE_S   "<TESTNOZ.GCO" //dsl
+#define SM_TEST_NOZ_UP_S   "<TSTBSUP.GCO" //dsl
+#define SM_TEST_NOZ_DN_S   "<TSTBSDN.GCO" //dsl
+#define SM_TEST_PRT_PLA_S  "<TESTPLA.GCO" //dsl
+#define SM_TEST_PRT_ABS_S  "<TESTABS.GCO" //dsl
+#define SM_TEST_PRT_TPU_S  "<TESTTPU.GCO" //dsl
+#define SM_TESTMENU_EXIT_S "<EXTSMNU.GCO" //dsl
+#define SM_NOOP_S          "<NOOPXXX.GCO" //dsl
 
 #if DISABLED(KNUTWURST_DGUS2_TFT)
   #define SM_DIR_UP_L        "/.."
-  #define SM_SPECIAL_MENU_L  "<Special Menu>"
-  #define SM_PID_HOTEND_L    "<PID Tune Hotend>"
-  #define SM_PID_BED_L       "<PID Tune Ultrabase>"
-  #define SM_SAVE_EEPROM_L   "<Save EEPROM>"
-  #define SM_LOAD_DEFAULTS_L "<Load FW Defaults>"
-  #define SM_PREHEAT_BED_L   "<Preheat Ultrabase>"
-  #define SM_MESH_MENU_L     "<Mesh Leveling>"
-  #define SM_MESH_START_L    "<Start Mesh Leveling>"
-  #define SM_MESH_NEXT_L     "<Next Mesh Point>"
-  #define SM_Z_UP_01_L       "<Z Up 0.1>"
+  #define SM_SPECIAL_MENU_L  "<SPECIAL MENU>"        //dsl
+  #define SM_PID_HOTEND_L    "<Tune Hotend 215C>"    //dsl
+  #define SM_PID_BED_L       "<Tune Bed 60C>"        //dsl
+  #define SM_SAVE_EEPROM_L   "<SAVE to EEPROM>"      //dsl
+  #define SM_LOAD_DEFAULTS_L "<Restore to FACTORYs>" //dsl
+  #define SM_LOAD_LAST_L     "<Restore to LAST>"     //dsl
+  #define SM_PREHEAT_BED_L   "<Preheat Bed 60C>"     //dsl
+  #define SM_HEAT_BED_L      "<60C/OC Heat Bed>"     //dsl
+  #define SM_MMLVL_MENU_L    "<MANL MESH LVL MENU>"  //dsl
+  #define SM_MMLVL_START_L   "<Start Mesh Leveling>"
+  #define SM_MMLVL_NEXT_L    "<Next Mesh Point>"
+  #define SM_Z_UP_01_L       "<Z Up   0.1>"  //dsl
   #define SM_Z_DN_01_L       "<Z Down 0.1>"
-  #define SM_Z_UP_002_L      "<Z Up 0.02>"
+  #define SM_Z_UP_002_L      "<Z Up   0.02>" //dsl
   #define SM_Z_DN_002_L      "<Z Down 0.02>"
-  #define SM_Z_UP_001_L      "<Z Up 0.01>"
+  #define SM_Z_UP_001_L      "<Z Up   0.01>" //dsl
   #define SM_Z_DN_001_L      "<Z Down 0.01>"
-  #define SM_BLTOUCH_L       "<Start Auto Leveling>"
   #define SM_RESETLV_L       "<Reset Level Grid>"
-  #define SM_PAUSE_L         "<Fil. Change Pause>"
-  #define SM_RESUME_L        "<Fil. Change Resume>"
+  #define SM_FIL_PAUSE_L     "<Fil. Change Pause>"
+  #define SM_FIL_RESUME_L    "<Fil. Change Resume>"
   #define SM_DIS_FILSENS_L   "<Disable Fil. Sensor>"
   #define SM_EN_FILSENS_L    "<Enable Fil. Sensor>"
-  #define SM_EXIT_L          "<Exit>"
-  #define SM_BACK_L          "<End Mesh Leveling>"
-  #define SM_FLOWMENU_L      "<Set Flowrate>"
+  #define SM_SPECMENU_EXIT_L "<Exit Special Menu>" //dsl
+  #define SM_MMLVL_EXIT_L    "<Exit ManlMesh Lvlg>"//dsl
+  #define SM_FLOWMENU_L      "<SET FLOWRATE MENU>" //dsl
   #define SM_FLOW_DISP_L     "<Flow is XXX>"
   #define SM_FLOW_UP_L       "<Up>"
   #define SM_FLOW_DN_L       "<Down>"
-  #define SM_FLOW_EXIT_L     "<Exit Flow Settings>"
-  #define SM_EZLVL_MENU_L    "<Easy 4 Point Level>"
-  #define SM_EZLVL_P1_L      "<Point A>"
-  #define SM_EZLVL_P2_L      "<Point B>"
-  #define SM_EZLVL_P3_L      "<Point C>"
-  #define SM_EZLVL_P4_L      "<Point D>"
-  #define SM_EZLVL_EXIT_L    "<Exit Easy Level>"
-  #define SM_BLTZMENU_L      "<Auto Leveling>"
-  #define SM_BLTZ_DISP_L     "<Z Offset: XXXXX>"
-  #define SM_BLTZ_UP_L       "<Up>"
-  #define SM_BLTZ_DN_L       "<Down>"
-  #define SM_BLTZ_EXIT_L     "<SAVE and EXIT>"
-  #define SM_HS_DISABLE_L    "<Disable HiSpeed Mode>"
-  #define SM_HS_ENABLE_L     "<Enable HiSpeed Mode>"
+  #define SM_FLOW_EXIT_L     "<Exit Flow Menu>"
+  #define SM_4PLVL_MENU_L    "<4 POINT LEVEL MENU>"//dsl
+  #define SM_4PLVL_P1_L      "<Point A to paper>"  //dsl
+  #define SM_4PLVL_P2_L      "<Point B to paper>"  //dsl
+  #define SM_4PLVL_P3_L      "<Point C to paper>"  //dsl
+  #define SM_4PLVL_P4_L      "<Point D to paper>"  //dsl
+  #define SM_4PLVL_EXIT_L    "<Exit 4 Point Menu>" //dsl
+  #define SM_PROBE_MENU_L    "<PROBE Z-OFF MENU>"  //dsl
+  #define SM_ZOFF_DISP_L     "<Z Offset: XXXXX>"   //dsl
+  #define SM_PRB_DN_L        "<Probe  Dn to paper>"//dsl
+  #define SM_NOZ_UP_L        "<Up>"                //dsl
+  #define SM_NOZ_DN_L        "<Down>"              //dsl
+  #define SM_PROBE_EXIT_L    "<Exit Probe Menu>"   //dsl
+  #define SM_PROBE_ENA_HS_L  "<Ena/Dis HiSpd Mesh>"//dsl
+  #define SM_BABYSTEP_UP_L_L "<BabyStep Up .1>"    //dsl
+  #define SM_BABYSTEP_UP_S_L "<BabyStep Up .02>"   //dsl
+  #define SM_BABYSTEP_DN_L_L "<BabyStep Dn .1>"    //dsl
+  #define SM_BABYSTEP_DN_S_L "<BabyStep Dn .02>"   //dsl
+  #define SM_AUTOMESH_MENU_L "<MESH LEVEL MENU>"   //dsl
+  #define SM_START_MESH_L    "<Start Mesh Level>"  //dsl
+  #define SM_ENA_FADE_MESH_L "<Ena/Dis MeshFade 5>"//dsl
+  #define SM_MESH_LVL_EXIT_L "<Mesh Level Exit>"   //dsl
+  #define SM_TEST_MENU_L     "<TEST MENU>"         //dsl
+  #define SM_TEST_ZOFFDISP_L "<Z Offset: XXXXX>"   //dsl
+  #define SM_TEST_NOZZLE_L   "<Test Nozzle paper>" //dsl
+  #define SM_TEST_NOZ_UP_L   "<Baby Step Up .02>"  //dsl
+  #define SM_TEST_NOZ_DN_L   "<Baby Step DN .02>"  //dsl
+  #define SM_TEST_PRT_PLA_L  "<Test Print PLA>"    //dsl
+  #define SM_TEST_PRT_ABS_L  "<Test Print ABS>"    //dsl
+  #define SM_TEST_PRT_TPU_L  "<Test Print TPU>"    //dsl
+  #define SM_TESTMENU_EXIT_L "<Exit Test Menu>"    //dsl
+  #define SM_NOOP_L          "<noop>"              //dsl
 #endif // !KNUTWURST_DGUS2_TFT
 
 #if ENABLED(KNUTWURST_DGUS2_TFT)
   #define SM_DIR_UP_L        "/..                 .gcode"
-  #define SM_SPECIAL_MENU_L  "<Special Menu>      .gcode"
-  #define SM_PID_HOTEND_L    "<PID Tune Hotend>   .gcode"
-  #define SM_PID_BED_L       "<PID Tune Ultrabase>.gcode"
-  #define SM_SAVE_EEPROM_L   "<Save EEPROM>       .gcode"
-  #define SM_LOAD_DEFAULTS_L "<Load FW Defaults>  .gcode"
-  #define SM_PREHEAT_BED_L   "<Preheat Ultrabase> .gcode"
-  #define SM_MESH_MENU_L     "<Mesh Leveling>     .gcode"
-  #define SM_MESH_START_L    "<Start MeshLeveling>.gcode"
-  #define SM_MESH_NEXT_L     "<Next Mesh Point>   .gcode"
+  #define SM_SPECIAL_MENU_L  "<SPECIAL MENU>      .gcode" //dsl
+  #define SM_PID_HOTEND_L    "<Tune HotEnd 215C>  .gcode" //dsl
+  #define SM_PID_BED_L       "<Tune Bed 60C>      .gcode" //dsl
+  #define SM_SAVE_EEPROM_L   "<SAVE to EEPROM>    .gcode" //dsl
+  #define SM_LOAD_DEFAULTS_L "<Restore to FACTORY>.gcode" //dsl
+  #define SM_LOAD_LAST_L     "<Restore to LAST>   .gcode" //dsl
+  #define SM_PREHEAT_BED_L   "<Preheat Bed 60C>   .gcode" //dsl
+  #define SM_HEAT_BED_L      "<60C/OC Heat Bed>   .gcode" //dsl
+  #define SM_MMLVL_MENU_L    "<MANL MESH LVL MENU>.gcode" //dsl
+  #define SM_MMLVL_START_L   "<Start MeshLeveling>.gcode"
+  #define SM_MMLVL_NEXT_L    "<Next Mesh Point>   .gcode"
   #define SM_Z_UP_01_L       "<Z Up 0.1>          .gcode"
-  #define SM_Z_DN_01_L       "<Z Down 0.1>        .gcode"
+  #define SM_Z_DN_01_L       "<Z Dn 0.1>          .gcode" //dsl
   #define SM_Z_UP_002_L      "<Z Up 0.02>         .gcode"
-  #define SM_Z_DN_002_L      "<Z Down 0.02>       .gcode"
+  #define SM_Z_DN_002_L      "<Z Dn 0.02>         .gcode" //dsl
   #define SM_Z_UP_001_L      "<Z Up 0.01>         .gcode"
-  #define SM_Z_DN_001_L      "<Z Down 0.01>       .gcode"
-  #define SM_BLTOUCH_L       "<Start AutoLeveling>.gcode"
+  #define SM_Z_DN_001_L      "<Z Dn 0.01>         .gcode" //dsl
   #define SM_RESETLV_L       "<Reset Level Grid>  .gcode"
-  #define SM_PAUSE_L         "<Fil. Change Pause> .gcode"
-  #define SM_RESUME_L        "<Fil. Change Resume>.gcode"
+  #define SM_FIL_PAUSE_L     "<Fil. Change Pause> .gcode"
+  #define SM_FIL_RESUME_L    "<Fil. Change Resume>.gcode"
   #define SM_DIS_FILSENS_L   "<Disable Fil.Sensor>.gcode"
   #define SM_EN_FILSENS_L    "<Enable Fil. Sensor>.gcode"
-  #define SM_EXIT_L          "<Exit>              .gcode"
-  #define SM_BACK_L          "<End Mesh Leveling> .gcode"
-  #define SM_FLOWMENU_L      "<Set Flowrate>      .gcode"
+  #define SM_SPECMENU_EXIT_L "<Exit Special Menu> .gcode" //dsl
+  #define SM_MMLVL_EXIT_L    "<Exit ManlMesh Lvl> .gcode" //dsl
+  #define SM_FLOWMENU_L      "<SET FLOWRATE MENU> .gcode" //dsl
   #define SM_FLOW_DISP_L     "<Flow is XXX%>      .gcode"
   #define SM_FLOW_UP_L       "<Up>                .gcode"
   #define SM_FLOW_DN_L       "<Down>              .gcode"
-  #define SM_FLOW_EXIT_L     "<Exit Flow Settings>.gcode"
-  #define SM_EZLVL_MENU_L    "<Easy 4 Point Level>.gcode"
-  #define SM_EZLVL_P1_L      "<Point A>           .gcode"
-  #define SM_EZLVL_P2_L      "<Point B>           .gcode"
-  #define SM_EZLVL_P3_L      "<Point C>           .gcode"
-  #define SM_EZLVL_P4_L      "<Point D>           .gcode"
-  #define SM_EZLVL_EXIT_L    "<Exit Easy Leveling>.gcode"
-  #define SM_BLTZMENU_L      "<Auto Leveling>     .gcode"
-  #define SM_BLTZ_DISP_L     "<Z Offset: XXXXX>   .gcode"
-  #define SM_BLTZ_UP_L       "<Up>                .gcode"
-  #define SM_BLTZ_DN_L       "<Down>              .gcode"
-  #define SM_BLTZ_EXIT_L     "<SAVE and EXIT>     .gcode"
-  #define SM_HS_DISABLE_L    "<Disable HiSpeed>   .gcode"
-  #define SM_HS_ENABLE_L     "<Enable HiSpeed>    .gcode"
+  #define SM_FLOW_EXIT_L     "<Exit Flow Menu>    .gcode"
+  #define SM_4PLVL_MENU_L    "<4 POINT LEVEL MENU>.gcode" //dsl
+  #define SM_4PLVL_P1_L      "<Point A to paper>  .gcode" //dsl
+  #define SM_4PLVL_P2_L      "<Point B to paper>  .gcode" //dsl
+  #define SM_4PLVL_P3_L      "<Point C to paper>  .gcode" //dsl
+  #define SM_4PLVL_P4_L      "<Point D to paper>  .gcode" //dsl
+  #define SM_4PLVL_EXIT_L    "<Exit 4 Point Menu> .gcode" //dsl
+  #define SM_PROBE_MENU_L    "<PROBE Z-OFF MENU>  .gcode" //dsl
+  #define SM_ZOFF_DISP_L     "<Z Offset: XXXXX>   .gcode" //dsl
+  #define SM_PRB_DN_L        "<Probe  Dn to paper>.gcode" //dsl
+  #define SM_NOZ_UP_L        "<Nozzle Up to paper>.gcode" //dsl
+  #define SM_NOZ_DN_L        "<Nozzle Dn to paper>.gcode" //dsl
+  #define SM_PROBE_EXIT_L    "<Exit Probe Menu>   .gcode" //dsl
+  #define SM_PROBE_ENA_HS_L  "<Ena/Dis HiSpd Mesh>.gcode" //dsl
+  #define SM_BABYSTEP_UP_L_L "<BabyStep Up .1>    .gcode" //dsl
+  #define SM_BABYSTEP_UP_S_L "<BabyStep Up .02>   .gcode" //dsl
+  #define SM_BABYSTEP_DN_L_L "<BabyStep Dn .1>    .gcode" //dsl
+  #define SM_BABYSTEP_DN_S_L "<BabyStep Dn .02>   .gcode" //dsl
+  #define SM_AUTOMESH_MENU_L "<AUTO MESH LVL MENU>.gcode" //dsl
+  #define SM_START_MESH_L    "<Start Mesh Level>  .gcode" //dsl
+  #define SM_ENA_FADE_MESH_L "<Ena/Dis MeshFade 5>.gcode" //dsl
+  #define SM_MESH_LVL_EXIT_L "<Mesh Level Exit>   .gcode" //dsl
+  #define SM_TEST_MENU_L     "<TEST MENU>         .gcode" //dsl
+  #define SM_TEST_ZOFFDISP_L "<Z Offset: XXXXX>   .gcode" //dsl
+  #define SM_TEST_NOZZLE_L   "<Test Nozzle paper> .gcode" //dsl
+  #define SM_TEST_NOZ_UP_L   "<Noz Up .02 paper>  .gcode" //dsl
+  #define SM_TEST_NOZ_DN_L   "<Noz DN .02 paper>  .gcode" //dsl
+  #define SM_TEST_PRT_PLA_L  "<Test Print PLA>    .gcode" //dsl
+  #define SM_TEST_PRT_ABS_L  "<Test Print ABS>    .gcode" //dsl
+  #define SM_TEST_PRT_TPU_L  "<Test Print TPU>    .gcode" //dsl
+  #define SM_TESTMENU_EXIT_L "<Exit Test Menu>    .gcode" //dsl
+  #define SM_NOOP_L          "<noop>              .gcode" //dsl
+  
 #endif // KNUTWURST_DGUS2_TFT
+
+#define ENTER_MENU_SOUND    BUZZ(200, 1108); BUZZ(200, 1661); BUZZ(200, 1108); BUZZ(600, 1661); //dsl
+#define EXIT_MENU_SOUND     BUZZ(200, 1661); BUZZ(200, 1108); BUZZ(600, 1661); BUZZ(200, 1108); //dsl 
 
 class AnycubicTouchscreenClass {
 
@@ -262,12 +323,22 @@ class AnycubicTouchscreenClass {
     String flowRateBuffer;
     String zOffsetBuffer;
 
-    uint8_t SpecialMenu = false;
-    uint8_t MMLMenu     = false;
-    uint8_t FlowMenu    = false;
-    uint8_t BLTouchMenu = false;
-    uint8_t LevelMenu   = false;
-    uint8_t CaseLight   = true;
+    //dsl Menu booleans
+    uint8_t SpecialMenu          = false;
+    uint8_t ManualMeshLevelMenu  = false; //dsl
+    uint8_t FlowMenu             = false;
+    uint8_t ProbeMenu            = false; //dsl
+    uint8_t Manual4PntLevelMenu  = false; //dsl
+    uint8_t CaseLight            = true;
+    uint8_t TestMenu             = false; //dsl
+    uint8_t AutoMeshLevelMenu    = false; //dsl
+
+    //dsl Menu item toggles
+    uint8_t HeatBed              = false; //dsl
+    uint8_t EnableHighSpeedProbe = false; //dsl
+    uint8_t EnableMeshFade       = false; //dsl
+
+
 
 #if ENABLED(KNUTWURST_MEGA_P_LASER)
     typedef struct {
