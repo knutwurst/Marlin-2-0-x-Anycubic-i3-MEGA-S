@@ -35,7 +35,7 @@
  *
  * Advanced settings can be found in Configuration_adv.h
  */
-#define CONFIGURATION_H_VERSION 02010205
+#define CONFIGURATION_H_VERSION 02010206
 #define ANYCUBIC_TOUCHSCREEN
 #define KNUTWURST_SPECIAL_MENU
 // #define ANYCUBIC_TFT_DEBUG
@@ -779,27 +779,27 @@
                                   // Set/get with G-code: M301 E[extruder number, 0-2]
 
   #if ANY(KNUTWURST_MEGA, KNUTWURST_MEGA_S, KNUTWURST_MEGA_P)
-    #define  DEFAULT_Kp 12.28
-    #define  DEFAULT_Ki  0.75
-    #define  DEFAULT_Kd 50.06
+    #define  DEFAULT_KP 12.28
+    #define  DEFAULT_KI  0.75
+    #define  DEFAULT_KD 50.06
   #endif
 
   #if ENABLED(KNUTWURST_MEGA_X)
-    #define  DEFAULT_Kp 15.94
-    #define  DEFAULT_Ki  1.17
-    #define  DEFAULT_Kd 54.19
+    #define  DEFAULT_KP 15.94
+    #define  DEFAULT_KI  1.17
+    #define  DEFAULT_KD 54.19
   #endif
 
   #if ENABLED(KNUTWURST_CHIRON)
-    #define DEFAULT_Kp  20.00
-    #define DEFAULT_Ki   0.50
-    #define DEFAULT_Kd 106.55
+    #define DEFAULT_KP  20.00
+    #define DEFAULT_KI   0.50
+    #define DEFAULT_KD 106.55
   #endif
 
   #if ENABLED(KNUTWURST_4MAXP2)
-    #define DEFAULT_Kp 17.13
-    #define DEFAULT_Ki 0.93
-    #define DEFAULT_Kd 78.58
+    #define DEFAULT_KP 17.13
+    #define DEFAULT_KI 0.93
+    #define DEFAULT_KD 78.58
   #endif
 #else
   #define BANG_MAX 255    // Limit hotend current while in bang-bang mode; 255=full current
@@ -885,28 +885,28 @@
   //#define PID_BED_DEBUG // Print Bed PID debug data to the serial port.
 
   #if ANY(KNUTWURST_MEGA, KNUTWURST_MEGA_S, KNUTWURST_MEGA_P)
-    #define DEFAULT_bedKp 251.78
-    #define DEFAULT_bedKi  49.57
-    #define DEFAULT_bedKd 319.73
+    #define DEFAULT_BED_KP 251.78
+    #define DEFAULT_BED_KI  49.57
+    #define DEFAULT_BED_KD 319.73
   #elif ENABLED(KNUTWURST_MEGA_X)
-    #define DEFAULT_bedKp 251.78
-    #define DEFAULT_bedKi  49.57
-    #define DEFAULT_bedKd 319.73
+    #define DEFAULT_BED_KP 251.78
+    #define DEFAULT_BED_KI  49.57
+    #define DEFAULT_BED_KD 319.73
   #elif ENABLED(KNUTWURST_CHIRON)
-    #define DEFAULT_bedKp   97.10
-    #define DEFAULT_bedKi    1.41
-    #define DEFAULT_bedKd 1675.16
+    #define DEFAULT_BED_KP   97.10
+    #define DEFAULT_BED_KI    1.41
+    #define DEFAULT_BED_KD 1675.16
   #elif ENABLED(KNUTWURST_4MAXP2)
-    #define DEFAULT_bedKp 251.78
-    #define DEFAULT_bedKi 49.57
-    #define DEFAULT_bedKd 319.73
+    #define DEFAULT_BED_KP 251.78
+    #define DEFAULT_BED_KI 49.57
+    #define DEFAULT_BED_KD 319.73
   #endif
 
   // 120V 250W silicone heater into 4mm borosilicate (MendelMax 1.5+)
   // from FOPDT model - kp=.39 Tp=405 Tdead=66, Tc set to 79.2, aggressive factor of .15 (vs .1, 1, 10)
-  //#define DEFAULT_bedKp 10.00
-  //#define DEFAULT_bedKi .023
-  //#define DEFAULT_bedKd 305.4
+  //#define DEFAULT_BED_KP 10.00
+  //#define DEFAULT_BED_KI .023
+  //#define DEFAULT_BED_KD 305.4
 
   // FIND YOUR OWN: "M303 E-1 C8 S90" to run autotune on the bed at 90 degreesC for 8 cycles.
 #else
@@ -950,9 +950,9 @@
   // Lasko "MyHeat Personal Heater" (200w) modified with a Fotek SSR-10DA to control only the heating element
   // and placed inside the small Creality printer enclosure tent.
   //
-  #define DEFAULT_chamberKp  37.04
-  #define DEFAULT_chamberKi   1.40
-  #define DEFAULT_chamberKd 655.17
+  #define DEFAULT_CHAMBER_KP  37.04
+  #define DEFAULT_CHAMBER_KI   1.40
+  #define DEFAULT_CHAMBER_KD 655.17
   // M309 P37.04 I1.04 D655.17
 
   // FIND YOUR OWN: "M303 E-2 C8 S50" to run autotune on the chamber at 50 degreesC for 8 cycles.

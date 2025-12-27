@@ -36,11 +36,9 @@
   #include "../../module/probe.h"
 #endif
 
-#if HAS_GRAPHICAL_TFT
+#if ALL(TOUCH_SCREEN, HAS_GRAPHICAL_TFT)
   #include "../tft/tft.h"
-  #if ENABLED(TOUCH_SCREEN)
-    #include "../tft/touch.h"
-  #endif
+  #include "../tft/touch.h"
 #endif
 
 #if ANY(PROBE_MANUALLY, MESH_BED_LEVELING)

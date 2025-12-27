@@ -621,6 +621,18 @@
   #error "BTT_MINI_12864_V1 is now BTT_MINI_12864."
 #elif defined(SDIO_SUPPORT)
   #error "SDIO_SUPPORT is now ONBOARD_SDIO."
+#elif defined(DEFAULT_Kp_LIST) || defined(DEFAULT_Ki_LIST) || defined(DEFAULT_Kd_LIST)
+  #error "DEFAULT_Kp_LIST, DEFAULT_Ki_LIST, DEFAULT_Kd_LIST are now (uppercase) DEFAULT_KP_LIST, DEFAULT_KI_LIST, DEFAULT_KD_LIST."
+#elif defined(DEFAULT_Kp) || defined(DEFAULT_Ki) || defined(DEFAULT_Kd)
+  #error "DEFAULT_Kp, DEFAULT_Ki, DEFAULT_Kd are now (uppercase) DEFAULT_KP, DEFAULT_KI, DEFAULT_KD."
+#elif defined(DEFAULT_bedKp) || defined(DEFAULT_bedKi) || defined(DEFAULT_bedKd)
+  #error "DEFAULT_bedKp, DEFAULT_bedKi, DEFAULT_bedKd are now DEFAULT_BED_KP, DEFAULT_BED_KI, DEFAULT_BED_KD."
+#elif defined(DEFAULT_chamberKp) || defined(DEFAULT_chamberKi) || defined(DEFAULT_chamberKd)
+  #error "DEFAULT_chamberKp, DEFAULT_chamberKi, DEFAULT_chamberKd are now DEFAULT_CHAMBER_KP, DEFAULT_CHAMBER_KI, DEFAULT_CHAMBER_KD."
+#elif defined(DEFAULT_Kc)
+  #error "DEFAULT_Kc is now (uppercase) DEFAULT_KC."
+#elif defined(DEFAULT_Kf)
+  #error "DEFAULT_Kf is now (uppercase) DEFAULT_KF."
 #endif
 
 // L64xx stepper drivers have been removed
