@@ -30,7 +30,7 @@
  *
  * Basic settings can be found in Configuration.h
  */
-#define CONFIGURATION_ADV_H_VERSION 02010206
+#define CONFIGURATION_ADV_H_VERSION 02010207
 
 // @section develop
 

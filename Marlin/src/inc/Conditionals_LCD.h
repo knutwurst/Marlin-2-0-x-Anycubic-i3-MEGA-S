@@ -1013,6 +1013,7 @@
 #endif
 #if ANY(HAS_DWIN_E3V2_BASIC, DWIN_CREALITY_LCD_JYERSUI)
   #define HAS_DWIN_E3V2 1
+  #undef LCD_BED_LEVELING // allow for MESH_EDIT_MENU
 #endif
 
 // E3V2 extras

@@ -1,56 +1,62 @@
+#!/usr/bin/env python
+#
+# STM32F1/build_flags.py
+# Add build_flags for the base STM32F1_maple environment (stm32f1-maple.ini)
+#
 from __future__ import print_function
 import sys
 
-#dynamic build flags for generic compile options
+# Dynamic build flags for generic compile options
 if __name__ == "__main__":
-  args = " ".join([ "-std=gnu++14",
-                    "-Os",
-                    "-mcpu=cortex-m3",
-                    "-mthumb",
 
-                    "-fsigned-char",
-                    "-fno-move-loop-invariants",
-                    "-fno-strict-aliasing",
-                    "-fsingle-precision-constant",
-
-                    "--specs=nano.specs",
-                    "--specs=nosys.specs",
-
-                    "-IMarlin/src/HAL/STM32F1",
-
-                    "-MMD",
-                    "-MP",
-                    "-DTARGET_STM32F1"
-                  ])
-
-  for i in range(1, len(sys.argv)):
-    args += " " + sys.argv[i]
-
-  print(args)
-
-# extra script for linker options
-else:
-  import pioutil
-  if pioutil.is_pio_build():
-    from SCons.Script import DefaultEnvironment
-    env = DefaultEnvironment()
-    env.Append(
-      ARFLAGS=["rcs"],
-
-      ASFLAGS=["-x", "assembler-with-cpp"],
-
-      CXXFLAGS=[
-        "-fabi-version=0",
-        "-fno-use-cxa-atexit",
-        "-fno-threadsafe-statics"
-      ],
-      LINKFLAGS=[
+    # Print these plus the given args when running directly on the command-line
+    args = [
+        "-std=gnu++14",
         "-Os",
         "-mcpu=cortex-m3",
-        "-ffreestanding",
         "-mthumb",
+
+        "-fsigned-char",
+        "-fno-move-loop-invariants",
+        "-fno-strict-aliasing",
+
         "--specs=nano.specs",
         "--specs=nosys.specs",
-        "-u_printf_float",
-      ],
-    )
+
+        "-MMD", "-MP",
+
+        "-IMarlin/src/HAL/STM32F1",
+
+        "-DTARGET_STM32F1",
+        "-DARDUINO_ARCH_STM32",
+        "-DPLATFORM_M997_SUPPORT"
+    ] + sys.argv[1:]
+
+    print(" ".join(args))
+
+else:
+
+    # Extra script for stm32f1-maple.ini build_flags
+
+    import pioutil
+    if pioutil.is_pio_build():
+        pioutil.env.Append(
+            ARFLAGS=["rcs"],
+
+            ASFLAGS=["-x", "assembler-with-cpp"],
+
+            CXXFLAGS=[
+                "-fabi-version=0",
+                "-fno-use-cxa-atexit",
+                "-fno-threadsafe-statics"
+            ],
+            LINKFLAGS=[
+                "-Os",
+                "-mcpu=cortex-m3",
+                "-ffreestanding",
+                "-mthumb",
+                "--specs=nano.specs",
+                "--specs=nosys.specs",
+                "-u_printf_float",
+            ],
+        )
