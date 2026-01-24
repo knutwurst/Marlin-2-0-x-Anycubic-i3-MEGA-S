@@ -123,9 +123,24 @@ jobs:
     #    path: |
     #     .pio/build/${{ matrix.platform }}/${{ matrix.platform }}_v*.hex
 
-    - name: Archive all artifacts into one ZIP file
+    - name: Upload artifact for platform
       uses: actions/upload-artifact@v6
       with:
-        name: Knuwurst-all-in-one-${{github.sha}}
+        name: firmware-${{ matrix.platform }}
         path: |
          .pio/build/${{ matrix.platform }}/${{ matrix.platform }}_v*.hex
+        retention-days: 7
+
+  merge-artifacts:
+    name: Merge All Artifacts
+    needs: build
+    runs-on: ubuntu-latest
+    if: github.repository == 'knutwurst/Marlin-2-0-x-Anycubic-i3-MEGA-S'
+
+    steps:
+    - name: Merge all artifacts into one
+      uses: actions/upload-artifact/merge@v6
+      with:
+        name: Knuwurst-all-in-one-${{github.sha}}
+        pattern: firmware-*
+        delete-merged: false
