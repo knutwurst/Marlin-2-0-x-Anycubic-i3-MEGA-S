@@ -839,14 +839,14 @@ volatile bool Temperature::raw_temps_ready = false;
         TERN_(HOST_PROMPT_SUPPORT, hostui.notify(GET_TEXT_F(MSG_PID_AUTOTUNE_DONE)));
 
         #if ANY(PIDTEMPBED, PIDTEMPCHAMBER)
-          FSTR_P const estring = GHV(F("chamber"), F("bed"), FPSTR(NUL_STR));
-          say_default_(); SERIAL_ECHOF(estring); SERIAL_ECHOLNPGM("Kp ", tune_pid.p);
-          say_default_(); SERIAL_ECHOF(estring); SERIAL_ECHOLNPGM("Ki ", tune_pid.i);
-          say_default_(); SERIAL_ECHOF(estring); SERIAL_ECHOLNPGM("Kd ", tune_pid.d);
+          FSTR_P const estring = GHV(F("CHAMBER_"), F("BED_"), FPSTR(NUL_STR));
+          say_default_(); SERIAL_ECHOF(estring); SERIAL_ECHOLNPGM("KP ", tune_pid.p);
+          say_default_(); SERIAL_ECHOF(estring); SERIAL_ECHOLNPGM("KI ", tune_pid.i);
+          say_default_(); SERIAL_ECHOF(estring); SERIAL_ECHOLNPGM("KD ", tune_pid.d);
         #else
-          say_default_(); SERIAL_ECHOLNPGM("Kp ", tune_pid.p);
-          say_default_(); SERIAL_ECHOLNPGM("Ki ", tune_pid.i);
-          say_default_(); SERIAL_ECHOLNPGM("Kd ", tune_pid.d);
+          say_default_(); SERIAL_ECHOLNPGM("KP ", tune_pid.p);
+          say_default_(); SERIAL_ECHOLNPGM("KI ", tune_pid.i);
+          say_default_(); SERIAL_ECHOLNPGM("KD ", tune_pid.d);
         #endif
 
         auto _set_hotend_pid = [](const uint8_t tool, const raw_pid_t &in_pid) {

@@ -178,9 +178,9 @@
 #elif MB(DAGOMA_F5)
   #include "ramps/pins_DAGOMA_F5.h"                 // ATmega2560                           env:mega2560
 #elif MB(FYSETC_F6_13)
-  #include "ramps/pins_FYSETC_F6_13.h"              // ATmega2560                           env:FYSETC_F6
+  #include "ramps/pins_FYSETC_F6_13.h"              // ATmega2560                           env:mega2560ext
 #elif MB(FYSETC_F6_14)
-  #include "ramps/pins_FYSETC_F6_14.h"              // ATmega2560                           env:FYSETC_F6
+  #include "ramps/pins_FYSETC_F6_14.h"              // ATmega2560                           env:mega2560ext
 #elif MB(DUPLICATOR_I3_PLUS)
   #include "ramps/pins_DUPLICATOR_I3_PLUS.h"        // ATmega2560                           env:mega2560
 #elif MB(VORON)
@@ -453,33 +453,33 @@
 //
 
 #elif MB(DUE3DOM)
-  #include "sam/pins_DUE3DOM.h"                     // SAM3X8E                              env:DUE env:DUE_USB env:DUE_debug
+  #include "sam/pins_DUE3DOM.h"                     // SAM3X8E                              env:DUE env:DUE_USB
 #elif MB(DUE3DOM_MINI)
-  #include "sam/pins_DUE3DOM_MINI.h"                // SAM3X8E                              env:DUE env:DUE_USB env:DUE_debug
+  #include "sam/pins_DUE3DOM_MINI.h"                // SAM3X8E                              env:DUE env:DUE_USB
 #elif MB(RADDS)
-  #include "sam/pins_RADDS.h"                       // SAM3X8E                              env:DUE env:DUE_USB env:DUE_debug
+  #include "sam/pins_RADDS.h"                       // SAM3X8E                              env:DUE env:DUE_USB
 #elif MB(RAMPS_FD_V1)
-  #include "sam/pins_RAMPS_FD_V1.h"                 // SAM3X8E                              env:DUE env:DUE_USB env:DUE_debug
+  #include "sam/pins_RAMPS_FD_V1.h"                 // SAM3X8E                              env:DUE env:DUE_USB
 #elif MB(RAMPS_FD_V2)
-  #include "sam/pins_RAMPS_FD_V2.h"                 // SAM3X8E                              env:DUE env:DUE_USB env:DUE_debug
+  #include "sam/pins_RAMPS_FD_V2.h"                 // SAM3X8E                              env:DUE env:DUE_USB
 #elif MB(RAMPS_SMART_EFB, RAMPS_SMART_EEB, RAMPS_SMART_EFF, RAMPS_SMART_EEF, RAMPS_SMART_SF)
-  #include "sam/pins_RAMPS_SMART.h"                 // SAM3X8E                              env:DUE env:DUE_USB env:DUE_debug
+  #include "sam/pins_RAMPS_SMART.h"                 // SAM3X8E                              env:DUE env:DUE_USB
 #elif MB(RAMPS_DUO_EFB, RAMPS_DUO_EEB, RAMPS_DUO_EFF, RAMPS_DUO_EEF, RAMPS_DUO_SF)
-  #include "sam/pins_RAMPS_DUO.h"                   // SAM3X8E                              env:DUE env:DUE_USB env:DUE_debug
+  #include "sam/pins_RAMPS_DUO.h"                   // SAM3X8E                              env:DUE env:DUE_USB
 #elif MB(RAMPS4DUE_EFB, RAMPS4DUE_EEB, RAMPS4DUE_EFF, RAMPS4DUE_EEF, RAMPS4DUE_SF)
-  #include "sam/pins_RAMPS4DUE.h"                   // SAM3X8E                              env:DUE env:DUE_USB env:DUE_debug
+  #include "sam/pins_RAMPS4DUE.h"                   // SAM3X8E                              env:DUE env:DUE_USB
 #elif MB(RURAMPS4D_11)
-  #include "sam/pins_RURAMPS4D_11.h"                // SAM3X8E                              env:DUE env:DUE_USB env:DUE_debug
+  #include "sam/pins_RURAMPS4D_11.h"                // SAM3X8E                              env:DUE env:DUE_USB
 #elif MB(RURAMPS4D_13)
-  #include "sam/pins_RURAMPS4D_13.h"                // SAM3X8E                              env:DUE env:DUE_USB env:DUE_debug
+  #include "sam/pins_RURAMPS4D_13.h"                // SAM3X8E                              env:DUE env:DUE_USB
 #elif MB(ULTRATRONICS_PRO)
-  #include "sam/pins_ULTRATRONICS_PRO.h"            // SAM3X8E                              env:DUE env:DUE_debug
+  #include "sam/pins_ULTRATRONICS_PRO.h"            // SAM3X8E                              env:DUE
 #elif MB(ARCHIM1)
-  #include "sam/pins_ARCHIM1.h"                     // SAM3X8E                              env:DUE_archim env:DUE_archim_debug
+  #include "sam/pins_ARCHIM1.h"                     // SAM3X8E                              env:DUE_archim
 #elif MB(ARCHIM2)
-  #include "sam/pins_ARCHIM2.h"                     // SAM3X8E                              env:DUE_archim env:DUE_archim_debug
+  #include "sam/pins_ARCHIM2.h"                     // SAM3X8E                              env:DUE_archim
 #elif MB(ALLIGATOR)
-  #include "sam/pins_ALLIGATOR_R2.h"                // SAM3X8E                              env:DUE env:DUE_debug
+  #include "sam/pins_ALLIGATOR_R2.h"                // SAM3X8E                              env:DUE
 #elif MB(CNCONTROLS_15D)
   #include "sam/pins_CNCONTROLS_15D.h"              // SAM3X8E                              env:DUE env:DUE_USB
 #elif MB(KRATOS32)
@@ -492,7 +492,7 @@
 #elif MB(PRINTRBOARD_G2)
   #include "sam/pins_PRINTRBOARD_G2.h"              // SAM3X8C                              env:DUE_USB
 #elif MB(ADSK)
-  #include "sam/pins_ADSK.h"                        // SAM3X8C                              env:DUE env:DUE_debug
+  #include "sam/pins_ADSK.h"                        // SAM3X8C                              env:DUE
 
 //
 // STM32 ARM Cortex-M0+
@@ -674,6 +674,8 @@
   #include "stm32f4/pins_RUMBA32_BTT.h"             // STM32F4                              env:rumba32
 #elif MB(BLACK_STM32F407VE)
   #include "stm32f4/pins_BLACK_STM32F407VE.h"       // STM32F4                              env:STM32F407VE_black
+#elif MB(BTT_SKR_MINI_E3_V3_0_1)
+  #include "stm32f4/pins_BTT_SKR_MINI_E3_V3_0_1.h"  // STM32F4                              env:STM32F401RC_btt env:STM32F401RC_btt_xfer
 #elif MB(BTT_SKR_PRO_V1_1)
   #include "stm32f4/pins_BTT_SKR_PRO_V1_1.h"        // STM32F4                              env:BIGTREE_SKR_PRO env:BIGTREE_SKR_PRO_usb_flash_drive
 #elif MB(BTT_SKR_PRO_V1_2)

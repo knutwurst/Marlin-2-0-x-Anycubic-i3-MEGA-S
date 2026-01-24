@@ -1528,7 +1528,7 @@ static_assert(COUNT(arm) == LOGICAL_AXES, "AXIS_RELATIVE_MODES must contain " _L
  * LCD_BED_LEVELING requirements
  */
 #if ENABLED(LCD_BED_LEVELING)
-  #if !HAS_MARLINUI_MENU
+  #if NONE(HAS_MARLINUI_MENU, DWIN_LCD_PROUI)
     #error "LCD_BED_LEVELING is not supported by the selected LCD controller."
   #elif !(ENABLED(MESH_BED_LEVELING) || HAS_ABL_NOT_UBL)
     #error "LCD_BED_LEVELING requires MESH_BED_LEVELING or AUTO_BED_LEVELING."

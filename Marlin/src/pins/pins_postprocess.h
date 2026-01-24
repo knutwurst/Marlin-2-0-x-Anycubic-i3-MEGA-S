@@ -613,7 +613,7 @@
   #endif
 #elif X_HOME_TO_MIN
   #define X_STOP_PIN X_MIN_PIN
-#else
+#elif X_HOME_TO_MAX
   #define X_STOP_PIN X_MAX_PIN
 #endif
 #if !defined(X2_USE_ENDSTOP) && ENABLED(X_DUAL_ENDSTOPS) && PIN_EXISTS(X_STOP)
@@ -635,7 +635,7 @@
     #endif
   #elif Y_HOME_TO_MIN
     #define Y_STOP_PIN Y_MIN_PIN
-  #else
+  #elif Y_HOME_TO_MAX
     #define Y_STOP_PIN Y_MAX_PIN
   #endif
   #if !defined(Y2_USE_ENDSTOP) && ENABLED(Y_DUAL_ENDSTOPS) && PIN_EXISTS(Y_STOP)
@@ -658,7 +658,7 @@
     #endif
   #elif Z_HOME_TO_MIN
     #define Z_STOP_PIN Z_MIN_PIN
-  #else
+  #elif Z_HOME_TO_MAX
     #define Z_STOP_PIN Z_MAX_PIN
   #endif
   #if ENABLED(Z_MULTI_ENDSTOPS) && PIN_EXISTS(Z_STOP)
@@ -689,7 +689,7 @@
     #endif
   #elif I_HOME_TO_MIN
     #define I_STOP_PIN I_MIN_PIN
-  #else
+  #elif I_HOME_TO_MAX
     #define I_STOP_PIN I_MAX_PIN
   #endif
 #else
@@ -712,7 +712,7 @@
     #endif
   #elif J_HOME_TO_MIN
     #define J_STOP_PIN J_MIN_PIN
-  #else
+  #elif J_HOME_TO_MAX
     #define J_STOP_PIN J_MAX_PIN
   #endif
 #else
@@ -735,7 +735,7 @@
     #endif
   #elif K_HOME_TO_MIN
     #define K_STOP_PIN K_MIN_PIN
-  #else
+  #elif K_HOME_TO_MAX
     #define K_STOP_PIN K_MAX_PIN
   #endif
 #else
@@ -758,7 +758,7 @@
     #endif
   #elif U_HOME_TO_MIN
     #define U_STOP_PIN U_MIN_PIN
-  #else
+  #elif U_HOME_TO_MAX
     #define U_STOP_PIN U_MAX_PIN
   #endif
 #else
@@ -781,7 +781,7 @@
     #endif
   #elif V_HOME_TO_MIN
     #define V_STOP_PIN V_MIN_PIN
-  #else
+  #elif V_HOME_TO_MAX
     #define V_STOP_PIN V_MAX_PIN
   #endif
 #else
@@ -804,7 +804,7 @@
     #endif
   #elif W_HOME_TO_MIN
     #define W_STOP_PIN W_MIN_PIN
-  #else
+  #elif W_HOME_TO_MAX
     #define W_STOP_PIN W_MAX_PIN
   #endif
 #else
