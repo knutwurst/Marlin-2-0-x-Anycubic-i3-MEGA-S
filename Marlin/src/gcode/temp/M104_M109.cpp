@@ -50,9 +50,11 @@
  * M109: Set Hotend Temperature target and wait
  *
  * Parameters
- *  I<preset> : Material Preset index (if material presets are defined)
- *  T<index>  : Tool index. If omitted, applies to the active tool
- *  S<target> : The target temperature in current units. For M109, only wait when heating up.
+ *  I<preset>   : Material Preset index (if material presets are defined)
+ *  T<index>    : Tool index. If omitted, applies to the active tool
+ *  C<min_temp> : Sets the target temperature to the current temperature of the selected tool
+ *                or to min_temp if it is higher. This can avoid unnecessary heat loss.
+ *  S<target>   : The target temperature in current units. For M109, only wait when heating up.
  *
  * With AUTOTEMP...
  *  F<factor> : Autotemp Scaling Factor. Set non-zero to enable Auto-temp.
@@ -65,6 +67,7 @@
  * Examples
  *  M104 S100 : Set target to 100° and return.
  *  M109 R150 : Set target to 150°. Wait until the hotend gets close to 150°.
+ *  M104 C100 : Set target to 100° or the current temperature, whichever is higher.
  *
  * With PRINTJOB_TIMER_AUTOSTART turning on heaters will start the print job timer
  *  (used by printingIsActive, etc.) and turning off heaters will stop the timer.
@@ -92,8 +95,21 @@ void GcodeSuite::M104_M109(const bool isM109) {
     }
   #endif
 
-  // Get the temperature from 'S' or 'R'
   bool no_wait_for_cooling = false;
+
+  // Avoid nozzle heat loss: 
+  // If 'C' is specified for M104 keep the hotend at its current temperature.
+  // The value after 'C' specifies the minimum temperature (to avoid heating to e. g. 20 °C).
+  if (!got_temp && !isM109 && parser.seenval('C')) {
+    celsius_t min_temp = parser.value_celsius();
+    temp = thermalManager.wholeDegHotend(target_extruder);
+    // If the current temperature is below the minimum, start heating to the minimum
+    if (temp < min_temp)
+      temp = min_temp;
+    no_wait_for_cooling = got_temp = true;
+  }
+
+  // Get the temperature from 'S' or 'R'
   if (!got_temp) {
     no_wait_for_cooling = parser.seenval('S');
     got_temp = no_wait_for_cooling || (isM109 && parser.seenval('R'));
