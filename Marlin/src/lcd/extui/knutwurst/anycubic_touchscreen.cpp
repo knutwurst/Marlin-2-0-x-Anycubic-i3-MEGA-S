@@ -388,15 +388,12 @@ void AnycubicTouchscreenClass::Setup() {
 
     // Main engraving loop: process image row by row
     for (i = 0; i < y_max; i++) {
-      // Move to next Y position (row)
+      // Calculate Y position for this row
+      float y_pos;
       if (laser_printer_st.pic_y_mirror == 0)
-        sprintf_P(cvalue, PSTR("G1 Y%sF%i"), ftostr42_52(y_start + i * laser_printer_st.pic_pixel_distance), ftemp);
+        y_pos = y_start + i * laser_printer_st.pic_pixel_distance;
       else
-        sprintf_P(cvalue, PSTR("G1 Y%sF%i"), ftostr42_52(y_start - i * laser_printer_st.pic_pixel_distance), ftemp);
-
-      // Execute Y movement before processing the row
-      queue.enqueue_one_now(cvalue);
-      while (commandsInQueue()) idle();
+        y_pos = y_start - i * laser_printer_st.pic_pixel_distance;
 
       // Even rows: scan left to right
       if (i % 2 == 0) {
@@ -405,11 +402,15 @@ void AnycubicTouchscreenClass::Setup() {
 
           // Only engrave if pixel is dark enough (above threshold)
           if (Y > MIN_GRAY_VLAUE) {
-            // Move to pixel position
+            // Calculate X position
+            float x_pos;
             if (laser_printer_st.pic_x_mirror == 1)
-              sprintf_P(cvalue, PSTR("G1 X%sF%i"), ftostr42_52(x_start - j * laser_printer_st.pic_pixel_distance), ftemp);
+              x_pos = x_start - j * laser_printer_st.pic_pixel_distance;
             else
-              sprintf_P(cvalue, PSTR("G1 X%sF%i"), ftostr42_52(x_start + j * laser_printer_st.pic_pixel_distance), ftemp);
+              x_pos = x_start + j * laser_printer_st.pic_pixel_distance;
+
+            // Move to pixel position (X and Y together)
+            sprintf_P(cvalue, PSTR("G1 X%s Y%s F%i"), ftostr42_52(x_pos), ftostr42_52(y_pos), ftemp);
             queue.enqueue_one_now(cvalue);
             while (commandsInQueue()) idle();
 
@@ -436,23 +437,38 @@ void AnycubicTouchscreenClass::Setup() {
           if (laser_status == 0) return;
         }
       }
+      // Odd rows: scan right to left (bidirectional)
       else {
         for (j = 0; j < x_max; j++) {
-          read_bmp(&Y, i, x_max - j - 1);
-          if (Y > MIN_GRAY_VLAUE && j != 0) {
+          // Read pixels in reverse order: x_max-1, x_max-2, ..., 0
+          int pixel_x = x_max - 1 - j;
+          read_bmp(&Y, i, pixel_x);
+
+          // Only engrave if pixel is dark enough (above threshold)
+          if (Y > MIN_GRAY_VLAUE) {
+            // Calculate X position (moving from right to left)
+            float x_pos;
             if (laser_printer_st.pic_x_mirror == 1)
-              sprintf_P(cvalue, PSTR("G1 X%sF%i"), ftostr42_52(x_end + j * laser_printer_st.pic_pixel_distance), ftemp);
+              x_pos = x_end + j * laser_printer_st.pic_pixel_distance;
             else
-              sprintf_P(cvalue, PSTR("G1 X%sF%i"), ftostr42_52(x_end - j * laser_printer_st.pic_pixel_distance), ftemp);
+              x_pos = x_end - j * laser_printer_st.pic_pixel_distance;
+
+            // Move to pixel position (X and Y together)
+            sprintf_P(cvalue, PSTR("G1 X%s Y%s F%i"), ftostr42_52(x_pos), ftostr42_52(y_pos), ftemp);
             queue.enqueue_one_now(cvalue);
             while (commandsInQueue()) idle();
+
+            // Fire laser
             WRITE(HEATER_0_PIN, 1);
+
+            // In raster mode, pulse duration is proportional to pixel darkness
             if (laser_printer_st.pic_vector == 0) {
               time = Y * laser_printer_st.pic_laser_time;
               while (time--) WRITE(HEATER_0_PIN, 1);
               WRITE(HEATER_0_PIN, 0);
             }
 
+            // Send progress update to TFT every 20 pixels
             if (laser_counter != 20) {
               laser_counter = 20;
               SENDLINE_PGM("J30");
@@ -460,12 +476,12 @@ void AnycubicTouchscreenClass::Setup() {
             }
           }
           else {
-            WRITE(HEATER_0_PIN, 0);
+            WRITE(HEATER_0_PIN, 0);     // Turn off laser for white pixels
           }
 
+          // Check for pause/stop commands from TFT
           TFTCommandScan();
-          while (laser_print_pause)
-          {
+          while (laser_print_pause) {
             TFTCommandScan();
             if (laser_status == 0) return;
           }
