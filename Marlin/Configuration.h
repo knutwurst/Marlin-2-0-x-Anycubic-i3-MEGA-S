@@ -63,14 +63,14 @@
 #endif
 
 /*
- * This enables the integrated Laser engaving feature
+ * This enables the integrated Laser engraving feature
  * in the anycubic touchscreen. It's currently only
- * supported by the Anycubic MEGA Pro and therefore it
- * is automatically set if the MEGA_P is enabled.
+ * supported by the Anycubic MEGA Pro.
  *
+ * Uncomment the following line to enable laser support:
  */
 #if ENABLED(KNUTWURST_MEGA_P)
-// #define KNUTWURST_MEGA_P_LASER
+  #define KNUTWURST_MEGA_P_LASER
 #endif
 
 /*

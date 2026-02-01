@@ -3437,11 +3437,17 @@
  */
 // #define SPINDLE_FEATURE
 
-#if ENABLED(KNUTWURST_MEGA_P)
+#if ENABLED(KNUTWURST_MEGA_P_LASER)
   #define LASER_FEATURE
 
   #define SPINDLE_LASER_ENA_PIN 40  // D40 should be unused. The laser is only connected to the PWM output.
   #define SPINDLE_LASER_PWM_PIN HEATER_0_PIN
+
+  // Anycubic TFT laser feature.
+  #define MAX_X_SIZE     220
+  #define MAX_Y_SIZE     150
+  #define LASER_X_OFFSET   0  // The distance in the X direction between the laser and the extruder.
+  #define LASER_Y_OFFSET  65  // The distance in the Y direction between the laser and the extruder.
 #endif
 
 #if EITHER(SPINDLE_FEATURE, LASER_FEATURE)

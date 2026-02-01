@@ -233,6 +233,12 @@ bool CardReader::is_visible_entity(const dir_t &p OPTARG(CUSTOM_FIRMWARE_UPLOAD,
     || fileIsBinary()                                   // BIN files are accepted
     || (!onlyBin && p.name[8] == 'G'
                  && p.name[9] != '~')                   // Non-backup *.G* files are accepted
+    // PATCH START: KNUTWURST
+    #if ENABLED(KNUTWURST_MEGA_P_LASER)
+      || (!onlyBin && p.name[8] == 'B'                  // Bitmap files for Anycubic laser engraving on Mega Pro.
+                   && p.name[9] != '~')
+    #endif
+    // PATCH END: KNUTWURST
   );
 }
 
