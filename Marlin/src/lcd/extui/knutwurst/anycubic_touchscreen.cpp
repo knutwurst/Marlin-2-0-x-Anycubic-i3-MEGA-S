@@ -394,6 +394,10 @@ void AnycubicTouchscreenClass::Setup() {
       else
         sprintf_P(cvalue, PSTR("G1 Y%sF%i"), ftostr42_52(y_start - i * laser_printer_st.pic_pixel_distance), ftemp);
 
+      // Execute Y movement before processing the row
+      queue.enqueue_one_now(cvalue);
+      while (commandsInQueue()) idle();
+
       // Even rows: scan left to right
       if (i % 2 == 0) {
         for (j = 0; j < x_max; j++) {
@@ -434,12 +438,12 @@ void AnycubicTouchscreenClass::Setup() {
       }
       else {
         for (j = 0; j < x_max; j++) {
-          read_bmp(&Y, i, x_max - j);
+          read_bmp(&Y, i, x_max - j - 1);
           if (Y > MIN_GRAY_VLAUE && j != 0) {
             if (laser_printer_st.pic_x_mirror == 1)
               sprintf_P(cvalue, PSTR("G1 X%sF%i"), ftostr42_52(x_end + j * laser_printer_st.pic_pixel_distance), ftemp);
             else
-              sprintf_P(cvalue, PSTR("G1 X%.1fF%i"), ftostr42_52(x_end - j * laser_printer_st.pic_pixel_distance), ftemp);
+              sprintf_P(cvalue, PSTR("G1 X%sF%i"), ftostr42_52(x_end - j * laser_printer_st.pic_pixel_distance), ftemp);
             queue.enqueue_one_now(cvalue);
             while (commandsInQueue()) idle();
             WRITE(HEATER_0_PIN, 1);
