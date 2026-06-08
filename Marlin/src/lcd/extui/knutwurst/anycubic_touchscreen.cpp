@@ -2250,6 +2250,7 @@ void AnycubicTouchscreenClass::GetCommandFromTFT() {
               break;
 
             case 43: // A43 start laser print
+              laser_on_off = 0;  // stop the positioning pointer before engraving
               en_continue = 1;
               break;
 
