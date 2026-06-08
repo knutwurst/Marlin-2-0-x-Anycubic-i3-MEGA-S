@@ -338,6 +338,7 @@ class AnycubicTouchscreenClass {
     void laser_init();
     void send_pic_param();
     void send_laser_param();
+    void read_bmp_header();
     void read_bmp(unsigned char*, unsigned int, unsigned int);
     void prepare_laser_print();
     void laser_print_picture();

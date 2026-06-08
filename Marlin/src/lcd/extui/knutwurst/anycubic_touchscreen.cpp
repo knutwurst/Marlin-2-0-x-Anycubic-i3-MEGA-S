@@ -228,6 +228,53 @@ void AnycubicTouchscreenClass::Setup() {
   }
 
   /**
+   * Open the currently selected BMP and read its header.
+   * Stores image geometry used by read_bmp() and laser_print_picture().
+   */
+  void AnycubicTouchscreenClass::read_bmp_header() {
+    card.openFileRead(currentFileOrDirectory);
+
+    card.setIndex(0);
+    card.read(st_bmp.bfType, 2);
+    card.read(st_bmp.bfSize, 4);
+    card.read(st_bmp.bfReserved1, 2);
+    card.read(st_bmp.bfReserved2, 2);
+    card.read(st_bmp.bfOffBits, 4);
+    card.read(st_bmp.biSize, 4);
+    card.read(st_bmp.biWidth, 4);
+    card.read(st_bmp.biHeight, 4);
+    card.read(st_bmp.biPlanes, 2);
+    card.read(st_bmp.biBitCount, 2);
+    card.read(st_bmp.biCompression, 4);
+    card.read(st_bmp.biSizeImage, 4);
+    card.read(st_bmp.biXPelsPerMeter, 4);
+    card.read(st_bmp.biYPelsPerMeter, 4);
+    card.read(st_bmp.biClrUsed, 4);
+    card.read(st_bmp.biClrImportant, 4);
+
+    // Pixel data starts at the offset stored in the file header.
+    laser_printer_st.pic_start  = (unsigned long)st_bmp.bfOffBits[0] + ((unsigned long)st_bmp.bfOffBits[1] << 8) + ((unsigned long)st_bmp.bfOffBits[2] << 16) + ((unsigned long)st_bmp.bfOffBits[3] << 24);
+    laser_printer_st.pic_width  = (unsigned int)st_bmp.biWidth[0] + ((unsigned int)st_bmp.biWidth[1] << 8);
+    laser_printer_st.pic_height = (unsigned int)st_bmp.biHeight[0] + ((unsigned int)st_bmp.biHeight[1] << 8);
+    laser_printer_st.pic_bit    = (unsigned char)st_bmp.biBitCount[0];
+
+    // A negative (top-down) BMP height arrives as a large unsigned value.
+    // Flip it back and remember the row order so the image is not read out
+    // of bounds and is not engraved upside down.
+    if (laser_printer_st.pic_height > 30000) {
+      laser_printer_st.pic_height = 65536 - laser_printer_st.pic_height;
+      laser_printer_st.pic_dir    = 1;
+    }
+    else {
+      laser_printer_st.pic_dir = 0;
+    }
+
+    // Each BMP row is padded to a 4-byte boundary. This formula is correct
+    // for every supported color depth (16, 24 and 32 bit).
+    laser_printer_st.pic_real_width = (((laser_printer_st.pic_width * laser_printer_st.pic_bit) + 31) >> 5) << 2;
+  }
+
+  /**
    * Read a pixel from the BMP file and convert it to grayscale.
    *
    * Supports 16-bit, 24-bit, and 32-bit BMP formats. Uses ITU-R BT.601
@@ -244,10 +291,13 @@ void AnycubicTouchscreenClass::Setup() {
     float Y;
     unsigned char buffer[4];
 
+    // Bottom-up BMPs (the common case) store the first row last, so invert Y.
+    // Top-down BMPs (pic_dir == 1) are read in natural order.
+    unsigned long row = (laser_printer_st.pic_dir == 0) ? (unsigned long)(laser_printer_st.pic_height - y - 1) : (unsigned long)y;
+
     // 32-bit BMP (RGBA format)
     if (laser_printer_st.pic_bit == 32) {
-      // Calculate file position: BMP is stored bottom-up, so invert Y
-      laser_printer_st.pic_ptr = (laser_printer_st.pic_height - y - 1) * laser_printer_st.pic_real_width + x * 4 + laser_printer_st.pic_start;
+      laser_printer_st.pic_ptr = row * laser_printer_st.pic_real_width + x * 4 + laser_printer_st.pic_start;
       card.setIndex(laser_printer_st.pic_ptr);
       card.read(buffer, 4);
 
@@ -257,7 +307,7 @@ void AnycubicTouchscreenClass::Setup() {
     }
     // 24-bit BMP (RGB format)
     else if (laser_printer_st.pic_bit == 24) {
-      laser_printer_st.pic_ptr = (unsigned long)(laser_printer_st.pic_height - y - 1) * laser_printer_st.pic_real_width + x * 3 + laser_printer_st.pic_start;
+      laser_printer_st.pic_ptr = row * laser_printer_st.pic_real_width + x * 3 + laser_printer_st.pic_start;
       card.setIndex(laser_printer_st.pic_ptr);
       card.read(buffer, 3);
 
@@ -266,7 +316,7 @@ void AnycubicTouchscreenClass::Setup() {
     }
     // 16-bit BMP (RGB565 format)
     else if (laser_printer_st.pic_bit == 16) {
-      laser_printer_st.pic_ptr = (laser_printer_st.pic_height - y - 1) * laser_printer_st.pic_real_width + x * 2 + laser_printer_st.pic_start;
+      laser_printer_st.pic_ptr = row * laser_printer_st.pic_real_width + x * 2 + laser_printer_st.pic_start;
       card.setIndex(laser_printer_st.pic_ptr);
       card.read(buffer, 2);
 
@@ -322,6 +372,7 @@ void AnycubicTouchscreenClass::Setup() {
       card.fileHasFinished();
       card.autofile_check();
       en_continue = 0;
+      file_type   = 0;  // engraving done, allow normal prints again
     }
   }
 
@@ -351,6 +402,15 @@ void AnycubicTouchscreenClass::Setup() {
     int y_max = laser_printer_st.pic_height;
 
     WRITE(HEATER_0_PIN, 0);             // Ensure laser is off at start
+
+    // Refuse to engrave on an invalid/unreadable header so the laser does not
+    // fire on garbage geometry.
+    if (x_max <= 0 || y_max <= 0
+        || (laser_printer_st.pic_bit != 16 && laser_printer_st.pic_bit != 24 && laser_printer_st.pic_bit != 32)) {
+      SERIAL_ECHOLNPGM("Laser: invalid BMP header, aborting");
+      laser_status = 0;
+      return;
+    }
 
     laser_status  = 1;                  // Mark laser as active
     laser_counter = 0;
@@ -1568,6 +1628,12 @@ void AnycubicTouchscreenClass::GetCommandFromTFT() {
                 PausePrint();
               }
   #endif
+              #if ENABLED(KNUTWURST_MEGA_P_LASER)
+                if (laser_status == 1) {
+                  WRITE(HEATER_0_PIN, 0);  // laser off while paused
+                  laser_print_pause = 1;
+                }
+              #endif
               break;
 
             case 10: // A10 resume sd print
@@ -1576,6 +1642,11 @@ void AnycubicTouchscreenClass::GetCommandFromTFT() {
                 ResumePrint();
               }
   #endif
+              #if ENABLED(KNUTWURST_MEGA_P_LASER)
+                if (laser_print_pause) {
+                  laser_print_pause = 0;
+                }
+              #endif
               break;
 
             case 11: // A11 stop sd print
@@ -1618,6 +1689,18 @@ void AnycubicTouchscreenClass::GetCommandFromTFT() {
                   strcpy(currentFileOrDirectory, TFTstrchr_pointer + 4);
                   SENDLINE_DBG_PGM_VAL("J20", "TFT Serial Debug: File Selected... J20 ",
                                        currentFileOrDirectory); // J20 File Selected
+
+                #if ENABLED(KNUTWURST_MEGA_P_LASER)
+                  // A selected BMP switches the printer into laser engraving mode.
+                  // Read its header here so the touchscreen can show the image
+                  // size before the engraving is started with A14.
+                  file_type = 0;
+                  if (strstr(currentFileOrDirectory, ".bmp") || strstr(currentFileOrDirectory, ".BMP")) {
+                    file_type = 1;
+                    read_bmp_header();
+                    send_pic_param();
+                  }
+                #endif
                 }
               }
   #endif
@@ -1631,51 +1714,9 @@ void AnycubicTouchscreenClass::GetCommandFromTFT() {
                   // so laser_indicate() can no longer issue M3 and corner moves.
                   laser_on_off = 0;
 
-                  file_type = 0;
-                  if (strstr(TFTstrchr_pointer, ".bmp")) file_type = 1;
-
                   if (file_type == 1) {
-                    // BMP file selected for laser engraving.
-                    card.openFileRead(currentFileOrDirectory);
-
-                    // Read BMP header.
-                    card.setIndex(0);
-                    card.read(st_bmp.bfType, 2);
-                    card.read(st_bmp.bfSize, 4);
-                    card.read(st_bmp.bfReserved1, 2);
-                    card.read(st_bmp.bfReserved2, 2);
-                    card.read(st_bmp.bfOffBits, 4);
-                    card.read(st_bmp.biSize, 4);
-                    card.read(st_bmp.biWidth, 4);
-                    card.read(st_bmp.biHeight, 4);
-                    card.read(st_bmp.biPlanes, 2);
-                    card.read(st_bmp.biBitCount, 2);
-                    card.read(st_bmp.biCompression, 4);
-                    card.read(st_bmp.biSizeImage, 4);
-                    card.read(st_bmp.biXPelsPerMeter, 4);
-                    card.read(st_bmp.biYPelsPerMeter, 4);
-                    card.read(st_bmp.biClrUsed, 4);
-                    card.read(st_bmp.biClrImportant, 4);
-
-                    laser_printer_st.pic_start = (unsigned long)st_bmp.bfOffBits[0] + ((unsigned long)st_bmp.bfOffBits[1] << 8) + ((unsigned long)st_bmp.bfOffBits[2] << 16) + ((unsigned long)st_bmp.bfOffBits[3] << 24);
-                    laser_printer_st.pic_width = (unsigned int)st_bmp.biWidth[0] + ((unsigned int)st_bmp.biWidth[1] << 8);
-                    laser_printer_st.pic_height = (unsigned int)st_bmp.biHeight[0] + ((unsigned int)st_bmp.biHeight[1] << 8);
-                    laser_printer_st.pic_bit = (unsigned char)st_bmp.biBitCount[0];
-
-                    if (laser_printer_st.pic_bit == 32) {
-                      laser_printer_st.pic_real_width = laser_printer_st.pic_width * 4;
-                    }
-                    else if (laser_printer_st.pic_bit == 24) {
-                      laser_printer_st.pic_real_width = laser_printer_st.pic_width * 3;
-                      if (laser_printer_st.pic_real_width % 4 != 0) {
-                        laser_printer_st.pic_real_width = (laser_printer_st.pic_real_width / 4 + 1) * 4;
-                      }
-                    }
-                    else if (laser_printer_st.pic_bit == 16) {
-                      laser_printer_st.pic_real_width = laser_printer_st.pic_width * 2;
-                    }
-
-                    send_pic_param();
+                    // BMP selected on A13: kick off the engraving state machine.
+                    en_continue = 1;
                   }
                   else
                 #endif
@@ -2189,12 +2230,12 @@ void AnycubicTouchscreenClass::GetCommandFromTFT() {
   #if ENABLED(KNUTWURST_MEGA_P_LASER)
             // Laser command set as sent by the Anycubic Mega Pro touchscreen.
             // Parameters use the 'S' code, matching the stock display protocol.
-            case 34: // A34 start engraving
+            case 34: // A34 continuous printing flag (also arms engraving; A14 starts it)
               laser_on_off = 0;  // stop the positioning pointer before engraving
               en_continue  = 1;
               break;
 
-            case 35: // A35 stop engraving
+            case 35: // A35 cancel continuous printing
               en_continue = 0;
               break;
 
@@ -2493,7 +2534,7 @@ void AnycubicTouchscreenClass::GetCommandFromTFT() {
 
   #if ENABLED(KNUTWURST_MEGA_P_LASER)
     laser_indicate();
-    if (en_continue == 1) {
+    if (en_continue == 1 && file_type == 1) {
       prepare_laser_print();
     }
   #endif
