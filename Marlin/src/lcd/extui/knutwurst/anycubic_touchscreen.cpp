@@ -2187,76 +2187,80 @@ void AnycubicTouchscreenClass::GetCommandFromTFT() {
               break;
 
   #if ENABLED(KNUTWURST_MEGA_P_LASER)
-            case 34: // A34 set laser vector
-              if (CodeSeen('V')) {
-                laser_printer_st.pic_vector = CodeValueInt();
-                send_laser_param();
-              }
-              break;
-
-            case 35: // A35 set laser x mirror
-              if (CodeSeen('V')) {
-                laser_printer_st.pic_x_mirror = CodeValueInt();
-                send_laser_param();
-              }
-              break;
-
-            case 36: // A36 set laser y mirror
-              if (CodeSeen('V')) {
-                laser_printer_st.pic_y_mirror = CodeValueInt();
-                send_laser_param();
-              }
-              break;
-
-            case 37: // A37 set laser time
-              if (CodeSeen('V')) {
-                laser_printer_st.pic_laser_time = CodeValueInt();
-                send_laser_param();
-              }
-              break;
-
-            case 38: // A38 set laser height
-              if (CodeSeen('V')) {
-                laser_printer_st.laser_height = CodeValue();
-                send_laser_param();
-              }
-              break;
-
-            case 39: // A39 set laser pixel distance
-              if (CodeSeen('V')) {
-                laser_printer_st.pic_pixel_distance = CodeValue();
-                send_laser_param();
-              }
-              break;
-
-            case 40: // A40 set laser x offset
-              if (CodeSeen('V')) {
-                laser_printer_st.x_offset = CodeValue();
-                send_laser_param();
-              }
-              break;
-
-            case 41: // A41 set laser y offset
-              if (CodeSeen('V')) {
-                laser_printer_st.y_offset = CodeValue();
-                send_laser_param();
-              }
-              break;
-
-            case 42: // A42 laser on/off
-              if (CodeSeen('V')) {
-                laser_on_off = CodeValueInt();
-              }
-              break;
-
-            case 43: // A43 start laser print
+            // Laser command set as sent by the Anycubic Mega Pro touchscreen.
+            // Parameters use the 'S' code, matching the stock display protocol.
+            case 34: // A34 start engraving
               laser_on_off = 0;  // stop the positioning pointer before engraving
-              en_continue = 1;
+              en_continue  = 1;
               break;
 
-            case 46: // A46 pause laser print
-              if (CodeSeen('V')) {
-                laser_print_pause = CodeValueInt();
+            case 35: // A35 stop engraving
+              en_continue = 0;
+              break;
+
+            case 36: // A36 raster (0) / vector (1)
+              if (CodeSeen('S')) {
+                laser_printer_st.pic_vector = (CodeValueInt() != 0) ? 1 : 0;
+              }
+              break;
+
+            case 37: // A37 mirror image on X axis
+              if (CodeSeen('S')) {
+                laser_printer_st.pic_x_mirror = (CodeValueInt() != 0) ? 1 : 0;
+              }
+              break;
+
+            case 38: // A38 laser pulse time
+              if (CodeSeen('S')) {
+                laser_printer_st.pic_laser_time = CodeValueInt();
+              }
+              break;
+
+            case 39: // A39 engraving height
+              if (CodeSeen('S')) {
+                laser_printer_st.laser_height = CodeValue();
+              }
+              break;
+
+            case 40: // A40 pixel distance
+              if (CodeSeen('S')) {
+                laser_printer_st.pic_pixel_distance = CodeValue();
+              }
+              break;
+
+            case 41: // A41 laser X offset
+              if (CodeSeen('S')) {
+                laser_printer_st.x_offset = CodeValue();
+              }
+              break;
+
+            case 42: // A42 laser Y offset
+              if (CodeSeen('S')) {
+                laser_printer_st.y_offset = CodeValue();
+              }
+              break;
+
+            case 43: // A43 mirror image on Y axis
+              if (CodeSeen('S')) {
+                laser_printer_st.pic_y_mirror = (CodeValueInt() != 0) ? 1 : 0;
+              }
+              break;
+
+            case 44: // A44 send laser parameters to the display
+              send_laser_param();
+              break;
+
+            case 49: // A49 turn the laser off
+              laser_on_off = 0;
+              WRITE(HEATER_0_PIN, 0);
+              break;
+
+            case 50: // A50 toggle the positioning pointer
+              if (laser_on_off == 0) {
+                laser_on_off = 1;
+              } else {
+                laser_on_off = 0;
+                WRITE(HEATER_0_PIN, 0);
               }
               break;
   #endif // KNUTWURST_MEGA_P_LASER
@@ -2364,7 +2368,7 @@ void AnycubicTouchscreenClass::GetCommandFromTFT() {
               break;
 
   #endif
-  #if ENABLED(KNUTWURST_DGUS2_TFT)
+  #if ENABLED(KNUTWURST_DGUS2_TFT) && DISABLED(KNUTWURST_MEGA_P_LASER)
             case 50:
               SENDLINE_PGM("J38 ");
               break;
