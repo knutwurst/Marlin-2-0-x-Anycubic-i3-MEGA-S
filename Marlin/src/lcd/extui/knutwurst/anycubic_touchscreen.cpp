@@ -1627,6 +1627,10 @@ void AnycubicTouchscreenClass::GetCommandFromTFT() {
   #if ENABLED(SDSUPPORT)
               if (!isPrinting()) {
                 #if ENABLED(KNUTWURST_MEGA_P_LASER)
+                  // Stop the positioning pointer before starting a print/engraving
+                  // so laser_indicate() can no longer issue M3 and corner moves.
+                  laser_on_off = 0;
+
                   file_type = 0;
                   if (strstr(TFTstrchr_pointer, ".bmp")) file_type = 1;
 
