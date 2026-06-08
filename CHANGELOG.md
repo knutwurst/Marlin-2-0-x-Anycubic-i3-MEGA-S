@@ -1,397 +1,442 @@
 # Changelog
 
-All notable changes to this firmware are documented here.
-Dates are the release dates of the binaries. Pre-releases (betas/RCs) are omitted.
+All notable changes to the Knutwurst Marlin firmware for the Anycubic i3 Mega, Mega S, Mega Pro, Mega X, Chiron and 4MAX Pro.
+
+The format follows [Keep a Changelog](https://keepachangelog.com/en/1.1.0/). Each entry notes the upstream Marlin release it was built on where it changed. Pre-releases (betas and RCs) are folded into their final version.
 
 ## [1.6.0] - 2026-06-08
 
-### New Features
-- Integrated BMP laser engraving from SD card on the Anycubic Mega Pro, driven by the stock touchscreen. The previous experimental port is now wired up to the factory engraving flow.
-- Laser positioning pointer (low power) to trace the image outline before engraving.
+Built on Marlin 2.1.2.7.
 
-### Bugfixes
-- Restore the stock Mega Pro laser command protocol: parameters via the `S` code and the factory command numbers (A34/A36–A43/A49/A50). A previous rewrite had switched these to `V` and renumbered them, so the touchscreen and firmware no longer matched.
-- Read the BMP header on file selection (A13) and report the image size, so the display shows the dimensions before engraving starts.
-- Robust BMP parsing: 4-byte row stride for 16-, 24- and 32-bit images, and correct handling of top-down (negative height) bitmaps.
-- Pause and resume engraving through the standard A9/A10 handlers.
-- Refuse to engrave on an invalid or unreadable header.
-- Resolve the `case 50` command collision that had kept the laser build from compiling.
+### Added
+- Integrated BMP laser engraving from SD card on the Mega Pro, driven by the stock touchscreen. The earlier experimental port is now wired into the factory engraving flow.
+- Low-power positioning pointer that traces the image outline before a job starts.
+- Plausibility guard that refuses to engrave on an invalid or unreadable BMP header.
+- `CHANGELOG.md` covering every released version.
 
-### Known Issues
-- The SD-card bitmap laser engraving is new and not yet tested on real hardware. Lasering via USB with LightBurn (`M3`/`M4`/`M5`) is the proven path. The feature expects the stock Mega Pro touchscreen protocol.
-- During engraving the progress bar may not advance, and the screen gets no "finished" signal when the job ends.
-- Keep the hotend thermistor connected while lasering, or MINTEMP stops the job. Do not set a hotend temperature in laser mode.
-- The built-in leveling of the 4MAX Pro does not work yet. Use the 4-point-easy leveling and mesh leveling via the special menu instead.
-- The nozzle temperature can only be set above 260°C via gcode, not the touchscreen.
-- The gcode file transfer via WiFi is slow due to hardware limitations.
+### Changed
+- Read the BMP header on file selection (A13) and report the image size, so the display shows the dimensions before engraving begins.
+- Start engraving from A14 when a bitmap is selected, matching the proven factory trigger.
+- Parse bitmaps with the standard 4-byte row stride for 16-, 24- and 32-bit images, and handle top-down (negative height) files.
+
+### Fixed
+- Restore the stock Mega Pro laser protocol: image parameters via the `S` code and the factory command numbers (A34, A36–A43, A49, A50). A previous rewrite had switched these to `V` and renumbered them, so the touchscreen and firmware no longer agreed.
+- Pause and resume engraving through the existing A9/A10 handlers, and turn the laser off the moment a job is paused or stopped.
+- Resolve the `case 50` command collision that had stopped the laser build from compiling.
 
 ## [1.5.5] - 2026-01-24
 
-### New Features
-- Update codebase to Marlin 2.1.2.7 (thanks @stklcode).
+### Changed
+- Update the codebase to Marlin 2.1.2.7 (thanks @stklcode).
 
 ## [1.5.4] - 2024-06-05
 
-### New Features
-- Update codebase to Marlin 2.1.2.2 (thanks @stklcode).
+### Changed
+- Merge upstream Marlin 2.1.2.2 and 2.1.2.3 (thanks @stklcode).
 
-### Bugfixes
-- Fix ignored Z endstop when only one endstop is used (thanks @hostops).
-- Fix continue button behavior after pause or filament runout (thanks @uwetaz).
-- Fix "lack of filament" message not displayed when filament runs out (thanks @uwetaz).
-- Fix homing issue when using two endstops (thanks @stklcode).
+### Fixed
+- Restore homing with dual Z endstops in the `STEPTEST` macro.
+- Fix the DGUS build by setting `WAIT_MS_UNTIL_ACYCLIC_SEND` globally.
+- Guard against sending acyclic display commands too quickly (thanks @uwetaz).
+- Fix the ignored Z endstop when only a single Z endstop is used (thanks @hostops).
+- Fix the continue button after pause or filament runout, and show the "out of filament" message reliably (thanks @uwetaz).
+- Revert unintended config changes pulled in with the 2.1.2.2 merge.
 
 ## [1.5.3] - 2024-03-22
 
-### Bugfixes
-- Fix build issues when compiling with newer Python versions.
-- Fix thermal runaway that was too aggressive in some cases.
-- Fix filament runout false positives.
-- Fix manual bed leveling on Mega Pro.
+### Changed
+- Relax thermal-runaway parameters, especially for the heated bed, to allow higher temperatures.
+- Raise the filament-runout threshold and clean up the runout pin definitions.
+
+### Fixed
+- Fix manual bed leveling from the Mega Pro touchscreen.
+- Fix the build with newer Python versions and the GitHub artifact upload.
+- Fix filament-runout false positives.
 
 ## [1.5.2] - 2023-07-06
 
-### New Features
-- Add Marlin M73 support for a more accurate print time display.
-- Improve overall stability (thanks @stklcode).
+### Added
+- Implement `M73` to set print-job progress, overriding the built-in time estimate for a more accurate display.
+- Assisted leveling for the 4MAX Pro 2.0, including servo endstop-angle adjustment.
 
-### Bugfixes
-- Heater error check on boot did not trigger at all.
+### Changed
+- Replace the `KNUTWURST_TFT_LEVELING` flag with `KNUTWURST_CHIRON`.
+- Clean up the touchscreen code with clang-format and drop unused declarations.
+
+### Fixed
+- Fix the heater error check on boot, which never triggered (#475).
+- Fix the `RenderCurrentFolder` output string.
 
 ## [1.5.1] - 2023-06-13
 
-Hotfixed on 2023-06-13.
+Hotfixed on 2023-06-13. Built on Marlin 2.1.2.1.
 
-### New Features
-- Update codebase to Marlin 2.1.2.1 (thanks @stklcode).
-- Faster file list load and refresh.
+### Added
 - Support for SD card extenders.
 
-### Bugfixes
-- Fix Anycubic 1.0 displays that had issues reading the SD card or crashed at startup.
-- Fix scrambled output on DGUS clone screens when scrolling through long file lists.
+### Changed
+- Load and sort the file list far faster while using less RAM.
+- Restructure the A6 print-status and A26 SD-refresh routines for speed.
+- Disable steppers after one minute of idle time.
+- Lower the maximum hotend temperature to stay within the thermistor range.
+
+### Fixed
+- Fix SD card reads and startup crashes on Anycubic 1.0 displays.
+- Fix scrambled output on DGUS clone screens after long file lists.
 - Fix elapsed time showing `--.--` after long prints.
-- Fix boot loop on Anycubic 1.0 displays when no filament sensor is connected.
+- Fix the boot loop on Anycubic 1.0 displays when no filament sensor is connected.
 
 ## [1.5.0] - 2023-06-07
 
-### New Features
-- Update codebase to Marlin 2.1.2 (thanks @stklcode).
-- Low-noise SoftPWM for fans and heaters.
-- Touchscreen code as a fully functional ExtUI module.
-- Print/Pause/Resume/Stop work as intended.
-- M600 filament change with or without USB connection.
-- Host action commands for most touchscreen functions.
-- Filament sensor works internally and externally via USB, and can be enabled/disabled permanently via the special menu.
-- On manual stop, the bed moves forward and the printhead parks.
-- Live Z-offset on Anycubic Chiron, with automatic mesh adjustment when altering the Z-offset.
-- Support for `.gco` files and alphabetic file/folder sorting on all displays.
-- With ABL or MBL, the nozzle can go below endstop zero.
-- High-speed mode for BLTouch probing (special menu).
+Built on Marlin 2.1.2. This release rebuilt the touchscreen layer from the ground up.
 
-### Bugfixes
-- Fix compile error when using NeoPixels.
-- Fix rectangular bed shapes.
-- Fix Z home position not touching the build plate.
-- Fix default baud rate and port number for the ESP WiFi module.
-- Fix some files not displayed on older touchscreens and corrupted file parsing.
-- Fix BLTouch probing/errors with clone probes.
-- Fix filament sensor on Chiron and 4MAX Pro 2.0.
-- Fix navigation so you can go back inside a directory.
-- Fix directory access on Anycubic 1.0 displays.
-- Fix 4MAX Pro 2.0 M600 taking too long on filament change.
-- Fix missing Z2 pin definitions on Chiron and 4MAX.
-- Fix Chiron ABL, special menu without an SD card, load-defaults routine, live offset rendering and 4MAX Pro auto power-off.
+### Added
+- Rewrite the Anycubic touchscreen as a fully functional ExtUI module.
+- Host action commands for most touchscreen functions, controllable over USB.
+- Live Z-offset on the Chiron, with automatic mesh adjustment when the offset changes.
+- Manual probing on the Chiron and a dedicated probing print state.
+- Support for `.gco` files and alphabetical file/folder sorting on all displays.
+- High-speed BLTouch probing, selectable from the special menu.
+- M600 filament change with or without a USB connection.
+
+### Changed
+- Switch the touchscreen to `LCD_SERIAL` and use `longest_filename()` for SD entries.
+- Use soft PWM for the fans for lower noise.
+- Disable software endstops while printing and leveling so mesh points below zero are reachable.
+- Park the toolhead when aborting an SD print instead of homing.
+
+### Fixed
+- Fix the Z home position not touching the build plate (#396).
+- Fix the default baud rate and port number for the ESP WiFi module (#406).
+- Fix print/pause/resume and M600 filament change end to end.
+- Fix the filament sensor clashing with host action commands.
+- Fix rectangular bed shapes, NeoPixel builds, and several Chiron and 4MAX Pro build errors.
 
 ## [1.4.4] - 2022-05-12
 
-### New Features
-- Combine M851 and babystepping so babystepping can alter the current Z-offset while printing.
-- Enable M808 gcode for repeat markers (thanks @stklcode).
-- Show the correct Marlin version instead of just "2.0.x".
+Built on Marlin 2.0.9.2.
 
-### Bugfixes
-- 4MAX Pro now resets correctly after boot.
-- Fix build error after the TMC26XX library was removed.
-- Fix USB pause that was not automatically resumed.
-- Fix missing software endstop on Z_MIN.
+### Added
+- Enable `M808` repeat markers (#325).
+- Combine `M851` with Z babystepping so you can shift the live Z-offset while printing.
+
+### Changed
+- Show the real Marlin version instead of "2.0.x".
+- Re-enable the software endstop on `Z_MIN`, previously disabled for BLTouch.
+
+### Fixed
+- Reset the 4MAX Pro correctly after boot.
+- Fix the build error after the TMC26XX library was removed.
+- Restore the USB pause response so M600 works with Octoprint.
 
 ## [1.4.3] - 2022-02-20
 
-### Bugfixes
-- Fix 4-point-easy-leveling applying the mesh wrongly and falsifying the result (#282).
+### Fixed
+- Fix 4-point-easy-leveling applying the mesh incorrectly and falsifying the result (#282).
 
 ## [1.4.2] - 2022-02-13
 
-### New Features
-- Integrated assisted leveling for the Mega Pro.
-- Stop motors and heaters right after aborting a print.
+### Added
+- Integrated 4-point assisted leveling for the Mega Pro.
 
-### Bugfixes
-- Fix a case where a print could not be aborted while heating.
+### Changed
+- Stop motors and heaters immediately after a print is aborted.
+
+### Fixed
+- Fix aborting a print before it actually starts.
 
 ## [1.4.1] - 2022-02-09
 
-### New Features
-- Same features as 1.4.0, but with hardware PWM and a higher PWM frequency.
+### Fixed
+- Switch the bed back to hardware PWM to stop the clicking/ticking noise from the power supply during heating.
 
-### Bugfixes
-- Switch back to the previous PWM controller (as in 1.3.1 and earlier) to stop clicking/ticking noise from the PSU when the bed reaches temperature.
+### Changed
+- Move the images out of the main repository into the wiki.
 
 ## [1.4.0] - 2022-02-07
 
-Some users reported clicking/ticking noise from the power supply and worse bed heating. Use 1.4.1 or newer.
+Built on Marlin 2.0.9.2. Some units showed PSU ticking and worse bed heating; use 1.4.1 or newer.
 
-### New Features
-- Update codebase to Marlin 2.0.9.2.
-- Mega Pro laser support with M3 (Spindle CW / Laser On); works with tools like LightBurn.
-- Support for Anycubic 4MAX Pro v1 and v2, including the 4MAX Pro 2.0 with the original DWIN II display, plus 4MAX Pro auto power-off.
-- More reliable acceleration/jerk values and higher possible extruder speeds on all printers.
-- Enable host action commands to control the firmware via USB.
-- Add M9999 Anycubic TFT debug command (thanks @etet100).
-- Switch thermistor type from 5 to 1 or 11 depending on the printer.
-- Allow longer filenames on the DGUS clone / Anycubic 0.0.2 display.
-- Lower fan noise at low fan speeds.
+### Added
+- Mega Pro laser support via `M3` (Spindle CW / Laser On), compatible with tools such as LightBurn.
+- Support for the Anycubic 4MAX Pro v1 and v2, including the original DWIN II display, plus 4MAX Pro auto power-off.
+- Host action commands and host prompt support over USB.
+- `M9999` Anycubic TFT debug command (thanks @etet100).
 
-### Bugfixes
-- 4MAX Pro 4-point-easy-leveling and PID-tune hotend now work.
-- Fix Chiron TFT crash after auto leveling and Z-offset not stored in EEPROM.
-- Add missing touchscreen handling for M104 and M109.
-- Increase probe margin to avoid probing outside bed boundaries; default level fade height 0.
-- Fix resume from pause with M108, advanced pause/resume, and nozzle re-heat after timeout.
-- Fix humming noise on Mega X Z-axis and stock Mega Pro X/Y drivers (A4988 timings).
-- Fix missing home/G28 when starting manual mesh bed leveling.
-- Fix lockup when pressing STOP on the Anycubic 0.0.2 display.
+### Changed
+- Switch the thermistor type from 5 to 1 or 11 depending on the printer, with new PID values to match.
+- Use soft PWM with dithering for fans and heaters to lower noise.
+- Re-enable Linear Advance on all models, disabled since the 2.0.9.2 update.
+- Tune acceleration, jerk and feedrate across all printers and raise extruder speeds.
+- Rename the Mega Pro environment to `MEGA_P_DGUS` for naming consistency.
+
+### Fixed
+- Fix the lockup when pressing STOP during an SD print on DGUS variants.
+- Fix advanced pause/resume, nozzle re-heat after timeout, and resume with `M108`.
+- Add the missing touchscreen handling for `M104` and `M109`.
+- Fix the humming noise on the Mega X Z-axis and the stock Mega Pro X/Y drivers (A4988 timings).
+- Add `Z_SAFE_HOMING` for the 4MAX with BLTouch and increase the probing margin.
 
 ## [1.3.1] - 2021-09-23
 
-### New Features
-- Same features as 1.3.0 but with WiFi disabled by default. Re-enable via `#define SERIAL_PORT_2` in Configuration.h.
-
-### Bugfixes
-- Fix USB communication issues with Octoprint and a USB webcam by disabling the WiFi functionality.
+### Fixed
+- Disable WiFi by default to fix USB communication drops with Octoprint and a USB webcam (#204). Re-enable it with `#define SERIAL_PORT_2`.
 
 ## [1.3.0] - 2021-09-18
 
-### New Features
-- Adjust the BLTouch Z-probe offset via the special menu.
-- MeatPack support to compress gcode on the fly.
-- Full ARC Welder support via the Octoprint or Cura plugin.
-- ESP3D WiFi support with an additional UART interface.
+### Added
+- Adjust the BLTouch Z-probe offset from the special menu, with the offset saved to EEPROM.
+- Backport MeatPack to compress gcode on the fly.
+- Full ARC support by backporting the upstream G2/G3 changes, useful for laser engraving.
+- ESP3D WiFi support over a second serial interface on the EXP1 header (#194).
 
-### Bugfixes
-- Fix SD card file list when only three gcode files are present.
-- Keep the cursor in place when selecting a special menu entry.
-- Faster and more reliable manual mesh bed leveling.
-- Fix G2/G3 segment calculation (thanks @ashleysommer, #191).
-- Fix the T0 sensor display message and Chiron Z-offset editing.
+### Fixed
+- Fix the SD file list when exactly three files or folders are present (#197).
+- Keep the cursor in place when selecting a special-menu entry.
+- Make manual mesh bed leveling faster and more reliable.
+- Disable steppers after three minutes of idle time.
 
 ## [1.2.0] - 2021-06-27
 
-### New Features
-- Support for Chiron and Mega X with the new Anycubic 0.0.2 display.
-- Support for both Chiron models (Anycubic OFW 1.3.0 and 1.3.5).
-- Working manual (MBL) and auto (ABL) bed leveling for the Chiron, with no custom gcode files needed and a "reset leveling" menu entry.
-- Manual leveling while printing on the Chiron and automatic mesh rebuild on "load defaults".
-- Ultra-fast BLTouch/3DTouch probing, automatic mesh save to EEPROM, and automatic Z-offset save/restore.
-- Flow rate adjustable in 1% steps.
-- New pin assignment for all Trigorilla boards.
-- Auto-home X after G29 on Chiron; nozzle moves 2 mm off the endstops after homing on Mega S/P/X.
-- Automatic stepper driver release after auto leveling and A4988/TMC22XX differentiation.
-- Max E0 nozzle temperature raised to 300°C.
+### Added
+- Full Anycubic Chiron support: working manual (MBL) and auto (ABL) bed leveling with no custom gcode files, a "reset leveling" menu entry, manual leveling while printing, and automatic mesh rebuild on "load defaults".
+- Support for the Chiron and Mega X with the new Anycubic 0.0.2 display (DGUS clone).
+- Ultra-fast BLTouch/3DTouch probing with automatic mesh save and Z-offset save/restore.
+- Groundwork for the Mega Pro laser and BMP feature (structs and initialization).
 
-### Bugfixes
-- Fix crash when pressing "back" in the advanced leveling menu.
-- Fix whining noise on the stock Mega Pro and filament in/out nozzle heating.
-- Fix support for 3DTouch and other BLTouch clones and BLTouch mesh not loading correctly.
-- Fix Chiron extruder fan, mesh out of bed boundaries and easy 4-point leveling beyond point 1.
-- Fix print progress and print time on the display.
-- Fix crashes when using USB and SD at the same time (DGUS version).
-- Fix slow touchscreen on some Mega S/P models and stuttering on small ARC curves.
+### Changed
+- Raise the maximum hotend temperature to 300°C.
+- Adjust the flow rate in 1% steps instead of 5%.
+- New pin assignment for all Trigorilla boards and an A4988/TMC22XX split for best performance.
+- Home X after G29 on the Chiron, release steppers after auto leveling, and move the nozzle 2 mm off the endstops after homing.
+
+### Fixed
+- Fix the lockup when pressing "back" in the advanced leveling menu.
+- Fix the whining noise on the stock Mega Pro and the non-working extruder fan on the Mega P and Chiron.
+- Fix print progress and print time on the display and crashes when using USB and SD at once.
+- Fix easy 4-point leveling beyond point 1 on the Chiron and ARC stuttering on small curves.
 
 ## [1.1.9] - 2021-01-13
 
-### Bugfixes
-- Fix extruder or an axis suddenly stopping or running backwards in some environments.
-- Fix the printer stopping in a cold environment (< 10°C).
-- Prepare the codebase for Mega Pro laser and Chiron support.
+### Changed
+- Set `MINTEMP` to 1°C and the minimum stepper pulse to 1, and add `CodeValueInt()` to prepare for laser support.
+
+### Fixed
+- Fix an axis or the extruder suddenly stopping or running backwards in some environments.
+- Fix the printer stalling in a cold environment (below 10°C).
 
 ## [1.1.8] - 2021-01-01
 
-### New Features
-- Babystepping is now usable without BLTouch.
+### Added
+- Babystepping without a BLTouch installed.
 
-### Bugfixes
-- Show the special menu without an SD card.
-- Make ARC settings default for best laser-engraving compatibility.
-- Increase stepper direction change delay to eliminate extruder bugs with TMC drivers.
+### Changed
+- Make ARC settings default for the best laser-engraving compatibility.
+- Increase the stepper direction-change delay to remove extruder glitches with TMC drivers.
+
+### Fixed
+- Show the special menu when no SD card is inserted.
 
 ## [1.1.7] - 2020-11-29
 
-### New Features
+### Added
 - Easy 4-point leveling assistant.
-- Jerk control instead of a fixed junction deviation factor to save CPU cycles.
-- G2/G3 arc/circle move support for the laser implementation.
-- Buzzer sound when PID tuning finishes.
-- Support for cheap TMC2208 steppers and the BMG extruder on the Mega X.
-- Raise maximum nozzle temperature to 300°C and bed temperature to 150°C.
+- G2/G3 arc support for the laser implementation.
+- Jerk control instead of a fixed junction-deviation factor to save CPU cycles.
+- BMG extruder support on the Mega X and support for cheaper TMC2208 drivers.
+- Buzzer tone when PID tuning finishes.
 
-### Bugfixes
-- Fix stuttering on large curved objects and via USB/Octoprint.
-- Fix random resets on Mega S (DGUS) and Mega P and unexpected axis movement.
-- Fix default jerk settings and less aggressive thermal runaway protection.
-- Fix SlowDown and add a wait cycle on direction changes to reduce layer shifts.
-- Fix inverted Mega Pro extruder direction and slow axis movement when engraving small circles.
+### Changed
+- Raise the maximum nozzle temperature to 300°C and bed temperature to 150°C.
+
+### Fixed
+- Fix stuttering on large curved objects and over USB/Octoprint.
+- Fix random resets on the Mega S (DGUS) and Mega P and unexpected axis movement.
+- Fix the inverted Mega Pro extruder direction and slow movement when engraving small circles.
 
 ## [1.1.6] - 2020-09-11
 
-### New Features
-- Mega Pro support (prerelease, use with caution).
-- First-generation i3 Mega support (single Z endstop).
-- Cleaner mesh-leveling submenu with "start" and "save".
-- Flow rate control in % before or during a print.
-- Support for the BondTech BMG extruder (`KNUTWURST_BMG`).
-- New naming scheme for `.hex` files.
+### Added
+- First Mega Pro support (prerelease).
+- Support for the first-generation i3 Mega with a single Z endstop.
+- BondTech BMG extruder support (`KNUTWURST_BMG`).
+- Flow-rate control in percent before or during a print.
+- GitHub CI that builds every environment, plus a new `.hex` naming scheme.
 
-### Bugfixes
-- Fix build error on Windows regarding max path length.
-- Make BLTouch more reliable with a 10 mm max deviation.
+### Changed
+- Move "start mesh leveling" into a submenu.
+
+### Fixed
+- Make BLTouch leveling more reliable (10 mm max deviation).
+- Fix the Windows linker error by shortening environment names.
 
 ## [1.1.5] - 2020-08-27
 
-### New Features
+### Added
 - Submenu for manual mesh bed leveling.
-- Increased Z speed for the Mega X.
-- Increased filament runout watch from 3 to 5 seconds.
-- Better menu structure on the DGUS clone TFT.
-- PID tuning auto-save (no M500 needed).
+- PID tuning auto-save, so `M500` is no longer needed.
 
-### Bugfixes
-- Fix the "no SD card" message when entering the special menu without an SD card.
-- Fix BLTouch nozzle not retracting between probes in some configurations.
-- Fix too-long version number on the Mega X TFT.
+### Changed
+- Better menu structure on the DGUS clone display.
+- Raise the filament-runout watch from 3 to 5 seconds and the max Z feedrate to 18 mm/s.
+
+### Fixed
+- Fix the "no SD card" message when entering the special menu without a card.
+- Fix the BLTouch nozzle not retracting between probes.
 
 ## [1.1.4] - 2020-08-24
 
-### New Features
+### Added
 - Junction deviation for the Mega X.
-- Version info for DGUS and DGUS2 TFTs.
-- Remove `.gcode` from the special menu on the Mega X.
-- Support for longer filenames on Mega S/P.
-- Special menu works without an SD card inserted.
+- Detailed version info for DGUS and DGUS II displays.
+- Longer filenames on the Mega S/P, and a special menu that works without an SD card.
 
-### Bugfixes
-- Lower Z feedrate from 20 to 8 mm/s on the Mega X with TMC drivers.
+### Fixed
+- Lower the Z feedrate from 20 to 8 mm/s on the Mega X with TMC drivers.
 - Center the nozzle on the bed during automatic PID tuning.
 
 ## [1.1.3] - 2020-08-16
 
-### New Features
-- Fully automated PID tuning (movement, fans, temperature, EEPROM).
-- Increased overall movement speed.
-- Deployment script creates subfolders per version.
+### Added
+- Fully automated PID tuning, including movement, fans, temperature and EEPROM save.
+- Deployment script that creates a subfolder per version.
 
-### Bugfixes
-- Z up/down 0.01 mm stepping now works.
-- Fix Mega X default acceleration/junction deviation and too-high homing speed.
+### Changed
+- Increase overall movement speed.
+
+### Fixed
+- Fix the Z height after hotend PID autotune and 0.01 mm Z stepping.
+- Fix Mega X acceleration, junction deviation and homing speed.
 
 ## [1.1.2] - 2020-08-13
 
-### New Features
-- Faster BLTouch probing.
-- M115 reports the real firmware version and distribution date.
+### Added
+- Much faster BLTouch probing.
 
-### Bugfixes
-- Fix hotend fan not starting during PID tuning.
-- Fix DGUS II TFT not filling the file list at times.
+### Changed
+- `M115` now reports the real firmware version and build date.
+
+### Fixed
+- Fix the hotend fan not starting during PID tuning.
+- Fix the DGUS II file list not filling at times.
 
 ## [1.1.1] - 2020-08-10
 
-### New Features
-- Mega X support.
-- Official BLTouch support with an auto-save feature.
-- Better feature toggles in Configuration.h and via PlatformIO, with multi-environment handling.
-- New filename naming scheme.
+### Added
+- Full Anycubic Mega X support.
+- Official BLTouch support with auto-save and homing.
+- Multi-environment build handling and deployment.
+- User-defined touchscreen preheat settings.
 
-### Bugfixes
-- Fix 0.01 mm mesh movement in the wrong direction.
+### Fixed
 - Fix mixed-up endstops in the Mega S configuration.
+- Fix 0.01 mm mesh movement going the wrong way.
 
 ## [1.1.0] - 2020-07-26
 
-### New Features
-- Update codebase to Marlin 2.0.5.4.
+Built on Marlin 2.0.5.4.
+
+### Added
 - BLTouch support (`#define KNUTWURST_BLTOUCH`).
 - Support for the new Anycubic touchscreen (DGUS II clone).
-- Maxed-out host receive buffer for better USB prints.
 
-### Bugfixes
-- Fix BLTouch special menu.
+### Changed
+- Rework the serial protocol handling and append `.gcode` only when needed.
+- Build the special menu from a fake filesystem and store TFT strings in PROGMEM.
+- Max out the host receive buffer for better USB prints.
 
-### Known Issues
-- On the new touchscreen, every menu item shows the `.gcode` extension.
-- Pressing "print" on a special menu item crashes the print menu.
+### Fixed
+- Fix a hardware-serial bug that crashed the TFT firmware.
+- Fix long filenames and the special menu with long filenames.
 
 ## [1.0.6] - 2020-07-11
 
-### New Features
-- Bed size pushed to 220 x 225 x 215 mm.
-- Endstop noise termination and no endstop beeps (reactivatable in code).
-- Faster responding touchscreen.
-- Change default E steps for the S extruder to 392 (Titan default).
+### Added
+- Push the bed size to 220 × 225 × 215 mm.
+- Endstop noise termination and silent endstops (reactivatable in code).
 
-### Bugfixes
-- Fix unwanted beeping while printing.
-- Fix endless print loop when pressing Stop while heating.
-- Fix nozzle not reheating in pause state.
-- Fix special menu shown when going back more than 15 times.
+### Changed
+- Faster touchscreen response and a new default of 392 E-steps for the S extruder (Titan).
+
+### Fixed
+- Fix unwanted beeping while printing and the endless print loop when pressing Stop while heating.
+- Fix the nozzle not reheating from a paused state.
 
 ## [1.0.5] - 2020-06-21
 
-### New Features
-- Bed leveling restored after power off.
-- Advanced pause and nozzle parking.
-- Filament change without a host PC or Pronterface.
-- Short startup chime to indicate a working serial connection.
-- Endstop beeps are back.
-- Semi-preconfigured BLTouch support (not active in binary releases).
+### Added
+- Advanced pause and nozzle parking, so filament change works without a host PC (#1).
+- Startup chime to signal a working serial connection, plus endstop and thermal-runaway tones.
+- Semi-preconfigured BLTouch support (off in binary releases).
 
-### Bugfixes
-- Fix babystepping.
-- Fix Trigorilla selection for BLTouch in Configuration.h.
-- Fix graphical glitches from too-long filenames.
-- Fix M600 by implementing the advanced pause feature.
+### Fixed
+- Fix babystepping and resuming from a parked nozzle.
+- Fix graphical glitches from long filenames.
 
 ## [1.0.4] - 2020-06-08
 
-### New Features
-- Add 0.02 mm and 0.01 mm Z-stepping for mesh calibration.
+### Added
+- 0.02 mm and 0.01 mm Z-stepping for mesh calibration.
 
-### Bugfixes
-- Minor fixes in the current menu handling.
+### Fixed
+- Minor fixes in the menu handling.
 
 ## [1.0.3] - 2020-06-06
 
-### New Features
-- Filament runout sensor can be disabled via the special menu.
+### Added
+- Disable the filament-runout sensor from the special menu.
 
-### Bugfixes
-- Fix relative positioning when using the touchscreen.
-- Optimize Mega S extruder feedrate and acceleration values.
-- Initialize EEPROM automatically at startup in case of errors.
+### Changed
+- Optimize Mega S extruder feedrate and acceleration.
+
+### Fixed
+- Fix relative positioning from the touchscreen.
+- Initialize the EEPROM automatically at startup after errors.
 
 ## [1.0.2] - 2020-06-06
 
-### Bugfixes
+### Fixed
 - Major touchscreen reliability fixes.
-- Working pause and filament runout functions.
-- Stability improvements when printing from SD card.
+- Working pause and filament-runout functions and steadier SD printing.
 
 ## [1.0.1] - 2020-06-05
 
-### Bugfixes
+### Fixed
 - Bugfix release.
 
 ## [1.0.0] - 2020-06-05
 
 - Initial public release.
+
+[1.6.0]: https://github.com/knutwurst/Marlin-2-0-x-Anycubic-i3-MEGA-S/compare/1.5.5...1.6.0
+[1.5.5]: https://github.com/knutwurst/Marlin-2-0-x-Anycubic-i3-MEGA-S/compare/1.5.4...1.5.5
+[1.5.4]: https://github.com/knutwurst/Marlin-2-0-x-Anycubic-i3-MEGA-S/compare/1.5.3...1.5.4
+[1.5.3]: https://github.com/knutwurst/Marlin-2-0-x-Anycubic-i3-MEGA-S/compare/1.5.2...1.5.3
+[1.5.2]: https://github.com/knutwurst/Marlin-2-0-x-Anycubic-i3-MEGA-S/compare/1.5.1...1.5.2
+[1.5.1]: https://github.com/knutwurst/Marlin-2-0-x-Anycubic-i3-MEGA-S/compare/1.5.0...1.5.1
+[1.5.0]: https://github.com/knutwurst/Marlin-2-0-x-Anycubic-i3-MEGA-S/compare/1.4.4...1.5.0
+[1.4.4]: https://github.com/knutwurst/Marlin-2-0-x-Anycubic-i3-MEGA-S/compare/1.4.3...1.4.4
+[1.4.3]: https://github.com/knutwurst/Marlin-2-0-x-Anycubic-i3-MEGA-S/compare/1.4.2...1.4.3
+[1.4.2]: https://github.com/knutwurst/Marlin-2-0-x-Anycubic-i3-MEGA-S/compare/1.4.1...1.4.2
+[1.4.1]: https://github.com/knutwurst/Marlin-2-0-x-Anycubic-i3-MEGA-S/compare/1.4.0...1.4.1
+[1.4.0]: https://github.com/knutwurst/Marlin-2-0-x-Anycubic-i3-MEGA-S/compare/1.3.1...1.4.0
+[1.3.1]: https://github.com/knutwurst/Marlin-2-0-x-Anycubic-i3-MEGA-S/compare/1.3.0...1.3.1
+[1.3.0]: https://github.com/knutwurst/Marlin-2-0-x-Anycubic-i3-MEGA-S/compare/1.2.0...1.3.0
+[1.2.0]: https://github.com/knutwurst/Marlin-2-0-x-Anycubic-i3-MEGA-S/compare/1.1.9...1.2.0
+[1.1.9]: https://github.com/knutwurst/Marlin-2-0-x-Anycubic-i3-MEGA-S/compare/1.1.8...1.1.9
+[1.1.8]: https://github.com/knutwurst/Marlin-2-0-x-Anycubic-i3-MEGA-S/compare/1.1.7...1.1.8
+[1.1.7]: https://github.com/knutwurst/Marlin-2-0-x-Anycubic-i3-MEGA-S/compare/1.1.6...1.1.7
+[1.1.6]: https://github.com/knutwurst/Marlin-2-0-x-Anycubic-i3-MEGA-S/compare/1.1.5...1.1.6
+[1.1.5]: https://github.com/knutwurst/Marlin-2-0-x-Anycubic-i3-MEGA-S/compare/1.1.4...1.1.5
+[1.1.4]: https://github.com/knutwurst/Marlin-2-0-x-Anycubic-i3-MEGA-S/compare/1.1.3...1.1.4
+[1.1.3]: https://github.com/knutwurst/Marlin-2-0-x-Anycubic-i3-MEGA-S/compare/1.1.2...1.1.3
+[1.1.2]: https://github.com/knutwurst/Marlin-2-0-x-Anycubic-i3-MEGA-S/compare/1.1.1...1.1.2
+[1.1.1]: https://github.com/knutwurst/Marlin-2-0-x-Anycubic-i3-MEGA-S/compare/1.1.0...1.1.1
+[1.1.0]: https://github.com/knutwurst/Marlin-2-0-x-Anycubic-i3-MEGA-S/compare/1.0.6...1.1.0
+[1.0.6]: https://github.com/knutwurst/Marlin-2-0-x-Anycubic-i3-MEGA-S/compare/1.0.5...1.0.6
+[1.0.5]: https://github.com/knutwurst/Marlin-2-0-x-Anycubic-i3-MEGA-S/compare/1.0.4...1.0.5
+[1.0.4]: https://github.com/knutwurst/Marlin-2-0-x-Anycubic-i3-MEGA-S/compare/1.0.3-Bugfix...1.0.4
+[1.0.3]: https://github.com/knutwurst/Marlin-2-0-x-Anycubic-i3-MEGA-S/compare/1.0.2...1.0.3-Bugfix
+[1.0.2]: https://github.com/knutwurst/Marlin-2-0-x-Anycubic-i3-MEGA-S/compare/1.0.1...1.0.2
+[1.0.1]: https://github.com/knutwurst/Marlin-2-0-x-Anycubic-i3-MEGA-S/compare/1.0.0...1.0.1
+[1.0.0]: https://github.com/knutwurst/Marlin-2-0-x-Anycubic-i3-MEGA-S/releases/tag/1.0.0
