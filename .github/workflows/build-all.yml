@@ -119,7 +119,7 @@ jobs:
     #     .pio/build/${{ matrix.platform }}/${{ matrix.platform }}_v*.hex
 
     - name: Upload artifact for platform
-      uses: actions/upload-artifact@v6
+      uses: actions/upload-artifact@v7
       with:
         name: firmware-${{ matrix.platform }}
         path: |
@@ -134,7 +134,7 @@ jobs:
 
     steps:
     - name: Merge all artifacts into one
-      uses: actions/upload-artifact/merge@v6
+      uses: actions/upload-artifact/merge@v7
       with:
         name: Knuwurst-all-in-one-${{github.sha}}
         pattern: firmware-*
